@@ -1,2 +1,5 @@
 # CreditPlay
-Adapt your crediit to your needs
+Adapt your credit to your needs
+
+# Commands 
+yarn create quasar
