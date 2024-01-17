@@ -53,7 +53,7 @@
                 <q-icon name="bar_chart" />
               </q-item-section>
 
-              <q-item-section> Résumé </q-item-section>
+              <q-item-section> RÃ©sumÃ© </q-item-section>
             </q-item>
 
             <q-item to="/help" exact clickable v-ripple>
@@ -78,7 +78,7 @@
                 src="https://expernet-campus.re/wp-content/uploads/2021/03/cliches-developpeur-informatique.png"
               />
             </q-avatar>
-            <div class="text-weight-bold">François Mounous</div>
+            <div class="text-weight-bold">Francois Mounous</div>
             <div>@bottineEnNubuck</div>
           </div>
         </q-img>
@@ -94,39 +94,29 @@
 </template>
 
 <script setup lang="ts">
+
+
+import { SessionStorage } from 'quasar';
 import { ref } from 'vue';
-import EssentialLink, { EssentialLinkProps } from 'components/EssentialLink.vue';
 
-import { useQuasar } from "quasar";
+var leftDrawerOpen = ref(false);
 
-export default {
-  name: "MainLayout",
-  data() {
-    return { leftDrawerOpen: false };
-  },
-  setup() {
-    const $q = useQuasar();
-    if (!$q.sessionStorage.has("amount")) {
-      $q.sessionStorage.set("amount", 176000);
-    }
-    if (!$q.sessionStorage.has("taeg")) {
-      $q.sessionStorage.set("taeg", 3.25);
-    }
-    if (!$q.sessionStorage.has("years")) {
-      $q.sessionStorage.set("years", 20);
-    }
-    if (!$q.sessionStorage.has("event_nbr")) {
-      $q.sessionStorage.set("event_nbr", 0);
-    }
-  },
-};
+if (!SessionStorage.has('amount')) {
+  SessionStorage.set('amount', 176000);
+}
+if (!SessionStorage.has('taeg')) {
+  SessionStorage.set('taeg', 3.25);
+}
+if (!SessionStorage.has('years')) {
+  SessionStorage.set('years', 20);
+}
+if (!SessionStorage.has('event_nbr')) {
+  SessionStorage.set('event_nbr', 0);
+}
 </script>
 
 <style lang="scss">
 .bg-image {
-  //background-image: url("src/resources/bank.jpg");
   background: linear-gradient(#cfdce1, #b2b7ee);
-  //background-repeat: no-repeat;
-  //background-size: contain;
 }
 </style>

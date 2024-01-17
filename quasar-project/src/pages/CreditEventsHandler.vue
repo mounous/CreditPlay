@@ -25,50 +25,37 @@
           <q-checkbox v-model="event.selected" color="primary"> </q-checkbox>
         </q-item-section>
         <q-item-section>
-          <q-item-label>{{ event.year + "-" + event.title }}</q-item-label>
+          <q-item-label>{{ event.year + '-' + event.title }}</q-item-label>
         </q-item-section>
       </q-item>
     </q-list>
   </q-page>
 </template>
 
-<script>
-import { useQuasar } from "quasar";
-import { ref } from "vue";
-import SingleEventHandler from "../components/SingleEventHandler.vue";
-import { useRouter } from "vue-router";
-export default {
-  components: {
-    SingleEventHandler,
-  },
-  mounted() {
-    const $q = useQuasar();
-    this.events = $q.sessionStorage.getItem("events");
-  },
-  setup() {
-    return {
-      addeventactive: ref(false),
-    };
-  },
+<script setup>
+import {  SessionStorage } from 'quasar';
+import { ref } from 'vue';
+import SingleEventHandler from '../components/SingleEventHandler.vue';
+import { useRouter } from 'vue-router';
+const router = useRouter();
+var events = [
+    {
+      title: '',
+      type: '',
+      year: '',
+      month: '',
+      id: 1,
+      selected: false,
+    },
+  ];
+if (SessionStorage.has('events')) {
+  var events = SessionStorage.getItem('events');
+}
 
-  data() {
-    return {
-      events: [
-        {
-          title: "",
-          type: "",
-          year: "",
-          month: "",
-          id: 1,
-          selected: false,
-        },
-      ],
-      UpdateEvents(events_in) {
-        this.events = events_in;
-        const router = useRouter();
-        //router.push("/summary");
-      },
-    };
-  },
+var addeventactive = ref(false);
+
+const UpdateEvents = function (events_in) {
+  events = events_in;
+  router.push('/summary');
 };
 </script>

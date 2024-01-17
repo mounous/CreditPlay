@@ -5,8 +5,8 @@
         filled
         type="number"
         v-model="amount_l"
-        label="Somme empruntée"
-        hint="pas d'unité, pas de virgule"
+        label="Somme empruntÃ©e"
+        hint="pas d'unitÃ©, pas de virgule"
         lazy-rules
         :rules="[
           (val) => validateAmount(val) || 'Merci de renseigner la somme',
@@ -20,18 +20,18 @@
         step="any"
         v-model="taeg_l"
         lazy-rules
-        :rules="[(val) => validateTAEG(val) || 'Ce TAEG semble irréel']"
+        :rules="[(val) => validateTAEG(val) || 'Ce TAEG semble irrÃ©el']"
       />
 
       <q-input
         filled
         type="number"
         v-model="years_l"
-        label="Durée d'emprunt"
+        label="DurÃ©e d'emprunt"
         lazy-rules
         :rules="[
           (val) =>
-            validateYears(val) || 'Merci de renseigner la durée en année',
+            validateYears(val) || 'Merci de renseigner la durÃ©e en annÃ©e',
         ]"
       />
 
@@ -49,54 +49,48 @@
   </q-page>
 </template>
 
-<script>
-import { useQuasar } from "quasar";
-import { useRouter } from "vue-router";
-import { ref } from "vue";
-import { computeMensuality, computeCredit } from "./credit_utility.js";
-export default {
-  setup() {
-    const $q = useQuasar();
-    const router = useRouter();
+<script setup>
+import { SessionStorage,useQuasar } from 'quasar';
+import { useRouter } from 'vue-router';
+import { ref } from 'vue';
+import { computeMensuality, computeCredit } from './credit_utility.js';
+const router=useRouter();
+var amount_l = ref(SessionStorage.getItem('amount'));
+var years_l = ref(SessionStorage.getItem('years'));
+var taeg_l = ref(SessionStorage.getItem('taeg'));
+const $q=useQuasar();
+function validateTAEG  (taeg) {
+  SessionStorage.set('taeg', taeg);
+  const taeg_lu = SessionStorage.getItem('taeg');
+  return taeg_lu == taeg;
+};
+function validateYears(years) {
+  SessionStorage.set('years', years);
+  const years_lu = SessionStorage.getItem('years');
+  return years_lu == years;
+};
+function validateAmount  (amount) {
+  SessionStorage.set('amount', amount);
+  const amount_lu = SessionStorage.getItem('amount');
+  return amount_lu == amount;
+};
+function onSubmit  () {
+  computeMensuality();
+  computeCredit();
 
-    return {
-      amount_l: ref($q.sessionStorage.getItem("amount")),
-      years_l: ref($q.sessionStorage.getItem("years")),
-      taeg_l: ref($q.sessionStorage.getItem("taeg")),
-      validateTAEG(taeg) {
-        $q.sessionStorage.set("taeg", taeg);
-        const taeg_lu = $q.sessionStorage.getItem("taeg");
-        return taeg_lu == taeg;
-      },
-      validateYears(years) {
-        $q.sessionStorage.set("years", years);
-        const years_lu = $q.sessionStorage.getItem("years");
-        return years_lu == years;
-      },
-      validateAmount(amount) {
-        $q.sessionStorage.set("amount", amount);
-        const amount_lu = $q.sessionStorage.getItem("amount");
-        return amount_lu == amount;
-      },
-      onSubmit() {
-        computeMensuality($q);
-        computeCredit($q);
-        $q.notify({
-          color: "green-4",
-          textColor: "white",
-          icon: "cloud_done",
-          message: "Submitted",
-        });
-        router.push("/summary");
-      },
 
-      onReset() {
-        years_l.value = 0;
-        taeg_l.value = 0;
-        amount_l.value = 0;
-        accept.value = false;
-      },
-    };
-  },
+  $q.notify({
+    color: 'green-4',
+    textColor: 'white',
+    icon: 'cloud_done',
+    message: 'Submitted',
+  });
+  router.push('/summary');
+};
+function onReset  () {
+  years_l.value = 0;
+  taeg_l.value = 0;
+  amount_l.value = 0;
+  accept.value = false;
 };
 </script>
