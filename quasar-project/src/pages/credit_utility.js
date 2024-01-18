@@ -63,6 +63,7 @@ const computeCredit = () => {
     mensuality_count++;
   }
   SessionStorage.set('amort_monthly', amort_monthly);
+  SessionStorage.set('total_cost_init',Math.round(interests_paid*100)/100);
 };
 const sortEvents = (events_in) => {
   function comp(a, b) {

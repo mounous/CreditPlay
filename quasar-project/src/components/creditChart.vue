@@ -5,7 +5,7 @@
       style="background: radial-gradient(circle, #35a2ff 0%, #014a88 100%)"
     >
       <q-card-section class="q-pt-none">
-        {{ mensVal }}
+        {{ init_credit_String }}
       </q-card-section>
     </q-card>
     <VueApexCharts
@@ -20,8 +20,10 @@
 <script setup>
 import {  SessionStorage } from 'quasar';
 import VueApexCharts from 'vue3-apexcharts'
+import {ref} from 'vue'
 var mensVal = SessionStorage.getItem('mensuality_str').toString();
-
+var total_cost_init=SessionStorage.getItem('total_cost_init');
+var init_credit_String = ref('Sans modulation : '+mensVal+' coût total : '+total_cost_init.toString());
 const getTime = function () {
   const amort_arr = SessionStorage.getItem('amort_monthly');
   var xAxisUp2Date = [];
