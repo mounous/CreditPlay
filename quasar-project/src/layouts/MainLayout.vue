@@ -40,7 +40,7 @@
               <q-item-section> Situation initiale </q-item-section>
             </q-item>
 
-            <q-item to="/events" exact clickable v-ripple>
+            <q-item to="/events" exact clickable v-ripple :disable="initFormDone==false">
               <q-item-section avatar>
                 <q-icon name="toc" />
               </q-item-section>
@@ -48,7 +48,7 @@
               <q-item-section> Evenements </q-item-section>
             </q-item>
 
-            <q-item to="/summary" exact clickable v-ripple>
+            <q-item to="/summary" exact clickable v-ripple  :disable="initFormDone==false">
               <q-item-section avatar>
                 <q-icon name="bar_chart" />
               </q-item-section>
@@ -97,10 +97,13 @@
 
 
 import { SessionStorage } from 'quasar';
-import { ref } from 'vue';
-
+import { ref,watch } from 'vue';
+import {startFormFilled} from 'stores/example-store'
 var leftDrawerOpen = ref(false);
-
+var  initFormDone =ref(false);
+const setInitDone=function(b_in:boolean){
+  initFormDone.value=b_in};
+watch(startFormFilled,setInitDone);
 if (!SessionStorage.has('amount')) {
   SessionStorage.set('amount', 176000);
 }
