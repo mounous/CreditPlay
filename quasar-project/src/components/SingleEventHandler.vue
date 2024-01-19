@@ -10,20 +10,6 @@
             <q-btn label="Valider" @click="[moveToNextSlide(), validateEvtName(event_.title)]" color="primary"></q-btn>
           </div>
         </q-carousel-slide>
-        <q-carousel-slide name="EvtTypeSlide" class="column no-wrap flex-center" >
-          <SingleEventTypePicker @update-from-type-pick="updateFromPicker($event)"></SingleEventTypePicker>>
-          <div class="row">
-            <div class="q-ma-md">
-              <q-btn label="retour" @click="moveToPrevSlide" color="primary"></q-btn>
-            </div>
-
-            <div class="q-ma-md">
-              <q-btn label="Valider" @click="
-                moveToNextSlide(true)
-                " color="primary"></q-btn>
-            </div>
-          </div>
-        </q-carousel-slide>
         <q-carousel-slide name="EvtDateSlide" class="column no-wrap flex-center">
           <q-select class="dateselector" rounded outlined v-model="event_.year" :options="years_t"
             label="Année de l'évènement" :rules="[(val) => validateEvtYear(val) || 'année invalide']" />
@@ -39,6 +25,20 @@
                   validateEvtYear(event_.year) &&
                   validateEvtMonth(event_.month)
                 )
+                " color="primary"></q-btn>
+            </div>
+          </div>
+        </q-carousel-slide>
+        <q-carousel-slide name="EvtTypeSlide" class="column no-wrap flex-center" >
+          <SingleEventTypePicker @update-from-type-pick="updateFromPicker($event)" :year-of-event="event_.year" :month-of-event="event_.month"></SingleEventTypePicker>>
+          <div class="row">
+            <div class="q-ma-md">
+              <q-btn label="retour" @click="moveToPrevSlide" color="primary"></q-btn>
+            </div>
+
+            <div class="q-ma-md">
+              <q-btn label="Valider" @click="
+                moveToNextSlide(true)
                 " color="primary"></q-btn>
             </div>
           </div>
@@ -93,12 +93,12 @@ var event_ = ref({
 });
 
 const validateEvtName = function (nom) {
-  slide.value = 'EvtTypeSlide';
   if (nom.length == 0) {
     event_.value['title'] = 'Modulation';
   } else {
     event_.value['title'] = nom;
   }
+  moveToNextSlide(true);
   return true;
 };
 

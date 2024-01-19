@@ -125,14 +125,14 @@ const provideMensOptions=(evt_type_in)=>{
   {
     for(let i=1;i<origin_y;i++)
     {
-      toreturn.push(computeMensuality_noSave((origin_y-i),taeg,amount).toString() +'(fin en '+(origin_end_date-i).toString()+')');
+      toreturn.push((Math.round(computeMensuality_noSave((origin_y-i),taeg,amount)*100)/100).toString() +'(fin en '+(origin_end_date-i).toString()+')');
     }
   }
   else if(evt_type_in=='Réduire mensualité')
   {
     for(let i=1;i<origin_y;i++)//max twince the duration
     {
-      toreturn.push(computeMensuality_noSave((origin_y+i),taeg,amount).toString() +'(fin en '+(origin_end_date+i).toString())+')';
+      toreturn.push((Math.round(computeMensuality_noSave((origin_y+i),taeg,amount)*100)/100).toString() +'(fin en '+(origin_end_date+i).toString())+')';
     }
   }
   return toreturn;

@@ -47,7 +47,9 @@
 <script setup>
 import { ref, defineEmits } from 'vue';
 import {provideYearOptions,provideMensOptions} from '../pages/credit_utility.js'
-var event_type = ref('Augmenter mensualité');
+const props = defineProps({yearOfEvent : String,monthOfEvent:String});
+console.log(props);
+var event_type = ref('Sélectionnez une action');
 var new_dur = ref('undefined');
 var new_mens = ref(-1);
 const emit = defineEmits(['update-from-type-pick']);
