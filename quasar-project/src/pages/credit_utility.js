@@ -1,15 +1,12 @@
 import { Quasar, SessionStorage } from 'quasar';
 import { useQuasar } from 'quasar';
 const computeMensuality = () => {
-  //const $q = useQuasar();
   const y_nb = SessionStorage.getItem('years');
   const rate = SessionStorage.getItem('taeg');
   const amount = SessionStorage.getItem('amount');
-  var monthly_rate = (1 + rate / 100) ** (1 / 12) - 1;
+  var monthly_rate = computeMonthly_rate(rate);
+  var mensuality =computeMensuality_noSave(y_nb,rate,amount,monthly_rate);
 
-  var mensuality =
-    (amount * monthly_rate * (1 + monthly_rate) ** (y_nb * 12)) /
-    ((1 + monthly_rate) ** (y_nb * 12) - 1);
   SessionStorage.set('monthly_rate', monthly_rate);
   SessionStorage.set('mensuality', mensuality);
   SessionStorage.set(
@@ -17,6 +14,22 @@ const computeMensuality = () => {
     'Mensuality : ' + (Math.round(mensuality * 100) / 100).toString()
   );
 };
+const computeMonthly_rate=(rate)=>{
+  return (1 + rate / 100) ** (1 / 12) - 1;
+}
+const computeMensuality_noSave=(year_p,taeg_p,amount_p,monthly_rate_p=0)=>{
+  var monthly_rate=0.0;
+  if(monthly_rate_p==0 )
+  {
+    monthly_rate=computeMonthly_rate(taeg_p);
+  }
+  else
+  {
+    monthly_rate=monthly_rate_p;
+  }
+  return (amount_p * monthly_rate * (1 + monthly_rate) ** (year_p * 12)) /
+  ((1 + monthly_rate) ** (year_p * 12) - 1);
+}
 const month_names = [
   'Janv',
   'Fevr',
@@ -78,4 +91,50 @@ const sortEvents = (events_in) => {
   events_in.sort(comp);
   return events_in;
 };
-export { computeMensuality, computeCredit, month_names, sortEvents };
+const provideYearOptions=(evt_type_in)=>{
+  var origin_y =SessionStorage.getItem('years');
+  var origin_full_date=new Date().getFullYear();
+  var origin_end_date=origin_full_date+Number(origin_y);
+  var toreturn=[];
+  if(evt_type_in=='Augmenter la durée')
+  {
+    toreturn.push('1 an ('+(origin_end_date+1).toString()+')');
+    for(let i=2;i<origin_y;i++)//multiply by two the length of credit maximum
+    {
+        toreturn.push(i.toString()+' ans ('+(origin_end_date+i).toString()+')');
+    }
+  }
+  else if(evt_type_in=='Réduire la durée')
+  {
+    toreturn.push('1 an ('+(origin_end_date-1).toString()+')');
+    for(let i=2;i<origin_y;i++)
+    {
+      toreturn.push(i.toString()+' ans ('+(origin_end_date-i).toString()+')');
+    }
+  }
+  return toreturn;
+};
+const provideMensOptions=(evt_type_in)=>{
+  var toreturn =[];
+  var origin_y =SessionStorage.getItem('years');
+  var taeg =SessionStorage.getItem('taeg');
+  var amount=SessionStorage.getItem('amount');
+  var origin_full_date=new Date().getFullYear();
+  var origin_end_date=origin_full_date+Number(origin_y);
+  if(evt_type_in=='Augmenter mensualité')
+  {
+    for(let i=1;i<origin_y;i++)
+    {
+      toreturn.push(computeMensuality_noSave((origin_y-i),taeg,amount).toString() +'(fin en '+(origin_end_date-i).toString()+')');
+    }
+  }
+  else if(evt_type_in=='Réduire mensualité')
+  {
+    for(let i=1;i<origin_y;i++)//max twince the duration
+    {
+      toreturn.push(computeMensuality_noSave((origin_y+i),taeg,amount).toString() +'(fin en '+(origin_end_date+i).toString())+')';
+    }
+  }
+  return toreturn;
+}
+export { computeMensuality, computeCredit, month_names, sortEvents,provideYearOptions ,provideMensOptions};

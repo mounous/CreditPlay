@@ -10,23 +10,8 @@
             <q-btn label="Valider" @click="[moveToNextSlide(), validateEvtName(event_.title)]" color="primary"></q-btn>
           </div>
         </q-carousel-slide>
-        <q-carousel-slide name="EvtTypeSlide" class="column no-wrap flex-center">
-          <q-select rounded outlined v-model="event_.type" :options="optionsType" label="choisir une action" />
-          <div class="row">
-            <div class="q-ma-md">
-              <q-select class="evtTypeVal" rounded outlined v-model="event_.new_mens" :options="options_mens"
-                label="choisir une mensualité" :disable="event_.type != 'Augmenter mensualité' &&
-                  event_.type != 'Réduire mensualité'
-                  " ref="evtTypeValMens"></q-select>
-            </div>
-
-            <div class="q-ma-md">
-              <q-select class="evtTypeVal" rounded outlined v-model="event_.new_dur" :options="options_years"
-                label="choisir une année de fin" :disable="event_.type != 'Augmenter la durée' &&
-                  event_.type != 'Réduire la durée'
-                  " ref="evtTypeValYears"></q-select>
-            </div>
-          </div>
+        <q-carousel-slide name="EvtTypeSlide" class="column no-wrap flex-center" >
+          <SingleEventTypePicker @update-from-type-pick="updateFromPicker($event)"></SingleEventTypePicker>>
           <div class="row">
             <div class="q-ma-md">
               <q-btn label="retour" @click="moveToPrevSlide" color="primary"></q-btn>
@@ -34,9 +19,7 @@
 
             <div class="q-ma-md">
               <q-btn label="Valider" @click="
-                moveToNextSlide(
-                  validateEvtDur(event_) || validateEvtMens(event_)
-                )
+                moveToNextSlide(true)
                 " color="primary"></q-btn>
             </div>
           </div>
@@ -72,6 +55,7 @@
 import { SessionStorage } from 'quasar';
 import { ref ,defineEmits} from 'vue';
 import { month_names, sortEvents } from '../pages/credit_utility.js';
+import SingleEventTypePicker from './SingleEventTypePicker.vue';
 const carouselElement=ref(null);
 const default_month_str = 'choisir un mois ';
 const default_year_str = 'choisir une année';
@@ -96,15 +80,6 @@ yearoption();
 monthoption();
 
 var slide = ref('EvtNameSlide');
-var options_mens = ['900', '1000', '2000'];
-var options_years = ['1', '2', '3', '4'];
-var optionsType = [
-  'Augmenter mensualité',
-  'Réduire mensualité',
-  'Augmenter la durée',
-  'Réduire la durée',
-];
-
 
 var event_ = ref({
   title: '',
@@ -127,26 +102,6 @@ const validateEvtName = function (nom) {
   return true;
 };
 
-const validateEvtMens=function (event_in) {
-  if (
-    (event_in.type == 'Augmenter mensualité' ||
-      event_in.type == 'Réduire mensualité') &&
-    event_in.new_mens != -1.0
-  ) {
-    return true;
-  }
-  return false;
-};
-const validateEvtDur=function(event_in) {
-  if (
-    (event_in.type == 'Augmenter la durée' ||
-      event_in.type == 'Réduire la durée') &&
-    event_in.new_dur != 'undefined'
-  ) {
-    return true;
-  }
-  return false;
-};
 const validateEvtYear=function(val) {
   if (val == default_year_str) {
     return false;
@@ -172,7 +127,18 @@ const saveEventsubmit=function() {
   console.log('saveEventsubmitEnd');
   return events;
 };
-
+const updateFromPicker=function(evtDataFromPicker){
+  event_.value['type']=evtDataFromPicker['type'].value;
+  if(event_.value['type']=='Augmenter mensualité'||event_.value['type']== 'Réduire mensualité')
+  {
+    event_.value['new_mens']=evtDataFromPicker['mens'].value;
+  }
+  else if (event_.value['type']=='Augmenter la durée'||event_.value['type']== 'Réduire la durée')
+  {
+    event_.value['new_dur']=evtDataFromPicker['dur'].value;
+  }
+  console.log(evtDataFromPicker);
+};
 const sendFinish=function () {
 
     emit('save-event', saveEventsubmit());
@@ -191,7 +157,4 @@ const moveToPrevSlide=function() {
   min-width: 180px;
 }
 
-.evtTypeVal {
-  min-width: 180px;
-}
 </style>
