@@ -12,7 +12,7 @@
         </q-carousel-slide>
         <q-carousel-slide name="EvtDateSlide" class="column no-wrap flex-center">
           <q-select class="dateselector" rounded outlined v-model="event_.year" :options="years_t"
-            label="Année de l'évènement" :rules="[(val) => validateEvtYear(val) || 'année invalide']" />
+            label="Année de l'évènement" :rules="[((val) => validateEvtYear(val) || 'année invalide'),monthoption]" />
           <q-select class="dateselector" rounded outlined v-model="event_.month" :options="month_t"
             label="Mois de l'évènement" :rules="[(val) => validateEvtMonth(val) || 'mois invalide']" />
           <div class="row">
@@ -61,26 +61,6 @@ const default_month_str = 'choisir un mois ';
 const default_year_str = 'choisir une année';
 var month_t = ref(['Janvier']);
 var years_t = ref(['2030']);
-const emit = defineEmits(['save-event']);
-const yearoption = function () {
-  var credit_length = SessionStorage.getItem('years');
-  var currentY = new Date().getFullYear();
-  years_t.value = [];
-  for (let year = currentY + 1; year < currentY + credit_length; year++) {
-    years_t.value.push(year.toString());
-  }
-};
-const monthoption = function () {
-  month_t.value = [];
-  for (let m = 0; m < month_names.length; m++) {
-    month_t.value.push(month_names[m]);
-  }
-};
-yearoption();
-monthoption();
-
-var slide = ref('EvtNameSlide');
-
 var event_ = ref({
   title: '',
   type: 'Augmenter mensualité',
@@ -91,6 +71,37 @@ var event_ = ref({
   new_mens: -1.0,
   new_dur: 'undefined',
 });
+const emit = defineEmits(['save-event']);
+const yearoption = function () {
+  var credit_length = SessionStorage.getItem('years');
+  var currentY = Number((SessionStorage.getItem('startingDate')).slice(0,4));
+  console.log(currentY);
+  years_t.value = [];
+  for (let year = currentY ; year < currentY + credit_length; year++) {
+    years_t.value.push(year.toString());
+  }
+};
+const monthoption = function () {
+  month_t.value = [];
+  if((SessionStorage.getItem('startingDate').slice(0,4))!=event_.value.year)
+  {
+    for (let m = 0; m < month_names.length; m++) {
+      month_t.value.push(month_names[m]);
+    }
+  }
+  else
+  {
+    for (let m = Number((SessionStorage.getItem('startingDate')).slice(5,7)); m < month_names.length; m++) {
+      month_t.value.push(month_names[m]);
+    }
+  }
+};
+yearoption();
+monthoption();
+
+var slide = ref('EvtNameSlide');
+
+
 
 const validateEvtName = function (nom) {
   if (nom.length == 0) {
