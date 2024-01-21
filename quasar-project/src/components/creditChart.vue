@@ -21,9 +21,26 @@
 import {  SessionStorage } from 'quasar';
 import VueApexCharts from 'vue3-apexcharts'
 import {ref} from 'vue'
+import { onBeforeMount } from 'vue';
 var mensVal = SessionStorage.getItem('mensuality_str').toString();
 var total_cost_init=SessionStorage.getItem('total_cost_init');
 var init_credit_String = ref('Sans modulation : '+mensVal+' coût total : '+total_cost_init.toString());
+const getEvents=function(){
+  if(SessionStorage.has('events'))
+  {
+    var events=SessionStorage.getItem('events');
+    for(var i=0;i<events.length;i++)
+    {
+      var extractData=[];
+      for(var j=0;j<events[i].amortEvt.length;j++)
+      {
+        extractData.push(events[i].amortEvt[j][1]);
+      }
+      series.push({name:events[i].title,data:extractData});
+    }
+  }
+}
+onBeforeMount(getEvents);
 const getTime = function () {
   const amort_arr = SessionStorage.getItem('amort_monthly');
   var xAxisUp2Date = [];
@@ -48,6 +65,7 @@ const getIntests = function () {
   }
   return seriesInterests;
 };
+
 var series = [
   {
     name: 'Capital restant',
