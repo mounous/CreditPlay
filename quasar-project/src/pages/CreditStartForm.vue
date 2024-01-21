@@ -51,7 +51,7 @@
 import { SessionStorage, useQuasar } from 'quasar';
 import { useRouter } from 'vue-router';
 import { ref } from 'vue';
-import { computeMensuality, computeCredit } from './credit_utility.js';
+import { computeMensuality, computeCredit_init } from './credit_utility.js';
 import { setStartFormFilled } from 'stores/example-store'
 const router = useRouter();
 var amount_l = ref(SessionStorage.getItem('amount'));
@@ -82,7 +82,7 @@ function validateAmount(amount) {
 function onSubmit() {
   saveStartingDate();
   computeMensuality();
-  computeCredit();
+  computeCredit_init();
 
   $q.notify({
     color: 'green-4',

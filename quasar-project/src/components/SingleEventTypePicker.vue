@@ -47,17 +47,19 @@
 <script setup>
 import { ref, defineEmits } from 'vue';
 import {provideYearOptions,provideMensOptions} from '../pages/credit_utility.js'
-const props = defineProps({yearOfEvent : String,monthOfEvent:String});
+const props = defineProps({yearOfEvent : Number,monthOfEvent:Number});
 console.log(props);
 var event_type = ref('Sélectionnez une action');
 var new_dur = ref('undefined');
 var new_mens = ref(-1);
+var end_y = ref(-1);
+var end_m = ref(-1);
 const emit = defineEmits(['update-from-type-pick']);
 var options_mens = ref([]);
 var options_years = ref([]);
 const getopt=function(){
   options_years.value=provideYearOptions(event_type.value);
-  options_mens.value=provideMensOptions(event_type.value);
+  options_mens.value=provideMensOptions(event_type.value,props.yearOfEvent,props.monthOfEvent);
 };
 
 var optionsType = [
@@ -72,6 +74,9 @@ const validateEvtMens = function () {
       event_type.value == 'Réduire mensualité') &&
     new_mens.value != -1.0
   ) {
+    end_y.value = new_mens.value.split('(')[1].split(')')[0];
+    end_m.value =props.monthOfEvent;
+    new_mens.value=Number(new_mens.value.split(' ')[0]);
     new_dur.value = 'undefined';
     return true;
   }
@@ -83,6 +88,8 @@ const validateEvtDur = function () {
       event_type.value == 'Réduire la durée') &&
     new_dur.value != 'undefined'
   ) {
+    end_y.value = new_dur.value.split('(')[1].split(')')[0];
+    end_m.value =props.monthOfEvent;
     new_mens.value = -1;
     return true;
   }
@@ -91,7 +98,7 @@ const validateEvtDur = function () {
 
 const sendPicked = function (bmove) {
   if (bmove) {
-    emit('update-from-type-pick', { type:event_type, mens:new_mens, dur:new_dur });
+    emit('update-from-type-pick', { type:event_type, mens:new_mens, dur:new_dur,end_year:end_y,end_month:end_m });
   }
 };
 </script>

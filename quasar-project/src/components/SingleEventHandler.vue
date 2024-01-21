@@ -11,9 +11,9 @@
           </div>
         </q-carousel-slide>
         <q-carousel-slide name="EvtDateSlide" class="column no-wrap flex-center">
-          <q-select class="dateselector" rounded outlined v-model="event_.year" :options="years_t"
+          <q-select class="dateselector" rounded outlined v-model="event_.year_str" :options="years_t"
             label="Année de l'évènement" :rules="[((val) => validateEvtYear(val) || 'année invalide'),monthoption]" />
-          <q-select class="dateselector" rounded outlined v-model="event_.month" :options="month_t"
+          <q-select class="dateselector" rounded outlined v-model="event_.month_str" :options="month_t"
             label="Mois de l'évènement" :rules="[(val) => validateEvtMonth(val) || 'mois invalide']" />
           <div class="row">
             <div class="q-ma-md">
@@ -22,8 +22,8 @@
             <div class="q-ma-md">
               <q-btn label="Valider" @click="
                 moveToNextSlide(
-                  validateEvtYear(event_.year) &&
-                  validateEvtMonth(event_.month)
+                  validateEvtYear(event_.year_str) &&
+                  validateEvtMonth(event_.month_str)
                 )
                 " color="primary"></q-btn>
             </div>
@@ -54,7 +54,7 @@
 <script setup>
 import { SessionStorage } from 'quasar';
 import { ref ,defineEmits} from 'vue';
-import { month_names, sortEvents } from '../pages/credit_utility.js';
+import { month_names, apply_events_chain,sortEvents,getMonthNbr } from '../pages/credit_utility.js';
 import SingleEventTypePicker from './SingleEventTypePicker.vue';
 const carouselElement=ref(null);
 const default_month_str = 'choisir un mois ';
@@ -64,12 +64,17 @@ var years_t = ref(['2030']);
 var event_ = ref({
   title: '',
   type: 'Augmenter mensualité',
-  year: default_year_str,
-  month: default_month_str,
+  year_str: default_year_str,
+  month_str: default_month_str,
+  year:2020,
+  month:1,
   id: 1,
   selected: true,
   new_mens: -1.0,
   new_dur: 'undefined',
+  end_year:0,
+  end_month:0,
+  amortEvt: [],
 });
 const emit = defineEmits(['save-event']);
 const yearoption = function () {
@@ -117,12 +122,14 @@ const validateEvtYear=function(val) {
   if (val == default_year_str) {
     return false;
   }
+  event_.value['year']=Number(event_.value.year_str);
   return true;
 };
 const validateEvtMonth=function(val) {
   if (val == default_month_str) {
     return false;
   }
+  event_.value['month']=getMonthNbr(event_.value.month_str);
   return true;
 };
 const saveEventsubmit=function() {
@@ -135,11 +142,14 @@ const saveEventsubmit=function() {
     events.push(event_.value);
   }
   SessionStorage.set('events', sortEvents(events));
+  apply_events_chain();
   console.log('saveEventsubmitEnd');
   return events;
 };
 const updateFromPicker=function(evtDataFromPicker){
   event_.value['type']=evtDataFromPicker['type'].value;
+  event_.value['end_year']=evtDataFromPicker['end_year'].value;
+  event_.value['end_month']=evtDataFromPicker['end_month'].value;
   if(event_.value['type']=='Augmenter mensualité'||event_.value['type']== 'Réduire mensualité')
   {
     event_.value['new_mens']=evtDataFromPicker['mens'].value;

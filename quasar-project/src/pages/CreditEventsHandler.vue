@@ -39,14 +39,7 @@ import SingleEventHandler from '../components/SingleEventHandler.vue';
 import { useRouter } from 'vue-router';
 const router = useRouter();
 var events = [
-    {
-      title: '',
-      type: '',
-      year: '',
-      month: '',
-      id: 1,
-      selected: false,
-    },
+
   ];
 if (SessionStorage.has('events')) {
   var events = SessionStorage.getItem('events');
