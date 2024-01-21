@@ -69,7 +69,7 @@ const computeAmort=(starting_year,starting_month,amount,nb_mens,monthly_rate,men
   var interests_paid = 0;
   var amort_monthly = [];
   var mensuality_count = 1;
-  amort_monthly.push([month_names[curentMonth-1] + '-' + currentYear, amount, 0]);//start situation
+  //amort_monthly.push([month_names[curentMonth-1] + '-' + currentYear, amount, 0]);//start situation
   curentMonth++;
   console.log(amort_monthly[amort_monthly.length-1]);
   while (mensuality_count <= nb_mens) {
@@ -171,12 +171,15 @@ const apply_events_chain=()=>{
           events[i].amortEvt.push(amort_init[j]);
           j++;
         }
+        //extract total interests paid just before the modulation
+        const interests_paid_before_mod=amort_init[j-1][2];
         var specific_amort=computeAmort(events[i].year,events[i].month,amort_init[nb_mens_spent][1],nb_mens_to_pay,monthly_rate,mens);
-        var j=0;
-        while(j<specific_amort[0].length)
+        var k=0;//do not consider init
+        while(k<specific_amort[0].length-1)
         {
-          events[i].amortEvt.push(specific_amort[0][j]);
-          j++;
+          events[i].amortEvt.push(specific_amort[0][k]);
+          events[i].amortEvt[k+j][2]+=interests_paid_before_mod;
+          k++;
         }
       }
       else//capital left to pay based on previous event
