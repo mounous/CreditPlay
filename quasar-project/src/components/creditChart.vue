@@ -31,12 +31,16 @@ const getEvents=function(){
     var events=SessionStorage.getItem('events');
     for(var i=0;i<events.length;i++)
     {
-      var extractData=[];
+      var extractData_capital=[];
+      var extractData_interests=[];
       for(var j=0;j<events[i].amortEvt.length;j++)
       {
-        extractData.push(events[i].amortEvt[j][1]);
+        extractData_capital.push(events[i].amortEvt[j][1]);
+        extractData_interests.push(events[i].amortEvt[j][2]);
       }
-      series.push({name:events[i].title,data:extractData});
+      series.push({name:events[i].title,data:extractData_capital});
+      series.push({name:'interets ('+events[i].title+')',data:extractData_interests});
+
     }
   }
 }
