@@ -69,8 +69,6 @@ const computeAmort=(starting_year,starting_month,amount,nb_mens,monthly_rate,men
   var interests_paid = 0;
   var amort_monthly = [];
   var mensuality_count = 1;
-  //amort_monthly.push([month_names[curentMonth-1] + '-' + currentYear, amount, 0]);//start situation
-  curentMonth++;
   console.log(amort_monthly[amort_monthly.length-1]);
   while (mensuality_count <= nb_mens) {
     interests_to_pay = monthly_rate * capital_to_pay;
@@ -153,6 +151,7 @@ const apply_events_chain=()=>{
     var events=sortEvents(SessionStorage.getItem('events'));
     for(var i = 0; i< events.length;i++)
     {
+      events[i].amortEvt=[];
       if(i==0)//first event : capital left to pay based on int simu
       {
         nb_mens_spent=get_nb_mens_diff(Number(SessionStorage.getItem('startingDate').slice(0,4)),Number(SessionStorage.getItem('startingDate').slice(5,7)),events[i].year,events[i].month);
@@ -174,7 +173,7 @@ const apply_events_chain=()=>{
         //extract total interests paid just before the modulation
         const interests_paid_before_mod=amort_init[j-1][2];
         var specific_amort=computeAmort(events[i].year,events[i].month,amort_init[nb_mens_spent][1],nb_mens_to_pay,monthly_rate,mens);
-        var k=0;//do not consider init
+        var k=0;
         while(k<specific_amort[0].length-1)
         {
           events[i].amortEvt.push(specific_amort[0][k]);
@@ -184,7 +183,32 @@ const apply_events_chain=()=>{
       }
       else//capital left to pay based on previous event
       {
-          console.log('TOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOODOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO');
+        nb_mens_spent=get_nb_mens_diff(Number(SessionStorage.getItem('startingDate').slice(0,4)),Number(SessionStorage.getItem('startingDate').slice(5,7)),events[i].year,events[i].month);
+        nb_mens_to_pay=get_nb_mens_diff(events[i].year,events[i].month,events[i].end_year,events[i].end_month);
+        if(events[i].type=='Augmenter mensualité' || events[i].type=='Réduire mensualité')
+        {
+          mens=events[i].new_mens;
+        }
+        else
+        {
+          mens=computeMensuality_noSave_Months(nb_mens_to_pay,taeg,events[i-1].amortEvt[nb_mens_spent][1],monthly_rate);
+        }
+        var j=0;
+        while(j<events[i-1].amortEvt.length && events[i-1].amortEvt[j][0]!=(events[i].month_str+'-'+events[i].year_str))
+        {
+          events[i].amortEvt.push(events[i-1].amortEvt[j]);
+          j++;
+        }
+        //extract total interests paid just before the modulation
+        const interests_paid_before_mod=events[i-1].amortEvt[j-1][2];
+        var specific_amort=computeAmort(events[i].year,events[i].month,events[i-1].amortEvt[nb_mens_spent][1],nb_mens_to_pay,monthly_rate,mens);
+        var k=0;
+        while(k<specific_amort[0].length-1)
+        {
+          events[i].amortEvt.push(specific_amort[0][k]);
+          events[i].amortEvt[k+j][2]+=interests_paid_before_mod;
+          k++;
+        }
       }
     }
     SessionStorage.set('events',events);
@@ -192,8 +216,17 @@ const apply_events_chain=()=>{
 }
 const provideYearOptions=(evt_type_in)=>{
   var origin_y =SessionStorage.getItem('years');
-  var origin_full_date=Number(SessionStorage.getItem('startingDate').slice(0,4));
-  var origin_end_date=origin_full_date+Number(origin_y);
+  if(!SessionStorage.has('events'))
+  {
+    var origin_full_date=Number(SessionStorage.getItem('startingDate').slice(0,4));
+    var origin_end_date=origin_full_date+Number(origin_y);
+  }
+  else
+  {
+    var events=SessionStorage.getItem('events');
+    var origin_end_date=events[events.length-1].end_year;
+
+  }
   var toreturn=[];
   if(evt_type_in=='Augmenter la durée')
   {
@@ -216,25 +249,25 @@ const provideYearOptions=(evt_type_in)=>{
 //returns the last event end date and amort at input date if events were saved
 //or the origin end date and amort at the input date if no events were saved
 const returnBaseData=(evt_year_in_fmt,evt_month_in_fmt)=>{
+  var origin_full_year=Number(SessionStorage.getItem('startingDate').slice(0,4));
+  var origin_start_month=Number(SessionStorage.getItem('startingDate').slice(5,7));//load for an integer number of year : start month=end_month
   if(SessionStorage.has('events'))
   {
     //retreive and sort events
-    events=sortEvents(SessionStorage.getItem('events'));
-    event_=events[events.length-1];
+    var events=sortEvents(SessionStorage.getItem('events'));
+    var event_=events[events.length-1];
     //get the capital left to pay at date
-    var index=get_nb_mens_diff(event_.year,event_.month,evt_year_in_fmt,evt_month_in_fmt);
+    var index=get_nb_mens_diff(origin_full_year,origin_start_month,evt_year_in_fmt,evt_month_in_fmt);
     if(index==0)
     {
       return {end_year:0,end_month:0,capital_left:0};
     }
-    return {end_year:event_.end_year,end_month:event_.end_month,capital_left:amortEvt[index][1]};
+    return {end_year:event_.end_year,end_month:event_.end_month,capital_left:event_.amortEvt[index][1]};
   }
   else
   {
     var origin_y =SessionStorage.getItem('years');
     var amort_init=SessionStorage.getItem('amort_monthly');
-    var origin_full_year=Number(SessionStorage.getItem('startingDate').slice(0,4));
-    var origin_start_month=Number(SessionStorage.getItem('startingDate').slice(5,7));//load for an integer number of year : start month=end_month
     var origin_end_year=origin_full_year+Number(origin_y);
     var index=get_nb_mens_diff(origin_full_year,origin_start_month,evt_year_in_fmt,evt_month_in_fmt);
     return {end_year:origin_end_year,end_month:origin_start_month,capital_left:amort_init[index][1]};
