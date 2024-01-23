@@ -172,7 +172,7 @@ const apply_events_chain=()=>{
         }
         //extract total interests paid just before the modulation
         const interests_paid_before_mod=amort_init[j-1][2];
-        var specific_amort=computeAmort(events[i].year,events[i].month,amort_init[nb_mens_spent][1],nb_mens_to_pay,monthly_rate,mens);
+        var specific_amort=computeAmort(events[i].year,events[i].month,amort_init[nb_mens_spent-1][1],nb_mens_to_pay,monthly_rate,mens);
         var k=0;
         while(k<specific_amort[0].length-1)
         {
@@ -201,7 +201,7 @@ const apply_events_chain=()=>{
         }
         //extract total interests paid just before the modulation
         const interests_paid_before_mod=events[i-1].amortEvt[j-1][2];
-        var specific_amort=computeAmort(events[i].year,events[i].month,events[i-1].amortEvt[nb_mens_spent][1],nb_mens_to_pay,monthly_rate,mens);
+        var specific_amort=computeAmort(events[i].year,events[i].month,events[i-1].amortEvt[nb_mens_spent-1][1],nb_mens_to_pay,monthly_rate,mens);
         var k=0;
         while(k<specific_amort[0].length-1)
         {
@@ -262,7 +262,7 @@ const returnBaseData=(evt_year_in_fmt,evt_month_in_fmt)=>{
     {
       return {end_year:0,end_month:0,capital_left:0};
     }
-    return {end_year:event_.end_year,end_month:event_.end_month,capital_left:event_.amortEvt[index][1]};
+    return {end_year:event_.end_year,end_month:event_.end_month,capital_left:event_.amortEvt[index-1][1]};
   }
   else
   {
@@ -270,7 +270,7 @@ const returnBaseData=(evt_year_in_fmt,evt_month_in_fmt)=>{
     var amort_init=SessionStorage.getItem('amort_monthly');
     var origin_end_year=origin_full_year+Number(origin_y);
     var index=get_nb_mens_diff(origin_full_year,origin_start_month,evt_year_in_fmt,evt_month_in_fmt);
-    return {end_year:origin_end_year,end_month:origin_start_month,capital_left:amort_init[index][1]};
+    return {end_year:origin_end_year,end_month:origin_start_month,capital_left:amort_init[index-1][1]};
   }
 }
 const provideMensOptions=(evt_type_in,evt_year_in,evt_month_in)=>{
