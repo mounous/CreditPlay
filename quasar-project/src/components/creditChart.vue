@@ -22,6 +22,7 @@ import {  SessionStorage } from 'quasar';
 import VueApexCharts from 'vue3-apexcharts'
 import {ref} from 'vue'
 import { onBeforeMount } from 'vue';
+import {getChartXAxis} from '../pages/credit_utility'
 var mensVal = SessionStorage.getItem('mensuality_str').toString();
 var total_cost_init=SessionStorage.getItem('total_cost_init');
 var init_credit_String = ref('Sans modulation : '+mensVal+' coût total : '+total_cost_init.toString());
@@ -35,8 +36,8 @@ const getEvents=function(){
       var extractData_interests=[];
       for(var j=0;j<events[i].amortEvt.length;j++)
       {
-        extractData_capital.push(events[i].amortEvt[j][1]);
-        extractData_interests.push(events[i].amortEvt[j][2]);
+        extractData_capital.push(Math.round(events[i].amortEvt[j][1]*100)/100);
+        extractData_interests.push(Math.round(events[i].amortEvt[j][2]*100)/100);
       }
       series.push({name:events[i].title,data:extractData_capital});
       series.push({name:'interets ('+events[i].title+')',data:extractData_interests});
@@ -46,7 +47,7 @@ const getEvents=function(){
 }
 onBeforeMount(getEvents);
 const getTime = function () {
-  const amort_arr = SessionStorage.getItem('amort_monthly');
+  const amort_arr = getChartXAxis();
   var xAxisUp2Date = [];
   for (var i = 0; i < amort_arr.length; i++) {
     xAxisUp2Date.push(amort_arr[i][0]);

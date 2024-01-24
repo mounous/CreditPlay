@@ -296,9 +296,41 @@ const provideMensOptions=(evt_type_in,evt_year_in,evt_month_in)=>{
     {
       mensualities_to_end=get_nb_mens_diff(evt_year_in,evt_month_in,ret.end_year+i,ret.end_month);
       console.log(mensualities_to_end);
-      toreturn.push((Math.round(computeMensuality_noSave_Months(mensualities_to_end,taeg,ret.capital_left)*100)/100).toString() +' ('+(ret.end_year+i).toString())+')';
+      toreturn.push((Math.round(computeMensuality_noSave_Months(mensualities_to_end,taeg,ret.capital_left)*100)/100).toString() +' ('+(ret.end_year+i).toString()+')');
     }
   }
   return toreturn;
 }
-export { computeMensuality, computeCredit_init, month_names, sortEvents,provideYearOptions ,provideMensOptions,apply_events_chain,getMonthNbr};
+const getChartXAxis=()=>{
+  var amort_monthly=SessionStorage.getItem('amort_monthly');
+  if(SessionStorage.has('events'))
+  {
+    var events=SessionStorage.getItem('events')
+    //find longest event
+    var current=0;
+    var latest=0;
+    var max=0;
+    for(var i=0;i<events.length;i++)
+    {
+      current=events[i].amortEvt.length;
+      if(current>latest)
+      {
+        latest=current;
+        max=i;
+      }
+    }
+    if(latest<amort_monthly.length)
+    {
+      return amort_monthly;
+    }
+    else
+    {
+      return events[max].amortEvt;
+    }
+  }
+  else
+  {
+    return amort_monthly;
+  }
+}
+export { computeMensuality, computeCredit_init, month_names, sortEvents,provideYearOptions ,provideMensOptions,apply_events_chain,getMonthNbr,getChartXAxis};

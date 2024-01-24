@@ -74,7 +74,7 @@ const validateEvtMens = function () {
       event_type.value == 'Réduire mensualité') &&
     new_mens.value != -1.0
   ) {
-    end_y.value = new_mens.value.split('(')[1].split(')')[0];
+    end_y.value = Number(new_mens.value.split('(')[1].split(')')[0]);
     end_m.value =props.monthOfEvent;
     new_mens.value=Number(new_mens.value.split(' ')[0]);
     new_dur.value = 'undefined';
@@ -88,7 +88,7 @@ const validateEvtDur = function () {
       event_type.value == 'Réduire la durée') &&
     new_dur.value != 'undefined'
   ) {
-    end_y.value = new_dur.value.split('(')[1].split(')')[0];
+    end_y.value = Number(new_dur.value.split('(')[1].split(')')[0]);
     end_m.value =props.monthOfEvent;
     new_mens.value = -1;
     return true;
