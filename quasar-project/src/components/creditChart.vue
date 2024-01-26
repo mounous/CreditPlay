@@ -1,5 +1,5 @@
 <template>
-  <div class="q-pa-md q-gutter-sm">
+  <div>
     <q-card
       class="my-card text-white"
       style="background: radial-gradient(circle, #35a2ff 0%, #014a88 100%)"
@@ -10,7 +10,8 @@
     </q-card>
     <VueApexCharts
       type="line"
-      height="350"
+      height="100%"
+      width="100%"
       :options="chartOptions"
       :series="series"
     ></VueApexCharts>
@@ -83,7 +84,8 @@ var series = [
 ];
 var chartOptions = {
   chart: {
-    height: 350,
+    height: '100%',
+    width: '100%',
     type: 'line',
     zoom: {
       enabled: true,
