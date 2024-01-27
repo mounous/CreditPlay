@@ -4,8 +4,6 @@
         <q-tabs
         v-model="tab"
         class="bg-primary text-white shadow-2 gutter"
-        :outside-arrows="false"
-        :mobile-arrows="false"
       >
         <q-route-tab name="start" icon="feed" to="/" />
         <q-route-tab name="events" icon="toc" to="/events" :disable="initFormDone==false"/>
