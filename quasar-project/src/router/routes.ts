@@ -12,6 +12,7 @@ const routes: RouteRecordRaw[] = [
         component: () => import('pages/CreditEventsHandler.vue'),
       },
       { path: '/summary', component: () => import('pages/SummaryPage.vue') },
+      { path: '/lineChart', component: () => import('pages/lineChartPage.vue') },
     ],
   },
 

@@ -8,7 +8,7 @@
         <q-route-tab name="start" label="crédit" nocaps icon="feed" to="/" />
         <q-route-tab name="events" label="Modulation" icon="toc" to="/events" :disable="initFormDone==false"/>
         <q-route-tab name="summary" label="résumé" icon="money" to="/summary" :disable="initFormDone==false"/>
-        <q-route-tab name="chart" label="graphique" icon="bar_chart" to="/summary" :disable="initFormDone==false"/>
+        <q-route-tab name="chart" label="graphique" icon="bar_chart" to="/lineChart" :disable="initFormDone==false"/>
         <q-route-tab name="help" label="aide" icon="help" to="/help"/>
 
       </q-tabs>

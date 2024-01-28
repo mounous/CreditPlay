@@ -2,14 +2,14 @@
   <q-page>
     <div class="full-height column justify-arround content-center verticalFlex">
       <div class="col">
-        <q-btn-toggle class="q-ma-md" name="has_started_button" v-model="has_started" unelevated rounded dense size="14px"
+        <q-btn-toggle class="q-ma-md"  name="has_started_button" v-model="has_started" unelevated rounded dense size="14px"
           @click="switchNavConstraint" glossy color=black :options="[
             { label: 'Crédit en cours', value: 'yes' },
             { label: 'Simulation', value: 'no' }
           ]" />
       </div>
       <div class="col">
-        <q-input label="Date de signature" filled v-model="date" mask="date" :rules="['date']">
+        <q-input label="Date de signature" bg-color="blue-grey-8" filled v-model="date" mask="date" :rules="['date']">
           <template v-slot:append>
             <q-icon name="event" class="cursor-pointer">
               <q-popup-proxy cover transition-show="scale" transition-hide="scale">
@@ -26,17 +26,17 @@
         </q-input>
       </div>
       <div class="col">
-        <q-input filled type="number" v-model="amount_l" label="Somme empruntée" hint="pas d'unité, pas de virgule"
+        <q-input filled type="number" bg-color="blue-grey-8" v-model="amount_l" label="Somme empruntée" hint="pas d'unité, pas de virgule"
           lazy-rules :rules="[
             (val) => validateAmount(val) || 'Merci de renseigner la somme',
           ]" />
       </div>
       <div class="col">
-        <q-input filled label="TAEG" type="number" step="any" v-model="taeg_l" lazy-rules
+        <q-input filled label="TAEG" bg-color="blue-grey-8" type="number" step="any" v-model="taeg_l" lazy-rules
           :rules="[(val) => validateTAEG(val) || 'Ce TAEG semble irréel']" />
       </div>
       <div class="col">
-        <q-input filled type="number" v-model="years_l" label="Durée d'emprunt" lazy-rules :rules="[
+        <q-input filled type="number" bg-color="blue-grey-8" v-model="years_l" label="Durée d'emprunt" lazy-rules :rules="[
           (val) =>
             validateYears(val) || 'Merci de renseigner la durée en année',
         ]" />
@@ -72,7 +72,6 @@ var taeg_l = ref(SessionStorage.getItem('taeg'));
 var has_started = ref('CHOOSE');
 var minNav = ref('0000/01');
 var maxNav = ref('0000/01');
-
 var date = ref(new Date().toISOString().slice(0, 10).split('-').join('/'));
 
 const $q = useQuasar();
@@ -98,15 +97,8 @@ function onSubmit() {
   saveStartingDate();
   computeMensuality();
   computeCredit_init();
-
-  $q.notify({
-    color: 'green-4',
-    textColor: 'white',
-    icon: 'cloud_done',
-    message: 'Submitted',
-  });
   setStartFormFilled(true);
-  router.push('/summary');
+  router.push('/lineChart');
 };
 
 var formatCalendar = {

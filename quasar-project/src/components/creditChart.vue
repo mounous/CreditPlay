@@ -1,32 +1,21 @@
 <template>
-  <div class="q-ma-sm column flex center">
-    <q-card
-      class="my-card text-white"
-      style="background: radial-gradient(circle, #35a2ff 0%, #014a88 100%)"
-    >
-      <q-card-section class="q-pt-none">
-        {{ init_credit_String }}
-      </q-card-section>
-    </q-card>
+  <q-page>
     <VueApexCharts
       type="line"
-      height="100%"
-      width="100%"
+      height=100%
+      width=100%
       :options="chartOptions"
       :series="series"
     ></VueApexCharts>
-  </div>
+  </q-page>
+
 </template>
 
 <script setup>
 import {  SessionStorage } from 'quasar';
 import VueApexCharts from 'vue3-apexcharts'
-import {ref} from 'vue'
 import { onBeforeMount } from 'vue';
 import {getChartXAxis} from '../pages/credit_utility'
-var mensVal = SessionStorage.getItem('mensuality_str').toString();
-var total_cost_init=SessionStorage.getItem('total_cost_init');
-var init_credit_String = ref('Sans modulation : '+mensVal+' coût total : '+total_cost_init.toString());
 const getEvents=function(){
   if(SessionStorage.has('events'))
   {
@@ -115,5 +104,8 @@ var chartOptions = {
     },
   },
 };
-
+//https://apexcharts.com/docs/annotations/
+//https://apexcharts.com/docs/annotations/
+//https://apexcharts.com/docs/annotations/
+//https://apexcharts.com/docs/annotations/
 </script>
