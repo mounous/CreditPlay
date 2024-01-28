@@ -13,7 +13,7 @@
         @save-event="[(addeventactive = false), UpdateEvents($event)]"
       />
     </q-dialog>
-    <q-list class="bg-white" separator bordered>
+    <q-list class="bg-primary" separator bordered>
       <q-item
         v-for="event in events"
         :key="event.title"

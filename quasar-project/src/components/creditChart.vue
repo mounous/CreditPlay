@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="q-ma-sm column flex center">
     <q-card
       class="my-card text-white"
       style="background: radial-gradient(circle, #35a2ff 0%, #014a88 100%)"

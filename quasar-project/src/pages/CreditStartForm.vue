@@ -1,18 +1,23 @@
 <template>
-  <q-page class="bg-white column">
-    <div>
-        <q-btn-toggle class="q-ma-md" name="has_started_button" v-model="has_started" push
-          @click="switchNavConstraint" glossy toggle-color="blue" :options="[
+  <q-page class="column" >
+    <div class="q-ma-sm column flex center">
+
+        <q-btn-toggle class="q-ma-md" name="has_started_button" v-model="has_started"  unelevated rounded dense size="14px"
+          @click="switchNavConstraint" glossy toggle-color="blue" color=secondary :options="[
             { label: 'Crédit en cours', value: 'yes' },
             { label: 'Simulation', value: 'no' }
           ]" />
-      </div>
-    <div class="q-pa-md" style="max-width: 300px">
-        <q-input label="Date de signature" filled v-model="date" mask="date" :rules="['date']">
+
+
+
+
+    <q-form  @submit="onSubmit" @reset="onReset"  class="q-gutter-md flex center column"  >
+
+      <q-input label="Date de signature" filled v-model="date" mask="date" :rules="['date']">
           <template v-slot:append>
             <q-icon name="event" class="cursor-pointer" >
               <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                <q-date dark v-model="date" :locale="formatCalendar" :navigation-min-year-month="minNav"
+                <q-date dark v-model="date" :locale="formatCalendar" :navigation-min-year-month="minNav" width="200px"
       :navigation-max-year-month="maxNav" :disable="has_started!='yes' && has_started!='no'" @update:model-value="saveStartingDate">
                   <div class="row items-center justify-end">
                     <q-btn v-close-popup label="Close" color="primary" flat />
@@ -22,9 +27,6 @@
             </q-icon>
           </template>
         </q-input>
-      </div>
-
-    <q-form  @submit="onSubmit" @reset="onReset" class="q-gutter-md">
 
       <q-input filled type="number" v-model="amount_l" label="Somme empruntée" hint="pas d'unité, pas de virgule"
         lazy-rules :rules="[
@@ -40,12 +42,16 @@
       ]" />
 
       <div>
-        <q-btn label="Submit" type="submit" color="primary" />
-        <q-btn label="Reset" type="reset" color="primary" flat class="q-ml-sm" />
+        <q-btn label="Valider" type="submit" color="secondary" />
       </div>
     </q-form>
+  </div>
   </q-page>
 </template>
+
+
+
+
 
 <script setup>
 import { SessionStorage, useQuasar } from 'quasar';
