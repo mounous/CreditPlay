@@ -2,8 +2,8 @@
   <q-page class="column" >
     <div class="q-ma-sm column flex center">
 
-        <q-btn-toggle class="q-ma-md" name="has_started_button" v-model="has_started"  unelevated rounded dense size="14px"
-          @click="switchNavConstraint" glossy toggle-color="blue" color=secondary :options="[
+        <q-btn-toggle class="q-ma-md toggleBtn" name="has_started_button" v-model="has_started"  unelevated rounded dense size="14px"
+          @click="switchNavConstraint" glossy  color=black :options="[
             { label: 'Crédit en cours', value: 'yes' },
             { label: 'Simulation', value: 'no' }
           ]" />
@@ -49,7 +49,11 @@
   </q-page>
 </template>
 
-
+<style lang="scss">
+.toggleBtn{
+  toggle-color:black;
+}
+</style>
 
 
 

@@ -54,6 +54,6 @@ if (!SessionStorage.has('event_nbr')) {
   //background: #6b6445 ;
 }
 .footer-bg{
-  background: #6b6445;
+  background: secondary;
 }
 </style>

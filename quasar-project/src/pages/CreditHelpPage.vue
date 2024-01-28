@@ -1,5 +1,5 @@
 <template>
-  <q-page class="q-pa-lg bg-white">
+  <q-page class="q-pa-lg">
     <h5 class="q-mt-none">Help</h5>
     <p>
       First click on the "Situation initiale" button and fill all required
