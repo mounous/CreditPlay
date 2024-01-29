@@ -60,7 +60,7 @@
 
 
 <script setup>
-import { SessionStorage, useQuasar } from 'quasar';
+import { SessionStorage } from 'quasar';
 import { useRouter } from 'vue-router';
 import { ref } from 'vue';
 import { computeMensuality, computeCredit_init } from './credit_utility.js';
@@ -74,7 +74,6 @@ var minNav = ref('0000/01');
 var maxNav = ref('0000/01');
 var date = ref(new Date().toISOString().slice(0, 10).split('-').join('/'));
 
-const $q = useQuasar();
 function validateTAEG(taeg) {
   if (taeg < 0) {
     return false;

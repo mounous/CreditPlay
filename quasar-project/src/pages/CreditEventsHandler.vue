@@ -80,7 +80,6 @@ const deleteEvents=function(){
       {
         SessionStorage.clear('events');
       }
-      this.$forceUpdate();
     }
   }
 }

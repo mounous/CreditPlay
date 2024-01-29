@@ -16,6 +16,7 @@ import {  SessionStorage } from 'quasar';
 import VueApexCharts from 'vue3-apexcharts'
 import { onBeforeMount } from 'vue';
 import {getChartXAxis} from '../pages/credit_utility'
+import{ getFormatedCategories} from '../pages/chart_utility'
 const getEvents=function(){
   if(SessionStorage.has('events'))
   {
@@ -87,25 +88,51 @@ var chartOptions = {
     curve: 'straight',
   },
   title: {
-    text: 'Simulation',
-    align: 'left',
-  },
-  grid: {
-    row: {
-      colors: ['#f3f3f3', 'transparent'], // takes an array which will be repeated on columns
-      opacity: 0.5,
+    style:{
+      color:'#b4c8d6',
     },
+    text: 'Capital et interêts',
+    align: 'center',
   },
+
   xaxis: {
     categories: getTime(),
     hideOverlappingLabels: true,
     style: {
       fontSize: '75px',
     },
+    //stepSize:40,
+    overwriteCategories:getFormatedCategories(getTime(),10),
+    labels:{
+      style:{
+        fontSize:'13px',
+        //colors :'white',
+        colors:'#b4c8d6',
+        fontWeight:350,
+      },
+      offsetY:20,
+    },
+    axisTicks: {
+          show: false,
+      },
   },
+  yaxis:{
+    labels:{
+      formatter:function(val,index)
+      {
+        return Math.round(val);
+      },
+        style: {
+              colors: '#b4c8d6',
+              fontSize: '13px',
+              fontWeight: 350,
+          },
+    },
+  }
 };
 //https://apexcharts.com/docs/annotations/
 //https://apexcharts.com/docs/annotations/
 //https://apexcharts.com/docs/annotations/
 //https://apexcharts.com/docs/annotations/
+
 </script>

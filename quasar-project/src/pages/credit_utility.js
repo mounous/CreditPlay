@@ -1,5 +1,5 @@
-import { Quasar, SessionStorage } from 'quasar';
-import { useQuasar } from 'quasar';
+import { SessionStorage } from 'quasar';
+
 const computeMensuality = () => {
   const y_nb = SessionStorage.getItem('years');
   const rate = SessionStorage.getItem('taeg');
