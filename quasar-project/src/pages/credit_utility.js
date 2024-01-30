@@ -4,35 +4,24 @@ const computeMensuality = () => {
   const y_nb = SessionStorage.getItem('years');
   const rate = SessionStorage.getItem('taeg');
   const amount = SessionStorage.getItem('amount');
-  var monthly_rate = computeMonthly_rate(rate);
-  var mensuality =computeMensuality_noSave(y_nb,rate,amount,monthly_rate);
-
-  SessionStorage.set('monthly_rate', monthly_rate);
+  var mensuality =computeMensuality_noSave(y_nb,rate,amount);
   SessionStorage.set('mensuality', mensuality);
   SessionStorage.set(
     'mensuality_str',
-    'Mensuality : ' + (Math.round(mensuality * 100) / 100).toString()
+    'Mensuality : ' + mensuality.toString()
   );
 };
 const computeMonthly_rate=(rate)=>{
-  return (1 + rate / 100) ** (1 / 12) - 1;
+  return rate/(100.00*12.00);
 }
-
-const computeMensuality_noSave_Months=(nb_mens,taeg_p,amount_p,monthly_rate_p=0)=>{
-  var monthly_rate=0.0;
-  if(monthly_rate_p==0 )
-  {
-    monthly_rate=computeMonthly_rate(taeg_p);
-  }
-  else
-  {
-    monthly_rate=monthly_rate_p;
-  }
-  return (amount_p * monthly_rate * (1 + monthly_rate) ** (nb_mens)) /
-  ((1 + monthly_rate) ** (nb_mens) - 1);
+//https://www.angelotti.fr/infos-pratiques/blog/comment-calculer-les-mensualites-d-un-pret-immobilier
+const computeMensuality_noSave_Months=(nb_mens,taeg_p,amount_p)=>{
+  taeg_p=taeg_p/100.00;
+  var mensuality= ((amount_p * taeg_p)/12)/(1-(1+(taeg_p/12))**(-nb_mens));
+  return Math.round(mensuality * 100) / 100;
 }
-const computeMensuality_noSave=(year_p,taeg_p,amount_p,monthly_rate_p=0)=>{
-  return computeMensuality_noSave_Months(year_p*12,taeg_p,amount_p,monthly_rate_p);
+const computeMensuality_noSave=(year_p,taeg_p,amount_p)=>{
+  return computeMensuality_noSave_Months(year_p*12,taeg_p,amount_p);
 }
 const month_names = [
   'Janvier',
@@ -60,7 +49,7 @@ const getMonthNbr=(evt_month_in)=>{
   }
 }
 
-const computeAmort=(starting_year,starting_month,amount,nb_mens,monthly_rate,mens)=>{
+const computeAmort=(starting_year,starting_month,amount,nb_mens,mens)=>{
   var currentYear = starting_year;
   var curentMonth = starting_month;
   var capital_to_pay = amount;
@@ -70,6 +59,7 @@ const computeAmort=(starting_year,starting_month,amount,nb_mens,monthly_rate,men
   var amort_monthly = [];
   var mensuality_count = 1;
   console.log(amort_monthly[amort_monthly.length-1]);
+  var monthly_rate=computeMonthly_rate(Number(SessionStorage.getItem('taeg')));
   while (mensuality_count <= nb_mens) {
     interests_to_pay = monthly_rate * capital_to_pay;
     interests_paid += interests_to_pay;
@@ -96,10 +86,9 @@ const computeCredit_init = () => {
   const y_nb = SessionStorage.getItem('years');
   const amount = SessionStorage.getItem('amount');
   const mens = SessionStorage.getItem('mensuality');
-  const monthly_rate = SessionStorage.getItem('monthly_rate');
   const starting_year=Number((SessionStorage.getItem('startingDate')).slice(0,4));
   const starting_month=Number((SessionStorage.getItem('startingDate')).slice(5,7));
-  var ret=computeAmort(starting_year,starting_month,amount,y_nb*12,monthly_rate,mens);
+  var ret=computeAmort(starting_year,starting_month,amount,y_nb*12,mens);
   SessionStorage.set('amort_monthly', ret[0]);
   SessionStorage.set('total_cost_init',Math.round(ret[1]*100)/100);
 };
@@ -145,7 +134,6 @@ const apply_events_chain=()=>{
     var mens=0;
     var amort_init=SessionStorage.getItem('amort_monthly');
     var taeg = SessionStorage.getItem('taeg');
-    var monthly_rate=SessionStorage.getItem('monthly_rate');
     var nb_mens_spent=0;
     var nb_mens_to_pay=0;
     var events=sortEvents(SessionStorage.getItem('events'));
@@ -162,7 +150,7 @@ const apply_events_chain=()=>{
         }
         else
         {
-          mens=computeMensuality_noSave_Months(nb_mens_to_pay,taeg,amort_init[nb_mens_spent][1],monthly_rate);
+          mens=computeMensuality_noSave_Months(nb_mens_to_pay,taeg,amort_init[nb_mens_spent][1]);
         }
         var j=0;
         while(j<amort_init.length && amort_init[j][0]!=(events[i].month_str+'-'+events[i].year_str))
@@ -172,7 +160,7 @@ const apply_events_chain=()=>{
         }
         //extract total interests paid just before the modulation
         const interests_paid_before_mod=amort_init[j-1][2];
-        var specific_amort=computeAmort(events[i].year,events[i].month,amort_init[nb_mens_spent-1][1],nb_mens_to_pay,monthly_rate,mens);
+        var specific_amort=computeAmort(events[i].year,events[i].month,amort_init[nb_mens_spent-1][1],nb_mens_to_pay,mens);
         var k=0;
         while(k<specific_amort[0].length-1)
         {
@@ -191,7 +179,7 @@ const apply_events_chain=()=>{
         }
         else
         {
-          mens=computeMensuality_noSave_Months(nb_mens_to_pay,taeg,events[i-1].amortEvt[nb_mens_spent][1],monthly_rate);
+          mens=computeMensuality_noSave_Months(nb_mens_to_pay,taeg,events[i-1].amortEvt[nb_mens_spent][1]);
         }
         var j=0;
         while(j<events[i-1].amortEvt.length && events[i-1].amortEvt[j][0]!=(events[i].month_str+'-'+events[i].year_str))
