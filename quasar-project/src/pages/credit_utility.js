@@ -189,7 +189,7 @@ const apply_events_chain=()=>{
         }
         //extract total interests paid just before the modulation
         const interests_paid_before_mod=events[i-1].amortEvt[j-1][2];
-        var specific_amort=computeAmort(events[i].year,events[i].month,events[i-1].amortEvt[nb_mens_spent-1][1],nb_mens_to_pay,monthly_rate,mens);
+        var specific_amort=computeAmort(events[i].year,events[i].month,events[i-1].amortEvt[nb_mens_spent-1][1],nb_mens_to_pay,mens);
         var k=0;
         while(k<specific_amort[0].length-1)
         {
