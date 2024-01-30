@@ -2,19 +2,19 @@
   <q-page>
     <div class="full-height column justify-arround content-center verticalFlex">
 
-  <div class="col">
+  <div class="col" :key="refresh">
     <q-list class="bg-primary" separator bordered>
       <q-item
         v-for="event in events"
         :key="event.title"
         clickable
-        @click="event.selected = !event.selected"
+        @click="[event.selected = !event.selected,refresh++,propagateSelection(event)]"
         v-ripple
       >
         <q-item-section avatar>
-          <q-checkbox v-model="event.selected" color="primary"> </q-checkbox>
+          <q-checkbox v-model="event.selected" color="primary" > </q-checkbox>
         </q-item-section>
-        <q-item-section>
+        <q-item-section :key="refresh">
           <q-item-label>{{ event.year + '-' + event.title +' - '+ event.type + ' nouvelle mensualité : '+ event.new_mens}}</q-item-label>
         </q-item-section>
       </q-item>
@@ -50,18 +50,19 @@
 </template>
 
 <script setup>
-import {  SessionStorage } from 'quasar';
+import {  Quasar, SessionStorage, useQuasar } from 'quasar';
 import { ref } from 'vue';
 import SingleEventHandler from '../components/SingleEventHandler.vue';
 import { useRouter } from 'vue-router';
 const router = useRouter();
+const $q = useQuasar();
 var events = [
 
   ];
 if (SessionStorage.has('events')) {
-  var events = SessionStorage.getItem('events');
+  events = SessionStorage.getItem('events');
 }
-
+var refresh=ref(0);
 var addeventactive = ref(false);
 
 const UpdateEvents = function (events_in) {
@@ -72,16 +73,49 @@ const UpdateEvents = function (events_in) {
 const deleteEvents=function(){
   for(var i=0;i<events.length;i++)
   {
-    if(events[i].selected==true)
+    if(events[i].selected==true)//all following events will be deleted because they rely on this event
     {
       events=events.slice(0,i);
       SessionStorage.set('events',events);
       if(i==0)
       {
-        SessionStorage.clear('events');
+        SessionStorage.remove('events');
+      }
+      //router.push('/events');
+      refresh.value++;
+      return;
+    }
+  }
+}
+//we don't want users to select base event for delete if subsequent events are not select
+const propagateSelection=function (event_in){
+  var i=0;var hasToNotify=false;
+  //find current event
+  while(i<events.length)
+  {
+    if(events[i]==event_in) {break; }
+    i++;
+  }
+  if(i==events.length) { return; }
+  i++;//go to next element
+  if(event_in.selected==false)//protection
+  {
+    for(var j=0;j<i;j++)
+    {
+      if(events[j].selected==true)
+      {
+        $q.notify({    color: 'orange-4',    textColor: 'black',    icon: 'warning',    message: 'impossible de déselectionner des évènements dépendant d\'évènements sélectionés',  });
+        events[i-1].selected=true;
+        refresh.value++;
+        return;
       }
     }
   }
+  while(i<events.length) { events[i].selected=event_in.selected; i++;hasToNotify=true; }
+
+  if(hasToNotify && event_in.selected)  {   $q.notify({    color: 'green-4',    textColor: 'black',    icon: 'cloud_done',    message: 'évènements dépendants aussi sélectionnés',  });  }
+  if(hasToNotify && !event_in.selected)  {   $q.notify({    color: 'green-4',    textColor: 'black',    icon: 'cloud_done',    message: 'évènements dépendants aussi désélectionnés',  });  }
+  refresh.value++;
 }
 </script>
 <style lang="scss">

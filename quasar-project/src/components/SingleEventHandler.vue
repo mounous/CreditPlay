@@ -69,7 +69,7 @@ var event_ = ref({
   year:2020,
   month:1,
   id: 1,
-  selected: true,
+  selected: false,
   new_mens: -1.0,
   new_dur: 'undefined',
   end_year:0,

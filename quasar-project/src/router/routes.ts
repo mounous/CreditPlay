@@ -13,6 +13,8 @@ const routes: RouteRecordRaw[] = [
       },
       { path: '/summary', component: () => import('pages/SummaryPage.vue') },
       { path: '/lineChart', component: () => import('pages/lineChartPage.vue') },
+      { path: '/bank', component: () => import('pages/bankPage.vue') },
+      { path: '/memory', component: () => import('pages/memoryPage.vue') },
     ],
   },
 

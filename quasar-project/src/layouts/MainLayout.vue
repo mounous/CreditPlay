@@ -9,6 +9,8 @@
         <q-route-tab name="events" label="Modulation" icon="toc" to="/events" :disable="initFormDone==false"/>
         <q-route-tab name="summary" label="résumé" icon="money" to="/summary" :disable="initFormDone==false"/>
         <q-route-tab name="chart" label="graphique" icon="bar_chart" to="/lineChart" :disable="initFormDone==false"/>
+        <q-route-tab name="save" label="épargne" icon="account_balance" to="/bank"/>
+        <q-route-tab name="memory" label="Mémoire" icon="import_export" to="/memory"/>
         <q-route-tab name="help" label="aide" icon="help" to="/help"/>
 
       </q-tabs>
