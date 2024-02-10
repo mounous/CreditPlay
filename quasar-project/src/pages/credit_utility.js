@@ -6,10 +6,7 @@ const computeMensuality = () => {
   const amount = SessionStorage.getItem('amount');
   var mensuality =computeMensuality_noSave(y_nb,rate,amount);
   SessionStorage.set('mensuality', mensuality);
-  SessionStorage.set(
-    'mensuality_str',
-    'Mensuality : ' + mensuality.toString()
-  );
+
 };
 const computeMonthly_rate=(rate)=>{
   return rate/(100.00*12.00);
@@ -151,6 +148,7 @@ const apply_events_chain=()=>{
         else
         {
           mens=computeMensuality_noSave_Months(nb_mens_to_pay,taeg,amort_init[nb_mens_spent][1]);
+          events[i].new_mens=mens;
         }
         var j=0;
         while(j<amort_init.length && amort_init[j][0]!=(events[i].month_str+'-'+events[i].year_str))
@@ -180,6 +178,7 @@ const apply_events_chain=()=>{
         else
         {
           mens=computeMensuality_noSave_Months(nb_mens_to_pay,taeg,events[i-1].amortEvt[nb_mens_spent][1]);
+          events[i].new_mens=mens;
         }
         var j=0;
         while(j<events[i-1].amortEvt.length && events[i-1].amortEvt[j][0]!=(events[i].month_str+'-'+events[i].year_str))

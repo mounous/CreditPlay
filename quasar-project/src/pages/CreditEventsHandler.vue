@@ -50,7 +50,7 @@
 </template>
 
 <script setup>
-import {  Quasar, SessionStorage, useQuasar } from 'quasar';
+import {   SessionStorage, useQuasar } from 'quasar';
 import { ref } from 'vue';
 import SingleEventHandler from '../components/SingleEventHandler.vue';
 import { useRouter } from 'vue-router';
