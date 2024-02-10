@@ -5,7 +5,7 @@
   <div class="col" :key="refresh">
     <q-list class="bg-primary" separator bordered>
       <q-item
-        v-for="event in events"
+        v-for="event in simu.events"
         :key="event.title"
         clickable
         @click="[event.selected = !event.selected,refresh++,propagateSelection(event)]"
@@ -40,7 +40,7 @@
     <q-dialog v-model="addeventactive">
       <!--https://v0-14.quasar-framework.org/components/building-reusable-components.html-->
       <SingleEventHandler
-        @save-event="[(addeventactive = false), UpdateEvents($event)]"
+        @save-event="[(addeventactive = false), movetocharts()]"
       />
     </q-dialog>
     </div>
@@ -50,23 +50,17 @@
 </template>
 
 <script setup>
-import {   SessionStorage, useQuasar } from 'quasar';
+import {   useQuasar } from 'quasar';
 import { ref } from 'vue';
 import SingleEventHandler from '../components/SingleEventHandler.vue';
 import { useRouter } from 'vue-router';
+import { simu } from 'stores/store';
 const router = useRouter();
 const $q = useQuasar();
-var events = [
-
-  ];
-if (SessionStorage.has('events')) {
-  events = SessionStorage.getItem('events');
-}
 var refresh=ref(0);
 var addeventactive = ref(false);
 
-const UpdateEvents = function (events_in) {
-  events = events_in;
+const movetocharts = function () {
   router.push('/lineChart');
 };
 
@@ -75,13 +69,7 @@ const deleteEvents=function(){
   {
     if(events[i].selected==true)//all following events will be deleted because they rely on this event
     {
-      events=events.slice(0,i);
-      SessionStorage.set('events',events);
-      if(i==0)
-      {
-        SessionStorage.remove('events');
-      }
-      //router.push('/events');
+      simu.value.events.slice(0,i);
       refresh.value++;
       return;
     }

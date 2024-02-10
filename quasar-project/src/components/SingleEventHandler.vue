@@ -52,10 +52,11 @@
 </template>
 
 <script setup>
-import { SessionStorage } from 'quasar';
+
 import { ref ,defineEmits} from 'vue';
-import { month_names, apply_events_chain,sortEvents,getMonthNbr } from '../pages/credit_utility.js';
+import { month_names, apply_events_chain,getMonthNbr } from '../pages/credit_utility.js';
 import SingleEventTypePicker from './SingleEventTypePicker.vue';
+import { simu } from 'stores/store';
 const carouselElement=ref(null);
 const default_month_str = 'choisir un mois ';
 const default_year_str = 'choisir une année';
@@ -78,17 +79,16 @@ var event_ = ref({
 });
 const emit = defineEmits(['save-event']);
 const yearoption = function () {
-  var credit_length = SessionStorage.getItem('years');
-  var currentY = Number((SessionStorage.getItem('startingDate')).slice(0,4));
+  var currentY = Number(simu.value.credit.startingDate.slice(0,4));
   console.log(currentY);
   years_t.value = [];
-  for (let year = currentY ; year < currentY + credit_length; year++) {
+  for (let year = currentY ; year < currentY + simu.value.credit.year; year++) {
     years_t.value.push(year.toString());
   }
 };
 const monthoption = function () {
   month_t.value = [];
-  if((SessionStorage.getItem('startingDate').slice(0,4))!=event_.value.year)
+  if((simu.value.credit.startingDate.slice(0,4))!=event_.value.year)
   {
     for (let m = 0; m < month_names.length; m++) {
       month_t.value.push(month_names[m]);
@@ -96,7 +96,7 @@ const monthoption = function () {
   }
   else
   {
-    for (let m = Number((SessionStorage.getItem('startingDate')).slice(5,7)); m < month_names.length; m++) {
+    for (let m = Number(simu.value.credit.startingDate.slice(5,7)); m < month_names.length; m++) {
       month_t.value.push(month_names[m]);
     }
   }
@@ -133,18 +133,8 @@ const validateEvtMonth=function(val) {
   return true;
 };
 const saveEventsubmit=function() {
-  console.log('saveEventsubmit');
-  if (!SessionStorage.has('events')) {
-    //first event registered
-    var events = [event_.value];
-  } else {
-    var events = SessionStorage.getItem('events');
-    events.push(event_.value);
-  }
-  SessionStorage.set('events', sortEvents(events));
-  apply_events_chain();
+
   console.log('saveEventsubmitEnd');
-  return events;
 };
 const updateFromPicker=function(evtDataFromPicker){
   event_.value['type']=evtDataFromPicker['type'].value;
@@ -161,8 +151,9 @@ const updateFromPicker=function(evtDataFromPicker){
   console.log(evtDataFromPicker);
 };
 const sendFinish=function () {
-
-    emit('save-event', saveEventsubmit());
+  simu.value.events.push(event_.value);
+  apply_events_chain();
+    emit('save-event');
   };
 const moveToNextSlide=function(move = true) {
     if (move) {

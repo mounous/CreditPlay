@@ -17,21 +17,20 @@
 
 <script setup>
 import {ref,onBeforeMount } from 'vue'
-import { SessionStorage } from 'quasar';
+import { simu } from 'stores/store';
 const mount=function() {
-  var amort_init=SessionStorage.getItem('amort_monthly');
+  var amort_init=simu.value.credit.amort;
   var interests_paid =amort_init[amort_init.length-1][2];
   var EndDate = amort_init[amort_init.length-1][0];
   var _id=0
-  var _text='Situation initiale : Mensualité : '+SessionStorage.getItem('mensuality').toString()+' fin de l\'emprunt : ' +EndDate+ ' coût total : '+interests_paid.toString();
+  var _text='Situation initiale : Mensualité : '+simu.value.credit.mensuality.toString()+' fin de l\'emprunt : ' +EndDate+ ' coût total : '+interests_paid.toString();
   summaries.value.push({id:_id,text:_text});
-  if(SessionStorage.has('events'))
+  if(simu.value.events.length!=0)
   {
-    var events=SessionStorage.getItem('events');
-    for(var i=0;i<events.length;i++)
+    for(var i=0;i<simu.value.events.length;i++)
     {
       _id=i+1;
-      _text='Evènement : ' + events[i].title+'à compter de : '+events[i].month.toString()+'/'+events[i].year.toString()+' Mensualité : '+events[i].new_mens.toString()+' fin de l\'emprunt : '+events[i].end_month.toString()+'/'+events[i].end_year.toString()+' coût total : '+events[i].amortEvt[events[i].amortEvt.length-1].toString();
+      _text='Evènement : ' + simu.value.events[i].title+'à compter de : '+simu.value.events[i].month.toString()+'/'+simu.value.events[i].year.toString()+' Mensualité : '+simu.value.events[i].new_mens.toString()+' fin de l\'emprunt : '+simu.value.events[i].end_month.toString()+'/'+simu.value.events[i].end_year.toString()+' coût total : '+simu.value.events[i].amortEvt[simu.value.events[i].amortEvt.length-1].toString();
       summaries.value.push({id:_id,text:_text});
     }
   }

@@ -27,26 +27,25 @@
 <script setup lang="ts">
 
 
-import { SessionStorage } from 'quasar';
+
 import { ref,watch } from 'vue';
 import {startFormFilled} from 'stores/store'
+import { simu } from 'stores/store';
 var tab=ref('start');
 var  initFormDone =ref(false);
 const setInitDone=function(b_in:boolean){
   initFormDone.value=b_in};
 watch(startFormFilled,setInitDone);
-if (!SessionStorage.has('amount')) {
-  SessionStorage.set('amount', 176000);
+if (simu.value.credit.amount==0) {
+  simu.value.credit.amount= 176000;
 }
-if (!SessionStorage.has('taeg')) {
-  SessionStorage.set('taeg', 3.25);
+if (simu.value.credit.rate==0) {
+  simu.value.credit.rate= 3.25;
 }
-if (!SessionStorage.has('years')) {
-  SessionStorage.set('years', 20);
+if (simu.value.credit.year==0) {
+  simu.value.credit.year= 20;
 }
-if (!SessionStorage.has('event_nbr')) {
-  SessionStorage.set('event_nbr', 0);
-}
+
 </script>
 
 <style lang="scss">

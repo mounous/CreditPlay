@@ -9,13 +9,12 @@
           ]" />
       </div>
       <div class="col">
-        <q-input label="Date de signature" bg-color="blue-grey-8" filled v-model="date" mask="date" :rules="['date']">
+        <q-input label="Date de signature" bg-color="blue-grey-8" filled v-model="simu.credit.startingDate" mask="date">
           <template v-slot:append>
             <q-icon name="event" class="cursor-pointer">
               <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                <q-date dark v-model="date" :locale="formatCalendar" :navigation-min-year-month="minNav" width="200px"
-                  :navigation-max-year-month="maxNav" :disable="has_started != 'yes' && has_started != 'no'"
-                  @update:model-value="saveStartingDate">
+                <q-date dark v-model="simu.credit.startingDate" :locale="formatCalendar" :navigation-min-year-month="minNav" width="200px"
+                  :navigation-max-year-month="maxNav" :disable="has_started != 'yes' && has_started != 'no'">
                   <div class="row items-center justify-end">
                     <q-btn v-close-popup label="Close" color="primary" flat />
                   </div>
@@ -26,20 +25,17 @@
         </q-input>
       </div>
       <div class="col">
-        <q-input filled type="number" bg-color="blue-grey-8" v-model="amount_l" label="Somme empruntée" hint="pas d'unité, pas de virgule"
+        <q-input filled type="number" bg-color="blue-grey-8" v-model="simu.credit.amount" label="Somme empruntée" hint="pas d'unité, pas de virgule"
           lazy-rules :rules="[
-            (val) => validateAmount(val) || 'Merci de renseigner la somme',
+            (val) => val>0 || 'Merci de renseigner la somme',
           ]" />
       </div>
       <div class="col">
-        <q-input filled label="TAEG" bg-color="blue-grey-8" type="number" step="any" v-model="taeg_l" lazy-rules
+        <q-input filled label="TAEG" bg-color="blue-grey-8" type="number" step="any" v-model="simu.credit.rate" lazy-rules
           :rules="[(val) => validateTAEG(val) || 'Ce TAEG semble irréel']" />
       </div>
       <div class="col">
-        <q-input filled type="number" bg-color="blue-grey-8" v-model="years_l" label="Durée d'emprunt" lazy-rules :rules="[
-          (val) =>
-            validateYears(val) || 'Merci de renseigner la durée en année',
-        ]" />
+        <q-input filled type="number" bg-color="blue-grey-8" v-model="simu.credit.year" label="Durée d'emprunt" lazy-rules  />
       </div>
       <div class="col column content-center">
         <div>
@@ -60,40 +56,25 @@
 
 
 <script setup>
-import { SessionStorage } from 'quasar';
+
 import { useRouter } from 'vue-router';
 import { ref } from 'vue';
 import { computeMensuality, computeCredit_init } from './credit_utility.js';
-import { setStartFormFilled } from 'stores/store'
+import { setStartFormFilled,simu } from 'stores/store';
 const router = useRouter();
-var amount_l = ref(SessionStorage.getItem('amount'));
-var years_l = ref(SessionStorage.getItem('years'));
-var taeg_l = ref(SessionStorage.getItem('taeg'));
+
 var has_started = ref('CHOOSE');
 var minNav = ref('0000/01');
 var maxNav = ref('0000/01');
 var date = ref(new Date().toISOString().slice(0, 10).split('-').join('/'));
 
-function validateTAEG(taeg) {
-  if (taeg < 0) {
+function validateTAEG(rate) {
+  if (rate < 0) {
     return false;
   }
-  SessionStorage.set('taeg', taeg);
-  const taeg_lu = SessionStorage.getItem('taeg');
-  return taeg_lu == taeg;
 };
-function validateYears(years) {
-  SessionStorage.set('years', years);
-  const years_lu = SessionStorage.getItem('years');
-  return years_lu == years;
-};
-function validateAmount(amount) {
-  SessionStorage.set('amount', amount);
-  const amount_lu = SessionStorage.getItem('amount');
-  return amount_lu == amount;
-};
+
 function onSubmit() {
-  saveStartingDate();
   computeMensuality();
   computeCredit_init();
   setStartFormFilled(true);
@@ -123,9 +104,5 @@ function switchNavConstraint() {
     minNav.value = limit;
   }
 }
-function saveStartingDate() {
-  SessionStorage.set('startingDate', date.value);
-}
-
 
 </script>
