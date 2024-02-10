@@ -29,7 +29,7 @@
 
 import { SessionStorage } from 'quasar';
 import { ref,watch } from 'vue';
-import {startFormFilled} from 'stores/example-store'
+import {startFormFilled} from 'stores/store'
 var tab=ref('start');
 var  initFormDone =ref(false);
 const setInitDone=function(b_in:boolean){
