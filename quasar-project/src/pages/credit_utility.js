@@ -1,8 +1,7 @@
 
 import { simu } from 'src/stores/store';
 const computeMensuality = () => {
-  var mensuality =computeMensuality_noSave(simu.value.credit.year,simu.value.credit.rate,simu.value.credit.amount);
-  simu.value.credit.mensuality=mensuality;
+  simu.value.credit.mensuality=computeMensuality_noSave(simu.value.credit.year,simu.value.credit.rate,simu.value.credit.amount);
 };
 const computeMonthly_rate=(rate)=>{
   return rate/(100.00*12.00);
@@ -53,8 +52,8 @@ const computeAmort=(starting_year,starting_month,amount,nb_mens,mens)=>{
   var mensuality_count = 1;
   console.log(amort_monthly[amort_monthly.length-1]);
   var monthly_rate=computeMonthly_rate(Number(simu.value.credit.rate));
-  while (mensuality_count <= nb_mens) {
-    interests_to_pay = monthly_rate * capital_to_pay;
+  while (mensuality_count < nb_mens) {
+    interests_to_pay = Math.round((monthly_rate * capital_to_pay)*100)/100;
     interests_paid += interests_to_pay;
     capital_paid = mens - interests_to_pay;
     capital_to_pay -= capital_paid;
@@ -72,6 +71,13 @@ const computeAmort=(starting_year,starting_month,amount,nb_mens,mens)=>{
       curentMonth = 1; //return to january next year
     }
   }
+  interests_to_pay = mens - capital_to_pay;
+  interests_paid += interests_to_pay;
+  amort_monthly.push([
+      month_names[curentMonth-1] + '-' + currentYear.toString(),
+      0,
+      Math.round(interests_paid * 100) / 100,
+    ]);
   return [amort_monthly,interests_paid];
 }
 

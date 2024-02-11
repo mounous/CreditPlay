@@ -12,7 +12,7 @@
         v-ripple
       >
         <q-item-section avatar>
-          <q-checkbox v-model="event.selected" color="primary" > </q-checkbox>
+          <q-checkbox v-model="event.selected" color="primary"  @click="[refresh++,propagateSelection(event)]"> </q-checkbox>
         </q-item-section>
         <q-item-section :key="refresh">
           <q-item-label>{{ event.year + '-' + event.title +' - '+ event.type + ' nouvelle mensualité : '+ event.new_mens}}</q-item-label>
@@ -65,11 +65,11 @@ const movetocharts = function () {
 };
 
 const deleteEvents=function(){
-  for(var i=0;i<events.length;i++)
+  for(var i=0;i<simu.value.events.length;i++)
   {
-    if(events[i].selected==true)//all following events will be deleted because they rely on this event
+    if(simu.value.events[i].selected==true)//all following events will be deleted because they rely on this event
     {
-      simu.value.events.slice(0,i);
+      simu.value.events=simu.value.events.slice(0,i);
       refresh.value++;
       return;
     }
@@ -79,27 +79,27 @@ const deleteEvents=function(){
 const propagateSelection=function (event_in){
   var i=0;var hasToNotify=false;
   //find current event
-  while(i<events.length)
+  while(i<simu.value.events.length)
   {
-    if(events[i]==event_in) {break; }
+    if(simu.value.events[i]==event_in) {break; }
     i++;
   }
-  if(i==events.length) { return; }
+  if(i==simu.value.events.length) { return; }
   i++;//go to next element
   if(event_in.selected==false)//protection
   {
     for(var j=0;j<i;j++)
     {
-      if(events[j].selected==true)
+      if(simu.value.events[j].selected==true)
       {
         $q.notify({    color: 'orange-4',    textColor: 'black',    icon: 'warning',    message: 'impossible de déselectionner des évènements dépendant d\'évènements sélectionés',  });
-        events[i-1].selected=true;
+        simu.value.events[i-1].selected=true;
         refresh.value++;
         return;
       }
     }
   }
-  while(i<events.length) { events[i].selected=event_in.selected; i++;hasToNotify=true; }
+  while(i<simu.value.events.length) { simu.value.events[i].selected=event_in.selected; i++;hasToNotify=true; }
 
   if(hasToNotify && event_in.selected)  {   $q.notify({    color: 'green-4',    textColor: 'black',    icon: 'cloud_done',    message: 'évènements dépendants aussi sélectionnés',  });  }
   if(hasToNotify && !event_in.selected)  {   $q.notify({    color: 'green-4',    textColor: 'black',    icon: 'cloud_done',    message: 'évènements dépendants aussi désélectionnés',  });  }

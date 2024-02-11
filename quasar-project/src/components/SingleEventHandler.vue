@@ -132,10 +132,7 @@ const validateEvtMonth=function(val) {
   event_.value['month']=getMonthNbr(event_.value.month_str);
   return true;
 };
-const saveEventsubmit=function() {
 
-  console.log('saveEventsubmitEnd');
-};
 const updateFromPicker=function(evtDataFromPicker){
   event_.value['type']=evtDataFromPicker['type'].value;
   event_.value['end_year']=evtDataFromPicker['end_year'].value;
@@ -148,6 +145,7 @@ const updateFromPicker=function(evtDataFromPicker){
   {
     event_.value['new_dur']=evtDataFromPicker['dur'].value;
   }
+  event_.value['selected']=false;
   console.log(evtDataFromPicker);
 };
 const sendFinish=function () {
