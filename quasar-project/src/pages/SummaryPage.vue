@@ -8,8 +8,7 @@
         <div>{{ item.text1 }}</div>
         <div>{{ item.text2 }}</div>
         <div>{{ item.text3 }}</div>
-        <div>{{ item.text4 }}</div>
-        <!--div :onlad="setDeltaColor(item)">{{ item.text4 }}</div!-->
+        <div :class="item.text4_color">{{ item.text4 }}</div>
       </q-timeline-entry>
     </q-timeline>
   </div>
@@ -21,10 +20,7 @@
 import {ref,onBeforeMount } from 'vue'
 import { simu } from 'stores/store';
 var summaries=ref([]);
-const setDeltaColor=function(item){
-  var contentHolder = document.getElementById(item.id.toString());
-  contentHolder.class=item.text4_color;
-}
+
 const beforemount=function() {
   var amort_init=simu.value.credit.amort;
   var interests_paid =amort_init[amort_init.length-1][2];
