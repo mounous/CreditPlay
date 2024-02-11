@@ -26,11 +26,13 @@
 
 <script setup lang="ts">
 
-
+//import { useI18n } from 'vue-i18n'
 
 import { ref,watch } from 'vue';
 import {startFormFilled} from 'stores/store'
 import { simu } from 'stores/store';
+//const  {t} = useI18n();
+//const label_cred=ref(t('cred'));
 var tab=ref('start');
 var  initFormDone =ref(false);
 const setInitDone=function(b_in:boolean){
