@@ -44,11 +44,11 @@ const beforemount=function() {
       _text3=' coût total : '+simu.value.events[i].amortEvt[simu.value.events[i].amortEvt.length-1][2].toString();
       if(i==0)
       {
-        delta=Math.round((interests_paid-simu.value.events[i].amortEvt[simu.value.events[i].amortEvt.length-1][2])*100)/100;
+        delta=Math.round((simu.value.events[i].amortEvt[simu.value.events[i].amortEvt.length-1][2]-interests_paid)*100)/100;
       }
       else
       {
-        delta=Math.round((simu.value.events[i-1].amortEvt[simu.value.events[i-1].amortEvt.length-1][2]-simu.value.events[i].amortEvt[simu.value.events[i].amortEvt.length-1][2])*100)/100;
+        delta=Math.round((simu.value.events[i].amortEvt[simu.value.events[i].amortEvt.length-1][2]-simu.value.events[i-1].amortEvt[simu.value.events[i-1].amortEvt.length-1][2])*100)/100;
       }
       _text4='différence en interêts : '+String(delta)+' €';
       if(delta>0)
