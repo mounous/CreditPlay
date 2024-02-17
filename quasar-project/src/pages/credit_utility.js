@@ -176,7 +176,7 @@ const apply_events_chain=()=>{
         }
         else
         {
-          mens=computeMensuality_noSave_Months(nb_mens_to_pay,simu.value.credit.rate,simu.value.events[i-1].amortEvt[nb_mens_spent][1]);
+          mens=computeMensuality_noSave_Months(nb_mens_to_pay,simu.value.credit.rate,simu.value.events[i-1].amortEvt[nb_mens_spent-1][1]);
           simu.value.events[i].new_mens=mens;
         }
         var j=0;

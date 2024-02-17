@@ -1,5 +1,8 @@
 <template>
   <div>
+    <p>Capital restant du à la date de l'évènement : {{situationAtDate }}</p>
+  </div>
+  <div>
     <q-select
       rounded
       outlined
@@ -46,7 +49,8 @@
 
 <script setup>
 import { ref, defineEmits } from 'vue';
-import {provideYearOptions,provideMensOptions} from '../pages/credit_utility.js'
+import {provideYearOptions,provideMensOptions,month_names} from '../pages/credit_utility.js'
+import { simu } from 'src/stores/store';
 const props = defineProps({yearOfEvent : Number,monthOfEvent:Number});
 console.log(props);
 var event_type = ref('Sélectionnez une action');
@@ -61,7 +65,42 @@ const getopt=function(){
   options_years.value=provideYearOptions(event_type.value,props.yearOfEvent);
   options_mens.value=provideMensOptions(event_type.value,props.yearOfEvent,props.monthOfEvent);
 };
-
+const getSituation=function(year_event,month_event){
+  var i=0;
+  var capital_to_pay=0;
+  if(simu.value.events.length==0)
+  {
+    while (simu.value.credit.amort[i][0]!=month_names[month_event-1]+'-'+year_event.toString() && i<simu.value.credit.amort.length)
+    {
+      i++;
+    }
+    if(i==simu.value.credit.amort.length)
+    {
+      return '';
+    }
+    else
+    {
+      capital_to_pay=simu.value.credit.amort[i-1][1];
+    }
+  }
+  else
+  {
+    while(simu.value.events[simu.value.events.length-1].amortEvt[i][0]!=month_names[month_event-1]+'-'+year_event && i<simu.value.events[simu.value.events.length-1].amortEvt.length)
+    {
+      i++;
+    }
+    if(i==simu.value.events[simu.value.events.length-1].amortEvt.length)
+    {
+      return '';
+    }
+    else
+    {
+      capital_to_pay=simu.value.events[simu.value.events.length-1].amortEvt[i-1][1];
+    }
+  }
+  return capital_to_pay.toString();
+}
+var situationAtDate=ref(getSituation(props.yearOfEvent,props.monthOfEvent));
 var optionsType = [
   'Augmenter mensualité',
   'Réduire mensualité',
