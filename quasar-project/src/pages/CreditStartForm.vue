@@ -98,6 +98,7 @@ function switchNavConstraint() {
   if (has_started.value == 'yes') {
     maxNav.value = limit;
     minNav.value = '1900/01';
+    simu.value.credit.startingDate='2023/07/10';
   }
   else {
     maxNav.value = '2100/01';

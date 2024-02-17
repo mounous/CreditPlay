@@ -78,6 +78,7 @@ const computeAmort=(starting_year,starting_month,amount,nb_mens,mens)=>{
       0,
       Math.round(interests_paid * 100) / 100,
     ]);
+    console.log(amort_monthly[amort_monthly.length-1]);
   return [amort_monthly,interests_paid];
 }
 
@@ -145,7 +146,7 @@ const apply_events_chain=()=>{
         }
         else
         {
-          mens=computeMensuality_noSave_Months(nb_mens_to_pay,simu.value.credit.rate,simu.value.credit.amort[nb_mens_spent][1]);
+          mens=computeMensuality_noSave_Months(nb_mens_to_pay,simu.value.credit.rate,simu.value.credit.amort[nb_mens_spent-1][1]);
           simu.value.events[i].new_mens=mens;
         }
         var j=0;
@@ -158,7 +159,7 @@ const apply_events_chain=()=>{
         const interests_paid_before_mod=simu.value.credit.amort[j-1][2];
         var specific_amort=computeAmort(simu.value.events[i].year,simu.value.events[i].month,simu.value.credit.amort[nb_mens_spent-1][1],nb_mens_to_pay,mens);
         var k=0;
-        while(k<specific_amort[0].length-1)
+        while(k<specific_amort[0].length)
         {
           simu.value.events[i].amortEvt.push(specific_amort[0][k]);
           simu.value.events[i].amortEvt[k+j][2]+=interests_paid_before_mod;
@@ -188,7 +189,7 @@ const apply_events_chain=()=>{
         const interests_paid_before_mod=simu.value.events[i-1].amortEvt[j-1][2];
         var specific_amort=computeAmort(simu.value.events[i].year,simu.value.events[i].month,simu.value.events[i-1].amortEvt[nb_mens_spent-1][1],nb_mens_to_pay,mens);
         var k=0;
-        while(k<specific_amort[0].length-1)
+        while(k<specific_amort[0].length)
         {
           simu.value.events[i].amortEvt.push(specific_amort[0][k]);
           simu.value.events[i].amortEvt[k+j][2]+=interests_paid_before_mod;
@@ -198,7 +199,7 @@ const apply_events_chain=()=>{
     }
   }
 }
-const provideYearOptions=(evt_type_in)=>{
+const provideYearOptions=(evt_type_in,evt_year_in)=>{
   var origin_y =simu.value.credit.year;
   if(simu.value.events.length==0)
   {
@@ -222,7 +223,7 @@ const provideYearOptions=(evt_type_in)=>{
   else if(evt_type_in=='Réduire la durée')
   {
     toreturn.push('1 an ('+(origin_end_date-1).toString()+')');
-    for(let i=2;i<(origin_end_date-Number(new Date().getFullYear()));i++) //cannot decrease more than current year
+    for(let i=2;i<(origin_end_date-evt_year_in);i++) //cannot decrease more than current event year
     {
       toreturn.push(i.toString()+' ans ('+(origin_end_date-i).toString()+')');
     }

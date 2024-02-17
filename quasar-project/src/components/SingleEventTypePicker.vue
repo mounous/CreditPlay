@@ -58,7 +58,7 @@ const emit = defineEmits(['update-from-type-pick']);
 var options_mens = ref([]);
 var options_years = ref([]);
 const getopt=function(){
-  options_years.value=provideYearOptions(event_type.value);
+  options_years.value=provideYearOptions(event_type.value,props.yearOfEvent);
   options_mens.value=provideMensOptions(event_type.value,props.yearOfEvent,props.monthOfEvent);
 };
 
