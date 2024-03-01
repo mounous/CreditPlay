@@ -1,4 +1,5 @@
 
+import { title } from 'process';
 import {ref} from 'vue'
 
 export const startFormFilled=ref(false);
@@ -14,4 +15,10 @@ export const simu=ref({
     total_cost:0,
   },
   events:[],
+});
+
+export const bank=ref({
+  savings:[],
+  periodic_savings:[],
+  monthly_sum:[],
 });
