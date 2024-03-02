@@ -6,12 +6,12 @@
           <q-input class="q-mx-xs" label="nom du placement" size=8 maxlength="20" v-model="_saving.title" type="text" lazy-rules
             :rules="[(val) => (val.length < 20) || 'choisir un nom plus court']" clearable
             bg-color="blue-grey-8" outlined dense></q-input>
-          <q-input class="q-mx-xs" label="montant" style="width:150px" maxlength="8"  v-model="_saving.amount" type="number" lazy-rules
+          <q-input class="q-mx-xs" label="montant" style="width:110px" maxlength="8"  v-model="_saving.amount" type="number" lazy-rules
             :rules="[(val) => (val >= 0.0) || 'Les dettes ne sont pas gérées']" bg-color="blue-grey-8" outlined
             dense></q-input>
           <q-input class="q-mx-xs" label="rentabilité" style="width:100px"  maxlength="8" v-model="_saving.rate" type="number" bg-color="blue-grey-8" outlined
             dense></q-input>
-          <q-btn class="q-mx-xs" style="height:40px" label="ajouter" color="blue-grey-8" @click="addElementToSavings"></q-btn>
+          <q-btn class="q-mx-xs" dense style="height:38px" label="ajouter" color="blue-grey-8" @click="addElementToSavings"></q-btn>
         </div>
 
         <div>
@@ -66,7 +66,8 @@ const removeSaving = function (saving) {
 
 .my-table {
   /* height or max-height is important */
-  min-height: 120px
+  min-height: 120px;
+  max-height: 200px;
 
 }
 
