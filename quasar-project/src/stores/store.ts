@@ -20,5 +20,6 @@ export const simu=ref({
 export const bank=ref({
   savings:[],
   periodic_savings:[],
+  single_in_out:[],
   monthly_sum:[],
 });

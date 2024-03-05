@@ -39,6 +39,8 @@
         </div>
       </div>
     </q-card>
+
+
     <q-card class="bg-grey-9 my-card q-ma-md">
       <p>Capacité d'épargne</p>
       <div class="col q-ma-xs">
@@ -113,6 +115,63 @@
         </div>
       </div>
     </q-card>
+
+    <q-card class="bg-grey-9 my-card q-ma-md">
+      <p>Entrées sorties exceptionnelles</p>
+      <div class="col q-ma-xs">
+        <div class="row flex  q-ma-xs">
+          <q-select bg-color="blue-grey-8" dense v-model="_single_io.type" label="type" :options="['entrée', 'sortie']"></q-select>
+          <q-input class="q-mx-xs" label="montant" style="max-width:110px;min-width:100px" maxlength="8" v-model="_single_io.amount"
+            type="number" lazy-rules
+            bg-color="blue-grey-8" outlined dense></q-input>
+          <q-input class="q-mx-xs" label="nom" style="max-width:100px" maxlength="20" v-model="_single_io.title"
+            type="text" bg-color="blue-grey-8" outlined dense></q-input>
+
+          <q-input  class="q-mx-xs" dense style="max-width:100px" label="date" bg-color="blue-grey-8" filled v-model="_single_io.startingDate" mask="date">
+            <template v-slot:append>
+              <q-icon name="event" class="cursor-pointer">
+                <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                  <q-date dark v-model="_single_io.date" :locale="formatCalendar"
+                    :navigation-min-year-month="periodicSaveMin" width="200px"
+                    >
+                    <div class="row items-center justify-end">
+                      <q-btn v-close-popup label="Close" color="primary" flat />
+                    </div>
+                  </q-date>
+                </q-popup-proxy>
+              </q-icon>
+            </template>
+          </q-input>
+          <q-btn class="q-mx-xs" dense style="height:38px" label="ajouter" color="blue-grey-8"
+            @click="addElementToSingleIO"></q-btn>
+        </div>
+
+        <div>
+          <q-markup-table class="my-table bg-grey-8" separator="cell" flat bordered>
+            <thead>
+              <tr>
+
+                <th span="1" style="width: 25%">nom</th>
+                <th span="1" style="width: 25%">type</th>
+                <th span="1" style="width: 25%">montant</th>
+                <th span="1" style="width: 25%">date</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="io in bank.single_in_out" :key="io.id">
+
+                <th>{{ io.title }}</th>
+                <th>{{ io.type }}</th>
+                <th>{{ io.amount }}</th>
+                <th>{{ io.month + '/' + io.year }}</th>
+
+                <th><q-btn dense size="s" icon="delete_forever" @click="removeSingleIO(io)"></q-btn></th>
+              </tr>
+            </tbody>
+          </q-markup-table>
+        </div>
+      </div>
+    </q-card>
   </div>
 </template>
 
@@ -121,7 +180,7 @@ import { bank } from 'stores/store';
 import { ref } from 'vue'
 const _saving = ref({ title: '', amount: 0.0, rate: 0.0 });
 const _savingP = ref({  amount: 0.0, rate: 0.0, startMonth: 0, startYear: 0, endMonth: 0, endYear: 0, type: 'mensuelle', rate: 0,startingDate:'',endDate:'' });
-
+const _single_io =ref({title: '', type:'entrée', amount:0,year:0,month:0,date:''});
 var limitMonth = new Date().getFullYear().toString();
 var limitYear = (new Date().getMonth() + 1).toString().padStart(2, '0');
 var periodicSaveMin = ref(limitMonth + '/' + limitYear);
@@ -131,7 +190,16 @@ const addElementToSavings = function () {
   bank.value.savings.push({ title: _saving.value.title, amount: _saving.value.amount, rate: _saving.value.rate });
 }
 const addElementToSavingsP = function () {
-  bank.value.periodic_savings.push({ amount: _savingP.value.amount, rate: _savingP.value.rate, type: _savingP.value.type, startMonth: _savingP.value.startMonth, startYear: _savingP.value.startYear, endMonth: _savingP.value.endMonth, endYear: _savingP.value.endYear });
+  var startY=Number(_savingP.value.startingDate.slice(0,4));
+  var endY=Number(_savingP.value.endDate.slice(0,4));
+  var startM=Number(_savingP.value.startingDate.slice(5,7));
+  var endM=Number(_savingP.value.endDate.slice(5,7));
+  bank.value.periodic_savings.push({ amount: _savingP.value.amount, rate: _savingP.value.rate, type: _savingP.value.type, startMonth: startM, startYear: startY, endMonth: endM, endYear:endY });
+}
+const addElementToSingleIO=function(){
+  var Y=Number(_single_io.value.date.slice(0,4));
+  var M=Number(_single_io.value.date.slice(5,7));
+  bank.value.single_in_out.push({title:_single_io.value.title,type:_single_io.value.type,amount:_single_io.value.amount,date:_single_io.value.date,month:M,year:Y});
 }
 
 const removeSaving = function (saving) {
@@ -143,9 +211,18 @@ const removeSaving = function (saving) {
   }
 }
 const removeSavingP = function (saving) {
-  for (var i = 0; i < bank.value.savings.length; i++) {
+  for (var i = 0; i < bank.value.periodic_savings.length; i++) {
     if ( bank.value.periodic_savings[i].amount == saving.amount && bank.value.periodic_savings[i].rate == saving.rate && bank.value.periodic_savings.startMonth == saving.startMonth && bank.value.periodic_savings.startYear == saving.startYear) {
       bank.value.periodic_savings.splice(i, 1);
+      return;
+    }
+  }
+}
+
+const removeSingleIO = function (saving) {
+  for (var i = 0; i < bank.value.single_in_out.length; i++) {
+    if ( bank.value.single_in_out[i].amount == saving.amount &&  bank.value.single_in_out[i].month == saving.month && bank.value.single_in_out[i].year == saving.year && bank.value.single_in_out[i].type == saving.type && bank.value.single_in_out[i].title == saving.title) {
+      bank.value.single_in_out.splice(i, 1);
       return;
     }
   }
