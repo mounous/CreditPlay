@@ -67,11 +67,11 @@
               </q-icon>
             </template>
           </q-input>
-          <q-input  dense class="q-mx-xs" style="max-width: 100px;" label="jusqu'à" bg-color="blue-grey-8" filled v-model="_savingP.startingDate" mask="date">
+          <q-input  class="q-mx-xs" dense style="max-width: 100px;" label="jusqu'à  " bg-color="blue-grey-8" filled v-model="_savingP.endDate" mask="date">
             <template v-slot:append>
               <q-icon name="event" class="cursor-pointer">
                 <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                  <q-date dark v-model="_savingP.startingDate" :locale="formatCalendar"
+                  <q-date dark v-model="_savingP.endDate" :locale="formatCalendar"
                     :navigation-min-year-month="periodicSaveMin" width="200px"
                     :navigation-max-year-month="periodicSaveMax">
                     <div class="row items-center justify-end">
@@ -126,6 +126,8 @@
             bg-color="blue-grey-8" outlined dense></q-input>
           <q-input class="q-mx-xs" label="nom" style="max-width:100px" maxlength="20" v-model="_single_io.title"
             type="text" bg-color="blue-grey-8" outlined dense></q-input>
+            <q-input class="q-mx-xs" label="rentabilité" style="max-width:100px" maxlength="8" v-model="_single_io.rate"
+            type="number" bg-color="blue-grey-8" outlined dense></q-input>
 
           <q-input  class="q-mx-xs" dense style="max-width:100px" label="date" bg-color="blue-grey-8" filled v-model="_single_io.startingDate" mask="date">
             <template v-slot:append>
@@ -152,8 +154,9 @@
               <tr>
 
                 <th span="1" style="width: 25%">nom</th>
-                <th span="1" style="width: 25%">type</th>
+                <th span="1" style="width: 12%">type</th>
                 <th span="1" style="width: 25%">montant</th>
+                <th span="1" style="width: 13%">rentabilité</th>
                 <th span="1" style="width: 25%">date</th>
               </tr>
             </thead>
@@ -178,28 +181,66 @@
 <script setup>
 import { bank } from 'stores/store';
 import { ref } from 'vue'
+import { useQuasar } from 'quasar';
+const $q = useQuasar();
 const _saving = ref({ title: '', amount: 0.0, rate: 0.0 });
-const _savingP = ref({  amount: 0.0, rate: 0.0, startMonth: 0, startYear: 0, endMonth: 0, endYear: 0, type: 'mensuelle', rate: 0,startingDate:'',endDate:'' });
-const _single_io =ref({title: '', type:'entrée', amount:0,year:0,month:0,date:''});
+const _savingP = ref({  amount: 0.0, rate: 0.0, startMonth: 0, startYear: 0, endMonth: 0, endYear: 0, type: 'mensuelle',startingDate:'',endDate:'' });
+const _single_io =ref({title: '', type:'entrée', amount:0,year:0,month:0,date:'',rate:0});
 var limitMonth = new Date().getFullYear().toString();
 var limitYear = (new Date().getMonth() + 1).toString().padStart(2, '0');
 var periodicSaveMin = ref(limitMonth + '/' + limitYear);
 var periodicSaveMax = ref('2100/01');
 
 const addElementToSavings = function () {
-  bank.value.savings.push({ title: _saving.value.title, amount: _saving.value.amount, rate: _saving.value.rate });
+  if(_saving.value.amount==0)
+  {
+    $q.notify({    color: 'orange-4',    textColor: 'black',    icon: 'warning',    message: 'Une épargne de 0€ n\'est pas une épargne',  });
+  }
+  else
+  {
+    bank.value.savings.push({ title: _saving.value.title, amount: _saving.value.amount, rate: _saving.value.rate });
+    _saving.value.title='';
+    _saving.value.amount=0.0;
+    _saving.value.rate=0.0;
+  }
 }
 const addElementToSavingsP = function () {
   var startY=Number(_savingP.value.startingDate.slice(0,4));
   var endY=Number(_savingP.value.endDate.slice(0,4));
   var startM=Number(_savingP.value.startingDate.slice(5,7));
   var endM=Number(_savingP.value.endDate.slice(5,7));
-  bank.value.periodic_savings.push({ amount: _savingP.value.amount, rate: _savingP.value.rate, type: _savingP.value.type, startMonth: startM, startYear: startY, endMonth: endM, endYear:endY });
+  if(_savingP.value.startingDate=='')
+  {
+    $q.notify({    color: 'orange-4',    textColor: 'black',    icon: 'warning',    message: 'Il faut renseigner une date de départ',  });
+  }
+  else if(_savingP.value.amount==0)
+  {
+    $q.notify({    color: 'orange-4',    textColor: 'black',    icon: 'warning',    message: 'Une épargne périodique de 0€ ne va rien rapporter',  });
+  }
+  else
+  {
+    bank.value.periodic_savings.push({ amount: _savingP.value.amount, rate: _savingP.value.rate, type: _savingP.value.type, startMonth: startM, startYear: startY, endMonth: endM, endYear:endY });
+    _savingP.value.amount=0.0; _savingP.value.rate=0.0; _savingP.value.startMonth=0; _savingP.value.startYear=0; _savingP.value.endMonth=0, _savingP.value.endYear=0; _savingP.value.type='mensuelle'; _savingP.value.startingDate='';_savingP.value.endDate='';
+  }
+
 }
 const addElementToSingleIO=function(){
   var Y=Number(_single_io.value.date.slice(0,4));
   var M=Number(_single_io.value.date.slice(5,7));
-  bank.value.single_in_out.push({title:_single_io.value.title,type:_single_io.value.type,amount:_single_io.value.amount,date:_single_io.value.date,month:M,year:Y});
+  if(_single_io.value.date=='')
+  {
+    $q.notify({    color: 'orange-4',    textColor: 'black',    icon: 'warning',    message: 'Il faut renseigner une date ! Sinon remplir l\'épargne !',  });
+  }
+  else if(_single_io.value.amount==0)
+  {
+    $q.notify({    color: 'orange-4',    textColor: 'black',    icon: 'warning',    message: 'Une entrée ou sortie d\'argent nulle n\'a pas d\'effet',  });
+  }
+  else
+  {
+    bank.value.single_in_out.push({title:_single_io.value.title,type:_single_io.value.type,amount:_single_io.value.amount,date:_single_io.value.date,month:M,year:Y,rate:_single_io.value.rate});
+    _single_io.value.title='';_single_io.value.amount=0;_single_io.value.type='entrée';_single_io.value.date='';_single_io.value.rate=0;
+  }
+
 }
 
 const removeSaving = function (saving) {
@@ -212,7 +253,7 @@ const removeSaving = function (saving) {
 }
 const removeSavingP = function (saving) {
   for (var i = 0; i < bank.value.periodic_savings.length; i++) {
-    if ( bank.value.periodic_savings[i].amount == saving.amount && bank.value.periodic_savings[i].rate == saving.rate && bank.value.periodic_savings.startMonth == saving.startMonth && bank.value.periodic_savings.startYear == saving.startYear) {
+    if ( bank.value.periodic_savings[i].amount == saving.amount && bank.value.periodic_savings[i].rate == saving.rate && bank.value.periodic_savings[i].startMonth == saving.startMonth && bank.value.periodic_savings[i].startYear == saving.startYear) {
       bank.value.periodic_savings.splice(i, 1);
       return;
     }
