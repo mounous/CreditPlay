@@ -129,7 +129,7 @@
             <q-input class="q-mx-xs" label="rentabilité" style="max-width:100px" maxlength="8" v-model="_single_io.rate"
             type="number" bg-color="blue-grey-8" outlined dense></q-input>
 
-          <q-input  class="q-mx-xs" dense style="max-width:100px" label="date" bg-color="blue-grey-8" filled v-model="_single_io.startingDate" mask="date">
+          <q-input  class="q-mx-xs" dense style="max-width:100px" label="date" bg-color="blue-grey-8" filled v-model="_single_io.date" mask="date">
             <template v-slot:append>
               <q-icon name="event" class="cursor-pointer">
                 <q-popup-proxy cover transition-show="scale" transition-hide="scale">
@@ -196,6 +196,10 @@ const addElementToSavings = function () {
   {
     $q.notify({    color: 'orange-4',    textColor: 'black',    icon: 'warning',    message: 'Une épargne de 0€ n\'est pas une épargne',  });
   }
+  else if(_saving.value.amount<0)
+  {
+    $q.notify({    color: 'orange-4',    textColor: 'black',    icon: 'warning',    message: 'Une dette n\'est pas une épargne',  });
+  }
   else
   {
     bank.value.savings.push({ title: _saving.value.title, amount: _saving.value.amount, rate: _saving.value.rate });
@@ -216,6 +220,10 @@ const addElementToSavingsP = function () {
   else if(_savingP.value.amount==0)
   {
     $q.notify({    color: 'orange-4',    textColor: 'black',    icon: 'warning',    message: 'Une épargne périodique de 0€ ne va rien rapporter',  });
+  }
+  else if(_savingP.value.amount<0)
+  {
+    $q.notify({    color: 'orange-4',    textColor: 'black',    icon: 'warning',    message: 'Une épargne négative n\'est pas un épargne',  });
   }
   else
   {
