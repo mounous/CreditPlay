@@ -7,7 +7,7 @@
       rounded
       outlined
       v-model="event_type"
-      :options="optionsType"
+      :options="optionsEvtType"
       label="choisir une action"
       @update:model-value="getopt"
     />
@@ -17,130 +17,65 @@
           class="evtTypeVal"
           rounded
           outlined
-          v-model="new_mens"
-          :options="options_mens"
+          v-model="modVal"
+          :options="options_mod"
           label="choisir une mensualité"
           :disable="
-            event_type != 'Augmenter mensualité' &&
-            event_type != 'Réduire mensualité'
+            event_type != optionsEvtType[0] &&
+            event_type != optionsEvtType[1]
           "
-          @update:model-value="sendPicked(validateEvtMens())"
+          @update:model-value="sendPicked(validateMod())"
         ></q-select>
       </div>
 
-      <div class="q-ma-md">
-        <q-select
-          class="evtTypeVal"
-          rounded
-          outlined
-          v-model="new_dur"
-          :options="options_years"
-          label="choisir une année de fin"
-          :disable="
-            event_type != 'Augmenter la durée' &&
-            event_type != 'Réduire la durée'
-          "
-          @update:model-value="sendPicked(validateEvtDur())"
-        ></q-select>
-      </div>
+
     </div>
   </div>
 </template>
 
 <script setup>
 import { ref, defineEmits } from 'vue';
-import {provideYearOptions,provideMensOptions,month_names} from '../pages/credit_utility.js'
-import { simu } from 'src/stores/store';
+import {provideModOptions,returnBaseData,optionsEvtType} from '../pages/credit_utility.js'
 const props = defineProps({yearOfEvent : Number,monthOfEvent:Number});
+
 console.log(props);
 var event_type = ref('Sélectionnez une action');
-var new_dur = ref('undefined');
-var new_mens = ref(-1);
-var end_y = ref(-1);
-var end_m = ref(-1);
+var modVal = ref('undefined');
+var mensDiff=ref(0);
+var new_mens=ref(0);
 const emit = defineEmits(['update-from-type-pick']);
-var options_mens = ref([]);
-var options_years = ref([]);
+var options_mod = ref([]);
 const getopt=function(){
-  options_years.value=provideYearOptions(event_type.value,props.yearOfEvent);
-  options_mens.value=provideMensOptions(event_type.value,props.yearOfEvent,props.monthOfEvent);
+  options_mod.value=provideModOptions(event_type.value,props.yearOfEvent,props.monthOfEvent);
 };
-const getSituation=function(year_event,month_event){
-  var i=0;
-  var capital_to_pay=0;
-  if(simu.value.events.length==0)
-  {
-    while (simu.value.credit.amort[i][0]!=month_names[month_event-1]+'-'+year_event.toString() && i<simu.value.credit.amort.length)
-    {
-      i++;
-    }
-    if(i==simu.value.credit.amort.length)
-    {
-      return '';
-    }
-    else
-    {
-      capital_to_pay=simu.value.credit.amort[i-1][1];
-    }
-  }
-  else
-  {
-    while(simu.value.events[simu.value.events.length-1].amortEvt[i][0]!=month_names[month_event-1]+'-'+year_event && i<simu.value.events[simu.value.events.length-1].amortEvt.length)
-    {
-      i++;
-    }
-    if(i==simu.value.events[simu.value.events.length-1].amortEvt.length)
-    {
-      return '';
-    }
-    else
-    {
-      capital_to_pay=simu.value.events[simu.value.events.length-1].amortEvt[i-1][1];
-    }
-  }
-  return capital_to_pay.toString();
-}
-var situationAtDate=ref(getSituation(props.yearOfEvent,props.monthOfEvent));
-var optionsType = [
-  'Augmenter mensualité',
-  'Réduire mensualité',
-  'Augmenter la durée',
-  'Réduire la durée',
-];
-const validateEvtMens = function () {
+
+var situationAtDate=ref(returnBaseData(props.yearOfEvent,props.monthOfEvent).capital_left.toString());
+
+const validateMod = function () {
   if (
-    (event_type.value == 'Augmenter mensualité' ||
-      event_type.value == 'Réduire mensualité') &&
-    new_mens.value != -1.0
+    (event_type.value == optionsEvtType[0] ||
+      event_type.value == optionsEvtType[1]) &&
+      modVal.value != 'undefined'
   ) {
-    end_y.value = Number(new_mens.value.split('(')[1].split(')')[0]);
-    end_m.value =props.monthOfEvent;
-    new_mens.value=Number(new_mens.value.split(' ')[0]);
-    new_dur.value = 'undefined';
-    return true;
-  }
-  return false;
-};
-const validateEvtDur = function () {
-  if (
-    (event_type.value == 'Augmenter la durée' ||
-      event_type.value == 'Réduire la durée') &&
-    new_dur.value != 'undefined'
-  ) {
-    end_y.value = Number(new_dur.value.split('(')[1].split(')')[0]);
-    end_m.value =props.monthOfEvent;
-    new_mens.value = -1;
+    mensDiff.value=Number(modVal.value.split('(')[1].split('mois')[0]);
+    new_mens.value=Number(modVal.value.split('€')[0])
     return true;
   }
   return false;
 };
 
+
 const sendPicked = function (bmove) {
   if (bmove) {
-    emit('update-from-type-pick', { type:event_type, mens:new_mens, dur:new_dur,end_year:end_y,end_month:end_m });
+    emit('update-from-type-pick', { type:event_type.value,modVal:modVal.value,mensDiff:mensDiff.value,new_mens:new_mens.value});
   }
 };
+
+
 </script>
+
+
+
 <style>
 .evtTypeVal {
   min-width: 180px;

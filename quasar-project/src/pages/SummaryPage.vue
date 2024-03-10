@@ -40,7 +40,7 @@ const beforemount=function() {
     {
       _id=i+1;
       _text1=' Mensualité : '+simu.value.events[i].new_mens.toString();
-      _text2=' fin de l\'emprunt : '+simu.value.events[i].end_month.toString()+'/'+simu.value.events[i].end_year.toString();
+      _text2=' fin de l\'emprunt : '+simu.value.events[i].amortEvt[simu.value.events[i].amortEvt.length-1][0];
       _text3=' coût total : '+simu.value.events[i].amortEvt[simu.value.events[i].amortEvt.length-1][2].toString();
       if(i==0)
       {

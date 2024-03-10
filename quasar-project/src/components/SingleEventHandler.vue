@@ -72,9 +72,8 @@ var event_ = ref({
   id: 1,
   selected: false,
   new_mens: -1.0,
-  new_dur: 'undefined',
-  end_year:0,
-  end_month:0,
+  mensDiff:0,
+  modVal:'',
   amortEvt: [],
 });
 const emit = defineEmits(['save-event']);
@@ -134,17 +133,10 @@ const validateEvtMonth=function(val) {
 };
 
 const updateFromPicker=function(evtDataFromPicker){
-  event_.value['type']=evtDataFromPicker['type'].value;
-  event_.value['end_year']=evtDataFromPicker['end_year'].value;
-  event_.value['end_month']=evtDataFromPicker['end_month'].value;
-  if(event_.value['type']=='Augmenter mensualité'||event_.value['type']== 'Réduire mensualité')
-  {
-    event_.value['new_mens']=evtDataFromPicker['mens'].value;
-  }
-  else if (event_.value['type']=='Augmenter la durée'||event_.value['type']== 'Réduire la durée')
-  {
-    event_.value['new_dur']=evtDataFromPicker['dur'].value;
-  }
+  event_.value['type']=evtDataFromPicker['type'];
+  event_.value['modVal']=evtDataFromPicker['modVal'];
+  event_.value['mensDiff']=evtDataFromPicker['mensDiff'];
+  event_.value['new_mens']=evtDataFromPicker['new_mens'];
   event_.value['selected']=false;
   console.log(evtDataFromPicker);
 };

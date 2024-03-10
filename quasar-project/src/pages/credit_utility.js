@@ -1,5 +1,6 @@
 
 import { simu } from 'src/stores/store';
+import { escapeLeadingUnderscores } from 'typescript';
 const computeMensuality = () => {
   simu.value.credit.mensuality=computeMensuality_noSave(simu.value.credit.year,simu.value.credit.rate,simu.value.credit.amount);
 };
@@ -139,16 +140,7 @@ const apply_events_chain=()=>{
       if(i==0)//first event : capital left to pay based on int simu
       {
         nb_mens_spent=get_nb_mens_diff(Number(simu.value.credit.startingDate.slice(0,4)),Number(simu.value.credit.startingDate.slice(5,7)),simu.value.events[i].year,simu.value.events[i].month);
-        nb_mens_to_pay=get_nb_mens_diff(simu.value.events[i].year,simu.value.events[i].month,simu.value.events[i].end_year,simu.value.events[i].end_month);
-        if(simu.value.events[i].type=='Augmenter mensualité' || simu.value.events[i].type=='Réduire mensualité')
-        {
-          mens=simu.value.events[i].new_mens;
-        }
-        else
-        {
-          mens=computeMensuality_noSave_Months(nb_mens_to_pay,simu.value.credit.rate,simu.value.credit.amort[nb_mens_spent-1][1]);
-          simu.value.events[i].new_mens=mens;
-        }
+        nb_mens_to_pay=simu.value.credit.year*12-nb_mens_spent+simu.value.events[i].mensDiff;
         var j=0;
         while(j<simu.value.credit.amort.length && simu.value.credit.amort[j][0]!=(simu.value.events[i].month_str+'-'+simu.value.events[i].year_str))
         {
@@ -157,7 +149,7 @@ const apply_events_chain=()=>{
         }
         //extract total interests paid just before the modulation
         const interests_paid_before_mod=simu.value.credit.amort[j-1][2];
-        var specific_amort=computeAmort(simu.value.events[i].year,simu.value.events[i].month,simu.value.credit.amort[nb_mens_spent-1][1],nb_mens_to_pay,mens);
+        var specific_amort=computeAmort(simu.value.events[i].year,simu.value.events[i].month,simu.value.credit.amort[nb_mens_spent-1][1],nb_mens_to_pay,simu.value.events[i].new_mens);
         var k=0;
         while(k<specific_amort[0].length)
         {
@@ -169,16 +161,7 @@ const apply_events_chain=()=>{
       else//capital left to pay based on previous event
       {
         nb_mens_spent=get_nb_mens_diff(Number(simu.value.credit.startingDate.slice(0,4)),Number(simu.value.credit.startingDate.slice(5,7)),simu.value.events[i].year,simu.value.events[i].month);
-        nb_mens_to_pay=get_nb_mens_diff(simu.value.events[i].year,simu.value.events[i].month,simu.value.events[i].end_year,simu.value.events[i].end_month);
-        if(simu.value.events[i].type=='Augmenter mensualité' || simu.value.events[i].type=='Réduire mensualité')
-        {
-          mens=simu.value.events[i].new_mens;
-        }
-        else
-        {
-          mens=computeMensuality_noSave_Months(nb_mens_to_pay,simu.value.credit.rate,simu.value.events[i-1].amortEvt[nb_mens_spent-1][1]);
-          simu.value.events[i].new_mens=mens;
-        }
+        nb_mens_to_pay=simu.value.events[i-1].amortEvt.length-nb_mens_spent +simu.value.events[i].mensDiff;
         var j=0;
         while(j<simu.value.events[i-1].amortEvt.length && simu.value.events[i-1].amortEvt[j][0]!=(simu.value.events[i].month_str+'-'+simu.value.events[i].year_str))
         {
@@ -187,7 +170,7 @@ const apply_events_chain=()=>{
         }
         //extract total interests paid just before the modulation
         const interests_paid_before_mod=simu.value.events[i-1].amortEvt[j-1][2];
-        var specific_amort=computeAmort(simu.value.events[i].year,simu.value.events[i].month,simu.value.events[i-1].amortEvt[nb_mens_spent-1][1],nb_mens_to_pay,mens);
+        var specific_amort=computeAmort(simu.value.events[i].year,simu.value.events[i].month,simu.value.events[i-1].amortEvt[nb_mens_spent-1][1],nb_mens_to_pay,simu.value.events[i].new_mens);
         var k=0;
         while(k<specific_amort[0].length)
         {
@@ -199,37 +182,7 @@ const apply_events_chain=()=>{
     }
   }
 }
-const provideYearOptions=(evt_type_in,evt_year_in)=>{
-  var origin_y =simu.value.credit.year;
-  if(simu.value.events.length==0)
-  {
-    var origin_full_date=Number(simu.value.credit.startingDate.slice(0,4));
-    var origin_end_date=origin_full_date+Number(origin_y);
-  }
-  else
-  {
-    var origin_end_date=simu.value.events[simu.value.events.length-1].end_year;
 
-  }
-  var toreturn=[];
-  if(evt_type_in=='Augmenter la durée')
-  {
-    toreturn.push('1 an ('+(origin_end_date+1).toString()+')');
-    for(let i=2;i<origin_y;i++)//multiply by two the length of credit maximum
-    {
-        toreturn.push(i.toString()+' ans ('+(origin_end_date+i).toString()+')');
-    }
-  }
-  else if(evt_type_in=='Réduire la durée')
-  {
-    toreturn.push('1 an ('+(origin_end_date-1).toString()+')');
-    for(let i=2;i<(origin_end_date-evt_year_in);i++) //cannot decrease more than current event year
-    {
-      toreturn.push(i.toString()+' ans ('+(origin_end_date-i).toString()+')');
-    }
-  }
-  return toreturn;
-};
 //returns the last event end date and amort at input date if events were saved
 //or the origin end date and amort at the input date if no events were saved
 const returnBaseData=(evt_year_in_fmt,evt_month_in_fmt)=>{
@@ -246,7 +199,15 @@ const returnBaseData=(evt_year_in_fmt,evt_month_in_fmt)=>{
     {
       return {end_year:0,end_month:0,capital_left:0};
     }
-    return {end_year:event_.end_year,end_month:event_.end_month,capital_left:event_.amortEvt[index-1][1]};
+    var endDate=event_.amortEvt[event_.amortEvt.length-1][0]
+    var e_m=getMonthNbr(endDate.split('-')[0])+1;
+    var e_y=Number(endDate.split('-')[1]);
+    if(e_m==13)
+    {
+      e_y++;
+      e_m=1;
+    }
+    return {end_year:e_y,end_month:e_m,capital_left:event_.amortEvt[index-1][1]};
   }
   else
   {
@@ -255,31 +216,35 @@ const returnBaseData=(evt_year_in_fmt,evt_month_in_fmt)=>{
     return {end_year:origin_end_year,end_month:origin_start_month,capital_left:simu.value.credit.amort[index-1][1]};
   }
 }
-const provideMensOptions=(evt_type_in,evt_year_in,evt_month_in)=>{
+const provideModOptions=(evt_type_in,evt_year_in,evt_month_in)=>{
   var toreturn =[];
   var ret=returnBaseData(evt_year_in,evt_month_in);
   console.log(ret);
   var mensualities_to_end=0;
-  if(evt_type_in=='Augmenter mensualité')
+  mensualities_to_end=get_nb_mens_diff(evt_year_in,evt_month_in,ret.end_year,ret.end_month);
+  if(mensualities_to_end>=0)
   {
-    for(let i=1;i<(ret.end_year-evt_year_in);i++)
+    if(evt_type_in==optionsEvtType[1])//duree - mens +
     {
-      //compute mensualities left
-      mensualities_to_end=get_nb_mens_diff(evt_year_in,evt_month_in,ret.end_year-i,ret.end_month);
-      console.log(mensualities_to_end);
-      toreturn.push((Math.round(computeMensuality_noSave_Months(mensualities_to_end,simu.value.credit.rate,ret.capital_left)*100)/100).toString() +' ('+(ret.end_year-i).toString()+')');
+      for(let i=1;i<mensualities_to_end;i++)
+      {
+        toreturn.push((Math.round(computeMensuality_noSave_Months(mensualities_to_end-i,simu.value.credit.rate,ret.capital_left)*100)/100).toString() +'€ (-'+i.toString()+' mois)');
+      }
     }
+    else if(evt_type_in==optionsEvtType[0])//duree+ mens -
+    {
+      for(let i=1;i<mensualities_to_end;i++)//max twince the duration
+      {
+        toreturn.push((Math.round(computeMensuality_noSave_Months(mensualities_to_end+i,simu.value.credit.rate,ret.capital_left)*100)/100).toString() +'€ (+'+i.toString()+' mois)');
+      }
+    }
+    return toreturn;
   }
-  else if(evt_type_in=='Réduire mensualité')
+  else
   {
-    for(let i=1;i<simu.value.credit.year;i++)//max twince the duration
-    {
-      mensualities_to_end=get_nb_mens_diff(evt_year_in,evt_month_in,ret.end_year+i,ret.end_month);
-      console.log(mensualities_to_end);
-      toreturn.push((Math.round(computeMensuality_noSave_Months(mensualities_to_end,simu.value.credit.rate,ret.capital_left)*100)/100).toString() +' ('+(ret.end_year+i).toString()+')');
-    }
+    toreturn.push('Credit terminé à la date de l\'évènement');
   }
-  return toreturn;
+
 }
 const getChartXAxis=()=>{
   if(simu.value.events.length!=0)
@@ -311,4 +276,8 @@ const getChartXAxis=()=>{
     return simu.value.credit.amort;
   }
 }
-export { computeMensuality, computeCredit_init, month_names, sortEvents,provideYearOptions ,provideMensOptions,apply_events_chain,getMonthNbr,getChartXAxis};
+var optionsEvtType = [
+  'Augmenter la durée - réduire la mensualité',
+  'Réduire la durée - augmenter la mensualité',
+];
+export { computeMensuality, computeCredit_init, month_names, sortEvents,provideModOptions,apply_events_chain,getMonthNbr,getChartXAxis,optionsEvtType,returnBaseData};
