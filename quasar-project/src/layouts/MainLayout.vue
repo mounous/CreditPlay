@@ -8,7 +8,7 @@
         <q-route-tab name="start" label="crédit" nocaps icon="feed" to="/" />
         <q-route-tab name="events" label="Modulation" icon="toc" to="/events" :disable="initFormDone==false"/>
         <q-route-tab name="summary" label="résumé" icon="money" to="/summary" :disable="initFormDone==false"/>
-        <q-route-tab name="chart" label="graphique" icon="bar_chart" to="/lineChart" :disable="initFormDone==false"/>
+        <q-route-tab name="chart" label="graphique" icon="bar_chart" to="/lineChart" :disable="initFormDone==false&&bankDone==false"/>
         <q-route-tab name="save" label="épargne" icon="account_balance" to="/bank"/>
         <q-route-tab name="memory" label="Mémoire" icon="import_export" to="/memory"/>
         <q-route-tab name="help" label="aide" icon="help" to="/help"/>
@@ -26,18 +26,28 @@
 
 <script setup lang="ts">
 
-//import { useI18n } from 'vue-i18n'
 
 import { ref,watch } from 'vue';
-import {startFormFilled} from 'stores/store'
-import { simu } from 'stores/store';
-//const  {t} = useI18n();
-//const label_cred=ref(t('cred'));
+
+import { simu,bank,startFormFilled } from 'stores/store';
 var tab=ref('start');
 var  initFormDone =ref(false);
+var bankDone=ref(false);
 const setInitDone=function(b_in:boolean){
   initFormDone.value=b_in};
+const setbankdone=function()
+{
+  if(bank.value.savings.length!=0 || bank.value.periodic_savings.length!=0 || bank.value.single_in_out.length!=0)
+  {
+    bankDone.value=true;
+  }
+  else
+  {
+    bankDone.value=false;
+  }
+}
 watch(startFormFilled,setInitDone);
+watch(bank.value,setbankdone);
 if (simu.value.credit.amount==0) {
   simu.value.credit.amount= 176000;
 }

@@ -182,6 +182,7 @@
 import { bank } from 'stores/store';
 import { ref } from 'vue'
 import { useQuasar } from 'quasar';
+import { formatCalendar } from './calendar_utility';
 const $q = useQuasar();
 const _saving = ref({ title: '', amount: 0.0, rate: 0.0 });
 const _savingP = ref({  amount: 0.0, rate: 0.0, startMonth: 0, startYear: 0, endMonth: 0, endYear: 0, type: 'mensuelle',startingDate:'',endDate:'' });
@@ -276,23 +277,7 @@ const removeSingleIO = function (saving) {
     }
   }
 }
-/*
-const columns_savings=[
-  {name:'name1',align:'center',label:'nom',field:row=>row.title,required:true,style:'width: 100px',sortable:false},
-  {name:'name2',align:'center',label:'montant',field:row=>row.amount,required:true,style:'width: 80px',sortable:false},
-  {name:'name3',align:'center',label:'rentabilité',field:row=>row.rate,required:true,style:'width: 50px',sortable:false},
-  {name:'name4',align:'center',label:'X',field:row=>row.title,required:true,style:'width: 20px',sortable:false},
-];*/
-var formatCalendar = {
-  /* starting with Sunday */
-  days: 'Dimanche_lundi_Mardi_Mercredi_Jeudi_Vendredi_Samedi'.split('_'),
-  daysShort: 'Dim_Lun_Mar_Mer_Jeu_Ven_Sam'.split('_'),
-  months: 'Janvier_Fevrier_Mars_Avril_mai_Juin_Juillet_Aout_Septembre_Octobre_Novembre_Decembre'.split('_'),
-  monthsShort: 'jan_Fev_Mar_Avr_Mai_Jui_Jui_Aou_Sep_Oct_Nov_Dec'.split('_'),
-  firstDayOfWeek: 1, // 0-6, 0 - Sunday, 1 Monday, ...
-  format24h: true,
-  pluralDay: 'jours'
-};
+
 </script>
 
 
