@@ -54,7 +54,8 @@
 <script setup>
 
 import { ref ,defineEmits} from 'vue';
-import { month_names, apply_events_chain,getMonthNbr } from '../pages/credit_utility.js';
+import { month_names,getMonthNbr } from '../pages/date_utility.js';
+import {  apply_events_chain } from '../pages/credit_utility.js';
 import SingleEventTypePicker from './SingleEventTypePicker.vue';
 import { simu } from 'stores/store';
 const carouselElement=ref(null);

@@ -17,7 +17,8 @@ import VueApexCharts from 'vue3-apexcharts'
 import { onBeforeMount } from 'vue';
 import {getChartXAxis} from '../pages/credit_utility'
 import{ getFormatedCategories} from '../pages/chart_utility'
-import { simu } from 'stores/store';
+import { simu,bank } from 'stores/store';
+import { onMounted } from 'vue';
 const getEvents=function(){
   if(simu.value.events.length!=0)
   {
@@ -36,15 +37,47 @@ const getEvents=function(){
     }
   }
 }
+const getBanking=function(){
+  if(bank.value.monthly_sum.length!=0)
+  {
+    for(var i=0;i<bank.value.monthly_sum.length;i++)
+    {
+      series.push({name:'savings',data:Math.round(bank.value.monthly_sum[i][1]*100)/100});
+    }
+  }
+}
 onBeforeMount(getEvents);
 const getTime = function () {
   const amort_arr = getChartXAxis();
   var xAxisUp2Date = [];
-  for (var i = 0; i < amort_arr.length; i++) {
-    xAxisUp2Date.push(amort_arr[i][0]);
+  if(simu.value.credit.amort.length!=0)//credit scale even if savings entries starting after credit ends
+  {
+    const amort_arr = getChartXAxis();
+
+    for (var i = 0; i < amort_arr.length; i++) {
+      xAxisUp2Date.push(amort_arr[i][0]);
+    }
+    return xAxisUp2Date;
+  }
+  return new Date();
+}
+
+
+const getBankTime=function(){
+  var xAxisUp2Date=[];
+  if(bank.value.monthly_sum.length!=0)
+  {
+    for(var i=0;i<bank.value.monthly_sum.length;i++)
+    {
+      xAxisUp2Date.push(bank.value.monthly_sum[i][0]);
+    }
   }
   return xAxisUp2Date;
-};
+}
+onMounted(getBankTime);
+
+
+
 const getAmount = function () {
   var seriesUp2Date = [];
   for (var i = 0; i < simu.value.credit.amort.length; i++) {
