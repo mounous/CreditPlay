@@ -231,4 +231,28 @@ var optionsEvtType = [
   'Augmenter la durée - réduire la mensualité',
   'Réduire la durée - augmenter la mensualité',
 ];
-export { computeMensuality, computeCredit_init,  sortEvents,provideModOptions,apply_events_chain,getChartXAxis,optionsEvtType,returnBaseData};
+
+const getLatestMensuality=function(){
+  var latest_year=Number(simu.value.credit.startingDate.split('/')[0])+Number(simu.value.credit.year);
+  var latest_month=Number(simu.value.credit.startingDate.split('/')[1]);
+  var evt_latest_y=0;
+  var evt_latest_m=0;
+  if(simu.value.events.length!=0)
+  {
+    for(var i=0;i<simu.value.events.length;i++)
+    {
+      evt_latest_y=Number(simu.value.events[i].amortEvt[simu.value.events[i].amortEvt.length-1][0].split('-')[1]);
+      if(evt_latest_y>latest_year)
+      {
+        latest_year=evt_latest_y;
+        evt_latest_m=Number(simu.value.events[i].amortEvt[simu.value.events[i].amortEvt.length-1][0].split('-')[0]);
+        if(evt_latest_m>latest_month)
+        {
+          latest_month=evt_latest_m;
+        }
+      }
+    }
+  }
+  return {l_y:latest_year,l_m:latest_month};
+}
+export { computeMensuality, computeCredit_init,  sortEvents,provideModOptions,apply_events_chain,getChartXAxis,optionsEvtType,returnBaseData,getLatestMensuality};

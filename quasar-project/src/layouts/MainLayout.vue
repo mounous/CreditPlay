@@ -27,7 +27,7 @@
 <script setup lang="ts">
 
 
-import { ref,watch } from 'vue';
+import { ref, watch } from 'vue';
 
 import { simu,bank,startFormFilled } from 'stores/store';
 var tab=ref('start');

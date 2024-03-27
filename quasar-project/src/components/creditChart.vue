@@ -6,7 +6,18 @@
       width=100%
       :options="chartOptions"
       :series="series"
+      :key="mustPop"
     ></VueApexCharts>
+    <q-dialog v-model="mustPop">
+      <q-card>
+        <div class="q-ma-xl col flex flex-center">
+          Aucun crédit n'a été renseigné, mais certaines économies oui. Les premières économies ont été renseignées pour
+          le {{ graphMinDate }}. Sur combien d'anées afficher les économies ?
+          <q-select v-model="nbYearDisplaySavings" dense bg-color="blue-grey-8" :options="optionYears"
+            @update:model-value="sendSavingComputationOrder"></q-select>
+        </div>
+      </q-card>
+    </q-dialog>
   </q-page>
 
 </template>
@@ -14,11 +25,12 @@
 <script setup>
 
 import VueApexCharts from 'vue3-apexcharts'
-import { onBeforeMount } from 'vue';
-import {getChartXAxis} from '../pages/credit_utility'
+import { onBeforeMount,ref } from 'vue';
+import {getChartXAxis,getLatestMensuality} from '../pages/credit_utility'
 import{ getFormatedCategories} from '../pages/chart_utility'
-import { simu,bank } from 'stores/store';
-import { onMounted } from 'vue';
+import { simu,bank, startFormFilled } from 'stores/store';
+import {getSavingsEarlier,computeDisplaySavings} from '../pages/bank_utility'
+var mustPop = ref(false)
 const getEvents=function(){
   if(simu.value.events.length!=0)
   {
@@ -36,14 +48,28 @@ const getEvents=function(){
 
     }
   }
+  if(bank.value.periodic_savings.length!=0 || bank.value.savings.length!=0 || bank.value.single_in_out.length!=0)//if some banking data exist, compute banking from credit start to the latest mensuality, potentially after a modulation
+  {
+    if(nbYearDisplaySavings.value==0)//there was no popup to ask for the display of saving duration
+    {
+      var bank_compute_start_y=Number(simu.value.credit.startingDate.split('/')[0]);
+      var bank_compute_start_m=Number(simu.value.credit.startingDate.split('/')[1]);
+      var Number_of_years_to_compute=getLatestMensuality().l_y-bank_compute_start_y;
+      computeDisplaySavings(bank_compute_start_y,bank_compute_start_m,Number_of_years_to_compute);
+      getBanking();
+    }
+
+  }
 }
 const getBanking=function(){
   if(bank.value.monthly_sum.length!=0)
   {
+    var exctractedSavings=[];
     for(var i=0;i<bank.value.monthly_sum.length;i++)
     {
-      series.push({name:'savings',data:Math.round(bank.value.monthly_sum[i][1]*100)/100});
+      exctractedSavings.push(Math.round(bank.value.monthly_sum[i][1]*100)/100);
     }
+    series.push({name:'savings',data:exctractedSavings});
   }
 }
 onBeforeMount(getEvents);
@@ -59,7 +85,8 @@ const getTime = function () {
     }
     return xAxisUp2Date;
   }
-  return new Date();
+  //return new Date();
+  return xAxisUp2Date;
 }
 
 
@@ -72,11 +99,11 @@ const getBankTime=function(){
       xAxisUp2Date.push(bank.value.monthly_sum[i][0]);
     }
   }
-  return xAxisUp2Date;
+  chartOptions.xaxis.categories=xAxisUp2Date;
 }
-onMounted(getBankTime);
 
 
+//onUpdated(getBankTime);
 
 const getAmount = function () {
   var seriesUp2Date = [];
@@ -166,4 +193,35 @@ var chartOptions = {
 //https://apexcharts.com/docs/annotations/
 //https://apexcharts.com/docs/annotations/
 
+var nbYearDisplaySavings=ref('0');
+var graphMinDate = ref('1900/01');
+const sendSavingComputationOrder=function()
+{
+  computeDisplaySavings(getSavingsEarlier()[1],getSavingsEarlier()[0],Number(nbYearDisplaySavings.value));
+  getBanking();
+  getBankTime();
+  mustPop.value=false;
+}
+const getoptionSavingGraphDisplayY=function()
+{
+  var toreturn=[];
+  for(var i=0;i<100;i++)
+  {
+    toreturn.push(i.toString());
+  }
+  return toreturn;
+}
+var optionYears=ref(getoptionSavingGraphDisplayY());
+
+
+const getPopObligation = function () {
+  if ((bank.value.savings.length != 0 || bank.value.periodic_savings.length != 0 || bank.value.single_in_out.length != 0) && (startFormFilled.value != true)) {
+    mustPop.value = true;
+    graphMinDate.value=getSavingsEarlier()[1].toString()+'/'+getSavingsEarlier()[0].toString();
+  }
+  else {
+    mustPop.value = false;
+  }
+}
+onBeforeMount(getPopObligation);
 </script>

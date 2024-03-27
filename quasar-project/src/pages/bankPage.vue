@@ -244,6 +244,10 @@ const addElementToSingleIO=function(){
   {
     $q.notify({    color: 'orange-4',    textColor: 'black',    icon: 'warning',    message: 'Une entrée ou sortie d\'argent nulle n\'a pas d\'effet',  });
   }
+  else if(_single_io.value.type=='sortie'&& _single_io.value.rate!=0)
+  {
+    $q.notify({    color: 'orange-4',    textColor: 'black',    icon: 'warning',    message: 'les sorties d\'argent avec un taux non nul ne sont pas gérées',  });
+  }
   else
   {
     bank.value.single_in_out.push({title:_single_io.value.title,type:_single_io.value.type,amount:_single_io.value.amount,date:_single_io.value.date,month:M,year:Y,rate:_single_io.value.rate});
