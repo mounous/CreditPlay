@@ -29,9 +29,10 @@ import { onBeforeMount,ref } from 'vue';
 import {getChartXAxis,getLatestMensuality} from '../pages/credit_utility'
 import{ getFormatedCategories} from '../pages/chart_utility'
 import { simu,bank, startFormFilled } from 'stores/store';
-import {getSavingsEarlier,computeDisplaySavings} from '../pages/bank_utility'
+import {getSavingsEarlier,computeDisplaySavings,hasSavings} from '../pages/bank_utility'
 var mustPop = ref(false)
 const getEvents=function(){
+  //if some events were entered, then process them
   if(simu.value.events.length!=0)
   {
     for(var i=0;i<simu.value.events.length;i++)
@@ -48,7 +49,8 @@ const getEvents=function(){
 
     }
   }
-  if(bank.value.periodic_savings.length!=0 || bank.value.savings.length!=0 || bank.value.single_in_out.length!=0)//if some banking data exist, compute banking from credit start to the latest mensuality, potentially after a modulation
+  //if a credit has already been computed, then display potential savings on the interval [credit start...Credit longest duration]
+  if( startFormFilled.value==true && hasSavings())//if some banking data exist, compute banking from credit start to the latest mensuality, potentially after a modulation
   {
     if(nbYearDisplaySavings.value==0)//there was no popup to ask for the display of saving duration
     {
@@ -58,8 +60,8 @@ const getEvents=function(){
       computeDisplaySavings(bank_compute_start_y,bank_compute_start_m,Number_of_years_to_compute);
       getBanking();
     }
-
   }
+  //otherwise, the user will be aked in popup on how many years the savings have to be displayed
 }
 const getBanking=function(){
   if(bank.value.monthly_sum.length!=0)
@@ -74,7 +76,6 @@ const getBanking=function(){
 }
 onBeforeMount(getEvents);
 const getTime = function () {
-  const amort_arr = getChartXAxis();
   var xAxisUp2Date = [];
   if(simu.value.credit.amort.length!=0)//credit scale even if savings entries starting after credit ends
   {
@@ -99,7 +100,8 @@ const getBankTime=function(){
       xAxisUp2Date.push(bank.value.monthly_sum[i][0]);
     }
   }
-  chartOptions.xaxis.categories=xAxisUp2Date;
+  //chartOptions.xaxis.categories=xAxisUp2Date;
+  return xAxisUp2Date;
 }
 
 
@@ -160,7 +162,7 @@ var chartOptions = {
       fontSize: '75px',
     },
     //stepSize:40,
-    overwriteCategories:getFormatedCategories(getTime(),10),
+    overwriteCategories:getFormatedCategories(startFormFilled.value==true ? getTime():getBankTime(),10),
     labels:{
       style:{
         fontSize:'13px',
@@ -197,9 +199,11 @@ var nbYearDisplaySavings=ref('0');
 var graphMinDate = ref('1900/01');
 const sendSavingComputationOrder=function()
 {
-  computeDisplaySavings(getSavingsEarlier()[1],getSavingsEarlier()[0],Number(nbYearDisplaySavings.value));
+  var earlierY=getSavingsEarlier()[1];
+  var earlierM=getSavingsEarlier()[0];
+  computeDisplaySavings(earlierY,earlierM,Number(nbYearDisplaySavings.value));
   getBanking();
-  getBankTime();
+  chartOptions.xaxis.categories=getBankTime();
   mustPop.value=false;
 }
 const getoptionSavingGraphDisplayY=function()
@@ -215,7 +219,7 @@ var optionYears=ref(getoptionSavingGraphDisplayY());
 
 
 const getPopObligation = function () {
-  if ((bank.value.savings.length != 0 || bank.value.periodic_savings.length != 0 || bank.value.single_in_out.length != 0) && (startFormFilled.value != true)) {
+  if (hasSavings() && (startFormFilled.value != true)) {
     mustPop.value = true;
     graphMinDate.value=getSavingsEarlier()[1].toString()+'/'+getSavingsEarlier()[0].toString();
   }

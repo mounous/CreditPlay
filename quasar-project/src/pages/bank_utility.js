@@ -21,6 +21,19 @@ const isPeriodicConcerned=function(currentY,currentM,periodic_saving_index)
   }
   return true;
 }
+const hasPeriodicEnded=function(currentY,currentM,periodic_saving_index)
+{
+  if(bank.value.periodic_savings.length<periodic_saving_index)
+  {
+    return false;
+  }
+  //1 has the periodic saving ended ?
+  if(bank.value.periodic_savings[periodic_saving_index].endYear*12+bank.value.periodic_savings[periodic_saving_index].endMonth>currentY*12+currentM)
+  {
+    return true;
+  }
+  return false;
+}
 const isSingleIOConcerned=function(currentY,currentM,singleIO_index)
 {
   //undefined single io not treated
@@ -36,10 +49,12 @@ const isSingleIOConcerned=function(currentY,currentM,singleIO_index)
   return true;
 
 }
+const DEFAULT_SAVINGS_EARLIER_MONTH=12;
+const DEFAULT_SAVINGS_EARLIER_YEAR=1290;
 const getSavingsEarlier=function()
 {
-  var savingsEarlierY=2100;
-  var savingsEarlierM=12;
+  var savingsEarlierY=DEFAULT_SAVINGS_EARLIER_YEAR;
+  var savingsEarlierM=DEFAULT_SAVINGS_EARLIER_MONTH;
   for(var i=0;i<bank.value.periodic_savings.length;i++)
   {
     if(bank.value.periodic_savings[i].startYear<=savingsEarlierY)
@@ -62,7 +77,14 @@ const getSavingsEarlier=function()
       }
     }
   }
+  if(savingsEarlierY==DEFAULT_SAVINGS_EARLIER_YEAR && savingsEarlierM==DEFAULT_SAVINGS_EARLIER_MONTH)
+  {
+    return[new Date().getMonth()+1,new Date().getFullYear()];
+  }
   return [savingsEarlierM,savingsEarlierY];
+}
+const hasSavings=function(){
+  return (bank.value.periodic_savings.length!=0 || bank.value.savings.length!=0 || bank.value.single_in_out.length!=0);
 }
 const computeDisplaySavings=function(startY,startM,durationY)
 {
@@ -121,7 +143,7 @@ const computeDisplaySavings=function(startY,startM,durationY)
       //periodic savings
       for(var ps=0;ps<bank.value.periodic_savings.length;ps++)
       {
-        if( isPeriodicConcerned(currentY,currentM,ps))
+        if( isPeriodicConcerned(currentY,currentM,ps)||hasPeriodicEnded(currentY,currentM,ps))
         {
           if(Number(bank.value.periodic_savings[ps].rate)!=0)
           {
@@ -163,9 +185,11 @@ const computeDisplaySavings=function(startY,startM,durationY)
           fictive_p_accounts[k]+=Number(bank.value.periodic_savings[k].amount);
           fictive_p_average[k]+=fictive_p_accounts[k];
           fictive_p_avg_month_spent[k]++;
-          total_savings+=fictive_p_accounts[k];
+
         }
       }
+
+      total_savings+=fictive_p_accounts[k];
     }
     //single IOs
     for(var l=0;l<bank.value.single_in_out.length;l++)
@@ -193,4 +217,4 @@ const computeDisplaySavings=function(startY,startM,durationY)
   }
 }
 
-export { getSavingsEarlier,computeDisplaySavings};
+export { getSavingsEarlier,computeDisplaySavings,hasSavings,hasPeriodicEnded};
