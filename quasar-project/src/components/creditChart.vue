@@ -156,13 +156,13 @@ var chartOptions = {
   },
 
   xaxis: {
-    categories: getTime(),
+    categories: getFormatedCategories(getTime(),10),
     hideOverlappingLabels: true,
     style: {
       fontSize: '75px',
     },
     //stepSize:40,
-    overwriteCategories:getFormatedCategories(startFormFilled.value==true ? getTime():getBankTime(),10),
+    //overwriteCategories:getFormatedCategories(startFormFilled.value==true ? getTime():getBankTime(),10),
     labels:{
       style:{
         fontSize:'13px',
@@ -203,7 +203,8 @@ const sendSavingComputationOrder=function()
   var earlierM=getSavingsEarlier()[0];
   computeDisplaySavings(earlierY,earlierM,Number(nbYearDisplaySavings.value));
   getBanking();
-  chartOptions.xaxis.categories=getBankTime();
+  chartOptions.xaxis.categories=getFormatedCategories(getBankTime(),10);
+  //chartOptions.xaxis.categories=getBankTime();
   mustPop.value=false;
 }
 const getoptionSavingGraphDisplayY=function()
