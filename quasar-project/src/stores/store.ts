@@ -6,6 +6,7 @@ export const startFormFilled=ref(false);
 export const setStartFormFilled=function(bool_filled:boolean){startFormFilled.value=bool_filled};
 export const simu=ref({
   credit:{
+    has_been_rebougth:false,
     mensuality:0,
     amount:0,
     year:0,

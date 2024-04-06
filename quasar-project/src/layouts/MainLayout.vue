@@ -6,7 +6,7 @@
         class="footer-bg text-white shadow-2 gutter"
       >
         <q-route-tab name="start" label="crédit" nocaps icon="feed" to="/" />
-        <q-route-tab name="events" label="Modulation" icon="toc" to="/events" :disable="initFormDone==false"/>
+        <q-route-tab name="events" label="Opérations" icon="toc" to="/events" :disable="initFormDone==false"/>
         <q-route-tab name="summary" label="résumé" icon="money" to="/summary" :disable="initFormDone==false"/>
         <q-route-tab name="chart" label="graphique" icon="bar_chart" to="/lineChart" :disable="initFormDone==false&&bankDone==false" />
         <q-route-tab name="save" label="épargne" icon="account_balance" to="/bank"/>

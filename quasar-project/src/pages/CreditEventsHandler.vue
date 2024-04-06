@@ -28,6 +28,7 @@
       color="primary"
       label="Ajouter"
       @click="addeventactive = true"
+      :disable="hasBeenRebougthSavings()"
     />
 
     <q-btn
@@ -36,6 +37,7 @@
       color="primary"
       label="supprimer"
       @click="deleteEvents"
+      :disable="simu.events.length==0"
     />
     <q-dialog v-model="addeventactive">
       <!--https://v0-14.quasar-framework.org/components/building-reusable-components.html-->
@@ -55,6 +57,7 @@ import { ref } from 'vue';
 import SingleEventHandler from '../components/SingleEventHandler.vue';
 import { useRouter } from 'vue-router';
 import { simu } from 'stores/store';
+import {hasBeenRebougthSavings} from './credit_utility'
 const router = useRouter();
 const $q = useQuasar();
 var refresh=ref(0);

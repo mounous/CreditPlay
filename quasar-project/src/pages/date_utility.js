@@ -16,7 +16,7 @@ const month_names = [
 ];
 const getMonthNbr=(evt_month_in)=>{
   var count=1;
-  while(count<month_names.length)
+  while(count<=month_names.length)
   {
     if(evt_month_in==month_names[count-1])
     {

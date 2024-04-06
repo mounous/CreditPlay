@@ -1,6 +1,7 @@
 
-import { simu } from 'src/stores/store';
+import { simu ,bank} from 'src/stores/store';
 import { month_names,get_nb_mens_diff,getMonthNbr} from './date_utility';
+import {optionsReBuyType} from './bank_utility'
 const computeMensuality = () => {
   simu.value.credit.mensuality=computeMensuality_noSave(simu.value.credit.year,simu.value.credit.rate,simu.value.credit.amount);
 };
@@ -79,6 +80,15 @@ const sortEvents = (events_in) => {
   events_in.sort(comp);
   return events_in;
 };
+
+const hasBeenRebougthSavings=function(){
+  if(simu.value.credit.has_been_rebougth)
+  {
+    return true;
+  }
+  return false;
+}
+
 const apply_events_chain=()=>{
   if(simu.value.events.length!=0)
   {
@@ -88,47 +98,81 @@ const apply_events_chain=()=>{
     for(var i = 0; i< simu.value.events.length;i++)
     {
       simu.value.events[i].amortEvt=[];
-      if(i==0)//first event : capital left to pay based on int simu
+      if(simu.value.events[i].metaType=='Modulation')
       {
-        nb_mens_spent=get_nb_mens_diff(Number(simu.value.credit.startingDate.slice(0,4)),Number(simu.value.credit.startingDate.slice(5,7)),simu.value.events[i].year,simu.value.events[i].month);
-        nb_mens_to_pay=simu.value.credit.year*12-nb_mens_spent+simu.value.events[i].mensDiff;
-        var j=0;
-        while(j<simu.value.credit.amort.length && simu.value.credit.amort[j][0]!=(simu.value.events[i].month_str+'-'+simu.value.events[i].year_str))
+        if(i==0)//first event : capital left to pay based on int simu
         {
-          simu.value.events[i].amortEvt.push(simu.value.credit.amort[j]);
-          j++;
-        }
-        //extract total interests paid just before the modulation
-        const interests_paid_before_mod=simu.value.credit.amort[j-1][2];
-        var specific_amort=computeAmort(simu.value.events[i].year,simu.value.events[i].month,simu.value.credit.amort[nb_mens_spent-1][1],nb_mens_to_pay,simu.value.events[i].new_mens);
-        var k=0;
-        while(k<specific_amort[0].length)
-        {
-          simu.value.events[i].amortEvt.push(specific_amort[0][k]);
-          simu.value.events[i].amortEvt[k+j][2]+=interests_paid_before_mod;
-          k++;
-        }
+            nb_mens_spent=get_nb_mens_diff(Number(simu.value.credit.startingDate.slice(0,4)),Number(simu.value.credit.startingDate.slice(5,7)),simu.value.events[i].year,simu.value.events[i].month);
+            nb_mens_to_pay=simu.value.credit.year*12-nb_mens_spent+simu.value.events[i].mensDiff;
+            var j=0;
+            while(j<simu.value.credit.amort.length && simu.value.credit.amort[j][0]!=(simu.value.events[i].month_str+'-'+simu.value.events[i].year_str))
+            {
+              simu.value.events[i].amortEvt.push(simu.value.credit.amort[j]);
+              j++;
+            }
+            //extract total interests paid just before the modulation
+            const interests_paid_before_mod=simu.value.credit.amort[j-1][2];
+            var specific_amort=computeAmort(simu.value.events[i].year,simu.value.events[i].month,simu.value.credit.amort[nb_mens_spent-1][1],nb_mens_to_pay,simu.value.events[i].new_mens);
+            var k=0;
+            while(k<specific_amort[0].length)
+            {
+              simu.value.events[i].amortEvt.push(specific_amort[0][k]);
+              simu.value.events[i].amortEvt[k+j][2]+=interests_paid_before_mod;
+              k++;
+            }
+          }
+          else//capital left to pay based on previous event
+          {
+            nb_mens_spent=get_nb_mens_diff(Number(simu.value.credit.startingDate.slice(0,4)),Number(simu.value.credit.startingDate.slice(5,7)),simu.value.events[i].year,simu.value.events[i].month);
+            nb_mens_to_pay=simu.value.events[i-1].amortEvt.length-nb_mens_spent +simu.value.events[i].mensDiff;
+            var j=0;
+            while(j<simu.value.events[i-1].amortEvt.length && simu.value.events[i-1].amortEvt[j][0]!=(simu.value.events[i].month_str+'-'+simu.value.events[i].year_str))
+            {
+              simu.value.events[i].amortEvt.push(simu.value.events[i-1].amortEvt[j]);
+              j++;
+            }
+            //extract total interests paid just before the modulation
+            const interests_paid_before_mod=simu.value.events[i-1].amortEvt[j-1][2];
+            var specific_amort=computeAmort(simu.value.events[i].year,simu.value.events[i].month,simu.value.events[i-1].amortEvt[nb_mens_spent-1][1],nb_mens_to_pay,simu.value.events[i].new_mens);
+            var k=0;
+            while(k<specific_amort[0].length)
+            {
+              simu.value.events[i].amortEvt.push(specific_amort[0][k]);
+              simu.value.events[i].amortEvt[k+j][2]+=interests_paid_before_mod;
+              k++;
+            }
+          }
       }
-      else//capital left to pay based on previous event
+      //rachat avec économies
+      else if(simu.value.events[i].type==optionsReBuyType[0])
       {
-        nb_mens_spent=get_nb_mens_diff(Number(simu.value.credit.startingDate.slice(0,4)),Number(simu.value.credit.startingDate.slice(5,7)),simu.value.events[i].year,simu.value.events[i].month);
-        nb_mens_to_pay=simu.value.events[i-1].amortEvt.length-nb_mens_spent +simu.value.events[i].mensDiff;
+        var toPay=0.0;
+        //follow last event values until rebuy type
         var j=0;
-        while(j<simu.value.events[i-1].amortEvt.length && simu.value.events[i-1].amortEvt[j][0]!=(simu.value.events[i].month_str+'-'+simu.value.events[i].year_str))
+
+        if(i==0)
         {
-          simu.value.events[i].amortEvt.push(simu.value.events[i-1].amortEvt[j]);
-          j++;
+          while(j<simu.value.credit.amort.length && simu.value.credit.amort[j][0]!=(simu.value.events[i].month_str+'-'+simu.value.events[i].year_str))
+          {
+            simu.value.events[i].amortEvt.push(simu.value.credit.amort[j]);
+            j++;
+          }
+          toPay=simu.value.credit.amort[j][1]*(1+simu.value.events[i].rebuyPenalties/100);
         }
-        //extract total interests paid just before the modulation
-        const interests_paid_before_mod=simu.value.events[i-1].amortEvt[j-1][2];
-        var specific_amort=computeAmort(simu.value.events[i].year,simu.value.events[i].month,simu.value.events[i-1].amortEvt[nb_mens_spent-1][1],nb_mens_to_pay,simu.value.events[i].new_mens);
-        var k=0;
-        while(k<specific_amort[0].length)
+        else
         {
-          simu.value.events[i].amortEvt.push(specific_amort[0][k]);
-          simu.value.events[i].amortEvt[k+j][2]+=interests_paid_before_mod;
-          k++;
+          while(j<simu.value.events[i-1].amortEvt.length && simu.value.events[i-1].amortEvt[j][0]!=(simu.value.events[i].month_str+'-'+simu.value.events[i].year_str))
+          {
+            simu.value.events[i].amortEvt.push(simu.value.events[i-1].amortEvt[j]);
+            j++;
+          }
+          toPay=simu.value.events[i-1].amortEvt[j][1]*(1+simu.value.events[i].rebuyPenalties/100);
         }
+        //then update with zero to drop
+        simu.value.events[i].amortEvt.push(0.00);
+        //retreive amount to pay
+
+        bank.value.single_in_out.push({title:'rachat avec économies',type:'sortie',amount:toPay,date:simu.value.events[i].year_str+'/'+simu.value.events[i].month_str,month:simu.value.events[i].month,year:simu.value.events[i].year,rate:0.0});
       }
     }
   }
@@ -164,7 +208,14 @@ const returnBaseData=(evt_year_in_fmt,evt_month_in_fmt)=>{
   {
     var origin_end_year=origin_full_year+Number(simu.value.credit.year);
     var index=get_nb_mens_diff(origin_full_year,origin_start_month,evt_year_in_fmt,evt_month_in_fmt);
-    return {end_year:origin_end_year,end_month:origin_start_month,capital_left:simu.value.credit.amort[index-1][1]};
+    if(index<=simu.value.credit.amort.length)
+    {
+      return {end_year:origin_end_year,end_month:origin_start_month,capital_left:simu.value.credit.amort[index-1][1]};
+    }
+    else
+    {
+      return {end_year:origin_end_year,end_month:origin_start_month,capital_left:0};
+    }
   }
 }
 const provideModOptions=(evt_type_in,evt_year_in,evt_month_in)=>{
@@ -232,6 +283,7 @@ var optionsEvtType = [
   'Réduire la durée - augmenter la mensualité',
 ];
 
+
 const getLatestMensuality=function(){
   var latest_year=Number(simu.value.credit.startingDate.split('/')[0])+Number(simu.value.credit.year);
   var latest_month=Number(simu.value.credit.startingDate.split('/')[1]);
@@ -255,4 +307,4 @@ const getLatestMensuality=function(){
   }
   return {l_y:latest_year,l_m:latest_month};
 }
-export { computeMensuality, computeCredit_init,  sortEvents,provideModOptions,apply_events_chain,getChartXAxis,optionsEvtType,returnBaseData,getLatestMensuality};
+export { computeMensuality, computeCredit_init,  sortEvents,provideModOptions,apply_events_chain,getChartXAxis,optionsEvtType,returnBaseData,getLatestMensuality,hasBeenRebougthSavings};

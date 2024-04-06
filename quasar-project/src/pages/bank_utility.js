@@ -1,6 +1,7 @@
 
 import { bank, simu } from 'src/stores/store';
-import {month_names} from 'src/pages/date_utility'
+import {month_names,getMonthNbr } from 'src/pages/date_utility'
+import { returnBaseData } from './credit_utility';
 const isPeriodicConcerned=function(currentY,currentM,periodic_saving_index)
 {
   if(bank.value.periodic_savings.length<periodic_saving_index)
@@ -89,6 +90,15 @@ const hasSavings=function(){
 const computeDisplaySavings=function(startY,startM,durationY)
 {
   bank.value.monthly_sum=[];
+  var computed=compute_savings_no_save(startY,startM,durationY);
+  for(var i=0;i<computed.length;i++)
+  {
+    bank.value.monthly_sum.push(computed[i]);
+  }
+}
+const compute_savings_no_save=function(startY,startM,durationY)
+{
+  var result=[];
   var currentM=Number(startM);
   var currentY=Number(startY);
   var computed_savings=[];
@@ -222,7 +232,7 @@ const computeDisplaySavings=function(startY,startM,durationY)
         }
       }
     }
-    bank.value.monthly_sum.push([(month_names[currentM-1]+'-'+currentY.toString()),total_savings]);
+    result.push([(month_names[currentM-1]+'-'+currentY.toString()),total_savings]);
     total_savings=0;
     currentM++;
     if(currentM%12==1)
@@ -231,6 +241,39 @@ const computeDisplaySavings=function(startY,startM,durationY)
       currentY++;
     }
   }
+  return result;
 }
+var optionsReBuyType=[
+  'Rachat avec épargne',
+  'Rachat à crédit - meilleur taux'
+]
+const provideRebuyOptions=function(evt_type,penalties){
+  var toreturn=[];
 
-export { getSavingsEarlier,computeDisplaySavings,hasSavings,hasPeriodicEnded};
+  var i=0;
+  if(evt_type==optionsReBuyType[0])//Rachat avec épargne
+  {
+    if(!hasSavings())
+    {
+      return ['onglet épargne non renseigné'];
+    }
+    //dernier paramètre à changer : il faut prendre en compte des modulations qui ralongent
+    var computed=compute_savings_no_save(getSavingsEarlier()[1],getSavingsEarlier()[0],simu.value.credit.year);
+    while(computed[i][1]<returnBaseData(Number(computed[i][0].split('-')[1]),getMonthNbr(computed[i][0].split('-')[0])).capital_left*(1+penalties/100) && i!=computed.length)
+    {
+      i++;
+    }
+    if(i==computed.length)
+    {
+      return ['economies insuffisantes'];
+    }
+    while(i<computed.length &&
+      returnBaseData(Number(computed[i][0].split('-')[1]),getMonthNbr(computed[i][0].split('-')[0])).capital_left!=0)
+    {
+      toreturn.push('date: '+String(computed[i][0])+' eco_left : '+String(computed[i][1]-returnBaseData(Number(computed[i][0].split('-')[1]),getMonthNbr(computed[i][0].split('-')[0])).capital_left*(1+penalties/100))+' computed : '+String(computed[i]));
+      i++;
+    }
+    return toreturn;
+  }
+}
+export { getSavingsEarlier,computeDisplaySavings,hasSavings,hasPeriodicEnded, provideRebuyOptions,optionsReBuyType};
