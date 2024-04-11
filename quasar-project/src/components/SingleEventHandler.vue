@@ -3,13 +3,6 @@
     <div>
       <q-carousel v-model="slide" transition-prev="scale" transition-next="scale" animated swipeable
         control-color="primary" class="rounded-borders" ref="carouselElement">
-        <q-carousel-slide name="EvtNameSlide" class="column no-wrap flex-center">
-          <q-input filled v-model="event_.title" label="Nom de l'événement" hint="exemple : Modulation 1" lazy-rules
-            :rules="[(val) => validateEvtName(val) || 'Nom par défaut choisi']" />
-          <div class="q-ma-md">
-            <q-btn label="Valider" @click="[validateEvtName(event_.title)]" color="primary"></q-btn>
-          </div>
-        </q-carousel-slide>
         <q-carousel-slide name="EvtMetaTypeSlide" class="column no-wrap flex-center">
           <q-btn label="Modulation" @click="[event_.metaType='Modulation',moveToNextSlide()]" color="primary"></q-btn>
           <q-btn label="Rachat" @click="[event_.metaType='Rachat',moveToNextSlide()]" color="primary"></q-btn>
@@ -73,7 +66,7 @@
 
 import { ref ,defineEmits} from 'vue';
 import { month_names,getMonthNbr } from '../pages/date_utility.js';
-import {  apply_events_chain } from '../pages/credit_utility.js';
+import {  apply_events_chain,build_event_name } from '../pages/credit_utility.js';
 import SingleEventTypePicker from './SingleEventTypePicker.vue';
 import buyPicker from './buyPicker.vue'
 import { simu } from 'stores/store';
@@ -130,18 +123,7 @@ const monthoption = function () {
 yearoption();
 monthoption();
 
-var slide = ref('EvtNameSlide');
-
-
-const validateEvtName = function (nom) {
-  if (nom.length == 0) {
-    event_.value['title'] = String(simu.value.events.length+1);
-  } else {
-    event_.value['title'] = nom;
-  }
-  moveToNextSlide(true);
-  return true;
-};
+var slide = ref('EvtMetaTypeSlide');
 
 const validateEvtYear=function(val) {
   if (val == default_year_str) {
@@ -190,6 +172,7 @@ const updateFromRebuyPicker=function(evtDataFromPicker){
   event_.value.year=Number(event_.value.year_str);
 }
 const sendFinish=function () {
+  event_.value.title=build_event_name(event_.value.metaType);
   simu.value.events.push(event_.value);
   apply_events_chain();
     emit('save-event');

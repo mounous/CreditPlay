@@ -360,4 +360,46 @@ const getLatestMensuality=function(){
   }
   return {l_y:latest_year,l_m:latest_month};
 }
-export { computeMensuality, computeCredit_init,  sortEvents,provideModOptions,apply_events_chain,getChartXAxis,optionsEvtType,returnBaseData,getLatestMensuality,hasBeenRebougthSavings};
+
+const getModulationNbr=function()
+{
+  var count=0;
+  if(simu.value.events.length!=0)
+  {
+    for(var i =0;i<simu.value.events.length;i++)
+    {
+      if(simu.value.events[i].metaType=='Modulation')
+      {
+        count++;
+      }
+    }
+  }
+  return count;
+}
+  const getRebuyNbr=function()
+{
+  var count=0;
+  if(simu.value.events.length!=0)
+  {
+    for(var i =0;i<simu.value.events.length;i++)
+    {
+      if(simu.value.events[i].metaType=='Rachat')
+      {
+        count++;
+      }
+    }
+  }
+  return count;
+}
+const build_event_name=function(metaType)
+{
+  if(metaType=='Modulation')
+  {
+    return 'Modulation '+String(getModulationNbr()+1);
+  }
+  else
+  {
+    return 'Rachat '+String(getRebuyNbr()+1);
+  }
+}
+export { computeMensuality, computeCredit_init,  sortEvents,provideModOptions,apply_events_chain,getChartXAxis,optionsEvtType,returnBaseData,getLatestMensuality,hasBeenRebougthSavings,build_event_name};

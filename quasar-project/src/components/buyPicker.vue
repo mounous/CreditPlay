@@ -1,8 +1,5 @@
 <template>
   <div>
-    <p>BUUUUUUUUUUUUUUUUUYYYY PICKER  !!!!!</p>
-  </div>
-  <div>
     <q-input  class="q-ma-md" label="Pénalités" hint="% du capital restant dû" style="max-width:110px" maxlength="8" v-model="penalties_rebuy"
             type="number" lazy-rules :rules="[(val) => (val >= 0.0) || 'Les pénalités ne sont pas payées par la banque']"
             bg-color="blue-grey-8" outlined dense></q-input>
