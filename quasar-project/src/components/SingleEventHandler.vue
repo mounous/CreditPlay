@@ -100,7 +100,8 @@ var event_ = ref({
   rebuyVal:'',
   reLoanDate:'',
   reLoanRate:0,
-  reLoanPenalties:0
+  reLoanPenalties:0,
+  reloanDuration:0
 });
 const emit = defineEmits(['save-event']);
 const yearoption = function () {
@@ -169,15 +170,23 @@ const updateFromRebuyPicker=function(evtDataFromPicker){
   event_.value['type']=evtDataFromPicker['rebuyType'];
   event_.value['rebuyVal']=evtDataFromPicker['rebuyVal'];
   event_.value['reLoanDate']=evtDataFromPicker['reLoanDate'];
-  event_.value['reloadRate']=evtDataFromPicker['reloadRate'];
+  event_.value['reloanRate']=evtDataFromPicker['reloanRate'];
   event_.value['rebuyPenalties']=evtDataFromPicker['rebuyPenalties'];
+  event_.value['reloanDuration']=evtDataFromPicker['reloanDuration'];
   //rachat épargne
   if(event_.value.type==optionsReBuyType[0])
   {
     event_.value.year_str=event_.value.rebuyVal.split('-')[1].split(' ')[0];
     event_.value.month_str=event_.value.rebuyVal.split('-')[0].split(' ')[1];
+    event_.value.month=getMonthNbr(event_.value.month_str);
+
   }
-  event_.value.month=getMonthNbr(event_.value.month_str);
+  else if (event_.value.type==optionsReBuyType[1])
+  {
+    event_.value.year_str=event_.value.reLoanDate.split('/')[0];
+    event_.value.month=Number(event_.value.reLoanDate.split('/')[1]);
+    event_.value.month_str=month_names[event_.value.month-1];
+  }
   event_.value.year=Number(event_.value.year_str);
 }
 const sendFinish=function () {

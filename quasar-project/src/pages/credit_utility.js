@@ -18,7 +18,7 @@ const computeMensuality_noSave=(year_p,taeg_p,amount_p)=>{
   return computeMensuality_noSave_Months(year_p*12,taeg_p,amount_p);
 }
 
-const computeAmort=(starting_year,starting_month,amount,nb_mens,mens)=>{
+const computeAmort=(starting_year,starting_month,amount,nb_mens,mens,rate_rebuy=0.0)=>{
   var currentYear = starting_year;
   var curentMonth = starting_month;
   var capital_to_pay = amount;
@@ -27,8 +27,15 @@ const computeAmort=(starting_year,starting_month,amount,nb_mens,mens)=>{
   var interests_paid = 0;
   var amort_monthly = [];
   var mensuality_count = 1;
-  console.log(amort_monthly[amort_monthly.length-1]);
-  var monthly_rate=computeMonthly_rate(Number(simu.value.credit.rate));
+  var monthly_rate=0.0;
+  if(rate_rebuy==0)
+  {
+    monthly_rate=computeMonthly_rate(Number(simu.value.credit.rate));
+  }
+  else
+  {
+    monthly_rate=computeMonthly_rate(rate_rebuy);
+  }
   while (mensuality_count < nb_mens) {
     interests_to_pay = Math.round((monthly_rate * capital_to_pay)*100)/100;
     interests_paid += interests_to_pay;
@@ -143,7 +150,7 @@ const apply_events_chain=()=>{
             }
           }
       }
-      //rachat avec économies
+      //Rebuy with savings
       else if(simu.value.events[i].type==optionsReBuyType[0])
       {
         var toPay=0.0;
@@ -169,10 +176,52 @@ const apply_events_chain=()=>{
           toPay=simu.value.events[i-1].amortEvt[j][1]*(1+simu.value.events[i].rebuyPenalties/100);
         }
         //then update with zero to drop
-        simu.value.events[i].amortEvt.push(0.00);
+        var monthToLog=month_names[getMonthNbr(simu.value.events[i].amortEvt[simu.value.events[i].amortEvt.length-1][0].split('-')[0])];
+        var yearToLog=simu.value.events[i].amortEvt[simu.value.events[i].amortEvt.length-1][0].split('-')[1];
+        var interestsToLog=simu.value.events[i-1].amortEvt[j][2];
+        simu.value.events[i].amortEvt.push([monthToLog+'-'+yearToLog,0.00,interestsToLog]);
         //retreive amount to pay
 
         bank.value.single_in_out.push({title:'rachat avec économies',type:'sortie',amount:toPay,date:simu.value.events[i].year_str+'/'+simu.value.events[i].month_str,month:simu.value.events[i].month,year:simu.value.events[i].year,rate:0.0});
+      }
+      //Rebuy with credit
+      else if(simu.value.events[i].type==optionsReBuyType[1])
+      {
+        var interests_paid_before_mod=0;
+        var specific_amort=[];
+        //follow last event values until rebuy type
+        var j=0;
+        if(i==0)
+        {
+          while(j<simu.value.credit.amort.length && simu.value.credit.amort[j][0]!=(simu.value.events[i].month_str+'-'+simu.value.events[i].year_str))
+          {
+            simu.value.events[i].amortEvt.push(simu.value.credit.amort[j]);
+            j++;
+          }
+          interests_paid_before_mod=simu.value.credit.amort[j-1][2];
+          toPay=simu.value.credit.amort[j-1][1]*(1+simu.value.events[i].rebuyPenalties/100);
+          simu.value.events[i].new_mens=computeMensuality_noSave(simu.value.events[i].reloanDuration,simu.value.events[i].reloanRate,toPay);
+          specific_amort=computeAmort(simu.value.events[i].year,simu.value.events[i].month,toPay,simu.value.events[i].reloanDuration*12,simu.value.events[i].new_mens,simu.value.events[i].reloanRate);
+        }
+        else
+        {
+          while(j<simu.value.events[i-1].amortEvt.length && simu.value.events[i-1].amortEvt[j][0]!=(simu.value.events[i].month_str+'-'+simu.value.events[i].year_str))
+          {
+            simu.value.events[i].amortEvt.push(simu.value.events[i-1].amortEvt[j]);
+            j++;
+          }
+          interests_paid_before_mod=simu.value.events[i-1].amortEvt[j-1][2];
+          toPay=simu.value.events[i-1].amortEvt[j-1][1]*(1+simu.value.events[i].rebuyPenalties/100);
+          simu.value.events[i].new_mens=computeMensuality_noSave(simu.value.events[i].reloanDuration,simu.value.events[i].reloanRate,toPay);
+          specific_amort=computeAmort(simu.value.events[i].year,simu.value.events[i].month,toPay,simu.value.events[i].reloanDuration*12,simu.value.events[i].new_mens,simu.value.events[i].reloanRate);
+        }
+        var k=0;
+        while(k<specific_amort[0].length)
+        {
+          simu.value.events[i].amortEvt.push(specific_amort[0][k]);
+          simu.value.events[i].amortEvt[k+j][2]+=interests_paid_before_mod;
+          k++;
+        }
       }
     }
   }
@@ -293,16 +342,20 @@ const getLatestMensuality=function(){
   {
     for(var i=0;i<simu.value.events.length;i++)
     {
-      evt_latest_y=Number(simu.value.events[i].amortEvt[simu.value.events[i].amortEvt.length-1][0].split('-')[1]);
-      if(evt_latest_y>latest_year)
+      if(simu.value.events[i].type!=optionsReBuyType[0])
       {
-        latest_year=evt_latest_y;
-        evt_latest_m=Number(simu.value.events[i].amortEvt[simu.value.events[i].amortEvt.length-1][0].split('-')[0]);
-        if(evt_latest_m>latest_month)
+        evt_latest_y=Number(simu.value.events[i].amortEvt[simu.value.events[i].amortEvt.length-1][0].split('-')[1]);
+        if(evt_latest_y>latest_year)
         {
-          latest_month=evt_latest_m;
+          latest_year=evt_latest_y;
+          evt_latest_m=Number(simu.value.events[i].amortEvt[simu.value.events[i].amortEvt.length-1][0].split('-')[0]);
+          if(evt_latest_m>latest_month)
+          {
+            latest_month=evt_latest_m;
+          }
         }
       }
+
     }
   }
   return {l_y:latest_year,l_m:latest_month};

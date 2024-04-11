@@ -56,8 +56,9 @@ import {   useQuasar } from 'quasar';
 import { ref } from 'vue';
 import SingleEventHandler from '../components/SingleEventHandler.vue';
 import { useRouter } from 'vue-router';
-import { simu } from 'stores/store';
+import { bank, simu } from 'stores/store';
 import {hasBeenRebougthSavings} from './credit_utility'
+import { optionsReBuyType } from './bank_utility';
 const router = useRouter();
 const $q = useQuasar();
 var refresh=ref(0);
@@ -72,6 +73,17 @@ const deleteEvents=function(){
   {
     if(simu.value.events[i].selected==true)//all following events will be deleted because they rely on this event
     {
+      //delete fake single_io if rebought credit with savings
+      if(simu.value.events[i].type==optionsReBuyType[0])
+      {
+        for(var j=0;j<bank.value.single_in_out.length;j++)
+        {
+          if(bank.value.single_in_out[i].title=='rachat avec économies')
+          {
+            bank.value.single_in_out.splice(i,1);
+          }
+        }
+      }
       simu.value.events=simu.value.events.slice(0,i);
       refresh.value++;
       return;
