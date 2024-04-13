@@ -138,9 +138,19 @@ const apply_events_chain=()=>{
               simu.value.events[i].amortEvt.push(simu.value.events[i-1].amortEvt[j]);
               j++;
             }
+            //here we modulate after a potential rebuy at different rate : we must get the uptodate rate
+            var up2date_rate=simu.value.credit.rate;
+            for(var ind=simu.value.events.length-1;ind>=0;ind--)
+            {
+              if(simu.value.events[ind].type==optionsReBuyType[1])
+              {
+                up2date_rate=simu.value.events[ind].reloanRate;
+                break;
+              }
+            }
             //extract total interests paid just before the modulation
             const interests_paid_before_mod=simu.value.events[i-1].amortEvt[j-1][2];
-            var specific_amort=computeAmort(simu.value.events[i].year,simu.value.events[i].month,simu.value.events[i-1].amortEvt[nb_mens_spent-1][1],nb_mens_to_pay,simu.value.events[i].new_mens);
+            var specific_amort=computeAmort(simu.value.events[i].year,simu.value.events[i].month,simu.value.events[i-1].amortEvt[nb_mens_spent-1][1],nb_mens_to_pay,simu.value.events[i].new_mens,up2date_rate);
             var k=0;
             while(k<specific_amort[0].length)
             {
@@ -270,23 +280,32 @@ const returnBaseData=(evt_year_in_fmt,evt_month_in_fmt)=>{
 const provideModOptions=(evt_type_in,evt_year_in,evt_month_in)=>{
   var toreturn =[];
   var ret=returnBaseData(evt_year_in,evt_month_in);
-  console.log(ret);
+  var up2date_rate=simu.value.credit.rate;
   var mensualities_to_end=0;
   mensualities_to_end=get_nb_mens_diff(evt_year_in,evt_month_in,ret.end_year,ret.end_month);
+  //get the up to date rate
+  for(var j=simu.value.events.length-1;j>=0;j--)
+  {
+    if(simu.value.events[j].type==optionsReBuyType[1])
+    {
+      up2date_rate=simu.value.events[j].reloanRate;
+      break;
+    }
+  }
   if(mensualities_to_end>=0)
   {
     if(evt_type_in==optionsEvtType[1])//duree - mens +
     {
       for(let i=1;i<mensualities_to_end;i++)
       {
-        toreturn.push((Math.round(computeMensuality_noSave_Months(mensualities_to_end-i,simu.value.credit.rate,ret.capital_left)*100)/100).toString() +'€ (-'+i.toString()+' mois)');
+        toreturn.push((Math.round(computeMensuality_noSave_Months(mensualities_to_end-i,up2date_rate,ret.capital_left)*100)/100).toString() +'€ (-'+i.toString()+' mois)');
       }
     }
     else if(evt_type_in==optionsEvtType[0])//duree+ mens -
     {
       for(let i=1;i<mensualities_to_end;i++)//max twince the duration
       {
-        toreturn.push((Math.round(computeMensuality_noSave_Months(mensualities_to_end+i,simu.value.credit.rate,ret.capital_left)*100)/100).toString() +'€ (+'+i.toString()+' mois)');
+        toreturn.push((Math.round(computeMensuality_noSave_Months(mensualities_to_end+i,up2date_rate,ret.capital_left)*100)/100).toString() +'€ (+'+i.toString()+' mois)');
       }
     }
     return toreturn;
