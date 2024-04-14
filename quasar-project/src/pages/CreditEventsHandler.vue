@@ -69,7 +69,7 @@ const movetocharts = function () {
 };
 
 const deleteEvents=function(){
-  for(var i=0;i<simu.value.events.length;i++)
+  for(var i=simu.value.events.length-1;i>=0;i--)
   {
     if(simu.value.events[i].selected==true)//all following events will be deleted because they rely on this event
     {
@@ -78,15 +78,15 @@ const deleteEvents=function(){
       {
         for(var j=0;j<bank.value.single_in_out.length;j++)
         {
-          if(bank.value.single_in_out[i].title=='rachat avec économies')
+          if(bank.value.single_in_out[j].title=='rachat avec économies')
           {
-            bank.value.single_in_out.splice(i,1);
+            bank.value.single_in_out.splice(j,1);
+            break;
           }
         }
       }
-      simu.value.events=simu.value.events.slice(0,i);
+      simu.value.events.splice(i,1);
       refresh.value++;
-      return;
     }
   }
 }
