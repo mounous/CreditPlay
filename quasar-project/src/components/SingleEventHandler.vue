@@ -7,27 +7,8 @@
           <q-btn label="Modulation" @click="[event_.metaType='Modulation',moveToNextSlide()]" color="primary"></q-btn>
           <q-btn label="Rachat" @click="[event_.metaType='Rachat',moveToNextSlide()]" color="primary"></q-btn>
         </q-carousel-slide>
-        <q-carousel-slide name="EvtDateSlide" class="column no-wrap flex-center">
-          <q-select class="dateselector" rounded outlined v-model="event_.year_str" :options="years_t"
-            label="Année de l'évènement" :rules="[((val) => validateEvtYear(val) || 'année invalide'),monthoption]" />
-          <q-select class="dateselector" rounded outlined v-model="event_.month_str" :options="month_t"
-            label="Mois de l'évènement" :rules="[(val) => validateEvtMonth(val) || 'mois invalide']" />
-          <div class="row">
-            <div class="q-ma-md">
-              <q-btn label="retour" @click="moveToPrevSlide" color="primary"></q-btn>
-            </div>
-            <div class="q-ma-md">
-              <q-btn label="Valider" @click="
-                moveToNextSlide(
-                  validateEvtYear(event_.year_str) &&
-                  validateEvtMonth(event_.month_str)
-                )
-                " color="primary"></q-btn>
-            </div>
-          </div>
-        </q-carousel-slide>
         <q-carousel-slide name="EvtTypeSlide" class="column no-wrap flex-center" >
-          <SingleEventTypePicker @update-from-type-pick="updateFromPicker($event)" :year-of-event="event_.year" :month-of-event="event_.month"></SingleEventTypePicker>>
+          <SingleEventTypePicker @update-from-type-pick="updateFromPicker($event)" ></SingleEventTypePicker>
           <div class="row">
             <div class="q-ma-md">
               <q-btn label="retour" @click="moveToPrevSlide" color="primary"></q-btn>
@@ -68,14 +49,12 @@ import { ref ,defineEmits} from 'vue';
 import { month_names,getMonthNbr } from '../pages/date_utility.js';
 import {  apply_events_chain,build_event_name } from '../pages/credit_utility.js';
 import SingleEventTypePicker from './SingleEventTypePicker.vue';
-import buyPicker from './buyPicker.vue'
+import buyPicker from './buyPicker.vue';
 import { simu } from 'stores/store';
 import { optionsReBuyType } from 'src/pages/bank_utility';
 const carouselElement=ref(null);
 const default_month_str = 'choisir un mois ';
 const default_year_str = 'choisir une année';
-var month_t = ref(['Janvier']);
-var years_t = ref(['2030']);
 var event_ = ref({
   title: '',
   type: 'Augmenter mensualité',
@@ -97,48 +76,11 @@ var event_ = ref({
   reloanDuration:0
 });
 const emit = defineEmits(['save-event']);
-const yearoption = function () {
-  var currentY = Number(simu.value.credit.startingDate.slice(0,4));
-  console.log(currentY);
-  years_t.value = [];
-  for (let year = currentY ; year < currentY + simu.value.credit.year; year++) {
-    years_t.value.push(year.toString());
-  }
-};
-const monthoption = function () {
-  month_t.value = [];
-  if((simu.value.credit.startingDate.slice(0,4))!=event_.value.year)
-  {
-    for (let m = 0; m < month_names.length; m++) {
-      month_t.value.push(month_names[m]);
-    }
-  }
-  else
-  {
-    for (let m = Number(simu.value.credit.startingDate.slice(5,7)); m < month_names.length; m++) {
-      month_t.value.push(month_names[m]);
-    }
-  }
-};
-yearoption();
-monthoption();
+
 
 var slide = ref('EvtMetaTypeSlide');
 
-const validateEvtYear=function(val) {
-  if (val == default_year_str) {
-    return false;
-  }
-  event_.value['year']=Number(event_.value.year_str);
-  return true;
-};
-const validateEvtMonth=function(val) {
-  if (val == default_month_str) {
-    return false;
-  }
-  event_.value['month']=getMonthNbr(event_.value.month_str);
-  return true;
-};
+
 
 const updateFromPicker=function(evtDataFromPicker){
   event_.value['type']=evtDataFromPicker['type'];
@@ -146,6 +88,10 @@ const updateFromPicker=function(evtDataFromPicker){
   event_.value['mensDiff']=evtDataFromPicker['mensDiff'];
   event_.value['new_mens']=evtDataFromPicker['new_mens'];
   event_.value['selected']=false;
+  event_.value['year']=evtDataFromPicker['year'];
+  event_.value['month']=evtDataFromPicker['month'];
+  event_.value['year_str']=String(evtDataFromPicker['year']);
+  event_.value['month_str']=month_names[event_.value.month-1];
   console.log(evtDataFromPicker);
 };
 const updateFromRebuyPicker=function(evtDataFromPicker){

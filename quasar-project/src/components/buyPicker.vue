@@ -27,13 +27,13 @@
           @update:model-value="sendRebuyPicked()"
           v-if="event_type == optionsReBuyType[0]"
         ></q-select>
-        <q-input v-if="event_type == optionsReBuyType[1]"  class="q-ma-md" dense style="max-width: 100px;" label="Date de rachat" bg-color="blue-grey-8" filled v-model="date_reloan" mask="date" @update:model-value="sendRebuyPicked()">
+        <q-input v-if="event_type == optionsReBuyType[1]"  class="q-ma-md" dense style="max-width: 100px;" label="Date de rachat" bg-color="blue-grey-8" filled v-model="date_reloan" mask="date" >
             <template v-slot:append>
               <q-icon name="event" class="cursor-pointer">
                 <q-popup-proxy cover transition-show="scale" transition-hide="scale">
                   <q-date dark v-model="date_reloan" :locale="formatCalendar"
                     :navigation-min-year-month="reloanMin" width="200px"
-                    :navigation-max-year-month="reloanMax">
+                    :navigation-max-year-month="reloanMax" :default-year-month="reloanMin" @update:model-value="sendRebuyPicked()">
                     <div class="row items-center justify-end">
                       <q-btn v-close-popup label="Fermer" color="primary" flat />
                     </div>
@@ -57,10 +57,9 @@ import { ref, defineEmits } from 'vue';
 import {provideRebuyOptions,optionsReBuyType, hasSavings} from '../pages/bank_utility';
 import { formatCalendar } from '../pages/calendar_utility';
 import {simu} from '../stores/store.ts';
-import {getLatestMensuality} from '../pages/credit_utility'
-var latest=getLatestMensuality();
-var reloanMax=ref(latest.l_y.toString()+'/'+latest.l_m.toString().padStart(2,'0'));
-var reloanMin=ref(simu.value.credit.startingDate.split('/')[0]+'/'+simu.value.credit.startingDate.split('/')[1]);
+import {getLatestMensuality,getEraliestNewEventDate} from '../pages/credit_utility'
+var reloanMax=ref(getLatestMensuality().l_y.toString()+'/'+getLatestMensuality().l_m.toString().padStart(2,'0'));
+var reloanMin=ref(getEraliestNewEventDate().l_y.toString()+'/'+getEraliestNewEventDate().l_m.toString().padStart(2,'0'));
 var date_reloan=ref('');
 var event_type = ref('Sélectionnez une action');
 var rachatVal = ref('undefined');

@@ -140,7 +140,7 @@ const apply_events_chain=()=>{
             }
             //here we modulate after a potential rebuy at different rate : we must get the uptodate rate
             var up2date_rate=simu.value.credit.rate;
-            for(var ind=simu.value.events.length-1;ind>=0;ind--)
+            for(var ind=i-1;ind>=0;ind--)
             {
               if(simu.value.events[ind].type==optionsReBuyType[1])
               {
@@ -284,12 +284,15 @@ const provideModOptions=(evt_type_in,evt_year_in,evt_month_in)=>{
   var mensualities_to_end=0;
   mensualities_to_end=get_nb_mens_diff(evt_year_in,evt_month_in,ret.end_year,ret.end_month);
   //get the up to date rate
-  for(var j=simu.value.events.length-1;j>=0;j--)
+  if(simu.value.events.length!=0)
   {
-    if(simu.value.events[j].type==optionsReBuyType[1])
+    for(var j=simu.value.events.length-1;j>=0;j--)
     {
-      up2date_rate=simu.value.events[j].reloanRate;
-      break;
+      if(simu.value.events[j].type==optionsReBuyType[1])
+      {
+        up2date_rate=simu.value.events[j].reloanRate;
+        break;
+      }
     }
   }
   if(mensualities_to_end>=0)
@@ -300,10 +303,14 @@ const provideModOptions=(evt_type_in,evt_year_in,evt_month_in)=>{
       {
         toreturn.push((Math.round(computeMensuality_noSave_Months(mensualities_to_end-i,up2date_rate,ret.capital_left)*100)/100).toString() +'€ (-'+i.toString()+' mois)');
       }
+      if(mensualities_to_end==1)
+      {
+        toreturn.push('1 mensualité restante,modulation impossible');
+      }
     }
     else if(evt_type_in==optionsEvtType[0])//duree+ mens -
     {
-      for(let i=1;i<mensualities_to_end;i++)//max twince the duration
+      for(let i=1;i<simu.value.credit.year*12;i++)//max twince the duration
       {
         toreturn.push((Math.round(computeMensuality_noSave_Months(mensualities_to_end+i,up2date_rate,ret.capital_left)*100)/100).toString() +'€ (+'+i.toString()+' mois)');
       }
@@ -355,24 +362,16 @@ var optionsEvtType = [
 const getLatestMensuality=function(){
   var latest_year=Number(simu.value.credit.startingDate.split('/')[0])+Number(simu.value.credit.year);
   var latest_month=Number(simu.value.credit.startingDate.split('/')[1]);
-  var evt_latest_y=0;
-  var evt_latest_m=0;
   if(simu.value.events.length!=0)
   {
-    for(var i=0;i<simu.value.events.length;i++)
+    for(var i=simu.value.events.length-1;i>=0;i--)
     {
-      if(simu.value.events[i].type!=optionsReBuyType[0])
+      if(simu.value.events[i].type!=optionsReBuyType[0])//not a rebuy with savings
       {
-        evt_latest_y=Number(simu.value.events[i].amortEvt[simu.value.events[i].amortEvt.length-1][0].split('-')[1]);
-        if(evt_latest_y>latest_year)
-        {
-          latest_year=evt_latest_y;
-          evt_latest_m=Number(simu.value.events[i].amortEvt[simu.value.events[i].amortEvt.length-1][0].split('-')[0]);
-          if(evt_latest_m>latest_month)
-          {
-            latest_month=evt_latest_m;
-          }
-        }
+        var index =simu.value.events[i].amortEvt.length-1;
+        latest_year=Number(simu.value.events[i].amortEvt[index][0].split('-')[1]);
+        latest_month=getMonthNbr(simu.value.events[i].amortEvt[index][0].split('-')[0]);
+        return {l_y:latest_year,l_m:latest_month};
       }
 
     }
@@ -380,6 +379,16 @@ const getLatestMensuality=function(){
   return {l_y:latest_year,l_m:latest_month};
 }
 
+const getEraliestNewEventDate=function(){
+  if(simu.value.events.length==0)
+  {
+    return {l_y:Number(simu.value.credit.startingDate.split('/')[0]),l_m:Number(simu.value.credit.startingDate.split('/')[1])};
+  }
+  else
+  {
+    return {l_y:simu.value.events[simu.value.events.length-1].year,l_m:simu.value.events[simu.value.events.length-1].month};
+  }
+}
 const getModulationNbr=function()
 {
   var count=0;
@@ -421,4 +430,4 @@ const build_event_name=function(metaType)
     return 'Rachat '+String(getRebuyNbr()+1);
   }
 }
-export { computeMensuality, computeCredit_init,  sortEvents,provideModOptions,apply_events_chain,getChartXAxis,optionsEvtType,returnBaseData,getLatestMensuality,hasBeenRebougthSavings,build_event_name};
+export { computeMensuality, computeCredit_init, getEraliestNewEventDate, sortEvents,provideModOptions,apply_events_chain,getChartXAxis,optionsEvtType,returnBaseData,getLatestMensuality,hasBeenRebougthSavings,build_event_name};
