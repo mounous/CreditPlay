@@ -15,7 +15,10 @@
           <q-checkbox v-model="event.selected" color="primary"  @click="[refresh++,propagateSelection(event)]"> </q-checkbox>
         </q-item-section>
         <q-item-section :key="refresh">
-          <q-item-label>{{ event.year + '-' + event.title +' - '+ event.type + ' nouvelle mensualité : '+ event.new_mens}}</q-item-label>
+          <q-item-label v-if="event.metaType=='Modulation' && event.type==optionsEvtType[1]">{{ event.month+'/'+event.year + ' - ' +event.title  +' (Augmentation de la mensualité : '+ event.new_mens+'€)'}}</q-item-label>
+          <q-item-label v-if="event.metaType=='Modulation' && event.type==optionsEvtType[0]">{{ event.month+'/'+event.year + ' - ' +event.title  +' (Réduction de la mensualité : '+ event.new_mens+'€)'}}</q-item-label>
+          <q-item-label v-if="event.metaType=='Rachat' && event.type==optionsReBuyType[0]">{{ event.month+'/'+event.year + ' - Rachat du capital restant dû avec épargne'}}</q-item-label>
+          <q-item-label v-if="event.metaType=='Rachat' && event.type==optionsReBuyType[1]">{{ event.month+'/'+event.year + ' - Rachat du capital restant dû à crédit (taux : '+event.reloanRate+'%)'}}</q-item-label>
         </q-item-section>
       </q-item>
     </q-list>
@@ -57,7 +60,7 @@ import { ref } from 'vue';
 import SingleEventHandler from '../components/SingleEventHandler.vue';
 import { useRouter } from 'vue-router';
 import { bank, simu } from 'stores/store';
-import {hasBeenRebougthSavings} from './credit_utility'
+import {hasBeenRebougthSavings,optionsEvtType} from './credit_utility'
 import { optionsReBuyType } from './bank_utility';
 const router = useRouter();
 const $q = useQuasar();
@@ -87,6 +90,8 @@ const deleteEvents=function(){
       }
       simu.value.events.splice(i,1);
       refresh.value++;
+      //if an event has been deleted, the last event has been deleted. if the credit was rebougth with savings, it was the last event
+      simu.value.credit.has_been_rebougth=false;
     }
   }
 }

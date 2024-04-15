@@ -8,7 +8,7 @@
           <q-btn label="Rachat" @click="[event_.metaType='Rachat',moveToNextSlide()]" color="primary"></q-btn>
         </q-carousel-slide>
         <q-carousel-slide name="EvtTypeSlide" class="column no-wrap flex-center" >
-          <SingleEventTypePicker @update-from-type-pick="updateFromPicker($event)" ></SingleEventTypePicker>
+          <SingleEventTypePicker @update-from-type-pick="[updateFromPicker($event),canValidateMod=true]" ></SingleEventTypePicker>
           <div class="row">
             <div class="q-ma-md">
               <q-btn label="retour" @click="moveToPrevSlide" color="primary"></q-btn>
@@ -17,7 +17,7 @@
             <div class="q-ma-md">
               <q-btn label="Valider" @click="
                 moveToNextSlide(true)
-                " color="primary"></q-btn>
+                " color="primary" :disable="canValidateMod==false"></q-btn>
             </div>
           </div>
         </q-carousel-slide>
@@ -52,6 +52,7 @@ import SingleEventTypePicker from './SingleEventTypePicker.vue';
 import buyPicker from './buyPicker.vue';
 import { simu } from 'stores/store';
 import { optionsReBuyType } from 'src/pages/bank_utility';
+var canValidateMod=ref(false);
 const carouselElement=ref(null);
 const default_month_str = 'choisir un mois ';
 const default_year_str = 'choisir une année';
@@ -107,6 +108,7 @@ const updateFromRebuyPicker=function(evtDataFromPicker){
     event_.value.year_str=event_.value.rebuyVal.split('-')[1].split(' ')[0];
     event_.value.month_str=event_.value.rebuyVal.split('-')[0].split(' ')[1];
     event_.value.month=getMonthNbr(event_.value.month_str);
+    simu.value.credit.has_been_rebougth=true;
 
   }
   else if (event_.value.type==optionsReBuyType[1])

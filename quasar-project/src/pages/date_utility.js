@@ -68,13 +68,13 @@ const addOneMonthToStringDate=function(date)
     year.value=date.split('/')[0];
     month.value=date.split('/')[1];
     addOneMonth(month,year);
-    return (year.value.toString()+'/'+month.value.toString());
+    return (year.value.toString()+'/'+month.value.toString().padStart(2,'0'));
   }
   else if(date.split('/')[0].length==2)
   {
     year.value=date.split('/')[1];
     month.value=date.split('/')[0];
-    return (month.value.toString()+'/'+year.value.toString());
+    return (month.value.toString()+'/'+year.value.toString().padStart(2,'0'));
   }
   else
   {
@@ -101,14 +101,14 @@ const subOneMonthToStringDate=function(date)
     year.value=date.split('/')[0];
     month.value=date.split('/')[1];
     subOneMonth(month,year);
-    return (year.value.toString()+'/'+month.value.toString());
+    return (year.value.toString()+'/'+month.value.toString().padStart(2,'0'));
   }
   else if(date.split('/')[0].length==2)
   {
     year.value=date.split('/')[1];
     month.value=date.split('/')[0];
     subOneMonth(month,year);
-    return (month.value.toString()+'/'+year.value.toString());
+    return (month.value.toString()+'/'+year.value.toString().padStart(2,'0'));
   }
   else
   {

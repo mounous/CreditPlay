@@ -166,7 +166,7 @@ const apply_events_chain=()=>{
         var toPay=0.0;
         //follow last event values until rebuy type
         var j=0;
-
+        var interestsToLog=0.0;
         if(i==0)
         {
           while(j<simu.value.credit.amort.length && simu.value.credit.amort[j][0]!=(simu.value.events[i].month_str+'-'+simu.value.events[i].year_str))
@@ -175,6 +175,7 @@ const apply_events_chain=()=>{
             j++;
           }
           toPay=simu.value.credit.amort[j][1]*(1+simu.value.events[i].rebuyPenalties/100);
+          interestsToLog=simu.value.credit.amort[j][2];
         }
         else
         {
@@ -184,11 +185,12 @@ const apply_events_chain=()=>{
             j++;
           }
           toPay=simu.value.events[i-1].amortEvt[j][1]*(1+simu.value.events[i].rebuyPenalties/100);
+          interestsToLog=simu.value.events[i-1].amortEvt[j][2];
         }
         //then update with zero to drop
         var monthToLog=month_names[getMonthNbr(simu.value.events[i].amortEvt[simu.value.events[i].amortEvt.length-1][0].split('-')[0])];
         var yearToLog=simu.value.events[i].amortEvt[simu.value.events[i].amortEvt.length-1][0].split('-')[1];
-        var interestsToLog=simu.value.credit.amort[j][2];
+        var interestsToLog=
         simu.value.events[i].amortEvt.push([monthToLog+'-'+yearToLog,0.00,interestsToLog]);
         //retreive amount to pay
 
