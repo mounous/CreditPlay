@@ -1,4 +1,4 @@
-
+import {ref} from 'vue'
 
 const month_names = [
   'Janvier',
@@ -50,4 +50,69 @@ const get_nb_mens_diff=(start_y,start_m,cur_y,cur_m)=>{
     return count;
   }
 }
-export { month_names,get_nb_mens_diff,getMonthNbr};
+const addOneMonth=function (month,Year)
+{
+  month.value++;
+  if(month.value==13)
+  {
+    month.value=1
+    Year.value++;
+  }
+}
+const addOneMonthToStringDate=function(date)
+{
+  var year=ref(0);
+  var month=ref(0);
+  if(date.split('/')[0].length==4)//format YYYY/MM
+  {
+    year.value=date.split('/')[0];
+    month.value=date.split('/')[1];
+    addOneMonth(month,year);
+    return (year.value.toString()+'/'+month.value.toString());
+  }
+  else if(date.split('/')[0].length==2)
+  {
+    year.value=date.split('/')[1];
+    month.value=date.split('/')[0];
+    return (month.value.toString()+'/'+year.value.toString());
+  }
+  else
+  {
+    console.log('------------------UNHANDLED DATE FORMAT------------------');
+  }
+  addOneMonth(month,year);
+
+}
+const subOneMonth=function (month,Year)
+{
+  month.value--;
+  if(month.value==0)
+  {
+    month.value=12
+    Year.value--;
+  }
+}
+const subOneMonthToStringDate=function(date)
+{
+  var year=ref(0);
+  var month=ref(0);
+  if(date.split('/')[0].length==4)//format YYYY/MM
+  {
+    year.value=date.split('/')[0];
+    month.value=date.split('/')[1];
+    subOneMonth(month,year);
+    return (year.value.toString()+'/'+month.value.toString());
+  }
+  else if(date.split('/')[0].length==2)
+  {
+    year.value=date.split('/')[1];
+    month.value=date.split('/')[0];
+    subOneMonth(month,year);
+    return (month.value.toString()+'/'+year.value.toString());
+  }
+  else
+  {
+    console.log('------------------UNHANDLED DATE FORMAT------------------');
+  }
+}
+export { month_names,get_nb_mens_diff,getMonthNbr,subOneMonthToStringDate,addOneMonthToStringDate};

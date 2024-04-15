@@ -58,8 +58,9 @@ import {provideRebuyOptions,optionsReBuyType, hasSavings} from '../pages/bank_ut
 import { formatCalendar } from '../pages/calendar_utility';
 import {simu} from '../stores/store.ts';
 import {getLatestMensuality,getEraliestNewEventDate} from '../pages/credit_utility'
-var reloanMax=ref(getLatestMensuality().l_y.toString()+'/'+getLatestMensuality().l_m.toString().padStart(2,'0'));
-var reloanMin=ref(getEraliestNewEventDate().l_y.toString()+'/'+getEraliestNewEventDate().l_m.toString().padStart(2,'0'));
+import{subOneMonthToStringDate,addOneMonthToStringDate} from '../pages/date_utility'
+var reloanMax=ref(subOneMonthToStringDate(getLatestMensuality().l_y.toString()+'/'+getLatestMensuality().l_m.toString().padStart(2,'0')));
+var reloanMin=ref(addOneMonthToStringDate(getEraliestNewEventDate().l_y.toString()+'/'+getEraliestNewEventDate().l_m.toString().padStart(2,'0')));
 var date_reloan=ref('');
 var event_type = ref('Sélectionnez une action');
 var rachatVal = ref('undefined');

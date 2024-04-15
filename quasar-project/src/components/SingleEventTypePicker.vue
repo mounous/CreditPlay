@@ -35,15 +35,15 @@ import { ref, defineEmits } from 'vue';
 import { provideModOptions, returnBaseData, optionsEvtType,getLatestMensuality,getEraliestNewEventDate } from '../pages/credit_utility.js'
 import { formatCalendar } from 'src/pages/calendar_utility';
 import { useQuasar } from 'quasar';
-
+import{subOneMonthToStringDate,addOneMonthToStringDate} from '../pages/date_utility'
 var event_type = ref('Sélectionnez une action');
 var modVal = ref('undefined');
 var mensDiff = ref(0);
 var new_mens = ref(0);
 var event_y=ref(0);
 var event_m=ref(0);
-var mod_max_date=ref(getLatestMensuality().l_y.toString()+'/'+getLatestMensuality().l_m.toString().padStart(2,'0'));
-var mod_min_date=ref(getEraliestNewEventDate().l_y.toString()+'/'+getEraliestNewEventDate().l_m.toString().padStart(2,'0'));
+var mod_max_date=ref(subOneMonthToStringDate(getLatestMensuality().l_y.toString()+'/'+getLatestMensuality().l_m.toString().padStart(2,'0')));
+var mod_min_date=ref(addOneMonthToStringDate(getEraliestNewEventDate().l_y.toString()+'/'+getEraliestNewEventDate().l_m.toString().padStart(2,'0')));
 var date_mod=ref(mod_min_date.value);
 const validateModDate=function(){
   event_y.value=Number(date_mod.value.split('/')[0]);
