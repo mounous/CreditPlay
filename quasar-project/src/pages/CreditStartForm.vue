@@ -9,14 +9,14 @@
           ]" />
       </div>
       <div class="col">
-        <q-input label="Date de signature" bg-color="blue-grey-8" filled v-model="simu.credit.startingDate" mask="date">
+        <q-input label="Date de signature" bg-color="blue-grey-8" filled v-model="simu.credit.startingDate" mask="date" @click="mustpop=true">
           <template v-slot:append>
-            <q-icon name="event" class="cursor-pointer">
-              <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+            <q-icon name="event" class="cursor-pointer" >
+              <q-popup-proxy v-model="mustpop" cover transition-show="scale" transition-hide="scale">
                 <q-date dark v-model="simu.credit.startingDate" :locale="formatCalendar" :navigation-min-year-month="minNav" width="200px"
-                  :navigation-max-year-month="maxNav" :disable="has_started != 'yes' && has_started != 'no'">
+                  :navigation-max-year-month="maxNav" :disable="has_started != 'yes' && has_started != 'no'" @update:model-value="mustpop=false" >
                   <div class="row items-center justify-end">
-                    <q-btn v-close-popup label="Close" color="primary" flat />
+                    <q-btn v-close-popup label="Fermer" color="primary" flat />
                   </div>
                 </q-date>
               </q-popup-proxy>
@@ -67,7 +67,7 @@ const router = useRouter();
 var has_started = ref('CHOOSE');
 var minNav = ref('0000/01');
 var maxNav = ref('0000/01');
-var date = ref(new Date().toISOString().slice(0, 10).split('-').join('/'));
+var mustpop=ref(false)
 
 function validateTAEG(rate) {
   if (rate < 0) {

@@ -1,10 +1,10 @@
 <template>
-  <q-input class="q-ma-md" dense style="max-width: 100px;" label="Date de modulation" bg-color="blue-grey-8" filled v-model="date_mod" mask="date" >
+  <q-input class="q-ma-md" dense style="max-width: 100px;" label="Date de modulation" bg-color="blue-grey-8" filled v-model="date_mod" mask="date" @click="mustpop=true">
     <template v-slot:append>
       <q-icon name="event" class="cursor-pointer">
-        <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+        <q-popup-proxy v-model="mustpop" cover transition-show="scale" transition-hide="scale">
           <q-date dark v-model="date_mod" :locale="formatCalendar" :navigation-min-year-month="mod_min_date"
-            width="200px" :navigation-max-year-month="mod_max_date" :default-year-month="mod_min_date" @update:model-value="validateModDate()">
+            width="200px" :navigation-max-year-month="mod_max_date" :default-year-month="mod_min_date" @update:model-value="[validateModDate(),mustpop=false]">
             <div class="row items-center justify-end" >
               <q-btn v-close-popup label="Fermer" color="primary" flat />
             </div>
@@ -37,6 +37,7 @@ import { formatCalendar } from 'src/pages/calendar_utility';
 import { useQuasar } from 'quasar';
 import{subOneMonthToStringDate,addOneMonthToStringDate} from '../pages/date_utility'
 var event_type = ref('Sélectionnez une action');
+var mustpop=ref(false);
 var modVal = ref('undefined');
 var mensDiff = ref(0);
 var new_mens = ref(0);

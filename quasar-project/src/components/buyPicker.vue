@@ -27,13 +27,13 @@
           @update:model-value="sendRebuyPicked()"
           v-if="event_type == optionsReBuyType[0]"
         ></q-select>
-        <q-input v-if="event_type == optionsReBuyType[1]"  class="q-ma-md" dense style="max-width: 100px;" label="Date de rachat" bg-color="blue-grey-8" filled v-model="date_reloan" mask="date" >
+        <q-input v-if="event_type == optionsReBuyType[1]"  class="q-ma-md" dense style="max-width: 100px;" label="Date de rachat" bg-color="blue-grey-8" filled v-model="date_reloan" mask="date" @click="mustpop=true">
             <template v-slot:append>
               <q-icon name="event" class="cursor-pointer">
-                <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                <q-popup-proxy v-model="mustpop" cover transition-show="scale" transition-hide="scale">
                   <q-date dark v-model="date_reloan" :locale="formatCalendar"
                     :navigation-min-year-month="reloanMin" width="200px"
-                    :navigation-max-year-month="reloanMax" :default-year-month="reloanMin" @update:model-value="sendRebuyPicked()">
+                    :navigation-max-year-month="reloanMax" :default-year-month="reloanMin" @update:model-value="[mustpop=false,sendRebuyPicked()]">
                     <div class="row items-center justify-end">
                       <q-btn v-close-popup label="Fermer" color="primary" flat />
                     </div>
@@ -68,6 +68,7 @@ const emit = defineEmits(['update-from-rebuy-pick']);
 var rate_reloan=ref(0.0);
 var penalties_rebuy=ref(0.0);
 var duration_reloan=ref(0);
+var mustpop=ref(false);
 const safeRebuyOptions=function()
 {
   if(hasSavings())
