@@ -1,6 +1,7 @@
 <template>
-  <q-page>
+  <q-page v-touch-hold.mouse="handleHold" :key="mustPop">
     <VueApexCharts
+      v-if="mustPop==false"
       type="line"
       height=100%
       width=100%
@@ -25,28 +26,66 @@
 <script setup>
 
 import VueApexCharts from 'vue3-apexcharts'
-import { onBeforeMount,ref } from 'vue';
+import { onBeforeMount,ref, nextTick } from 'vue';
 import {getChartXAxis,getLatestMensuality} from '../pages/credit_utility'
 import{ getFormatedCategories} from '../pages/chart_utility'
 import { simu,bank, startFormFilled } from 'stores/store';
 import {getSavingsEarlier,computeDisplaySavings,hasSavings} from '../pages/bank_utility'
+import { useQuasar } from 'quasar';
+
+var $q=useQuasar();
 var mustPop = ref(false)
-const getEvents=function(){
+var DataDisplayFull=ref(false);
+const forceRender=async()=>{
+  mustPop.value=true;
+  await nextTick();
+  mustPop.value=false;
+  await nextTick();
+}
+const handleHold=function({ evt, ...newInfo }){
+  //switch display mode only if more than one event is set, otherwize no effect
+  if(simu.value.events.length>1)
+  {
+    switchDataDisplay();
+    forceRender();
+  }
+}
+
+const switchDataDisplay=function()
+{
+  series = [ {  name: 'Capital restant', data: getAmount(), }, {name: 'interets payés', data: getIntests(), }];
+  getEvents(DataDisplayFull.value);
+  DataDisplayFull.value=!DataDisplayFull.value;
+}
+const getSingleEvent=function(index)
+{
+  if(index <simu.value.events.length )
+  {
+    var extractData_capital=[];
+    var extractData_interests=[];
+    for(var j=0;j<simu.value.events[index].amortEvt.length;j++)
+    {
+      extractData_capital.push(Math.round(simu.value.events[index].amortEvt[j][1]*100)/100);
+      extractData_interests.push(Math.round(simu.value.events[index].amortEvt[j][2]*100)/100);
+    }
+    series.push({name:simu.value.events[index].title,data:extractData_capital});
+    series.push({name:'interets ('+simu.value.events[index].title+')',data:extractData_interests});
+  }
+}
+const getEvents=function(full=true){
   //if some events were entered, then process them
   if(simu.value.events.length!=0)
   {
-    for(var i=0;i<simu.value.events.length;i++)
+    if(full)
     {
-      var extractData_capital=[];
-      var extractData_interests=[];
-      for(var j=0;j<simu.value.events[i].amortEvt.length;j++)
+      for(var i=0;i<simu.value.events.length;i++)
       {
-        extractData_capital.push(Math.round(simu.value.events[i].amortEvt[j][1]*100)/100);
-        extractData_interests.push(Math.round(simu.value.events[i].amortEvt[j][2]*100)/100);
+        getSingleEvent(i);
       }
-      series.push({name:simu.value.events[i].title,data:extractData_capital});
-      series.push({name:'interets ('+simu.value.events[i].title+')',data:extractData_interests});
-
+    }
+    else
+    {
+      getSingleEvent(simu.value.events.length-1);
     }
   }
   //if a credit has already been computed, then display potential savings on the interval [credit start...Credit longest duration]
@@ -75,6 +114,7 @@ const getBanking=function(){
   }
 }
 onBeforeMount(getEvents);
+
 const getTime = function () {
   var xAxisUp2Date = [];
   if(simu.value.credit.amort.length!=0)//credit scale even if savings entries starting after credit ends
@@ -230,4 +270,11 @@ const getPopObligation = function () {
   }
 }
 onBeforeMount(getPopObligation);
+const displayHelp=function(){
+  if(simu.value.events.length>1)
+  {
+    $q.notify({    color: 'green-4',    textColor: 'black',    icon: 'cloud_done',    message: 'Pour changer l\'affichage, pressez longtemps sur le graphe',  });
+  }
+}
+onBeforeMount(displayHelp);
 </script>
