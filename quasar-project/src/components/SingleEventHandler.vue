@@ -98,26 +98,18 @@ const updateFromPicker=function(evtDataFromPicker){
 const updateFromRebuyPicker=function(evtDataFromPicker){
   event_.value['type']=evtDataFromPicker['rebuyType'];
   event_.value['rebuyVal']=evtDataFromPicker['rebuyVal'];
-  event_.value['reLoanDate']=evtDataFromPicker['reLoanDate'];
   event_.value['reloanRate']=evtDataFromPicker['reloanRate'];
   event_.value['rebuyPenalties']=evtDataFromPicker['rebuyPenalties'];
   event_.value['reloanDuration']=evtDataFromPicker['reloanDuration'];
+  event_.value['year_str']=evtDataFromPicker['year_str'];
+  event_.value['month_str']=evtDataFromPicker['month_str'];
+  event_.value['year']=evtDataFromPicker['year'];
+  event_.value['month']=evtDataFromPicker['month'];
   //rachat épargne
   if(event_.value.type==optionsReBuyType[0])
   {
-    event_.value.year_str=event_.value.rebuyVal.split('-')[1].split(' ')[0];
-    event_.value.month_str=event_.value.rebuyVal.split('-')[0].split(' ')[1];
-    event_.value.month=getMonthNbr(event_.value.month_str);
     simu.value.credit.has_been_rebougth=true;
-
   }
-  else if (event_.value.type==optionsReBuyType[1])
-  {
-    event_.value.year_str=event_.value.reLoanDate.split('/')[0];
-    event_.value.month=Number(event_.value.reLoanDate.split('/')[1]);
-    event_.value.month_str=month_names[event_.value.month-1];
-  }
-  event_.value.year=Number(event_.value.year_str);
 }
 const sendFinish=function () {
   event_.value.title=build_event_name(event_.value.metaType);

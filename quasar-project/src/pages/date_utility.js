@@ -26,7 +26,32 @@ const getMonthNbr=(evt_month_in)=>{
   }
 }
 
-
+const compareDates=function (y_1,m_1,y_2,m_2)
+{
+  if(y_1>y_2)
+  {
+    return 1;
+  }
+  else if(y_1==y_2)
+  {
+    if(m_1>m_2)
+    {
+      return 1;
+    }
+    else if (m_1==m_2)
+    {
+      return 0;
+    }
+    else
+    {
+      return -1
+    }
+  }
+  else
+  {
+    return -1;
+  }
+}
 const get_nb_mens_diff=(start_y,start_m,cur_y,cur_m)=>{
   if(start_y>cur_y)
   {
@@ -115,4 +140,4 @@ const subOneMonthToStringDate=function(date)
     console.log('------------------UNHANDLED DATE FORMAT------------------');
   }
 }
-export { month_names,get_nb_mens_diff,getMonthNbr,subOneMonthToStringDate,addOneMonthToStringDate};
+export { month_names,get_nb_mens_diff,getMonthNbr,subOneMonthToStringDate,addOneMonthToStringDate,compareDates};

@@ -28,7 +28,7 @@
 import VueApexCharts from 'vue3-apexcharts'
 import { onBeforeMount,ref, nextTick } from 'vue';
 import {getChartXAxis,getLatestMensuality} from '../pages/credit_utility'
-import{ getFormatedCategories} from '../pages/chart_utility'
+import { GetColor,TYPE_CAPITAL,TYPE_INTERESTS,TYPE_SAVINGS } from 'src/pages/chart_utility';
 import { simu,bank, startFormFilled } from 'stores/store';
 import {getSavingsEarlier,computeDisplaySavings,hasSavings} from '../pages/bank_utility'
 import { useQuasar } from 'quasar';
@@ -53,7 +53,10 @@ const handleHold=function({ evt, ...newInfo }){
 
 const switchDataDisplay=function()
 {
+  chartOptions.colors=[];
   series = [ {  name: 'Capital restant', data: getAmount(), }, {name: 'interets payés', data: getIntests(), }];
+  chartOptions.colors.push(GetColor(TYPE_CAPITAL,0,true));
+  chartOptions.colors.push(GetColor(TYPE_INTERESTS,0,true));
   getEvents(DataDisplayFull.value);
   DataDisplayFull.value=!DataDisplayFull.value;
 }
@@ -70,6 +73,8 @@ const getSingleEvent=function(index)
     }
     series.push({name:simu.value.events[index].title,data:extractData_capital});
     series.push({name:'interets ('+simu.value.events[index].title+')',data:extractData_interests});
+    chartOptions.colors.push(GetColor(TYPE_CAPITAL,index,false));
+    chartOptions.colors.push(GetColor(TYPE_INTERESTS,index,false));
   }
 }
 const getEvents=function(full=true){
@@ -111,6 +116,7 @@ const getBanking=function(){
       exctractedSavings.push(Math.round(bank.value.monthly_sum[i][1]*100)/100);
     }
     series.push({name:'savings',data:exctractedSavings});
+    chartOptions.colors.push(GetColor(TYPE_SAVINGS,0,false));
   }
 }
 onBeforeMount(getEvents);
@@ -180,7 +186,21 @@ var chartOptions = {
     zoom: {
       enabled: true,
     },
+    animations: {
+        enabled: false,
+        easing: 'easeinout',
+        speed: 200,
+        animateGradually: {
+            enabled: true,
+            delay: 20
+        },
+        dynamicAnimation: {
+            enabled: false,
+            speed: 100
+        }
+    }
   },
+  colors:[GetColor(TYPE_CAPITAL,0,true),GetColor(TYPE_INTERESTS,0,true)],
   dataLabels: {
     enabled: false,
   },
@@ -201,8 +221,6 @@ var chartOptions = {
     style: {
       fontSize: '75px',
     },
-    //stepSize:40,
-    //overwriteCategories:getFormatedCategories(chartOptions.xaxis.categories,10),
     tickAmount:10,
     labels:{
       style:{
