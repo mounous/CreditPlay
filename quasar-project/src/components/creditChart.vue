@@ -115,7 +115,7 @@ const getBanking=function(){
     {
       exctractedSavings.push(Math.round(bank.value.monthly_sum[i][1]*100)/100);
     }
-    series.push({name:'savings',data:exctractedSavings});
+    series.push({name:'économies',data:exctractedSavings});
     chartOptions.colors.push(GetColor(TYPE_SAVINGS,0,false));
   }
 }

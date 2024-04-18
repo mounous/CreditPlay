@@ -1,6 +1,6 @@
 
 import { simu ,bank} from 'src/stores/store';
-import { month_names,get_nb_mens_diff,getMonthNbr} from './date_utility';
+import { month_names,get_nb_mens_diff,getMonthNbr, compareDates} from './date_utility';
 import {optionsReBuyType} from './bank_utility'
 const computeMensuality = () => {
   simu.value.credit.mensuality=computeMensuality_noSave(simu.value.credit.year,simu.value.credit.rate,simu.value.credit.amount);
@@ -370,9 +370,11 @@ const getLatestMensuality=function(){
       if(simu.value.events[i].type!=optionsReBuyType[0])//not a rebuy with savings
       {
         var index =simu.value.events[i].amortEvt.length-1;
-        latest_year=Number(simu.value.events[i].amortEvt[index][0].split('-')[1]);
-        latest_month=getMonthNbr(simu.value.events[i].amortEvt[index][0].split('-')[0]);
-        return {l_y:latest_year,l_m:latest_month};
+        if(compareDates(Number(simu.value.events[i].amortEvt[index][0].split('-')[1]),(simu.value.events[i].amortEvt[index][0].split('-')[0]),latest_year,latest_month)>0)
+        {
+          latest_year=Number(simu.value.events[i].amortEvt[index][0].split('-')[1]);
+          latest_month=getMonthNbr(simu.value.events[i].amortEvt[index][0].split('-')[0]);
+        }
       }
 
     }
