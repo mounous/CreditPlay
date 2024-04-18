@@ -46,7 +46,7 @@
 <script setup>
 
 import { ref ,defineEmits} from 'vue';
-import { month_names,getMonthNbr } from '../pages/date_utility.js';
+import { month_names } from '../pages/date_utility.js';
 import {  apply_events_chain,build_event_name } from '../pages/credit_utility.js';
 import SingleEventTypePicker from './SingleEventTypePicker.vue';
 import buyPicker from './buyPicker.vue';

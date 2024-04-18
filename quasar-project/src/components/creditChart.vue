@@ -42,7 +42,7 @@ const forceRender=async()=>{
   mustPop.value=false;
   await nextTick();
 }
-const handleHold=function({ evt, ...newInfo }){
+const handleHold=function(){
   //switch display mode only if more than one event is set, otherwize no effect
   if(simu.value.events.length>1)
   {
