@@ -19,7 +19,7 @@
 import {ref} from 'vue'
 import { LocalStorage } from 'quasar';
 import { onBeforeMount } from 'vue';
-import { bank,simu } from 'src/stores/store';
+import { bank,simu,startFormFilled } from 'src/stores/store';
 const DEFAULT_ID=-1;
 const DEFAULT_NAME='';
 var listSave = ref([]);
@@ -31,7 +31,7 @@ const getStorage = function () {
   }
 }
 const saveCurrentData=function(){
-  listSave.value.push({simu : simu.value,bank:bank.value,id:listSave.value.length,name:currentName.value==DEFAULT_NAME ? 'Simulation '+String(listSave.value.length) : currentName.value});
+  listSave.value.push({simu : simu.value,bank:bank.value,id:listSave.value.length,name:currentName.value==DEFAULT_NAME ? 'Simulation '+String(listSave.value.length) : currentName.value,startFormFilled:startFormFilled.value});
   LocalStorage.set('listSave',listSave.value);
 }
 const getSimuIndexInStorage=function(id_in)
@@ -58,6 +58,7 @@ const restoreData=function(){
   {
     simu.value=(listSave.value)[index].simu;
     bank.value=(listSave.value)[index].bank;
+    startFormFilled.value=(listSave.value)[index].startFormFilled;
   }
 }
 const deleteData=function()
