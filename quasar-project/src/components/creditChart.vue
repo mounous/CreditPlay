@@ -237,7 +237,7 @@ var chartOptions = {
   },
   yaxis:{
     labels:{
-      formatter:function(val,index)
+      formatter:function(val)
       {
         return Math.round(val);
       },
