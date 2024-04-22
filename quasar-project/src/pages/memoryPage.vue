@@ -20,11 +20,13 @@ import {ref} from 'vue'
 import { LocalStorage } from 'quasar';
 import { onBeforeMount } from 'vue';
 import { bank,simu,startFormFilled } from 'src/stores/store';
+import { useRouter } from 'vue-router';
 const DEFAULT_ID=-1;
 const DEFAULT_NAME='';
 var listSave = ref([]);
 var selected_id = ref(DEFAULT_ID);
 var currentName=ref(DEFAULT_NAME);
+const router = useRouter();
 const getStorage = function () {
   if (LocalStorage.has('listSave')) {
     listSave.value = LocalStorage.getItem('listSave');
@@ -59,6 +61,7 @@ const restoreData=function(){
     simu.value=(listSave.value)[index].simu;
     bank.value=(listSave.value)[index].bank;
     startFormFilled.value=(listSave.value)[index].startFormFilled;
+    router.push('/lineChart');
   }
 }
 const deleteData=function()
