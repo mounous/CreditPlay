@@ -5,10 +5,11 @@
         <q-timeline  class="q-ma-lg text-white">
       <q-timeline-entry heading>Résumé de la simulation</q-timeline-entry>
       <q-timeline-entry  v-for="item in summaries.values()" :key="item.id" :title="item.title" :subtitle="item.subtitle" id="item.id">
-        <div>{{ item.text1 }}</div>
+        <div v-if="item.type!=optionsReBuyType[0]" >{{ item.text1 }}</div>
         <div>{{ item.text2 }}</div>
         <div>{{ item.text3 }}</div>
-        <div :class="item.text4_color">{{ item.text4 }}</div>
+        <div v-if="item._text4!=''" :class="item.text4_color">{{ item.text4 }}</div>
+        <div :class="item.text5_color">{{ item.text5 }}</div>
       </q-timeline-entry>
     </q-timeline>
   </div>
@@ -19,6 +20,8 @@
 <script setup>
 import {ref,onBeforeMount } from 'vue'
 import { simu } from 'stores/store';
+import {formatnumber} from './string_utils'
+import { optionsReBuyType } from './bank_utility';
 var summaries=ref([]);
 
 const beforemount=function() {
@@ -32,26 +35,33 @@ const beforemount=function() {
   var _text3 =' coût total : '+interests_paid.toString();
   var _text4='';
   var _text4_color='text-white';
-  var delta=0;
+  var _text5='';
+  var _text5_color='text-white';
+  var delta_abs=0;
+  var delta_rel=0;
   summaries.value.push({title :  'Crédit initial',subtitle:_date_to_display,id:_id,text1:_text1,text2:_text2,text3:_text3,text4:_text4,text4_color:_text4_color});
   if(simu.value.events.length!=0)
   {
     for(var i=0;i<simu.value.events.length;i++)
     {
+      _text5='';
+      _text4='';
+      _text1='';
       _id=i+1;
-      _text1=' Mensualité : '+simu.value.events[i].new_mens.toString();
-      _text2=' fin de l\'emprunt : '+simu.value.events[i].amortEvt[simu.value.events[i].amortEvt.length-1][0];
-      _text3=' coût total : '+simu.value.events[i].amortEvt[simu.value.events[i].amortEvt.length-1][2].toString();
-      if(i==0)
+      if(simu.value.events[i].type!=optionsReBuyType[0])//rebuy with savings : no mensuality
       {
-        delta=Math.round((simu.value.events[i].amortEvt[simu.value.events[i].amortEvt.length-1][2]-interests_paid)*100)/100;
+        _text1=' Mensualité : '+simu.value.events[i].new_mens.toString();
       }
-      else
+      _text2=' fin de l\'emprunt : '+simu.value.events[i].amortEvt[simu.value.events[i].amortEvt.length-1][0].split('-').join(' ');
+      _text3=' coût total : '+(Math.round(100*simu.value.events[i].amortEvt[simu.value.events[i].amortEvt.length-1][2])/100).toString();
+      delta_abs=Math.round((simu.value.events[i].amortEvt[simu.value.events[i].amortEvt.length-1][2]-interests_paid)*100)/100;
+      if(i!=0)
       {
-        delta=Math.round((simu.value.events[i].amortEvt[simu.value.events[i].amortEvt.length-1][2]-simu.value.events[i-1].amortEvt[simu.value.events[i-1].amortEvt.length-1][2])*100)/100;
+
+        delta_rel=Math.round((simu.value.events[i].amortEvt[simu.value.events[i].amortEvt.length-1][2]-simu.value.events[i-1].amortEvt[simu.value.events[i-1].amortEvt.length-1][2])*100)/100;
+        _text4='différence en interêts : (/'+simu.value.events[i-1].title+') : '+formatnumber(String(delta_rel))+' €';
       }
-      _text4='différence en interêts : '+String(delta)+' €';
-      if(delta>0)
+      if(delta_rel>0)
       {
         _text4_color='text-red';
       }
@@ -59,8 +69,17 @@ const beforemount=function() {
       {
         _text4_color='text-green';
       }
+      _text5='différence en interêts : (/Crédit initial) : '+formatnumber(String(delta_abs))+' €';
+      if(delta_abs>0)
+      {
+        _text5_color='text-red';
+      }
+      else
+      {
+        _text5_color='text-green';
+      }
       _date_to_display=simu.value.events[i].month.toString()+'/'+simu.value.events[i].year.toString();
-      summaries.value.push({title :  simu.value.events[i].title,subtitle:_date_to_display,id:_id,text1:_text1,text2:_text2,text3:_text3,text4:_text4,text4_color:_text4_color});
+      summaries.value.push({title :  simu.value.events[i].title,subtitle:_date_to_display,id:_id,text1:_text1,text2:_text2,text3:_text3,text4:_text4,text4_color:_text4_color,text5:_text5,text5_color:_text5_color});
     }
   }
 }
