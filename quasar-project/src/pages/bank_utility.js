@@ -2,6 +2,7 @@
 import { bank, simu } from 'src/stores/store';
 import {month_names,getMonthNbr } from 'src/pages/date_utility'
 import { returnBaseData } from './credit_utility';
+import { formatnumber } from './string_utils';
 const isPeriodicConcerned=function(currentY,currentM,periodic_saving_index)
 {
   if(bank.value.periodic_savings.length<periodic_saving_index)
@@ -248,8 +249,8 @@ var optionsReBuyType=[
   'Rachat à crédit - meilleur taux'
 ]
 const provideRebuyOptions=function(evt_type,penalties){
-  var toreturn=[];
-
+  var options_rebuy_savings=[];
+  var forDisplay_post_select_opt=[];
   var i=0;
   if(evt_type==optionsReBuyType[0])//Rachat avec épargne
   {
@@ -270,10 +271,12 @@ const provideRebuyOptions=function(evt_type,penalties){
     while(i<computed.length &&
       returnBaseData(Number(computed[i][0].split('-')[1]),getMonthNbr(computed[i][0].split('-')[0])).capital_left!=0)
     {
-      toreturn.push('date: '+String(computed[i][0])+' eco_left : '+String(computed[i][1]-returnBaseData(Number(computed[i][0].split('-')[1]),getMonthNbr(computed[i][0].split('-')[0])).capital_left*(1+penalties/100))+' computed : '+String(computed[i]));
+      var to_pay=returnBaseData(Number(computed[i][0].split('-')[1]),getMonthNbr(computed[i][0].split('-')[0])).capital_left*(1+penalties/100);
+      options_rebuy_savings.push(computed[i][0].split('-').join(' '));
+      forDisplay_post_select_opt.push({eco_left:formatnumber(String(Math.round(100*(computed[i][1]-to_pay))/100))+' €',value_paid:formatnumber(String(Math.round(100*to_pay)/100)+' €')});
       i++;
     }
-    return toreturn;
+    return [options_rebuy_savings,forDisplay_post_select_opt];
   }
 }
 export { getSavingsEarlier,computeDisplaySavings,hasSavings,hasPeriodicEnded, provideRebuyOptions,optionsReBuyType};
