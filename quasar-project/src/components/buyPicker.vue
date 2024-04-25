@@ -150,12 +150,12 @@ const sendRebuyPicked = function (force = false) {
   }
   var event_year = Number(event_year_str);
   if (force) {
-    for (var i = 0; i < simu.value.events.length; i++) {
-      if (compareDates(simu.value.events[i].year, simu.value.events[i].month, event_year, event_month)) {
+    for (var i = simu.value.events.length-1; i >=0; i--) {
+      if (compareDates(simu.value.events[i].year, simu.value.events[i].month, event_year, event_month)>0) {
         simu.value.events.pop();
       }
-      mustPopWarning.value = false;
     }
+    mustPopWarning.value = false;
     emit('update-from-rebuy-pick', { rebuyType: event_type.value, rebuyVal: rachatVal.value, year_str: event_year_str, month_str: event_month_str, year: event_year, month: event_month, reloanRate: Number(rate_reloan.value), rebuyPenalties: Number(penalties_rebuy.value), reloanDuration: Number(duration_reloan.value) });
   }
   else {
