@@ -1,5 +1,8 @@
 <template>
-  <q-page>
+  <q-layout>
+    ...
+    <q-page-container>
+      <q-page>
     <div>
     <div>
       <q-list class="bg-primary" separator bordered>
@@ -28,20 +31,22 @@
       </div>
     </div>
     <div class="col q-ma-md">
-      <q-popup-proxy v-model="mustPopName" cover transition-show="scale" transition-hide="scale">
+      <q-dialog v-model="mustPopName">
+        <q-card>
         <div class="q-ma-xl">
           Donner un nom à la sauvegarde ?
         </div>
         <q-input class="q-ma-md" v-model="currentName"></q-input>
         <q-btn class="q-ma-md" label="Nom par Défaut" @click="saveCurrentData"></q-btn>
         <q-btn class="q-ma-md" label="Ajouter un nom " @click="saveCurrentData"></q-btn>
-      </q-popup-proxy>
+      </q-card>
+      </q-dialog>
 
     </div>
   </div>
   </q-page>
-
-
+    </q-page-container>
+  </q-layout>
 </template>
 
 <script setup>
@@ -59,10 +64,10 @@ var currentName = ref(DEFAULT_NAME);
 const router = useRouter();
 
 const saveCurrentData = function () {
-  mustPopName.value = false
+  mustPopName.value = false;
   listSave.value.push({ simu: simu.value, bank: bank.value, id: listSave.value.length, name: currentName.value == DEFAULT_NAME ? 'Simulation ' + String(listSave.value.length) : currentName.value, startFormFilled: startFormFilled.value });
   LocalStorage.set('listSave', listSave.value);
-  currentName.value=DEFAULT_NAME;
+  currentName.value = DEFAULT_NAME;
 }
 const getSimuIndexInStorage = function (id_in) {
   var index = -1;
