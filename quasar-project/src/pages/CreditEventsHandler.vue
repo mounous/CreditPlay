@@ -84,6 +84,7 @@ const deleteEvents=function(){
           if(bank.value.single_in_out[j].title=='rachat avec économies')
           {
             bank.value.single_in_out.splice(j,1);
+            simu.value.credit.has_been_rebougth=false;
             break;
           }
         }
