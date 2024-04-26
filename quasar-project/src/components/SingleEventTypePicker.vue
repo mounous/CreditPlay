@@ -18,7 +18,7 @@
   </div>
   <div v-if="event_y != 0 && event_m != 0">
     <q-select rounded outlined v-model="event_type" :options="optionsEvtType" label="choisir une action"
-      @update:model-value="getopt" />
+      @update:model-value="[getopt(),modVal=DEFAULT_MODVAL,emit('can-finish',{val:false})]"/>
     <div v-if="event_y != 0 && event_m != 0" class="row">
       <div class="q-ma-md">
         <q-select class="evtTypeVal" rounded outlined v-model="modVal" :options="options_mod"
@@ -38,7 +38,8 @@ import { useQuasar } from 'quasar';
 import{subOneMonthToStringDate,addOneMonthToStringDate} from '../pages/date_utility'
 var event_type = ref('Sélectionnez une action');
 var mustpop=ref(false);
-var modVal = ref('undefined');
+const DEFAULT_MODVAL='choisir une option';
+var modVal = ref(DEFAULT_MODVAL);
 var mensDiff = ref(0);
 var new_mens = ref(0);
 var event_y=ref(0);
@@ -51,7 +52,7 @@ const validateModDate=function(){
   event_m.value=Number(date_mod.value.split('/')[1]);
   situationAtDate.value=returnBaseData(event_y.value, event_m.value).capital_left.toString();
 }
-const emit = defineEmits(['update-from-type-pick']);
+const emit = defineEmits(['update-from-type-pick','can-finish']);
 var options_mod = ref([]);
 const getopt = function () {
   options_mod.value = provideModOptions(event_type.value,event_y.value,event_m.value);
@@ -69,12 +70,14 @@ const validateMod = function () {
   if (
     (event_type.value == optionsEvtType[0] ||
       event_type.value == optionsEvtType[1]) &&
-    modVal.value != 'undefined'
+    modVal.value != DEFAULT_MODVAL
   ) {
     mensDiff.value = Number(modVal.value.split('(')[1].split('mois')[0]);
     new_mens.value = Number(modVal.value.split('€')[0])
+    emit('can-finish',{val:true});
     return true;
   }
+  emit('can-finish',{val:false});
   return false;
 };
 
@@ -82,6 +85,7 @@ const validateMod = function () {
 const sendPicked = function (bmove) {
   if (bmove) {
     emit('update-from-type-pick', { type: event_type.value, modVal: modVal.value, mensDiff: mensDiff.value, new_mens: new_mens.value,year:event_y.value,month:event_m.value });
+
   }
 };
 

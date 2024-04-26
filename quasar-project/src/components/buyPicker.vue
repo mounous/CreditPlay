@@ -8,13 +8,13 @@
     </div>
     <div>
       <q-select rounded outlined v-model="event_type" :options="options_rebuy" label="choisir un type de rachat action"
-        @update:model-value=getoptRebuy() :disable="penalties_rebuy <= 0.0"></q-select>
+        @update:model-value="[rate_reloan=0,duration_reloan=0, rebuy_saving_eco_left='',rebuy_saving_capital_to_pay='',rachatVal=DEFAULT_RACHAT_VAL_VALUE,getoptRebuy(),emit('can-finish',{val:false})]" :disable="penalties_rebuy <= 0.0"></q-select>
     </div>
     <div>
       <q-select v-if="event_type == optionsReBuyType[0]" class="evtTypeVal" rounded outlined v-model="rachatVal"
         :options="options_rebuy_val" label="choisir une option" :disable="(event_type != optionsReBuyType[0] &&
           event_type != optionsReBuyType[1]) || penalties_rebuy == 0.0
-          " @update:model-value="sendRebuyPicked()"></q-select>
+          " @update:model-value="[sendRebuyPicked(),emit('can-finish',{val:true})]"></q-select>
     </div>
     <div v-if="event_type == optionsReBuyType[0] && rebuy_saving_eco_left != '' && rebuy_saving_capital_to_pay != ''">
       Economies restantes après rachat : {{ rebuy_saving_eco_left }}
@@ -34,9 +34,9 @@
             <div>{{ elmnt.title }}</div>
           </div>
           <div>
-            <q-btn label="valider" @click="[mustPopWarning = false, sendRebuyPicked(force = true)]"></q-btn>
+            <q-btn label="valider" @click="[mustPopWarning = false, sendRebuyPicked(force = true),emit('can-finish',{val:true})]"></q-btn>
             <q-btn label="Annuler"
-              @click="[mustPopWarning = false, rachatVal = DEFAULT_RACHAT_VAL_VALUE, listToDisplay = []]"></q-btn>
+              @click="[mustPopWarning = false, rachatVal = DEFAULT_RACHAT_VAL_VALUE, listToDisplay = [],emit('can-finish',{val:false})]"></q-btn>
           </div>
         </div>
       </q-card>
@@ -83,7 +83,7 @@ var date_reloan = ref('');
 var event_type = ref('Sélectionnez une action');
 const DEFAULT_RACHAT_VAL_VALUE = 'choisir une option';
 var rachatVal = ref(DEFAULT_RACHAT_VAL_VALUE);
-const emit = defineEmits(['update-from-rebuy-pick']);
+const emit = defineEmits(['update-from-rebuy-pick','can-finish']);
 var rate_reloan = ref(0.0);
 var penalties_rebuy = ref(0.0);
 var duration_reloan = ref(0);
@@ -142,10 +142,18 @@ const sendRebuyPicked = function (force = false) {
         rebuy_saving_capital_to_pay.value = '';
       }
     }
-    else {
+    else {//rebuy with credit
       event_year_str = date_reloan.value.split('/')[0];
       event_month = Number(date_reloan.value.split('/')[1]);
       event_month_str = month_names[event_month - 1];
+      if(rate_reloan.value!=0 && duration_reloan.value!=0 &&date_reloan.value!='' && event_month>0 && Number(event_year_str)<=getLatestMensuality().l_y && Number(event_year_str)>=getEraliestNewEventDate().l_y)
+      {
+        emit('can-finish',{val:true});
+      }
+      else
+      {
+        emit('can-finish',{val:false});
+      }
     }
   }
   var event_year = Number(event_year_str);

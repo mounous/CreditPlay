@@ -8,24 +8,21 @@
           <q-btn label="Rachat" @click="[event_.metaType='Rachat',moveToNextSlide()]" color="primary"></q-btn>
         </q-carousel-slide>
         <q-carousel-slide name="EvtTypeSlide" class="column no-wrap flex-center" >
-          <SingleEventTypePicker @update-from-type-pick="[updateFromPicker($event),canValidateMod=true]" ></SingleEventTypePicker>
+          <SingleEventTypePicker @update-from-type-pick="[updateFromPicker($event),canValidateMod=true]" @can-finish="canValidateMod=$event['val']" ></SingleEventTypePicker>
           <div class="row">
             <div class="q-ma-md">
               <q-btn label="retour" @click="moveToPrevSlide" color="primary"></q-btn>
             </div>
 
             <div class="q-ma-md">
-              <q-btn label="Valider" @click="
-                moveToNextSlide(true)
+              <q-btn label="Valider"  @click="
+                sendFinish();
                 " color="primary" :disable="canValidateMod==false"></q-btn>
             </div>
           </div>
         </q-carousel-slide>
-        <q-carousel-slide name="EvtSaveSlide" class="column no-wrap flex-center">
-          <q-btn label="Valider" @click="sendFinish()" color="primary" />
-        </q-carousel-slide>
         <q-carousel-slide name="Rachat" class="column no-wrap flex-center" >
-          <buyPicker @update-from-rebuy-pick="updateFromRebuyPicker($event)"></buyPicker>
+          <buyPicker @update-from-rebuy-pick="updateFromRebuyPicker($event)" @can-finish="canValidateRebuy=$event['val']"></buyPicker>
             <div class="row">
             <div class="q-ma-md">
               <q-btn label="retour" @click="moveToPrevSlide" color="primary"></q-btn>
@@ -33,7 +30,7 @@
 
             <div class="q-ma-md">
               <q-btn label="Valider"  @click="sendFinish()
-                " color="primary"></q-btn>
+                " :disable="canValidateRebuy==false" color="primary"></q-btn>
             </div>
           </div>
 
@@ -53,6 +50,7 @@ import buyPicker from './buyPicker.vue';
 import { simu } from 'stores/store';
 import { optionsReBuyType } from 'src/pages/bank_utility';
 var canValidateMod=ref(false);
+var canValidateRebuy=ref(false);
 const carouselElement=ref(null);
 const default_month_str = 'choisir un mois ';
 const default_year_str = 'choisir une année';
