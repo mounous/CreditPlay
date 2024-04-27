@@ -42,7 +42,8 @@
       @click="deleteEvents"
       :disable="simu.events.length==0"
     />
-    <q-dialog v-model="addeventactive">
+    <q-dialog full-width :model-value="addeventactive==true">
+
       <!--https://v0-14.quasar-framework.org/components/building-reusable-components.html-->
       <SingleEventHandler
         @save-event="[(addeventactive = false), movetocharts()]"

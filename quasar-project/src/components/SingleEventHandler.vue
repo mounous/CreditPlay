@@ -8,7 +8,9 @@
           <q-btn label="Rachat" @click="[event_.metaType='Rachat',moveToNextSlide()]" color="primary"></q-btn>
         </q-carousel-slide>
         <q-carousel-slide name="EvtTypeSlide" class="column no-wrap flex-center" >
+          <div>
           <SingleEventTypePicker @update-from-type-pick="[updateFromPicker($event),canValidateMod=true]" @can-finish="canValidateMod=$event['val']" ></SingleEventTypePicker>
+          </div>
           <div class="row">
             <div class="q-ma-md">
               <q-btn label="retour" @click="moveToPrevSlide" color="primary"></q-btn>
@@ -22,7 +24,9 @@
           </div>
         </q-carousel-slide>
         <q-carousel-slide name="Rachat" class="column no-wrap flex-center" >
+          <div>
           <buyPicker @update-from-rebuy-pick="updateFromRebuyPicker($event)" @can-finish="canValidateRebuy=$event['val']"></buyPicker>
+        </div>
             <div class="row">
             <div class="q-ma-md">
               <q-btn label="retour" @click="moveToPrevSlide" color="primary"></q-btn>

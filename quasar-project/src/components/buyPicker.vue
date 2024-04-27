@@ -1,5 +1,6 @@
 <template>
-  <div class="q-ma-md col flex flex-center">
+  <div class="q-ma-xs col flex flex-center">
+    <div class="col">
     <div >
       <q-input class="q-ma-md" label="Pénalités" hint="% du capital restant dû" style="max-width:110px" maxlength="8"
         v-model="penalties_rebuy" type="number" lazy-rules
@@ -22,7 +23,7 @@
     <div v-if="event_type == optionsReBuyType[0] && rebuy_saving_eco_left != '' && rebuy_saving_capital_to_pay != ''">
       Valeur du rachat : {{ rebuy_saving_capital_to_pay }}
     </div>
-
+  </div>
     <q-dialog v-model="mustPopWarning" v-if="event_type == optionsReBuyType[0]">
       <q-card>
         <div class="q-ma-xl col flex flex-center">
@@ -42,8 +43,8 @@
       </q-card>
     </q-dialog>
   </div>
-  <div class="row">
-    <q-input v-if="event_type == optionsReBuyType[1]" class="q-ma-md" dense style="max-width: 100px;"
+  <div class="row wrap">
+    <q-input v-if="event_type == optionsReBuyType[1]" class="q-ma-xs" dense style="max-width: 100px;"
       label="Date de rachat" bg-color="blue-grey-8" filled v-model="date_reloan" mask="date" @click="mustpop = true">
       <template v-slot:append>
         <q-icon name="event" class="cursor-pointer">
@@ -59,10 +60,10 @@
         </q-icon>
       </template>
     </q-input>
-    <q-input v-if="event_type == optionsReBuyType[1]" class="q-ma-md" label="Taux" style="max-width:100px" maxlength="8"
+    <q-input v-if="event_type == optionsReBuyType[1]" class="q-ma-xs" label="Taux" style="max-width:70px" maxlength="8"
       v-model="rate_reloan" type="number" lazy-rules :rules="[(val) => (val >= 0.0) || 'Le taux ne semble pas réel']"
       bg-color="blue-grey-8" outlined dense @update:model-value="sendRebuyPicked()"></q-input>
-    <q-input v-if="event_type == optionsReBuyType[1]" class="q-ma-md" label="Durée" style="max-width:100px"
+    <q-input v-if="event_type == optionsReBuyType[1]" class="q-ma-xs" label="Durée" style="max-width:70px"
       maxlength="8" v-model="duration_reloan" type="number" lazy-rules
       :rules="[(val) => (val >= 0.0) || 'Cette durée est impossible']" bg-color="blue-grey-8" outlined dense
       @update:model-value="sendRebuyPicked()"></q-input>
