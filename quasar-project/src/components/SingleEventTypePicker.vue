@@ -4,7 +4,7 @@
       <q-icon name="event" class="cursor-pointer">
         <q-popup-proxy v-model="mustpop" cover transition-show="scale" transition-hide="scale">
           <q-date dark v-model="date_mod" :locale="formatCalendar" :navigation-min-year-month="mod_min_date"
-            width="200px" :navigation-max-year-month="mod_max_date" :default-year-month="mod_min_date" @update:model-value="[validateModDate(),mustpop=false]">
+            width="200px" :navigation-max-year-month="mod_max_date" :default-year-month="mod_min_date" @update:model-value="[validateModDate(),mustpop=false,event_type =DEFAULT_EVENT_TYPE,emit('can-finish',{val:false}),modVal=DEFAULT_MODVAL]">
             <div class="row items-center justify-end" >
               <q-btn v-close-popup label="Fermer" color="primary" flat />
             </div>
@@ -36,7 +36,8 @@ import { provideModOptions, returnBaseData, optionsEvtType,getLatestMensuality,g
 import { formatCalendar } from 'src/utils/calendar_utility.js';
 import { useQuasar } from 'quasar';
 import{subOneMonthToStringDate,addOneMonthToStringDate} from '../utils/date_utility.js'
-var event_type = ref('Sélectionnez une action');
+const DEFAULT_EVENT_TYPE='Sélectionnez une action';
+var event_type = ref(DEFAULT_EVENT_TYPE);
 var mustpop=ref(false);
 const DEFAULT_MODVAL='choisir une option';
 var modVal = ref(DEFAULT_MODVAL);
