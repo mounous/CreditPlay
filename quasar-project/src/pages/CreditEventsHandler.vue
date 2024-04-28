@@ -42,7 +42,7 @@
       @click="deleteEvents"
       :disable="simu.events.length==0"
     />
-    <q-dialog full-width :model-value="addeventactive==true">
+    <q-dialog full-width v-model="addeventactive">
 
       <!--https://v0-14.quasar-framework.org/components/building-reusable-components.html-->
       <SingleEventHandler
