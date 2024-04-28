@@ -37,7 +37,7 @@ const setInitDone=function(b_in:boolean){
   initFormDone.value=b_in};
 const setbankdone=function()
 {
-  if(bank.value.savings.length!=0 || bank.value.periodic_savings.length!=0 || bank.value.single_in_out.length!=0)
+  if(bank.value.accounts.length!=0)
   {
     bankDone.value=true;
   }

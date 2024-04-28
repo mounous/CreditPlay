@@ -65,6 +65,13 @@ const router = useRouter();
 
 const saveCurrentData = function () {
   mustPopName.value = false;
+  if(bank.value.accounts.length!=0)
+  {
+    for(var i=0;i<bank.value.accounts.length;i++)
+    {
+      bank.value.accounts[i].computedOverTime=[];
+    }
+  }
   listSave.value.push({ simu: simu.value, bank: bank.value, id: listSave.value.length, name: currentName.value == DEFAULT_NAME ? 'Simulation ' + String(listSave.value.length) : currentName.value, startFormFilled: startFormFilled.value });
   LocalStorage.set('listSave', listSave.value);
   currentName.value = DEFAULT_NAME;

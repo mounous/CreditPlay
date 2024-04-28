@@ -1,7 +1,7 @@
 
 import { simu ,bank} from 'src/stores/store';
-import { month_names,get_nb_mens_diff,getMonthNbr, compareDates} from './date_utility';
-import {optionsReBuyType} from './bank_utility'
+import { month_names,get_nb_mens_diff,getMonthNbr, compareDates } from './date_utility';
+import {optionsReBuyType,getSortedAccountsFromPoorToHighRate,getSavingsEarlier,compute_savings} from './bank_utility'
 const computeMensuality = () => {
   simu.value.credit.mensuality=computeMensuality_noSave(simu.value.credit.year,simu.value.credit.rate,simu.value.credit.amount);
 };
@@ -191,9 +191,33 @@ const apply_events_chain=()=>{
         var monthToLog=month_names[getMonthNbr(simu.value.events[i].amortEvt[simu.value.events[i].amortEvt.length-1][0].split('-')[0])];
         var yearToLog=simu.value.events[i].amortEvt[simu.value.events[i].amortEvt.length-1][0].split('-')[1];
         simu.value.events[i].amortEvt.push([monthToLog+'-'+yearToLog,0.00,interestsToLog]);
-        //retreive amount to pay
-
-        bank.value.single_in_out.push({title:'rachat avec économies',type:'sortie',amount:toPay,date:simu.value.events[i].year_str+'/'+simu.value.events[i].month_str,month:simu.value.events[i].month,year:simu.value.events[i].year,rate:0.0});
+        //substract amount to pay, on the less rentable account first
+        //1 sort accounts
+        var from_poor_to_high_rate=getSortedAccountsFromPoorToHighRate();
+        //2 get the ammount of money on each account at event date
+        var ret=getSavingsEarlier();
+        var savErlyM=ret[0];
+        var savErlyY=ret[1];
+        compute_savings(savErlyY,savErlyM,get_nb_mens_diff(savErlyY,savErlyM,simu.value.events[i].year,simu.value.events[i].month),true);
+        //3 substract desired amount on each account
+        var indexAccount=0;
+        while(toPay>0)
+        {//if there is enough money on the account, the pick all on this acocunt
+          var indexAtDate=bank.value.accounts[from_poor_to_high_rate[indexAccount]].computedOverTime.length-1;
+          var amountOnaccountAtDate=bank.value.accounts[from_poor_to_high_rate[indexAccount]].computedOverTime[indexAtDate].amount;
+          if(amountOnaccountAtDate>toPay)
+          {
+            bank.value.accounts[from_poor_to_high_rate[indexAccount]].single_in_out.push({account :from_poor_to_high_rate[indexAccount], title:'rachat avec économies',type:'sortie',amount:Math.round(100*toPay)/100,date:simu.value.events[i].year_str+'/'+simu.value.events[i].month_str,month:simu.value.events[i].month,year:simu.value.events[i].year,rate:0.0});
+            toPay=0;
+          }
+          else
+          {
+            //else empty it
+            bank.value.accounts[from_poor_to_high_rate[indexAccount]].single_in_out.push({account :from_poor_to_high_rate[indexAccount], title:'rachat avec économies',type:'sortie',amount:Math.round(100*amountOnaccountAtDate)/100,date:simu.value.events[i].year_str+'/'+simu.value.events[i].month_str,month:simu.value.events[i].month,year:simu.value.events[i].year,rate:0.0});
+            toPay-=amountOnaccountAtDate;
+          }
+          indexAccount++;
+        }
       }
       //Rebuy with credit
       else if(simu.value.events[i].type==optionsReBuyType[1])

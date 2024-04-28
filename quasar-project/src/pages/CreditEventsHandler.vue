@@ -80,15 +80,19 @@ const deleteEvents=function(){
       //delete fake single_io if rebought credit with savings
       if(simu.value.events[i].type==optionsReBuyType[0])
       {
-        for(var j=0;j<bank.value.single_in_out.length;j++)
+        for(var acc=0;acc<bank.value.accounts.length;acc++)
         {
-          if(bank.value.single_in_out[j].title=='rachat avec économies')
+          for(var io=0;io<bank.value.accounts[acc].single_in_out.length;io++)
           {
-            bank.value.single_in_out.splice(j,1);
-            simu.value.credit.has_been_rebougth=false;
-            break;
+            if(bank.value.accounts[acc].single_in_out.length[io].title=='rachat avec économies')
+            {
+              bank.value.accounts[acc].single_in_out.splice(io,1);
+              simu.value.credit.has_been_rebougth=false;
+              //do not break as the credit can be rebought on multiple accounts;
+            }
           }
         }
+
       }
       simu.value.events.splice(i,1);
       refresh.value++;

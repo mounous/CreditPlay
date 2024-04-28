@@ -79,7 +79,9 @@ import { getLatestMensuality, getEraliestNewEventDate } from '../utils/credit_ut
 import { subOneMonthToStringDate, addOneMonthToStringDate, compareDates, getMonthNbr, month_names } from '../utils/date_utility'
 
 var reloanMax = ref(subOneMonthToStringDate(getLatestMensuality().l_y.toString() + '/' + getLatestMensuality().l_m.toString().padStart(2, '0')));
+console.log('test1');
 var reloanMin = ref(addOneMonthToStringDate(getEraliestNewEventDate().l_y.toString() + '/' + getEraliestNewEventDate().l_m.toString().padStart(2, '0')));
+console.log('test2');
 var date_reloan = ref('');
 var event_type = ref('Sélectionnez une action');
 const DEFAULT_RACHAT_VAL_VALUE = 'choisir une option';

@@ -3,52 +3,55 @@ import { bank, simu } from 'src/stores/store';
 import {month_names,getMonthNbr } from 'src/utils/date_utility'
 import { returnBaseData } from './credit_utility';
 import { formatnumber } from './string_utils';
-const isPeriodicConcerned=function(currentY,currentM,periodic_saving_index)
+import { compareDates } from 'src/utils/date_utility';
+const BANK_SEARCH_ERROR=-1;
+const isPeriodicConcerned=function(currentY,currentM,accID,psID)
 {
-  if(bank.value.periodic_savings.length<periodic_saving_index)
+  var ps_startY=  bank.value.accounts[accID].periodic_savings[psID].startYear;
+  var ps_startM=  bank.value.accounts[accID].periodic_savings[psID].startMonth;
+  var ps_endY=    bank.value.accounts[accID].periodic_savings[psID].endYear;
+  var ps_endM=    bank.value.accounts[accID].periodic_savings[psID].endMonth;
+  if(bank.value.accounts[accID].periodic_savings.length<psID)
   {
     return false;
   }
   //1 has the periodic saving started ?
-  if(bank.value.periodic_savings[periodic_saving_index].startYear*12+bank.value.periodic_savings[periodic_saving_index].startMonth>currentY*12+currentM)
+  if(ps_startY!=0 && ps_startM!=0)
   {
-    return false;
+    if(compareDates(ps_startY,ps_startM,currentY,currentM)>0)
+    {
+      return false;
+    }
   }
   //2 if so, hasn't it ended is a stop date is defined
-  var ps_endY=bank.value.periodic_savings[periodic_saving_index].endYear;
-  var ps_endM=bank.value.periodic_savings[periodic_saving_index].endMonth;
-  if(ps_endM !=0 && ps_endY!=0 && ps_endM+ps_endY*12<currentY*12+currentM)
+  if(ps_endY!=0 && ps_endM!=0)
   {
-    return false;
+    if(compareDates(ps_endY,ps_endM,currentY,currentM)<=0)
+    {
+      return false;
+    }
+  }
+  if(bank.value.accounts[accID].periodic_savings[psID].type!='mensuelle')
+  {
+    if(ps_startM!=currentM)
+    {
+      return false;
+    }
   }
   return true;
 }
-const hasPeriodicEnded=function(currentY,currentM,periodic_saving_index)
+const isSingleIOConcerned=function(currentY,currentM,accID,sioID)
 {
-  if(bank.value.periodic_savings.length<periodic_saving_index)
+  //undefined single io not treated
+  if(bank.value.accounts[accID].single_in_out.length<sioID)
   {
     return false;
   }
-  //1 has the periodic saving ended ?
-  if(bank.value.periodic_savings[periodic_saving_index].endYear*12+bank.value.periodic_savings[periodic_saving_index].endMonth>currentY*12+currentM)
+  if(bank.value.accounts[accID].single_in_out[sioID].year*12+bank.value.accounts[accID].single_in_out[sioID].month==currentY*12+currentM)
   {
     return true;
   }
   return false;
-}
-const isSingleIOConcerned=function(currentY,currentM,singleIO_index)
-{
-  //undefined single io not treated
-  if(bank.value.single_in_out.length<singleIO_index)
-  {
-    return false;
-  }
-  //does single io belong to the future ?
-  if(bank.value.single_in_out[singleIO_index].year*12+bank.value.single_in_out[singleIO_index].month>currentY*12+currentM)
-  {
-    return false;
-  }
-  return true;
 
 }
 const DEFAULT_SAVINGS_EARLIER_MONTH=12;
@@ -57,25 +60,28 @@ const getSavingsEarlier=function()
 {
   var savingsEarlierY=DEFAULT_SAVINGS_EARLIER_YEAR;
   var savingsEarlierM=DEFAULT_SAVINGS_EARLIER_MONTH;
-  for(var i=0;i<bank.value.periodic_savings.length;i++)
+  for(var i=0;i<bank.value.accounts.length;i++)
   {
-    if(bank.value.periodic_savings[i].startYear<=savingsEarlierY)
+    for(var ps=0;ps<bank.value.accounts[i].periodic_savings.length;ps++)
     {
-      savingsEarlierY=bank.value.periodic_savings[i].startYear;
-      if(bank.value.periodic_savings[i].startMonth<=savingsEarlierM)
+      if(bank.value.accounts[i].periodic_savings[ps].startYear<=savingsEarlierY)
       {
-        savingsEarlierM=bank.value.periodic_savings[i].startMonth;
+        savingsEarlierY=bank.value.accounts[i].periodic_savings[ps].startYear;
+        if(bank.value.accounts[i].periodic_savings[ps].startMonth<=savingsEarlierM)
+        {
+          savingsEarlierM=bank.value.accounts[i].periodic_savings[ps].startMonth;
+        }
       }
     }
-  }
-  for(var i=0;i<bank.value.single_in_out.length;i++)
-  {
-    if(bank.value.single_in_out[i].year<=savingsEarlierY)
+    for(var io=0;io<bank.value.accounts[i].single_in_out.length;io++)
     {
-      savingsEarlierY=bank.value.single_in_out[i].year;
-      if(bank.value.single_in_out[i].month<=savingsEarlierM)
+      if(bank.value.accounts[i].single_in_out[io].startYear<=savingsEarlierY)
       {
-        savingsEarlierM=bank.value.single_in_out[i].month;
+        savingsEarlierY=bank.value.accounts[i].single_in_out[io].startYear;
+        if(bank.value.accounts[i].single_in_out[io].startMonth<=savingsEarlierM)
+        {
+          savingsEarlierM=bank.value.accounts[i].single_in_out[io].startMonth;
+        }
       }
     }
   }
@@ -86,154 +92,122 @@ const getSavingsEarlier=function()
   return [savingsEarlierM,savingsEarlierY];
 }
 const hasSavings=function(){
-  return (bank.value.periodic_savings.length!=0 || bank.value.savings.length!=0 || bank.value.single_in_out.length!=0);
+  for(var i=0;i<bank.value.accounts.length;i++)
+  {
+    if(bank.value.accounts[i].amount!=0)
+    {
+      return true;
+    }
+    else
+    {
+      for(var ps=0;ps<bank.value.accounts[i].periodic_savings.length;ps++)
+      {
+        if(bank.value.accounts[i].periodic_savings[ps].amount!=0)
+        {
+          return true;
+        }
+      }
+      for(var io =0;io<bank.value.accounts[i].single_in_out.length;io++)
+      {
+        if(bank.value.accounts[i].single_in_out[io].amount!=0)
+        {
+          return true;
+        }
+      }
+    }
+  }
+  return false;
 }
 const computeDisplaySavings=function(startY,startM,durationY)
 {
   bank.value.monthly_sum=[];
-  var computed=compute_savings_no_save(startY,startM,durationY);
+  var computed=compute_savings(startY,startM,durationY*12);
   for(var i=0;i<computed.length;i++)
   {
     bank.value.monthly_sum.push(computed[i]);
   }
 }
-const compute_savings_no_save=function(startY,startM,durationY)
+const compute_savings=function(startY,startM,durationM,save=false)
 {
   var result=[];
   var currentM=Number(startM);
   var currentY=Number(startY);
-  var computed_savings=[];
   var total_savings=0.0;
-  var fictive_p_accounts=[];
-  var fictive_p_average=[];
-  var fictive_p_avg_month_spent=[];
-  var fictive_sio_accounts=[];
-  var fictive_sio_average=[];
-  var fictive_sio_avg_month_spent=[];
-  //--------------------------------------------------//
-  // prepare for fictive accounts for periodic savings//
-  //--------------------------------------------------//
-  for(var ps=0;ps<bank.value.periodic_savings.length;ps++)
+  var fictive_accounts=[];
+  var fictive_average=[];//sum acount value each mont
+  var fictive_avg_month_spent=[];//divide fictive_average by fictive_avg_month_spent in january to get ammount of interests
+  //------------------------------//
+  // prepare for fictive accounts //
+  //----------------------------- //
+  for(var acc=0;acc<bank.value.accounts.length;acc++)
   {
-    fictive_p_accounts[ps]=0;
-    fictive_p_average[ps]=0;
-    fictive_p_avg_month_spent[ps]=0;
+    fictive_accounts.push(bank.value.accounts[acc].amount);
+    //supposed constant before current month
+    fictive_average.push(fictive_accounts[acc]*(startM));
+    fictive_avg_month_spent.push(startM);
   }
-  //--------------------------------------------------//
-  // prepare for fictive accounts for single IO       //
-  //--------------------------------------------------//
-  for(var io=0;io<bank.value.single_in_out.length;io++)
-  {
-    fictive_sio_accounts[io]=0;
-    fictive_sio_average[io]=0;
-    fictive_sio_avg_month_spent[io]=0;
-  }
-  //----------------------//
-  //    origin savings    //
-  //----------------------//
-  //at start date summ all savings already done
-  for(var x=0;x<bank.value.savings.length;x++)
-  {
-    computed_savings[x]=Number(bank.value.savings[x].amount);
-  }
-  for(var i=0;i<durationY*12;i++)
+  for(var i=0;i<durationM;i++)
   {
     //------------------------//
     //get interests in january//
     //------------------------//
     if(currentM==1)
     {
-      //initial savings
-      for(var k=0;k<bank.value.savings.length;k++)
-      {
-        if(Number(bank.value.savings[k].rate/100)!=0)
+      for(var k=0;k<bank.value.accounts.length;k++)
+      {//if the rate is not null for a given account, compute interests
+        if(Number(bank.value.accounts[k].rate/100)!=0)
         {
-          computed_savings[k]+=computed_savings[k]*Number(bank.value.savings[k].rate/100);
+          //if there have been some money on the account, mean it
+          if(fictive_avg_month_spent[k]!=0)
+          {
+            fictive_average[k]/=fictive_avg_month_spent[k];
+          }
+          fictive_accounts[k]+=fictive_average[k]*Number(bank.value.accounts[k].rate/100);
+          fictive_average[k]=0;
+          fictive_avg_month_spent[k]=0;
         }
       }
-      //periodic savings
-      for(var ps=0;ps<bank.value.periodic_savings.length;ps++)
+    }
+    //---------------------------------------//
+    // then, whatever the month, sum savings //
+    //---------------------------------------//
+    for(var acc=0;acc<bank.value.accounts.length;acc++)
+    {
+      //add periodic savings to the account
+      for(var ps=0;ps<bank.value.accounts[acc].periodic_savings.length;ps++)
       {
-        if( isPeriodicConcerned(currentY,currentM,ps)||hasPeriodicEnded(currentY,currentM,ps))
+        if(isPeriodicConcerned(currentY,currentM,acc,ps))
         {
-          //mensual savings require some computation
-          if(bank.value.periodic_savings[ps].type=='mensuelle')
+          fictive_accounts[acc]+=bank.value.accounts[acc].periodic_savings[ps].amount;
+        }
+      }
+      //add single io if it is time to
+      for(var io=0;io<bank.value.accounts[acc].single_in_out.length;io++)
+      {
+        if(isSingleIOConcerned(currentY,currentM,acc,io))
+        {
+          if(bank.value.accounts[acc].single_in_out[io].type=='entrée')
           {
-            if(Number(bank.value.periodic_savings[ps].rate)!=0)
-            {
-              fictive_p_accounts[ps]+=fictive_p_average[ps]/fictive_p_avg_month_spent[ps]*Number(bank.value.periodic_savings[ps].rate/100);
-            }
-            fictive_p_avg_month_spent[ps]=0;
-            fictive_p_average[ps]=0;
+            fictive_accounts[acc]+=bank.value.accounts[acc].single_in_out[io].amount;
           }
-          //that are not required for yearly savings
           else
           {
-            fictive_p_accounts[ps]+=fictive_p_accounts[ps]*Number(bank.value.periodic_savings[ps].rate)/100;
-          }
-
-        }
-      }
-      //single IO
-      for(var io=0;io<bank.value.single_in_out.length;io++)
-      {
-        if( isSingleIOConcerned(currentY,currentM,io))
-        {
-          if(Number(bank.value.single_in_out[io].rate)!=0 && bank.value.single_in_out[io].type=='entrée')
-          {
-            fictive_sio_accounts[io]+=fictive_sio_average[io]/fictive_sio_avg_month_spent[io]*Number(bank.value.single_in_out[io].rate/100);
-          }
-          fictive_sio_avg_month_spent[io]=0;
-          fictive_sio_average[io]=0;
-        }
-      }
-    }
-    //---------------//
-    //Sum all savings//
-    //---------------//
-    //initial savings
-    for(var j=0;j<bank.value.savings.length;j++)
-    {
-      total_savings+=computed_savings[j];
-    }
-    //periodic savings
-    for(var k=0;k<bank.value.periodic_savings.length;k++)
-    {
-      if( isPeriodicConcerned(currentY,currentM,k))
-      {
-        if(bank.value.periodic_savings[k].type=='mensuelle')
-        {
-          fictive_p_accounts[k]+=Number(bank.value.periodic_savings[k].amount);
-          fictive_p_average[k]+=fictive_p_accounts[k];
-          fictive_p_avg_month_spent[k]++;
-        }
-        else
-        {
-          if(currentM==bank.value.periodic_savings[k].startMonth)
-          {
-            fictive_p_accounts[k]+=Number(bank.value.periodic_savings[k].amount);
+            fictive_accounts[acc]-=bank.value.accounts[acc].single_in_out[io].amount;
           }
         }
       }
-
-      total_savings+=fictive_p_accounts[k];
-    }
-    //single IOs
-    for(var l=0;l<bank.value.single_in_out.length;l++)
-    {
-      if(isSingleIOConcerned(currentY,currentM,l))
-      {
-        if(bank.value.single_in_out[l].type=='sortie')
-        {
-          total_savings-=Number(bank.value.single_in_out[l].amount);
-        }
-        else
-        {
-          total_savings+=Number(bank.value.single_in_out[l].amount);
-        }
-      }
+      fictive_average[acc]+=fictive_accounts[acc];
+      fictive_avg_month_spent[acc]++;
+      total_savings+=fictive_accounts[acc];
     }
     result.push([(month_names[currentM-1]+'-'+currentY.toString()),total_savings]);
+    if(save)
+    {
+      for(var accID=0;accID<bank.value.accounts.length;accID++)
+      {
+        bank.value.accounts[accID].computedOverTime.push({date:month_names[currentM-1]+'-'+currentY.toString(),amount:fictive_accounts[accID]})
+      }
+    }
     total_savings=0;
     currentM++;
     if(currentM%12==1)
@@ -259,7 +233,7 @@ const provideRebuyOptions=function(evt_type,penalties){
       return ['onglet épargne non renseigné'];
     }
     //dernier paramètre à changer : il faut prendre en compte des modulations qui ralongent
-    var computed=compute_savings_no_save(getSavingsEarlier()[1],getSavingsEarlier()[0],simu.value.credit.year);
+    var computed=compute_savings(getSavingsEarlier()[1],getSavingsEarlier()[0],simu.value.credit.year*12);
     while(computed[i][1]<returnBaseData(Number(computed[i][0].split('-')[1]),getMonthNbr(computed[i][0].split('-')[0])).capital_left*(1+penalties/100) && i!=computed.length)
     {
       i++;
@@ -279,4 +253,87 @@ const provideRebuyOptions=function(evt_type,penalties){
     return [options_rebuy_savings,forDisplay_post_select_opt];
   }
 }
-export { getSavingsEarlier,computeDisplaySavings,hasSavings,hasPeriodicEnded, provideRebuyOptions,optionsReBuyType};
+const getAccId=function(name){
+  //get the account id
+  for(var acc=0;acc<bank.value.accounts.length;acc++)
+  {
+    if(bank.value.accounts[acc].title==name)
+    {
+      return acc;
+    }
+  }
+  return BANK_SEARCH_ERROR;
+}
+
+const getSavinPID=function(accId,Saving_name){
+  //get the account id
+  if (accId<bank.value.accounts.length)
+  {
+    for(var sp=0;sp<bank.value.accounts[accId].periodic_savings.length;sp++)
+    {
+      if(bank.value.accounts[accId].periodic_savings[sp].title==Saving_name)
+      {
+        return sp;
+      }
+    }
+  }
+  return BANK_SEARCH_ERROR;
+}
+
+const getSIOID=function(accId,Saving_name){
+  //get the account id
+  if (accId<bank.value.accounts.length)
+  {
+    for(var sio=0;sio<bank.value.accounts[accId].single_in_out.length;sio++)
+    {
+      if(bank.value.accounts[accId].single_in_out[sio].title==Saving_name)
+      {
+        return sio;
+      }
+    }
+  }
+  return BANK_SEARCH_ERROR;
+}
+
+const getSortedAccountsFromPoorToHighRate=function()
+{
+  var from_poor_to_high_rate=[];
+  if(bank.value.accounts.length==0)
+  {
+    return
+  }
+  if(bank.value.accounts.length==1)
+  {
+    return [0]
+  }
+  else
+  {
+    var Tmpaccounts=bank.value.accounts;
+    var fullysorted=false
+    while(fullysorted==false)
+    {
+      var fullysorted=true;
+      var currentIndex=0;
+      var Tmpaccount;
+      while(currentIndex<Tmpaccounts.length-1)
+      {
+        if(Tmpaccounts[currentIndex].rate>Tmpaccounts[currentIndex+1].rate)
+        {
+          //swap
+          Tmpaccount=Tmpaccounts[currentIndex];
+          Tmpaccounts[currentIndex]=Tmpaccounts[currentIndex+1];
+          Tmpaccounts[currentIndex+1]=Tmpaccount;
+          fullysorted=false;
+        }
+        currentIndex++;
+      }
+    }
+    for(var index=0;index<Tmpaccounts.length;index++)
+    {
+      from_poor_to_high_rate.push(getAccId(Tmpaccounts[index].title))
+    }
+    return from_poor_to_high_rate;
+  }
+}
+export { getSavingsEarlier,computeDisplaySavings,hasSavings, provideRebuyOptions,optionsReBuyType
+  ,BANK_SEARCH_ERROR,getAccId,getSavinPID,getSIOID,getSortedAccountsFromPoorToHighRate,compute_savings};

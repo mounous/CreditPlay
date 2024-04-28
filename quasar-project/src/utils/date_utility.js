@@ -103,7 +103,7 @@ const addOneMonthToStringDate=function(date)
   }
   else
   {
-    console.log('------------------UNHANDLED DATE FORMAT------------------');
+    console.log('------------------UNHANDLED DATE FORMAT ADD------------------');
   }
   addOneMonth(month,year);
 
@@ -137,7 +137,7 @@ const subOneMonthToStringDate=function(date)
   }
   else
   {
-    console.log('------------------UNHANDLED DATE FORMAT------------------');
+    console.log('------------------UNHANDLED DATE FORMAT SUB------------------');
   }
 }
 export { month_names,get_nb_mens_diff,getMonthNbr,subOneMonthToStringDate,addOneMonthToStringDate,compareDates};
