@@ -27,10 +27,10 @@
 
 import VueApexCharts from 'vue3-apexcharts'
 import { onBeforeMount,ref, nextTick } from 'vue';
-import {getChartXAxis,getLatestMensuality} from '../pages/credit_utility'
-import { GetColor,TYPE_CAPITAL,TYPE_INTERESTS,TYPE_SAVINGS } from 'src/pages/chart_utility';
+import {getChartXAxis,getLatestMensuality} from '../utils/credit_utility'
+import { GetColor,TYPE_CAPITAL,TYPE_INTERESTS,TYPE_SAVINGS } from 'src/utils/chart_utility';
 import { simu,bank, startFormFilled } from 'stores/store';
-import {getSavingsEarlier,computeDisplaySavings,hasSavings} from '../pages/bank_utility'
+import {getSavingsEarlier,computeDisplaySavings,hasSavings} from '../utils/bank_utility'
 import { useQuasar } from 'quasar';
 
 var $q=useQuasar();

@@ -61,8 +61,8 @@ import { ref } from 'vue';
 import SingleEventHandler from '../components/SingleEventHandler.vue';
 import { useRouter } from 'vue-router';
 import { bank, simu } from 'stores/store';
-import {hasBeenRebougthSavings,optionsEvtType} from './credit_utility'
-import { optionsReBuyType } from './bank_utility';
+import {hasBeenRebougthSavings,optionsEvtType} from '../utils/credit_utility'
+import { optionsReBuyType } from '../utils/bank_utility';
 const router = useRouter();
 const $q = useQuasar();
 var refresh=ref(0);

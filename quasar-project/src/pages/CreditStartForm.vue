@@ -9,7 +9,7 @@
           ]" />
       </div>
       <div class="col">
-        <q-input label="Date de signature" bg-color="blue-grey-8" filled v-model="simu.credit.startingDate" mask="date" @click="mustpop=true">
+        <q-input label="Date de signature" bg-color="blue-grey-8" filled v-model="simu.credit.startingDate" mask="date" @click="mustpop=true" readonly>
           <template v-slot:append>
             <q-icon name="event" class="cursor-pointer" >
               <q-popup-proxy v-model="mustpop" cover transition-show="scale" transition-hide="scale">
@@ -77,9 +77,9 @@
 
 import { useRouter } from 'vue-router';
 import { ref } from 'vue';
-import { computeMensuality, computeCredit_init } from './credit_utility.js';
+import { computeMensuality, computeCredit_init } from '../utils/credit_utility.js';
 import { setStartFormFilled,simu } from 'stores/store';
-import { formatCalendar } from './calendar_utility';
+import { formatCalendar } from '../utils/calendar_utility.js';
 const router = useRouter();
 
 var has_started = ref('CHOOSE');

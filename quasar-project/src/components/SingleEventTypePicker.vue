@@ -1,5 +1,5 @@
 <template>
-  <q-input class="q-ma-md" dense style="max-width: 100px;" label="Date de modulation" bg-color="blue-grey-8" filled v-model="date_mod" mask="date" @click="mustpop=true">
+  <q-input class="q-ma-md" dense style="max-width: 100px;" label="Date de modulation" bg-color="blue-grey-8" filled v-model="date_mod" mask="date" @click="mustpop=true" readonly>
     <template v-slot:append>
       <q-icon name="event" class="cursor-pointer">
         <q-popup-proxy v-model="mustpop" cover transition-show="scale" transition-hide="scale">
@@ -32,10 +32,10 @@
 
 <script setup>
 import { ref, defineEmits } from 'vue';
-import { provideModOptions, returnBaseData, optionsEvtType,getLatestMensuality,getEraliestNewEventDate } from '../pages/credit_utility.js'
-import { formatCalendar } from 'src/pages/calendar_utility';
+import { provideModOptions, returnBaseData, optionsEvtType,getLatestMensuality,getEraliestNewEventDate } from '../utils/credit_utility.js'
+import { formatCalendar } from 'src/utils/calendar_utility.js';
 import { useQuasar } from 'quasar';
-import{subOneMonthToStringDate,addOneMonthToStringDate} from '../pages/date_utility'
+import{subOneMonthToStringDate,addOneMonthToStringDate} from '../utils/date_utility.js'
 var event_type = ref('Sélectionnez une action');
 var mustpop=ref(false);
 const DEFAULT_MODVAL='choisir une option';

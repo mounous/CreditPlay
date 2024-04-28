@@ -1,6 +1,6 @@
 
 import { bank, simu } from 'src/stores/store';
-import {month_names,getMonthNbr } from 'src/pages/date_utility'
+import {month_names,getMonthNbr } from 'src/utils/date_utility'
 import { returnBaseData } from './credit_utility';
 import { formatnumber } from './string_utils';
 const isPeriodicConcerned=function(currentY,currentM,periodic_saving_index)

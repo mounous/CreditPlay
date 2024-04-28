@@ -52,7 +52,7 @@
           <q-input class="q-mx-xs" label="rentabilité" style="max-width:100px" maxlength="8" v-model="_savingP.rate"
             type="number" bg-color="blue-grey-8" outlined dense></q-input>
 
-          <q-input  class="q-mx-xs" dense style="max-width:100px" label="A partir de" bg-color="blue-grey-8" filled v-model="_savingP.startingDate" mask="date" @click="mustpopPsStart=true">
+          <q-input  class="q-mx-xs" dense style="max-width:100px" label="A partir de" bg-color="blue-grey-8" filled v-model="_savingP.startingDate" mask="date" @click="mustpopPsStart=true" readonly>
             <template v-slot:append>
               <q-icon name="event" class="cursor-pointer">
                 <q-popup-proxy cover transition-show="scale" transition-hide="scale" v-model="mustpopPsStart">
@@ -67,7 +67,7 @@
               </q-icon>
             </template>
           </q-input>
-          <q-input  class="q-mx-xs" dense style="max-width: 100px;" label="jusqu'à  " bg-color="blue-grey-8" filled v-model="_savingP.endDate" mask="date" @click="mustpopPsEnd=true">
+          <q-input  class="q-mx-xs" dense style="max-width: 100px;" label="jusqu'à  " bg-color="blue-grey-8" filled v-model="_savingP.endDate" mask="date" @click="mustpopPsEnd=true" readonly>
             <template v-slot:append>
               <q-icon name="event" class="cursor-pointer">
                 <q-popup-proxy cover transition-show="scale" transition-hide="scale" v-model="mustpopPsEnd">
@@ -129,7 +129,7 @@
             <q-input class="q-mx-xs" label="rentabilité" style="max-width:100px" maxlength="8" v-model="_single_io.rate"
             type="number" bg-color="blue-grey-8" outlined dense></q-input>
 
-          <q-input  class="q-mx-xs" dense style="max-width:100px" label="date" bg-color="blue-grey-8" filled v-model="_single_io.date" mask="date" @click="mustpopSingleIO=true">
+          <q-input  class="q-mx-xs" dense style="max-width:100px" label="date" bg-color="blue-grey-8" filled v-model="_single_io.date" mask="date" @click="mustpopSingleIO=true" readonly>
             <template v-slot:append>
               <q-icon name="event" class="cursor-pointer">
                 <q-popup-proxy cover transition-show="scale" transition-hide="scale" v-model="mustpopSingleIO">
@@ -182,7 +182,7 @@
 import { bank } from 'stores/store';
 import { ref } from 'vue'
 import { useQuasar } from 'quasar';
-import { formatCalendar } from './calendar_utility';
+import { formatCalendar } from '../utils/calendar_utility';
 const $q = useQuasar();
 const _saving = ref({ title: '', amount: 0.0, rate: 0.0 });
 const _savingP = ref({  amount: 0.0, rate: 0.0, startMonth: 0, startYear: 0, endMonth: 0, endYear: 0, type: 'mensuelle',startingDate:'',endDate:'' });

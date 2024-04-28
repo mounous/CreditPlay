@@ -47,12 +47,12 @@
 <script setup>
 
 import { ref ,defineEmits} from 'vue';
-import { month_names } from '../pages/date_utility.js';
-import {  apply_events_chain,build_event_name } from '../pages/credit_utility.js';
+import { month_names } from '../utils/date_utility.js';
+import {  apply_events_chain,build_event_name } from '../utils/credit_utility.js';
 import SingleEventTypePicker from './SingleEventTypePicker.vue';
 import buyPicker from './buyPicker.vue';
 import { simu } from 'stores/store';
-import { optionsReBuyType } from 'src/pages/bank_utility';
+import { optionsReBuyType } from 'src/utils/bank_utility.js';
 var canValidateMod=ref(false);
 var canValidateRebuy=ref(false);
 const carouselElement=ref(null);

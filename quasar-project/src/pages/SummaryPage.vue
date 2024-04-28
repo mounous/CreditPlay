@@ -20,8 +20,8 @@
 <script setup>
 import {ref,onBeforeMount } from 'vue'
 import { simu } from 'stores/store';
-import {formatnumber} from './string_utils'
-import { optionsReBuyType } from './bank_utility';
+import {formatnumber} from '../utils/string_utils'
+import { optionsReBuyType } from '../utils/bank_utility';
 var summaries=ref([]);
 
 const beforemount=function() {

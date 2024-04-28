@@ -45,7 +45,7 @@
   </div>
   <div class="row wrap">
     <q-input v-if="event_type == optionsReBuyType[1]" class="q-ma-xs" dense style="max-width: 100px;"
-      label="Date de rachat" bg-color="blue-grey-8" filled v-model="date_reloan" mask="date" @click="mustpop = true">
+      label="Date de rachat" bg-color="blue-grey-8" filled v-model="date_reloan" mask="date" @click="mustpop = true" readonly>
       <template v-slot:append>
         <q-icon name="event" class="cursor-pointer">
           <q-popup-proxy v-model="mustpop" cover transition-show="scale" transition-hide="scale">
@@ -72,11 +72,11 @@
 
 <script setup>
 import { ref, defineEmits } from 'vue';
-import { provideRebuyOptions, optionsReBuyType, hasSavings } from '../pages/bank_utility';
-import { formatCalendar } from '../pages/calendar_utility';
+import { provideRebuyOptions, optionsReBuyType, hasSavings } from '../utils/bank_utility';
+import { formatCalendar } from '../utils/calendar_utility';
 import { simu } from '../stores/store.ts';
-import { getLatestMensuality, getEraliestNewEventDate } from '../pages/credit_utility'
-import { subOneMonthToStringDate, addOneMonthToStringDate, compareDates, getMonthNbr, month_names } from '../pages/date_utility'
+import { getLatestMensuality, getEraliestNewEventDate } from '../utils/credit_utility'
+import { subOneMonthToStringDate, addOneMonthToStringDate, compareDates, getMonthNbr, month_names } from '../utils/date_utility'
 
 var reloanMax = ref(subOneMonthToStringDate(getLatestMensuality().l_y.toString() + '/' + getLatestMensuality().l_m.toString().padStart(2, '0')));
 var reloanMin = ref(addOneMonthToStringDate(getEraliestNewEventDate().l_y.toString() + '/' + getEraliestNewEventDate().l_m.toString().padStart(2, '0')));
