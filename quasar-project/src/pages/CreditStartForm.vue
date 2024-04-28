@@ -26,27 +26,34 @@
       </div>
       <div class="col">
 
-              <q-popup-proxy v-model="resetMustPop" cover transition-show="scale" transition-hide="scale">
-                <div>
+              <q-dialog v-model="resetMustPop" cover transition-show="scale" transition-hide="scale">
+                <q-card>
+                <div class="col flex flex center justify-around">
+                  <div class="q-ma-md">
                   Vous êtes sur le point de simuler un nouveau crédit, cela supprimera la simulation en cours si vous ne l'avez pas sauvegardée.
                   Vous pouvez sauvegarder la simulation dans l'onglet "mémoire". Pour écraser la simulation en cours, choisir "Simuler". Sinon, choisir "Annuler".
                 </div>
+                <div class="row nowrap">
                 <q-btn label="Annuler" @click="resetMustPop=false"></q-btn>
                 <q-btn label="Simuler" @click="onForceSubmmit"></q-btn>
-              </q-popup-proxy>
+              </div>
+            </div>
+              </q-card>
+              </q-dialog>
       </div>
       <div class="col">
-        <q-input filled type="number" bg-color="blue-grey-8" v-model="simu.credit.amount" label="Somme empruntée" hint="pas d'unité, pas de virgule"
-          lazy-rules :rules="[
+        <q-input filled type="number" bg-color="blue-grey-8" v-model="simu.credit.amount" label="Somme empruntée"
+                  lazy-rules :rules="[
             (val) => val>0 || 'Merci de renseigner la somme',
           ]" />
       </div>
       <div class="col">
         <q-input filled label="TAEG" bg-color="blue-grey-8" type="number" step="any" v-model="simu.credit.rate" lazy-rules
-          :rules="[(val) => validateTAEG(val) || 'Ce TAEG semble irréel']" />
+          :rules="[(val) => (val>0) || 'Ce TAEG semble irréel']" />
       </div>
       <div class="col">
-        <q-input filled type="number" bg-color="blue-grey-8" v-model="simu.credit.year" label="Durée d'emprunt" lazy-rules  />
+        <q-input filled type="number" bg-color="blue-grey-8" v-model="simu.credit.year" label="Durée d'emprunt" lazy-rules
+        :rules="[(val)=>(val>0)||'Renseigner une durée positive']" @update:model-value="[simu.credit.year=Math.round(simu.credit.year)]" />
       </div>
       <div class="col column content-center">
         <div>
@@ -81,12 +88,7 @@ var maxNav = ref('0000/01');
 var mustpop=ref(false)
 var resetMustPop=ref(false);
 
-function validateTAEG(rate) {
-  if (rate < 0) {
-    return false;
-  }
-  return true;
-};
+
 
 function onSubmit() {
   if(simu.value.events.length==0)

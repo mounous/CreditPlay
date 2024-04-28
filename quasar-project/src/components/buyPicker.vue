@@ -65,8 +65,8 @@
       bg-color="blue-grey-8" outlined dense @update:model-value="sendRebuyPicked()"></q-input>
     <q-input v-if="event_type == optionsReBuyType[1]" class="q-ma-xs" label="Durée" style="max-width:70px"
       maxlength="8" v-model="duration_reloan" type="number" lazy-rules
-      :rules="[(val) => (val >= 0.0) || 'Cette durée est impossible']" bg-color="blue-grey-8" outlined dense
-      @update:model-value="sendRebuyPicked()"></q-input>
+      :rules="[(val) => (val >= 0) || 'Cette durée est impossible']" bg-color="blue-grey-8" outlined dense
+      @update:model-value="[duration_reloan=Math.round(duration_reloan),sendRebuyPicked()]"></q-input>
   </div>
 </template>
 
