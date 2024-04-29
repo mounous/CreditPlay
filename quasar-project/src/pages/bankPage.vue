@@ -152,11 +152,12 @@
             <thead>
               <tr>
 
-                <th span="1" style="width: 25%">nom</th>
-                <th span="1" style="width: 12%">type</th>
-                <th span="1" style="width: 25%">montant</th>
-                <th span="1" style="width: 13%">rentabilité</th>
-                <th span="1" style="width: 25%">date</th>
+                <th span="1" style="width: 20%">nom</th>
+                <th span="1" style="width: 15%">type</th>
+                <th span="1" style="width: 15%">montant</th>
+                <th span="1" style="width: 20%">compte</th>
+                <th span="1" style="width: 20%">date</th>
+                <th span="1" style="width: 10"></th>
               </tr>
             </thead>
             <tbody v-for="account in bank.accounts" :key="account.name">
@@ -165,6 +166,7 @@
                 <th>{{ io.title }}</th>
                 <th>{{ io.type }}</th>
                 <th>{{ io.amount }}</th>
+                <th>{{ account.title }}</th>
                 <th>{{ io.month + '/' + io.year }}</th>
 
                 <th><q-btn dense size="s" icon="delete_forever" @click="removeSingleIO(io,account)"></q-btn></th>

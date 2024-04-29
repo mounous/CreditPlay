@@ -84,7 +84,7 @@ const deleteEvents=function(){
         {
           for(var io=0;io<bank.value.accounts[acc].single_in_out.length;io++)
           {
-            if(bank.value.accounts[acc].single_in_out.length[io].title=='rachat avec économies')
+            if(bank.value.accounts[acc].single_in_out[io].title=='rachat avec économies')
             {
               bank.value.accounts[acc].single_in_out.splice(io,1);
               simu.value.credit.has_been_rebougth=false;
