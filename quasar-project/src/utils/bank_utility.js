@@ -5,6 +5,51 @@ import { returnBaseData } from './credit_utility';
 import { formatnumber } from './string_utils';
 import { compareDates } from 'src/utils/date_utility';
 const BANK_SEARCH_ERROR=-1;
+const makeAccountNameUnique=function(name,suffix=1)
+{
+  var is_duplicate=false;
+  //check that the name is not null
+  if(name=='')
+  {
+    name='compte'
+  }
+  name=name.trim();//remove padding spaces from beginning and end
+  //ensure the name is not already used
+  for(var i=0;i<bank.value.accounts.length;i++)
+  {
+    if(suffix==1)
+    {
+      if(bank.value.accounts[i].title.trim()==name)
+      {
+        is_duplicate=true;
+        break;
+      }
+    }
+    else
+    {
+      if(bank.value.accounts[i].title.trim()==name+' '+String(suffix))
+      {
+        is_duplicate=true;
+        break;
+      }
+    }
+  }
+  if(is_duplicate)
+  {
+    return makeAccountNameUnique(name,suffix+1);
+  }
+  else
+  {
+    if(suffix==1)
+    {
+      return name;
+    }
+    else
+    {
+      return name+' '+String(suffix);
+    }
+  }
+}
 const isPeriodicConcerned=function(currentY,currentM,accID,psID)
 {
   var ps_startY=  bank.value.accounts[accID].periodic_savings[psID].startYear;
@@ -336,4 +381,4 @@ const getSortedAccountsFromPoorToHighRate=function()
   }
 }
 export { getSavingsEarlier,computeDisplaySavings,hasSavings, provideRebuyOptions,optionsReBuyType
-  ,BANK_SEARCH_ERROR,getAccId,getSavinPID,getSIOID,getSortedAccountsFromPoorToHighRate,compute_savings};
+  ,BANK_SEARCH_ERROR,getAccId,getSavinPID,getSIOID,getSortedAccountsFromPoorToHighRate,compute_savings,makeAccountNameUnique};

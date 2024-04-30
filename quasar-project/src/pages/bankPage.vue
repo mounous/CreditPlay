@@ -184,7 +184,7 @@ import { bank } from 'stores/store';
 import { ref } from 'vue'
 import { useQuasar } from 'quasar';
 import { formatCalendar } from '../utils/calendar_utility';
-import {BANK_SEARCH_ERROR,getAccId,getSavinPID,getSIOID} from '../utils/bank_utility'
+import {BANK_SEARCH_ERROR,getAccId,getSavinPID,getSIOID,makeAccountNameUnique} from '../utils/bank_utility'
 const $q = useQuasar();
 const _account = ref({ title: '', amount: 0.0, rate: 0.0 });
 const _savingP = ref({  account :'',amount: 0.0, rate: 0.0, startMonth: 0, startYear: 0, endMonth: 0, endYear: 0, type: 'mensuelle',startingDate:'',endDate:'' });
@@ -216,7 +216,7 @@ const addElementToAccounts = function () {
   }
   else
   {
-    bank.value.accounts.push({ title: _account.value.title, amount: Number(_account.value.amount), rate: _account.value.rate,single_in_out:[],periodic_savings:[],computedOverTime:[] });
+    bank.value.accounts.push({ title: makeAccountNameUnique(_account.value.title), amount: Number(_account.value.amount), rate: _account.value.rate,single_in_out:[],periodic_savings:[],computedOverTime:[] });
     _account.value.title='';
     _account.value.amount=0.0;
     _account.value.rate=0.0;
