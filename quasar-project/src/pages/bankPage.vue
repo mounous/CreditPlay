@@ -237,6 +237,7 @@ import { ref } from 'vue'
 import { useQuasar } from 'quasar';
 import { formatCalendar } from '../utils/calendar_utility';
 import {BANK_SEARCH_ERROR,getAccId,getSavinPID,getSIOID,makeAccountNameUnique,isAccountInvolvedInRebuyWithSavings, deleteRebuySavingsEventAndAssociatedInOut} from '../utils/bank_utility'
+import { compareDates } from 'src/utils/date_utility';
 const $q = useQuasar();
 const _account = ref({ title: '', amount: 0.0, rate: 0.0 });
 const _savingP = ref({  account :'',amount: 0.0, rate: 0.0, startMonth: 0, startYear: 0, endMonth: 0, endYear: 0, type: 'mensuelle',startingDate:'',endDate:'' });
@@ -413,7 +414,11 @@ const removeSingleIO = function (SIO,account,force=false) {
     {
       if(simu.value.credit.has_been_rebougth && force==false)
       {
-        if(isAccountInvolvedInRebuyWithSavings(i))
+        var indexOfrebuy=simu.value.events.length-1;
+        var y_rebuy =simu.value.events[indexOfrebuy].year;
+        var m_rebuy =simu.value.events[indexOfrebuy].month;
+        var sioType = bank.value.accounts[i].single_in_out[ioID].type;
+        if(isAccountInvolvedInRebuyWithSavings(i) && compareDates(y_rebuy,m_rebuy,SIO.year,SIO.month)>0 && sioType=='entrée'|| SIO.title=='rachat avec économies')
         {
           accountOfSIOToDelete.value=account;
           SIOtoDelete.value=SIO;
