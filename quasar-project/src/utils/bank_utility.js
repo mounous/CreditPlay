@@ -5,6 +5,33 @@ import { returnBaseData } from './credit_utility';
 import { formatnumber } from './string_utils';
 import { compareDates } from 'src/utils/date_utility';
 const BANK_SEARCH_ERROR=-1;
+
+const deleteRebuySavingsEventAndAssociatedInOut=function()
+{
+  simu.value.events.pop();//always the last event
+  simu.value.credit.has_been_rebougth=false;
+  for(var accId=0;accId<bank.value.accounts.length;accId++)
+  {
+    for(var io=0;io<bank.value.accounts[accId].single_in_out.length;io++)
+    {
+      if(bank.value.accounts[accId].single_in_out[io].title=='rachat avec économies')
+      {
+        bank.value.accounts[accId].single_in_out.splice(io,1);
+      }
+    }
+  }
+}
+const isAccountInvolvedInRebuyWithSavings=function(accId)
+{
+  for(var i=0;i<bank.value.accounts[accId].single_in_out.length;i++)
+  {
+    if(bank.value.accounts[accId].single_in_out[i].title=='rachat avec économies')
+    {
+      return true;
+    }
+  }
+  return false;
+}
 const makeAccountNameUnique=function(name,suffix=1)
 {
   var is_duplicate=false;
@@ -381,4 +408,5 @@ const getSortedAccountsFromPoorToHighRate=function()
   }
 }
 export { getSavingsEarlier,computeDisplaySavings,hasSavings, provideRebuyOptions,optionsReBuyType
-  ,BANK_SEARCH_ERROR,getAccId,getSavinPID,getSIOID,getSortedAccountsFromPoorToHighRate,compute_savings,makeAccountNameUnique};
+  ,BANK_SEARCH_ERROR,getAccId,getSavinPID,getSIOID,getSortedAccountsFromPoorToHighRate,compute_savings,makeAccountNameUnique,
+  isAccountInvolvedInRebuyWithSavings, deleteRebuySavingsEventAndAssociatedInOut};

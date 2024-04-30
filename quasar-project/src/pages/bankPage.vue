@@ -44,14 +44,16 @@
       <p>Capacité d'épargne</p>
       <div class="col q-ma-xs">
         <div class="row flex  q-ma-xs">
-          <q-select bg-color="blue-grey-8" dense v-model="_savingP.type" label="type" :options="['mensuelle', 'annuelle']"></q-select>
+          <q-select bg-color="blue-grey-8" dense v-model="_savingP.type" label="type"
+            :options="['mensuelle', 'annuelle']"></q-select>
           <q-input class="q-mx-xs" label="montant" style="max-width:110px" maxlength="8" v-model="_savingP.amount"
             type="number" lazy-rules :rules="[(val) => (val >= 0.0) || 'Les retraits ne sont pas gérées']"
             bg-color="blue-grey-8" outlined dense></q-input>
-          <q-select class="q-mx-xs" label="compte" style="max-width:100px" maxlength="8" v-model="_savingP.account" :options="getAccOpt()"
-            type="number" bg-color="blue-grey-8" outlined dense></q-select>
+          <q-select class="q-mx-xs" label="compte" style="max-width:100px" maxlength="8" v-model="_savingP.account"
+            :options="getAccOpt()" type="number" bg-color="blue-grey-8" outlined dense></q-select>
 
-          <q-input  class="q-mx-xs" dense style="max-width:100px" label="A partir de" bg-color="blue-grey-8" filled v-model="_savingP.startingDate" mask="date" @click="mustpopPsStart=true" readonly>
+          <q-input class="q-mx-xs" dense style="max-width:100px" label="A partir de" bg-color="blue-grey-8" filled
+            v-model="_savingP.startingDate" mask="date" @click="mustpopPsStart=true" readonly>
             <template v-slot:append>
               <q-icon name="event" class="cursor-pointer">
                 <q-popup-proxy cover transition-show="scale" transition-hide="scale" v-model="mustpopPsStart">
@@ -66,7 +68,8 @@
               </q-icon>
             </template>
           </q-input>
-          <q-input  class="q-mx-xs" dense style="max-width: 100px;" label="jusqu'à  " bg-color="blue-grey-8" filled v-model="_savingP.endDate" mask="date" @click="mustpopPsEnd=true" readonly>
+          <q-input class="q-mx-xs" dense style="max-width: 100px;" label="jusqu'à  " bg-color="blue-grey-8" filled
+            v-model="_savingP.endDate" mask="date" @click="mustpopPsEnd=true" readonly>
             <template v-slot:append>
               <q-icon name="event" class="cursor-pointer">
                 <q-popup-proxy cover transition-show="scale" transition-hide="scale" v-model="mustpopPsEnd">
@@ -119,22 +122,23 @@
       <p>Entrées sorties exceptionnelles</p>
       <div class="col q-ma-xs">
         <div class="row flex  q-ma-xs">
-          <q-select bg-color="blue-grey-8" dense v-model="_single_io.type" label="type" :options="['entrée', 'sortie']"></q-select>
-          <q-input class="q-mx-xs" label="montant" style="max-width:110px;min-width:100px" maxlength="8" v-model="_single_io.amount"
-            type="number" lazy-rules
-            bg-color="blue-grey-8" outlined dense></q-input>
+          <q-select bg-color="blue-grey-8" dense v-model="_single_io.type" label="type"
+            :options="['entrée', 'sortie']"></q-select>
+          <q-input class="q-mx-xs" label="montant" style="max-width:110px;min-width:100px" maxlength="8"
+            v-model="_single_io.amount" type="number" lazy-rules bg-color="blue-grey-8" outlined dense></q-input>
           <q-input class="q-mx-xs" label="nom" style="max-width:100px" maxlength="20" v-model="_single_io.title"
             type="text" bg-color="blue-grey-8" outlined dense></q-input>
-            <q-select class="q-mx-xs" label="compte" style="max-width:100px" maxlength="8" v-model="_single_io.account" :options="getAccOpt()"
-             bg-color="blue-grey-8" outlined dense></q-select>
+          <q-select class="q-mx-xs" label="compte" style="max-width:100px" maxlength="8" v-model="_single_io.account"
+            :options="getAccOpt()" bg-color="blue-grey-8" outlined dense></q-select>
 
-          <q-input  class="q-mx-xs" dense style="max-width:100px" label="date" bg-color="blue-grey-8" filled v-model="_single_io.date" mask="date" @click="mustpopSingleIO=true" readonly>
+          <q-input class="q-mx-xs" dense style="max-width:100px" label="date" bg-color="blue-grey-8" filled
+            v-model="_single_io.date" mask="date" @click="mustpopSingleIO=true" readonly>
             <template v-slot:append>
               <q-icon name="event" class="cursor-pointer">
                 <q-popup-proxy cover transition-show="scale" transition-hide="scale" v-model="mustpopSingleIO">
                   <q-date dark v-model="_single_io.date" :locale="formatCalendar"
-                    :navigation-min-year-month="periodicSaveMin" width="200px" @update:model-value="mustpopSingleIO=false"
-                    >
+                    :navigation-min-year-month="periodicSaveMin" width="200px"
+                    @update:model-value="mustpopSingleIO=false">
                     <div class="row items-center justify-end">
                       <q-btn v-close-popup label="Close" color="primary" flat />
                     </div>
@@ -176,15 +180,63 @@
         </div>
       </div>
     </q-card>
+    <div class="col">
+      <q-dialog v-model="mustPopDeleteAcc" cover transition-show="scale" transition-hide="scale">
+        <q-card>
+          <div class="col flex flex center justify-around">
+            <div class="q-ma-md">
+              Vous êtes sur le point de supprimer un compte utilisé pour racheter votre crédit.
+              Cela supprimera également le rachat du crédit si vous confirmez.
+            </div>
+            <div class="row nowrap">
+              <q-btn label="Annuler" @click="mustPopDeleteAcc = false"></q-btn>
+              <q-btn label="Confirmer" @click="[mustPopDeleteAcc=false,removeAccount(accountToBeDeleted,true)]"></q-btn>
+            </div>
+          </div>
+        </q-card>
+      </q-dialog>
+    </div>
+    <div class="col">
+      <q-dialog v-model="mustPopDeleteP" cover transition-show="scale" transition-hide="scale">
+        <q-card>
+          <div class="col flex flex center justify-around">
+            <div class="q-ma-md">
+              Vous êtes sur le point de supprimer une opération sur un compte contribuant au rachat votre crédit.
+              Cela supprimera également le rachat du crédit si vous confirmez.
+            </div>
+            <div class="row nowrap">
+              <q-btn label="Annuler" @click="mustPopDeleteP = false"></q-btn>
+              <q-btn label="Confirmer" @click="[mustPopDeleteP=false,removeSavingP(savingPtoDelete,accountOfSavingPToDelete,true)]"></q-btn>
+            </div>
+          </div>
+        </q-card>
+      </q-dialog>
+    </div>
+    <div class="col">
+      <q-dialog v-model="mustPopDeleteSIO" cover transition-show="scale" transition-hide="scale">
+        <q-card>
+          <div class="col flex flex center justify-around">
+            <div class="q-ma-md">
+              Vous êtes sur le point de supprimer une opération contribuant au rachat votre crédit.
+              Cela supprimera également le rachat du crédit si vous confirmez.
+            </div>
+            <div class="row nowrap">
+              <q-btn label="Annuler" @click="mustPopDeleteSIO = false"></q-btn>
+              <q-btn label="Confirmer" @click="[mustPopDeleteSIO=false,removeSingleIO(SIOtoDelete,accountOfSIOToDelete,true)]"></q-btn>
+            </div>
+          </div>
+        </q-card>
+      </q-dialog>
+    </div>
   </div>
 </template>
 
 <script setup>
-import { bank } from 'stores/store';
+import { bank, simu } from 'stores/store';
 import { ref } from 'vue'
 import { useQuasar } from 'quasar';
 import { formatCalendar } from '../utils/calendar_utility';
-import {BANK_SEARCH_ERROR,getAccId,getSavinPID,getSIOID,makeAccountNameUnique} from '../utils/bank_utility'
+import {BANK_SEARCH_ERROR,getAccId,getSavinPID,getSIOID,makeAccountNameUnique,isAccountInvolvedInRebuyWithSavings, deleteRebuySavingsEventAndAssociatedInOut} from '../utils/bank_utility'
 const $q = useQuasar();
 const _account = ref({ title: '', amount: 0.0, rate: 0.0 });
 const _savingP = ref({  account :'',amount: 0.0, rate: 0.0, startMonth: 0, startYear: 0, endMonth: 0, endYear: 0, type: 'mensuelle',startingDate:'',endDate:'' });
@@ -196,6 +248,14 @@ var periodicSaveMax = ref('2100/01');
 var mustpopPsStart=ref(false);
 var mustpopPsEnd=ref(false);
 var mustpopSingleIO=ref(false);
+var mustPopDeleteAcc=ref(false);
+var mustPopDeleteP=ref(false);
+var accountToBeDeleted=ref();
+var accountOfSavingPToDelete=ref();
+var savingPtoDelete=ref();
+var accountOfSIOToDelete=ref();
+var SIOtoDelete=ref();
+var mustPopDeleteSIO=ref(false);
 const getAccOpt=function()
 {
   var toreturn=[]
@@ -283,11 +343,24 @@ const addElementToSingleIO=function(){
 
 }
 
-const removeAccount = function (account) {
+const removeAccount = function (account,force=false) {
   var i=getAccId(account.title)
   if(i!=BANK_SEARCH_ERROR)
   {
+    accountToBeDeleted.value=account;
+    if(simu.value.credit.has_been_rebougth && force==false)
+    {
+      if(isAccountInvolvedInRebuyWithSavings(i))
+      {
+        mustPopDeleteAcc.value=true;
+        return;
+      }
+    }
     bank.value.accounts.splice(i, 1);
+    if(force)//delete the rebuy with savings event, delete all single io linked to this event
+    {
+      deleteRebuySavingsEventAndAssociatedInOut();
+    }
   }
   else
   {
@@ -295,14 +368,28 @@ const removeAccount = function (account) {
       return;
   }
 }
-const removeSavingP = function (savingP,account) {
+const removeSavingP = function (savingP,account,force=false) {
   var i=getAccId(account.title)
   if(i!=BANK_SEARCH_ERROR)
   {
     var psId=getSavinPID(i,savingP.title);
     if(psId!=BANK_SEARCH_ERROR)
     {
+      if(simu.value.credit.has_been_rebougth && force==false)
+      {
+        if(isAccountInvolvedInRebuyWithSavings(i))
+        {
+          accountOfSavingPToDelete.value=account;
+          savingPtoDelete.value=savingP;
+          mustPopDeleteP.value=true;
+          return;
+        }
+      }
       bank.value.accounts[i].periodic_savings.splice(psId, 1);
+      if(force)
+      {
+        deleteRebuySavingsEventAndAssociatedInOut();
+      }
       return;
     }
     else
@@ -317,14 +404,28 @@ const removeSavingP = function (savingP,account) {
   }
 }
 
-const removeSingleIO = function (SIO,account) {
+const removeSingleIO = function (SIO,account,force=false) {
   var i=getAccId(account.title)
   if(i!=BANK_SEARCH_ERROR)
   {
     var ioID=getSIOID(i,SIO.title);
     if(ioID!=BANK_SEARCH_ERROR)
     {
+      if(simu.value.credit.has_been_rebougth && force==false)
+      {
+        if(isAccountInvolvedInRebuyWithSavings(i))
+        {
+          accountOfSIOToDelete.value=account;
+          SIOtoDelete.value=SIO;
+          mustPopDeleteSIO.value=true;
+          return;
+        }
+      }
       bank.value.accounts[i].single_in_out.splice(ioID, 1);
+      if(force)
+      {
+        deleteRebuySavingsEventAndAssociatedInOut();
+      }
       return;
     }
     else
