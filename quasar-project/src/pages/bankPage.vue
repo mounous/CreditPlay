@@ -325,9 +325,9 @@ const addElementToSingleIO=function(){
   {
     $q.notify({    color: 'orange-4',    textColor: 'black',    icon: 'warning',    message: 'Une entrée ou sortie d\'argent nulle n\'a pas d\'effet',  });
   }
-  else if(_single_io.value.type=='sortie'&& _single_io.value.rate!=0)
+  else if(_single_io.value.title=='rachat avec économies' )
   {
-    $q.notify({    color: 'orange-4',    textColor: 'black',    icon: 'warning',    message: 'les sorties d\'argent avec un taux non nul ne sont pas gérées',  });
+    $q.notify({    color: 'orange-4',    textColor: 'black',    icon: 'warning',    message: 'Ce nom est réservé. Choisir un autre nom',  });
   }
   else
   {
