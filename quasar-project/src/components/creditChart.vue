@@ -98,7 +98,7 @@ const getEvents=function(full=true){
   {
     if(nbYearDisplaySavings.value==0)//there was no popup to ask for the display of saving duration
     {
-      var bank_compute_start_y=Number(simu.value.credit.startingDate.split('/')[0]);
+      var bank_compute_start_y=Number(simu.value.credit.startingDate.split('/')[2]);
       var bank_compute_start_m=Number(simu.value.credit.startingDate.split('/')[1]);
       var Number_of_years_to_compute=getLatestMensuality().l_y-bank_compute_start_y;
       computeDisplaySavings(bank_compute_start_y,bank_compute_start_m,Number_of_years_to_compute);

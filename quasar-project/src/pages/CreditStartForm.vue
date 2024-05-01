@@ -9,12 +9,12 @@
           ]" />
       </div>
       <div class="col">
-        <q-input label="Date de signature" bg-color="blue-grey-8" filled v-model="simu.credit.startingDate" mask="date" @click="mustpop=true">
+        <q-input label="Date de signature" bg-color="blue-grey-8" filled v-model="simu.credit.startingDate"  @click="mustpop=true" readonly>
           <template v-slot:append>
             <q-icon name="event" class="cursor-pointer" >
               <q-popup-proxy v-model="mustpop" cover transition-show="scale" transition-hide="scale">
-                <q-date dark v-model="simu.credit.startingDate" :locale="formatCalendar" :navigation-min-year-month="minNav" width="200px"
-                  :navigation-max-year-month="maxNav" :disable="has_started != 'yes' && has_started != 'no'" @update:model-value="mustpop=false" >
+                <q-date dark v-model="unformated" :locale="formatCalendar" :navigation-min-year-month="minNav" width="200px"
+                  :navigation-max-year-month="maxNav" :disable="has_started != 'yes' && has_started != 'no'" @update:model-value="[mustpop=false,simu.credit.startingDate=formatDate(unformated),parseCreditDate()]" >
                   <div class="row items-center justify-end">
                     <q-btn v-close-popup label="Fermer" color="primary" flat />
                   </div>
@@ -52,8 +52,8 @@
           :rules="[(val) => (val>0) || 'Ce TAEG semble irréel']" />
       </div>
       <div class="col">
-        <q-input filled type="number" bg-color="blue-grey-8" v-model="simu.credit.year" label="Durée d'emprunt" lazy-rules
-        :rules="[(val)=>(val>0)||'Renseigner une durée positive']" @update:model-value="[simu.credit.year=Math.round(simu.credit.year)]" />
+        <q-input filled type="number" bg-color="blue-grey-8" v-model="simu.credit.duration_y" label="Durée d'emprunt" lazy-rules
+        :rules="[(val)=>(val>0)||'Renseigner une durée positive']" @update:model-value="[simu.credit.duration_y=Number(Math.round(simu.credit.duration_y))]" />
       </div>
       <div class="col column content-center">
         <div>
@@ -79,7 +79,8 @@ import { useRouter } from 'vue-router';
 import { ref } from 'vue';
 import { computeMensuality, computeCredit_init } from '../utils/credit_utility.js';
 import { setStartFormFilled,simu } from 'stores/store';
-import { formatCalendar } from './calendar_utility';
+import { formatCalendar } from '../utils/calendar_utility.js';
+import {formatDate} from '../utils/date_utility.js'
 const router = useRouter();
 
 var has_started = ref('CHOOSE');
@@ -87,7 +88,12 @@ var minNav = ref('0000/01');
 var maxNav = ref('0000/01');
 var mustpop=ref(false)
 var resetMustPop=ref(false);
+var unformated=ref('00/00/0000');
 
+const parseCreditDate=function(){
+  simu.value.credit.y=Number(simu.value.credit.startingDate.split('/')[2]);
+  simu.value.credit.m=Number(simu.value.credit.startingDate.split('/')[1]);
+}
 
 function onSubmit() {
   if(simu.value.events.length==0)
@@ -120,7 +126,8 @@ function switchNavConstraint() {
   if (has_started.value == 'yes') {
     maxNav.value = limit;
     minNav.value = '1900/01';
-    simu.value.credit.startingDate='2023/07/10';
+    simu.value.credit.startingDate='10/07/2023';
+    parseCreditDate();
   }
   else {
     maxNav.value = '2100/01';

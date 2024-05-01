@@ -1,10 +1,10 @@
 <template>
-  <q-input class="q-ma-md" dense style="max-width: 100px;" label="Date de modulation" bg-color="blue-grey-8" filled v-model="date_mod" mask="date" @click="mustpop=true" readonly>
+  <q-input class="q-ma-md" dense style="max-width: 100px;" label="Date de modulation" bg-color="blue-grey-8" filled v-model="date_mod" @click="mustpop=true" readonly>
     <template v-slot:append>
       <q-icon name="event" class="cursor-pointer">
         <q-popup-proxy v-model="mustpop" cover transition-show="scale" transition-hide="scale">
-          <q-date dark v-model="date_mod" :locale="formatCalendar" :navigation-min-year-month="mod_min_date"
-            width="200px" :navigation-max-year-month="mod_max_date" :default-year-month="mod_min_date" @update:model-value="[validateModDate(),mustpop=false,event_type =DEFAULT_EVENT_TYPE,emit('can-finish',{val:false}),modVal=DEFAULT_MODVAL]">
+          <q-date dark v-model="date_modunformated" :locale="formatCalendar" :navigation-min-year-month="mod_min_date"
+            width="200px" :navigation-max-year-month="mod_max_date" :default-year-month="mod_min_date" @update:model-value="date_mod=formatDate(date_modunformated),[validateModDate(),mustpop=false,event_type =DEFAULT_EVENT_TYPE,emit('can-finish',{val:false}),modVal=DEFAULT_MODVAL]">
             <div class="row items-center justify-end" >
               <q-btn v-close-popup label="Fermer" color="primary" flat />
             </div>
@@ -32,9 +32,10 @@
 
 <script setup>
 import { ref, defineEmits } from 'vue';
-import { provideModOptions, returnBaseData, optionsEvtType,getLatestMensuality,getEraliestNewEventDate } from '../utils/credit_utility.js'
+import { provideModOptions, returnBaseData, optionsEvtType,getLatestMensuality,getEarliestNewEventDate } from '../utils/credit_utility.js'
 import { formatCalendar } from 'src/utils/calendar_utility.js';
 import { useQuasar } from 'quasar';
+import { formatDate } from '../utils/date_utility.js';
 import{subOneMonthToStringDate,addOneMonthToStringDate} from '../utils/date_utility.js'
 const DEFAULT_EVENT_TYPE='Sélectionnez une action';
 var event_type = ref(DEFAULT_EVENT_TYPE);
@@ -46,10 +47,11 @@ var new_mens = ref(0);
 var event_y=ref(0);
 var event_m=ref(0);
 var mod_max_date=ref(subOneMonthToStringDate(getLatestMensuality().l_y.toString()+'/'+getLatestMensuality().l_m.toString().padStart(2,'0')));
-var mod_min_date=ref(addOneMonthToStringDate(getEraliestNewEventDate().l_y.toString()+'/'+getEraliestNewEventDate().l_m.toString().padStart(2,'0')));
+var mod_min_date=ref(addOneMonthToStringDate(getEarliestNewEventDate().l_y.toString()+'/'+getEarliestNewEventDate().l_m.toString().padStart(2,'0')));
 var date_mod=ref(mod_min_date.value);
+var date_modunformated=ref(date_mod.value);
 const validateModDate=function(){
-  event_y.value=Number(date_mod.value.split('/')[0]);
+  event_y.value=Number(date_mod.value.split('/')[2]);
   event_m.value=Number(date_mod.value.split('/')[1]);
   situationAtDate.value=returnBaseData(event_y.value, event_m.value).capital_left.toString();
 }

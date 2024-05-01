@@ -99,13 +99,14 @@ const addOneMonthToStringDate=function(date)
   {
     year.value=date.split('/')[1];
     month.value=date.split('/')[0];
-    return (month.value.toString()+'/'+year.value.toString().padStart(2,'0'));
+    addOneMonth(month,year);
+    return (month.value.toString().padStart(2,'0')+'/'+year.value.toString());
   }
   else
   {
     console.log('------------------UNHANDLED DATE FORMAT ADD------------------');
   }
-  addOneMonth(month,year);
+
 
 }
 const subOneMonth=function (month,Year)
@@ -133,11 +134,18 @@ const subOneMonthToStringDate=function(date)
     year.value=date.split('/')[1];
     month.value=date.split('/')[0];
     subOneMonth(month,year);
-    return (month.value.toString()+'/'+year.value.toString().padStart(2,'0'));
+    return (month.value.toString().padStart(2,'0')+'/'+year.value.toString());
   }
   else
   {
     console.log('------------------UNHANDLED DATE FORMAT SUB------------------');
   }
 }
-export { month_names,get_nb_mens_diff,getMonthNbr,subOneMonthToStringDate,addOneMonthToStringDate,compareDates};
+
+const formatDate=function(unformated)
+{
+  //unformated is set as YYYY/MM/DD return DD/MM/YYYY
+
+  return unformated.split('/')[2]+'/'+unformated.split('/')[1]+'/'+unformated.split('/')[0];
+}
+export { month_names,get_nb_mens_diff,getMonthNbr,subOneMonthToStringDate,addOneMonthToStringDate,compareDates,formatDate};

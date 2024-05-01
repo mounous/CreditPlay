@@ -45,13 +45,13 @@
   </div>
   <div class="row wrap">
     <q-input v-if="event_type == optionsReBuyType[1]" class="q-ma-xs" dense style="max-width: 100px;"
-      label="Date de rachat" bg-color="blue-grey-8" filled v-model="date_reloan" mask="date" @click="mustpop = true" readonly>
+      label="Date de rachat" bg-color="blue-grey-8" filled v-model="date_reloan"  @click="mustpop = true" readonly>
       <template v-slot:append>
         <q-icon name="event" class="cursor-pointer">
           <q-popup-proxy v-model="mustpop" cover transition-show="scale" transition-hide="scale">
-            <q-date dark v-model="date_reloan" :locale="formatCalendar" :navigation-min-year-month="reloanMin"
+            <q-date dark v-model="unformatedrebuydate" :locale="formatCalendar" :navigation-min-year-month="reloanMin"
               width="200px" :navigation-max-year-month="reloanMax" :default-year-month="reloanMin"
-              @update:model-value="[mustpop = false, sendRebuyPicked()]">
+              @update:model-value="[mustpop = false,date_reloan=formatDate(unformatedrebuydate), sendRebuyPicked()]">
               <div class="row items-center justify-end">
                 <q-btn v-close-popup label="Fermer" color="primary" flat />
               </div>
@@ -75,12 +75,12 @@ import { ref, defineEmits } from 'vue';
 import { provideRebuyOptions, optionsReBuyType, hasSavings } from '../utils/bank_utility';
 import { formatCalendar } from '../utils/calendar_utility';
 import { simu } from '../stores/store.ts';
-import { getLatestMensuality, getEraliestNewEventDate } from '../utils/credit_utility'
-import { subOneMonthToStringDate, addOneMonthToStringDate, compareDates, getMonthNbr, month_names } from '../utils/date_utility'
+import { getLatestMensuality, getEarliestNewEventDate } from '../utils/credit_utility'
+import { subOneMonthToStringDate, addOneMonthToStringDate, compareDates, getMonthNbr, month_names,formatDate } from '../utils/date_utility'
 
 var reloanMax = ref(subOneMonthToStringDate(getLatestMensuality().l_y.toString() + '/' + getLatestMensuality().l_m.toString().padStart(2, '0')));
 console.log('test1');
-var reloanMin = ref(addOneMonthToStringDate(getEraliestNewEventDate().l_y.toString() + '/' + getEraliestNewEventDate().l_m.toString().padStart(2, '0')));
+var reloanMin = ref(addOneMonthToStringDate(getEarliestNewEventDate().l_y.toString() + '/' + getEarliestNewEventDate().l_m.toString().padStart(2, '0')));
 console.log('test2');
 var date_reloan = ref('');
 var event_type = ref('Sélectionnez une action');
@@ -97,6 +97,7 @@ var options_rebuy_val = ref([]);
 var Display_rebuy_savings = ref([]);
 var rebuy_saving_eco_left = ref('');
 var rebuy_saving_capital_to_pay = ref('');
+var unformatedrebuydate=ref(reloanMin.value);
 const safeRebuyOptions = function () {
   if (hasSavings()) {
     return optionsReBuyType;
@@ -146,10 +147,10 @@ const sendRebuyPicked = function (force = false) {
       }
     }
     else {//rebuy with credit
-      event_year_str = date_reloan.value.split('/')[0];
+      event_year_str = date_reloan.value.split('/')[2];
       event_month = Number(date_reloan.value.split('/')[1]);
       event_month_str = month_names[event_month - 1];
-      if(rate_reloan.value!=0 && duration_reloan.value!=0 &&date_reloan.value!='' && event_month>0 && Number(event_year_str)<=getLatestMensuality().l_y && Number(event_year_str)>=getEraliestNewEventDate().l_y)
+      if(rate_reloan.value!=0 && duration_reloan.value!=0 &&date_reloan.value!='' && event_month>0 && Number(event_year_str)<=getLatestMensuality().l_y && Number(event_year_str)>=getEarliestNewEventDate().l_y)
       {
         emit('can-finish',{val:true});
       }

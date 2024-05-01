@@ -3,7 +3,7 @@ import { simu ,bank} from 'src/stores/store';
 import { month_names,get_nb_mens_diff,getMonthNbr, compareDates } from './date_utility';
 import {optionsReBuyType,getSortedAccountsFromPoorToHighRate,getSavingsEarlier,compute_savings} from './bank_utility'
 const computeMensuality = () => {
-  simu.value.credit.mensuality=computeMensuality_noSave(simu.value.credit.year,simu.value.credit.rate,simu.value.credit.amount);
+  simu.value.credit.mensuality=computeMensuality_noSave(simu.value.credit.duration_y,simu.value.credit.rate,simu.value.credit.amount);
 };
 const computeMonthly_rate=(rate)=>{
   return rate/(100.00*12.00);
@@ -67,10 +67,7 @@ const computeAmort=(starting_year,starting_month,amount,nb_mens,mens,rate_rebuy=
 }
 
 const computeCredit_init = () => {
-
-  const starting_year=Number(simu.value.credit.startingDate.slice(0,4));
-  const starting_month=Number(simu.value.credit.startingDate.slice(5,7));
-  var ret=computeAmort(starting_year,starting_month,simu.value.credit.amount,simu.value.credit.year*12,simu.value.credit.mensuality);
+  var ret=computeAmort(simu.value.credit.y,simu.value.credit.m,simu.value.credit.amount,simu.value.credit.duration_y*12,simu.value.credit.mensuality);
   simu.value.credit.amort= ret[0];
   simu.value.credit.total_cost=Math.round(ret[1]*100)/100;
 };
@@ -107,10 +104,10 @@ const apply_events_chain=()=>{
       simu.value.events[i].amortEvt=[];
       if(simu.value.events[i].metaType=='Modulation')
       {
-        if(i==0)//first event : capital left to pay based on int simu
+        if(i==0)//first event : capital left to pay based on simu
         {
-            nb_mens_spent=get_nb_mens_diff(Number(simu.value.credit.startingDate.slice(0,4)),Number(simu.value.credit.startingDate.slice(5,7)),simu.value.events[i].year,simu.value.events[i].month);
-            nb_mens_to_pay=simu.value.credit.year*12-nb_mens_spent+simu.value.events[i].mensDiff;
+            nb_mens_spent=get_nb_mens_diff(simu.value.credit.y,simu.value.credit.m,simu.value.events[i].year,simu.value.events[i].month);
+            nb_mens_to_pay=simu.value.credit.duration_y*12-nb_mens_spent+simu.value.events[i].mensDiff;
             var j=0;
             while(j<simu.value.credit.amort.length && simu.value.credit.amort[j][0]!=(simu.value.events[i].month_str+'-'+simu.value.events[i].year_str))
             {
@@ -130,7 +127,7 @@ const apply_events_chain=()=>{
           }
           else//capital left to pay based on previous event
           {
-            nb_mens_spent=get_nb_mens_diff(Number(simu.value.credit.startingDate.slice(0,4)),Number(simu.value.credit.startingDate.slice(5,7)),simu.value.events[i].year,simu.value.events[i].month);
+            nb_mens_spent=get_nb_mens_diff(simu.value.credit.y,simu.value.credit.m,simu.value.events[i].year,simu.value.events[i].month);
             nb_mens_to_pay=simu.value.events[i-1].amortEvt.length-nb_mens_spent +simu.value.events[i].mensDiff;
             var j=0;
             while(j<simu.value.events[i-1].amortEvt.length && simu.value.events[i-1].amortEvt[j][0]!=(simu.value.events[i].month_str+'-'+simu.value.events[i].year_str))
@@ -265,15 +262,13 @@ const apply_events_chain=()=>{
 //returns the last event end date and amort at input date if events were saved
 //or the origin end date and amort at the input date if no events were saved
 const returnBaseData=(evt_year_in_fmt,evt_month_in_fmt)=>{
-  var origin_full_year=Number(simu.value.credit.startingDate.slice(0,4));
-  var origin_start_month=Number(simu.value.credit.startingDate.slice(5,7));//load for an integer number of year : start month=end_month
   if(simu.value.events.length!=0)
   {
     //retreive and sort events
     simu.value.events=sortEvents(simu.value.events);
     var event_=simu.value.events[simu.value.events.length-1];
     //get the capital left to pay at date
-    var index=get_nb_mens_diff(origin_full_year,origin_start_month,evt_year_in_fmt,evt_month_in_fmt);
+    var index=get_nb_mens_diff(simu.value.credit.y,simu.value.credit.m,evt_year_in_fmt,evt_month_in_fmt);
     if(index==0)
     {
       return {end_year:0,end_month:0,capital_left:0};
@@ -290,15 +285,15 @@ const returnBaseData=(evt_year_in_fmt,evt_month_in_fmt)=>{
   }
   else
   {
-    var origin_end_year=origin_full_year+Number(simu.value.credit.year);
-    var index=get_nb_mens_diff(origin_full_year,origin_start_month,evt_year_in_fmt,evt_month_in_fmt);
+    var origin_end_year=simu.value.credit.y+Number(simu.value.credit.duration_y);
+    var index=get_nb_mens_diff(simu.value.credit.y,simu.value.credit.m,evt_year_in_fmt,evt_month_in_fmt);
     if(index<=simu.value.credit.amort.length)
     {
-      return {end_year:origin_end_year,end_month:origin_start_month,capital_left:simu.value.credit.amort[index-1][1]};
+      return {end_year:origin_end_year,end_month:simu.value.credit.m,capital_left:simu.value.credit.amort[index-1][1]};
     }
     else
     {
-      return {end_year:origin_end_year,end_month:origin_start_month,capital_left:0};
+      return {end_year:origin_end_year,end_month:simu.value.credit.m,capital_left:0};
     }
   }
 }
@@ -335,7 +330,7 @@ const provideModOptions=(evt_type_in,evt_year_in,evt_month_in)=>{
     }
     else if(evt_type_in==optionsEvtType[0])//duree+ mens -
     {
-      for(let i=1;i<simu.value.credit.year*12;i++)//max twince the duration
+      for(let i=1;i<simu.value.credit.duration_y*12;i++)//max twince the duration
       {
         toreturn.push((Math.round(computeMensuality_noSave_Months(mensualities_to_end+i,up2date_rate,ret.capital_left)*100)/100).toString() +'€ (+'+i.toString()+' mois)');
       }
@@ -385,8 +380,8 @@ var optionsEvtType = [
 
 
 const getLatestMensuality=function(){
-  var latest_year=Number(simu.value.credit.startingDate.split('/')[0])+Number(simu.value.credit.year);
-  var latest_month=Number(simu.value.credit.startingDate.split('/')[1]);
+  var latest_year=simu.value.credit.y+simu.value.credit.duration_y;
+  var latest_month=simu.value.credit.m;
   if(simu.value.events.length!=0)
   {
     for(var i=simu.value.events.length-1;i>=0;i--)
@@ -406,10 +401,10 @@ const getLatestMensuality=function(){
   return {l_y:latest_year,l_m:latest_month};
 }
 
-const getEraliestNewEventDate=function(){
+const getEarliestNewEventDate=function(){
   if(simu.value.events.length==0)
   {
-    return {l_y:Number(simu.value.credit.startingDate.split('/')[0]),l_m:Number(simu.value.credit.startingDate.split('/')[1])};
+    return {l_y:simu.value.credit.y,l_m:simu.value.credit.m};
   }
   else
   {
@@ -457,4 +452,4 @@ const build_event_name=function(metaType)
     return 'Rachat '+String(getRebuyNbr()+1);
   }
 }
-export { computeMensuality, computeCredit_init, getEraliestNewEventDate, sortEvents,provideModOptions,apply_events_chain,getChartXAxis,optionsEvtType,returnBaseData,getLatestMensuality,hasBeenRebougthSavings,build_event_name};
+export { computeMensuality, computeCredit_init, getEarliestNewEventDate, sortEvents,provideModOptions,apply_events_chain,getChartXAxis,optionsEvtType,returnBaseData,getLatestMensuality,hasBeenRebougthSavings,build_event_name};

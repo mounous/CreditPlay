@@ -53,13 +53,13 @@
             :options="getAccOpt()" type="number" bg-color="blue-grey-8" outlined dense></q-select>
 
           <q-input class="q-mx-xs" dense style="max-width:100px" label="A partir de" bg-color="blue-grey-8" filled
-            v-model="_savingP.startingDate" mask="date" @click="mustpopPsStart=true" readonly>
+            v-model="_savingP.startingDate"  @click="mustpopPsStart=true" readonly>
             <template v-slot:append>
               <q-icon name="event" class="cursor-pointer">
                 <q-popup-proxy cover transition-show="scale" transition-hide="scale" v-model="mustpopPsStart">
-                  <q-date dark v-model="_savingP.startingDate" :locale="formatCalendar"
+                  <q-date dark v-model="savingPstartingDateUnformated" :locale="formatCalendar"
                     :navigation-min-year-month="periodicSaveMin" width="200px"
-                    :navigation-max-year-month="periodicSaveMax" @update:model-value="mustpopPsStart=false">
+                    :navigation-max-year-month="periodicSaveMax" @update:model-value="[_savingP.startingDate=formatDate(savingPstartingDateUnformated),mustpopPsStart=false]">
                     <div class="row items-center justify-end">
                       <q-btn v-close-popup label="Close" color="primary" flat />
                     </div>
@@ -69,13 +69,13 @@
             </template>
           </q-input>
           <q-input class="q-mx-xs" dense style="max-width: 100px;" label="jusqu'à  " bg-color="blue-grey-8" filled
-            v-model="_savingP.endDate" mask="date" @click="mustpopPsEnd=true" readonly>
+            v-model="_savingP.endDate"  @click="mustpopPsEnd=true" readonly>
             <template v-slot:append>
               <q-icon name="event" class="cursor-pointer">
                 <q-popup-proxy cover transition-show="scale" transition-hide="scale" v-model="mustpopPsEnd">
-                  <q-date dark v-model="_savingP.endDate" :locale="formatCalendar"
+                  <q-date dark v-model="savingPendDateUnformated" :locale="formatCalendar"
                     :navigation-min-year-month="periodicSaveMin" width="200px"
-                    :navigation-max-year-month="periodicSaveMax" @update:model-value="mustpopPsEnd=false">
+                    :navigation-max-year-month="periodicSaveMax" @update:model-value="[_savingP.endDate=formatDate(savingPendDateUnformated),mustpopPsEnd=false]">
                     <div class="row items-center justify-end">
                       <q-btn v-close-popup label="Close" color="primary" flat />
                     </div>
@@ -132,13 +132,13 @@
             :options="getAccOpt()" bg-color="blue-grey-8" outlined dense></q-select>
 
           <q-input class="q-mx-xs" dense style="max-width:100px" label="date" bg-color="blue-grey-8" filled
-            v-model="_single_io.date" mask="date" @click="mustpopSingleIO=true" readonly>
+            v-model="_single_io.date"  @click="mustpopSingleIO=true" readonly>
             <template v-slot:append>
               <q-icon name="event" class="cursor-pointer">
                 <q-popup-proxy cover transition-show="scale" transition-hide="scale" v-model="mustpopSingleIO">
-                  <q-date dark v-model="_single_io.date" :locale="formatCalendar"
+                  <q-date dark v-model="singleIODateUnformated" :locale="formatCalendar"
                     :navigation-min-year-month="periodicSaveMin" width="200px"
-                    @update:model-value="mustpopSingleIO=false">
+                    @update:model-value="[_single_io.date=formatDate(singleIODateUnformated), mustpopSingleIO=false]">
                     <div class="row items-center justify-end">
                       <q-btn v-close-popup label="Close" color="primary" flat />
                     </div>
@@ -237,10 +237,15 @@ import { ref } from 'vue'
 import { useQuasar } from 'quasar';
 import { formatCalendar } from '../utils/calendar_utility';
 import {BANK_SEARCH_ERROR,getAccId,getSavinPID,getSIOID,makeAccountNameUnique,isAccountInvolvedInRebuyWithSavings, deleteRebuySavingsEventAndAssociatedInOut} from '../utils/bank_utility'
-import { compareDates } from 'src/utils/date_utility';
+import { compareDates ,formatDate} from 'src/utils/date_utility';
 const $q = useQuasar();
 const _account = ref({ title: '', amount: 0.0, rate: 0.0 });
 const _savingP = ref({  account :'',amount: 0.0, rate: 0.0, startMonth: 0, startYear: 0, endMonth: 0, endYear: 0, type: 'mensuelle',startingDate:'',endDate:'' });
+const DEFAULT_DATE='';
+var savingPstartingDateUnformated=ref(DEFAULT_DATE);
+var savingPendDateUnformated=ref(DEFAULT_DATE);
+var singleIODateUnformated=ref(DEFAULT_DATE);
+
 const _single_io =ref({account:'',title: '', type:'entrée', amount:0,year:0,month:0,date:'',rate:0});
 var limitMonth = new Date().getFullYear().toString();
 var limitYear = (new Date().getMonth() + 1).toString().padStart(2, '0');
@@ -285,10 +290,15 @@ const addElementToAccounts = function () {
 }
 const addElementToSavingsP = function () {
   var indexAcc=0;
-  var startY=Number(_savingP.value.startingDate.slice(0,4));
-  var endY=Number(_savingP.value.endDate.slice(0,4));
-  var startM=Number(_savingP.value.startingDate.slice(5,7));
-  var endM=Number(_savingP.value.endDate.slice(5,7));
+  var startY=Number(_savingP.value.startingDate.split('/')[2]);
+  var endY=0
+  var startM=Number(_savingP.value.startingDate.split('/')[1]);
+  var endM=0;
+  if(DEFAULT_DATE!=_savingP.value.endDate)
+  {
+    endY=Number(_savingP.value.endDate.split('/')[2]);
+    endM=Number(_savingP.value.endDate.split('/')[1]);
+  }
   if(_savingP.value.startingDate=='')
   {
     $q.notify({    color: 'orange-4',    textColor: 'black',    icon: 'warning',    message: 'Il faut renseigner une date de départ',  });
@@ -310,13 +320,13 @@ const addElementToSavingsP = function () {
       return;
     }
     bank.value.accounts[indexAcc].periodic_savings.push({ amount: Number(_savingP.value.amount), account: _savingP.value.account, type: _savingP.value.type, startMonth: startM, startYear: startY, endMonth: endM, endYear:endY });
-    _savingP.value.amount=0.0; _savingP.value.account=''; _savingP.value.startMonth=0; _savingP.value.startYear=0; _savingP.value.endMonth=0, _savingP.value.endYear=0; _savingP.value.type='mensuelle'; _savingP.value.startingDate='';_savingP.value.endDate='';
+    _savingP.value.amount=0.0; _savingP.value.account=''; _savingP.value.startMonth=0; _savingP.value.startYear=0; _savingP.value.endMonth=0, _savingP.value.endYear=0; _savingP.value.type='mensuelle'; _savingP.value.startingDate=DEFAULT_DATE;_savingP.value.endDate=DEFAULT_DATE;
   }
 
 }
 const addElementToSingleIO=function(){
-  var Y=Number(_single_io.value.date.slice(0,4));
-  var M=Number(_single_io.value.date.slice(5,7));
+  var Y=Number(_single_io.value.date.split('/')[2]);
+  var M=Number(_single_io.value.date.split('/')[1]);
   var indexAcc=0;
   if(_single_io.value.date=='')
   {

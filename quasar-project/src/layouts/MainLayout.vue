@@ -54,8 +54,8 @@ if (simu.value.credit.amount==0) {
 if (simu.value.credit.rate==0) {
   simu.value.credit.rate= 3.25;
 }
-if (simu.value.credit.year==0) {
-  simu.value.credit.year= 20;
+if (simu.value.credit.duration_y==0) {
+  simu.value.credit.duration_y= 20;
 }
 
 </script>
