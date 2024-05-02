@@ -148,7 +148,7 @@
             </template>
           </q-input>
           <q-btn class="q-mx-xs" dense style="height:38px" label="ajouter" color="blue-grey-8"
-            @click="addElementToSingleIO"></q-btn>
+            @click="addElementToSingleIO(false)"></q-btn>
         </div>
 
         <div>
@@ -228,6 +228,22 @@
         </q-card>
       </q-dialog>
     </div>
+    <div class="col">
+      <q-dialog v-model="mustPopaddSIO" cover transition-show="scale" transition-hide="scale">
+        <q-card>
+          <div class="col flex flex center justify-around">
+            <div class="q-ma-md">
+              Vous êtes sur le point de retirer de l'argent d'un compte impliqué dans le rachart de votre crédit à une date antérieure au Rachat
+              Cela supprimera le rachat du crédit si vous confirmez.
+            </div>
+            <div class="row nowrap">
+              <q-btn label="Annuler" @click="mustPopaddSIO = false"></q-btn>
+              <q-btn label="Confirmer" @click="[mustPopaddSIO=false,addElementToSingleIO(true)]"></q-btn>
+            </div>
+          </div>
+        </q-card>
+      </q-dialog>
+    </div>
   </div>
 </template>
 
@@ -262,6 +278,8 @@ var savingPtoDelete=ref();
 var accountOfSIOToDelete=ref();
 var SIOtoDelete=ref();
 var mustPopDeleteSIO=ref(false);
+var mustPopaddSIO=ref(false);
+
 const getAccOpt=function()
 {
   var toreturn=[]
@@ -324,7 +342,7 @@ const addElementToSavingsP = function () {
   }
 
 }
-const addElementToSingleIO=function(){
+const addElementToSingleIO=function(force=false){
   var Y=Number(_single_io.value.date.split('/')[2]);
   var M=Number(_single_io.value.date.split('/')[1]);
   var indexAcc=0;
@@ -347,6 +365,22 @@ const addElementToSingleIO=function(){
     {
       $q.notify({    color: 'orange-4',    textColor: 'black',    icon: 'warning',    message: 'compte de rattachement non trouvé',  });
       return;
+    }
+    if(!force)
+    {
+      var indexOfrebuy=simu.value.events.length-1;
+      var y_rebuy =simu.value.events[indexOfrebuy].year;
+      var m_rebuy =simu.value.events[indexOfrebuy].month;
+      //warn user in case of removing some money of an account involved in savings if the withdrawal is anterior to rebuy date
+      if(isAccountInvolvedInRebuyWithSavings(indexAcc) && _single_io.value.type=='sortie' && compareDates(y_rebuy,m_rebuy,Y,M)>=0)
+      {
+        mustPopaddSIO.value=true;
+        return;
+      }
+    }
+    if(force)//delete the rebuy with savings event, delete all single io linked to this event
+    {
+      deleteRebuySavingsEventAndAssociatedInOut();
     }
     bank.value.accounts[indexAcc].single_in_out.push({account:_single_io.value.account,title:_single_io.value.title,type:_single_io.value.type,amount:Number(_single_io.value.amount),date:_single_io.value.date,month:M,year:Y});
     _single_io.value.title='';_single_io.value.amount=0;_single_io.value.type='entrée';_single_io.value.date='';_single_io.value.account='';
