@@ -21,18 +21,37 @@
         </KeepAlive>
       </q-page-container>
     </q-layout>
+    <div class="col">
+      <q-dialog v-model="mustPopRestore" cover transition-show="scale" transition-hide="scale">
+        <q-card>
+          <div class="col flex flex center justify-around">
+            <div class="q-ma-md">
+              Reprendre la dernière simulation sauvegardée ?
+            </div>
+            <div class="row nowrap">
+              <q-btn label="Non" @click="mustPopRestore = false"></q-btn>
+              <q-btn label="Oui" @click="[mustPopRestore=false,restoreLastSaving()]"></q-btn>
+            </div>
+          </div>
+        </q-card>
+      </q-dialog>
+    </div>
 
 </template>
 
 <script setup lang="ts">
 
 
-import { ref, watch } from 'vue';
+import { onBeforeMount, ref, watch } from 'vue';
 
 import { simu,bank,startFormFilled } from 'stores/store';
+import { LocalStorage } from 'quasar';
+import { useRouter } from 'vue-router';
+var mustPopRestore=ref(false);
 var tab=ref('start');
 var  initFormDone =ref(false);
 var bankDone=ref(false);
+const router = useRouter();
 const setInitDone=function(b_in:boolean){
   initFormDone.value=b_in};
 const setbankdone=function()
@@ -57,7 +76,36 @@ if (simu.value.credit.rate==0) {
 if (simu.value.credit.duration_y==0) {
   simu.value.credit.duration_y= 20;
 }
-
+const restoreMustPopObligation=function()
+{
+  if(LocalStorage.has('listSave'))
+  {
+    var list=ref();
+    list.value=LocalStorage.getItem('listSave');
+    if(list.value.length>0)
+    {
+      mustPopRestore.value=true;
+    }
+    else
+    {
+      mustPopRestore.value=false;
+    }
+  }
+}
+onBeforeMount(restoreMustPopObligation);
+const restoreLastSaving=function()
+{
+  var listmem=ref();
+  if(LocalStorage.has('listSave'))
+  {
+    listmem.value=LocalStorage.getItem('listSave');
+    var lastSave=listmem.value.slice(-1);
+    simu.value=lastSave[0].simu;
+    bank.value=lastSave[0].bank;
+    startFormFilled.value = lastSave[0].startFormFilled;
+    router.push('/lineChart');
+  }
+}
 </script>
 
 <style lang="scss">

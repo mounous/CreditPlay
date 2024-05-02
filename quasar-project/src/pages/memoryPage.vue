@@ -110,8 +110,16 @@ const deleteData = function () {
     //notify
   }
   else {
-    listSave.value.splice(index, 1);
-    LocalStorage.set('listSave', listSave.value);
+    if(listSave.value.length>1)
+    {
+      listSave.value.splice(index, 1);
+      LocalStorage.set('listSave', listSave.value);
+    }
+    else
+    {
+      deleteAllData();
+    }
+
   }
 }
 const deleteAllData = function () {
