@@ -1,21 +1,12 @@
 <template>
+  <accountForm v-if="displayAccountForm==true"  @account-added="displayAccountForm=false"></accountForm>
   <div class="full-height column justify-arround content-center verticalFlex">
     <q-card class="bg-grey-9 my-card q-ma-md">
       <p>Comptes banquaires</p>
       <div class="col q-ma-xs">
         <div class="row flex rowNoWrap q-ma-xs">
-          <q-input class="q-mx-xs" label="nom du compte" size=8 maxlength="20" v-model="_account.title" type="text"
-            lazy-rules :rules="[(val) => (val.length < 20) || 'choisir un nom plus court']" clearable
-            bg-color="blue-grey-8" outlined dense></q-input>
-          <q-input class="q-mx-xs" label="Somme" style="max-width:110px" maxlength="8" v-model="_account.amount"
-            type="number" lazy-rules :rules="[(val) => (val >= 0.0) || 'Les dettes ne sont pas gérées']"
-            bg-color="blue-grey-8" outlined dense></q-input>
-          <q-input class="q-mx-xs" label="rentabilité" style="max-width:100px" maxlength="8" v-model="_account.rate"
-            type="number" bg-color="blue-grey-8" outlined dense></q-input>
-          <q-btn class="q-mx-xs" dense style="height:38px" label="ajouter" color="blue-grey-8"
-            @click="addElementToAccounts()"></q-btn>
+          <q-btn label="Ajouter" @click="displayAccountForm=true"></q-btn>
         </div>
-
         <div>
           <q-markup-table class="my-table bg-grey-8" separator="cell" flat bordered>
             <thead>
@@ -252,16 +243,17 @@ import { bank, simu } from 'stores/store';
 import { ref } from 'vue'
 import { useQuasar } from 'quasar';
 import { formatCalendar } from '../utils/calendar_utility';
-import {BANK_SEARCH_ERROR,getAccId,getSavinPID,getSIOID,makeAccountNameUnique,isAccountInvolvedInRebuyWithSavings, deleteRebuySavingsEventAndAssociatedInOut} from '../utils/bank_utility'
+import {BANK_SEARCH_ERROR,getAccId,getSavinPID,getSIOID,isAccountInvolvedInRebuyWithSavings, deleteRebuySavingsEventAndAssociatedInOut} from '../utils/bank_utility'
 import { compareDates ,formatDate} from 'src/utils/date_utility';
+import accountForm from 'src/components/accountForm.vue';
 const $q = useQuasar();
-const _account = ref({ title: '', amount: 0.0, rate: 0.0 });
+
 const _savingP = ref({  account :'',amount: 0.0, rate: 0.0, startMonth: 0, startYear: 0, endMonth: 0, endYear: 0, type: 'mensuelle',startingDate:'',endDate:'' });
 const DEFAULT_DATE='';
 var savingPstartingDateUnformated=ref(DEFAULT_DATE);
 var savingPendDateUnformated=ref(DEFAULT_DATE);
 var singleIODateUnformated=ref(DEFAULT_DATE);
-
+var displayAccountForm=ref(false);
 const _single_io =ref({account:'',title: '', type:'entrée', amount:0,year:0,month:0,date:'',rate:0});
 var limitMonth = new Date().getFullYear().toString();
 var limitYear = (new Date().getMonth() + 1).toString().padStart(2, '0');
@@ -289,23 +281,7 @@ const getAccOpt=function()
   }
   return toreturn;
 }
-const addElementToAccounts = function () {
-  if(_account.value.amount==0)
-  {
-    $q.notify({    color: 'orange-4',    textColor: 'black',    icon: 'warning',    message: 'Une épargne de 0€ n\'est pas une épargne',  });
-  }
-  else if(_account.value.amount<0)
-  {
-    $q.notify({    color: 'orange-4',    textColor: 'black',    icon: 'warning',    message: 'Une dette n\'est pas une épargne',  });
-  }
-  else
-  {
-    bank.value.accounts.push({ title: makeAccountNameUnique(_account.value.title), amount: Number(_account.value.amount), rate: _account.value.rate,single_in_out:[],periodic_savings:[],computedOverTime:[] });
-    _account.value.title='';
-    _account.value.amount=0.0;
-    _account.value.rate=0.0;
-  }
-}
+
 const addElementToSavingsP = function () {
   var indexAcc=0;
   var startY=Number(_savingP.value.startingDate.split('/')[2]);
