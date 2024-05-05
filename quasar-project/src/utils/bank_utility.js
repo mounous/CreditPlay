@@ -407,6 +407,16 @@ const getSortedAccountsFromPoorToHighRate=function()
     return from_poor_to_high_rate;
   }
 }
+
+const getAccOpt=function()
+{
+  var toreturn=[]
+  for (var acc =0;acc< bank.value.accounts.length;acc++)
+  {
+    toreturn.push( bank.value.accounts[acc].title);
+  }
+  return toreturn;
+}
 export { getSavingsEarlier,computeDisplaySavings,hasSavings, provideRebuyOptions,optionsReBuyType
   ,BANK_SEARCH_ERROR,getAccId,getSavinPID,getSIOID,getSortedAccountsFromPoorToHighRate,compute_savings,makeAccountNameUnique,
-  isAccountInvolvedInRebuyWithSavings, deleteRebuySavingsEventAndAssociatedInOut};
+  isAccountInvolvedInRebuyWithSavings, deleteRebuySavingsEventAndAssociatedInOut,getAccOpt};
