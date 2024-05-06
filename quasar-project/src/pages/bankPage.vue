@@ -1,12 +1,17 @@
 <template>
-  <accountForm v-if="displayAccountForm==true"  @account-added="displayAccountForm=false"></accountForm>
+  <accountForm v-if="displayAccountForm==true"  @account-added="displayAccountForm=false" @account-aborted="displayAccountForm=false"></accountForm>
+  <periodicSavingsForm v-if="displayPSForm==true" @ps-added="displayPSForm=false" @ps-aborted="displayPSForm=false"></periodicSavingsForm>
+  <singleIOFrom v-if="displaySIOForm==true" @sio-added="displaySIOForm=false" @sio-aborted="displaySIOForm=false"></singleIOFrom>
   <div class="full-height column justify-arround content-center verticalFlex">
     <q-card class="bg-grey-9 my-card q-ma-md">
-      <p>Comptes banquaires</p>
-      <div class="col q-ma-xs">
-        <div class="row flex rowNoWrap q-ma-xs">
-          <q-btn label="Ajouter" @click="displayAccountForm=true"></q-btn>
+      <div class="column items-center">
+        <div class="col">
+          <p class="myTitle">Comptes banquaires</p>
         </div>
+        <div class="col">
+          <q-btn label="Ajouter" class="q-ma-md" color="blue-grey-8" style="height:40px" @click="displayAccountForm=true"></q-btn>
+        </div>
+      </div>
         <div>
           <q-markup-table class="my-table bg-grey-8" separator="cell" flat bordered>
             <thead>
@@ -27,59 +32,18 @@
             </tbody>
           </q-markup-table>
         </div>
-      </div>
     </q-card>
 
-
     <q-card class="bg-grey-9 my-card q-ma-md">
-      <p>Capacité d'épargne</p>
-      <div class="col q-ma-xs">
-        <div class="row flex  q-ma-xs">
-          <q-select bg-color="blue-grey-8" dense v-model="_savingP.type" label="type"
-            :options="['mensuelle', 'annuelle']"></q-select>
-          <q-input class="q-mx-xs" label="montant" style="max-width:110px" maxlength="8" v-model="_savingP.amount"
-            type="number" lazy-rules :rules="[(val) => (val >= 0.0) || 'Les retraits ne sont pas gérées']"
-            bg-color="blue-grey-8" outlined dense></q-input>
-          <q-select class="q-mx-xs" label="compte" style="max-width:100px" maxlength="8" v-model="_savingP.account"
-            :options="getAccOpt()" type="number" bg-color="blue-grey-8" outlined dense></q-select>
-
-          <q-input class="q-mx-xs" dense style="max-width:100px" label="A partir de" bg-color="blue-grey-8" filled
-            v-model="_savingP.startingDate"  @click="mustpopPsStart=true" readonly>
-            <template v-slot:append>
-              <q-icon name="event" class="cursor-pointer">
-                <q-popup-proxy cover transition-show="scale" transition-hide="scale" v-model="mustpopPsStart">
-                  <q-date dark v-model="savingPstartingDateUnformated" :locale="formatCalendar"
-                    :navigation-min-year-month="periodicSaveMin" width="200px"
-                    :navigation-max-year-month="periodicSaveMax" @update:model-value="[_savingP.startingDate=formatDate(savingPstartingDateUnformated),mustpopPsStart=false]">
-                    <div class="row items-center justify-end">
-                      <q-btn v-close-popup label="Close" color="primary" flat />
-                    </div>
-                  </q-date>
-                </q-popup-proxy>
-              </q-icon>
-            </template>
-          </q-input>
-          <q-input class="q-mx-xs" dense style="max-width: 100px;" label="jusqu'à  " bg-color="blue-grey-8" filled
-            v-model="_savingP.endDate"  @click="mustpopPsEnd=true" readonly>
-            <template v-slot:append>
-              <q-icon name="event" class="cursor-pointer">
-                <q-popup-proxy cover transition-show="scale" transition-hide="scale" v-model="mustpopPsEnd">
-                  <q-date dark v-model="savingPendDateUnformated" :locale="formatCalendar"
-                    :navigation-min-year-month="periodicSaveMin" width="200px"
-                    :navigation-max-year-month="periodicSaveMax" @update:model-value="[_savingP.endDate=formatDate(savingPendDateUnformated),mustpopPsEnd=false]">
-                    <div class="row items-center justify-end">
-                      <q-btn v-close-popup label="Close" color="primary" flat />
-                    </div>
-                  </q-date>
-                </q-popup-proxy>
-              </q-icon>
-            </template>
-          </q-input>
-          <q-btn class="q-mx-xs" dense style="height:38px" label="ajouter" color="blue-grey-8"
-            @click="addElementToSavingsP"></q-btn>
+      <div class="column items-center">
+        <div class="col">
+          <p class="myTitle">Capacité d'épargne</p>
         </div>
-
-        <div>
+        <div class="col">
+          <q-btn :disable="bank.accounts.length==0" class="q-ma-md" color="blue-grey-8" style="height:40px" label="ajouter"
+            @click="displayPSForm=true"></q-btn>
+        </div>
+        </div>
           <q-markup-table class="my-table bg-grey-8" separator="cell" flat bordered>
             <thead>
               <tr>
@@ -94,7 +58,6 @@
             </thead>
             <tbody v-for="account in bank.accounts" :key="account.name">
               <tr v-for="saving in account.periodic_savings" :key="saving.amount">
-
                 <th>{{ saving.amount }}</th>
                 <th>{{ account.title }}</th>
                 <th>{{ saving.type == 'mensuelle' ? 'Mens.' : 'An.' }}</th>
@@ -105,48 +68,22 @@
               </tr>
             </tbody>
           </q-markup-table>
-        </div>
-      </div>
     </q-card>
 
     <q-card class="bg-grey-9 my-card q-ma-md">
-      <p>Entrées sorties exceptionnelles</p>
-      <div class="col q-ma-xs">
-        <div class="row flex  q-ma-xs">
-          <q-select bg-color="blue-grey-8" dense v-model="_single_io.type" label="type"
-            :options="['entrée', 'sortie']"></q-select>
-          <q-input class="q-mx-xs" label="montant" style="max-width:110px;min-width:100px" maxlength="8"
-            v-model="_single_io.amount" type="number" lazy-rules bg-color="blue-grey-8" outlined dense></q-input>
-          <q-input class="q-mx-xs" label="nom" style="max-width:100px" maxlength="20" v-model="_single_io.title"
-            type="text" bg-color="blue-grey-8" outlined dense></q-input>
-          <q-select class="q-mx-xs" label="compte" style="max-width:100px" maxlength="8" v-model="_single_io.account"
-            :options="getAccOpt()" bg-color="blue-grey-8" outlined dense></q-select>
 
-          <q-input class="q-mx-xs" dense style="max-width:100px" label="date" bg-color="blue-grey-8" filled
-            v-model="_single_io.date"  @click="mustpopSingleIO=true" readonly>
-            <template v-slot:append>
-              <q-icon name="event" class="cursor-pointer">
-                <q-popup-proxy cover transition-show="scale" transition-hide="scale" v-model="mustpopSingleIO">
-                  <q-date dark v-model="singleIODateUnformated" :locale="formatCalendar"
-                    :navigation-min-year-month="periodicSaveMin" width="200px"
-                    @update:model-value="[_single_io.date=formatDate(singleIODateUnformated), mustpopSingleIO=false]">
-                    <div class="row items-center justify-end">
-                      <q-btn v-close-popup label="Close" color="primary" flat />
-                    </div>
-                  </q-date>
-                </q-popup-proxy>
-              </q-icon>
-            </template>
-          </q-input>
-          <q-btn class="q-mx-xs" dense style="height:38px" label="ajouter" color="blue-grey-8"
-            @click="addElementToSingleIO(false)"></q-btn>
+      <div class="column items-center">
+        <div class="col">
+          <p class="myTitle">Entrées/Sorties exceptionnelles</p>
         </div>
-
-        <div>
+        <div class="col">
+          <q-btn :disable="bank.accounts.length==0" class="q-ma-md" color="blue-grey-8" style="height:40px" label="ajouter"
+            @click="displaySIOForm=true"></q-btn>
+        </div>
+      </div>
           <q-markup-table class="my-table bg-grey-8" separator="cell" flat bordered>
             <thead>
               <tr>
-
                 <th span="1" style="width: 20%">nom</th>
                 <th span="1" style="width: 15%">type</th>
                 <th span="1" style="width: 15%">montant</th>
@@ -157,20 +94,21 @@
             </thead>
             <tbody v-for="account in bank.accounts" :key="account.name">
               <tr v-for="io in account.single_in_out" :key="io.amount">
-
                 <th>{{ io.title }}</th>
                 <th>{{ io.type }}</th>
                 <th>{{ io.amount }}</th>
                 <th>{{ account.title }}</th>
                 <th>{{ io.month + '/' + io.year }}</th>
-
                 <th><q-btn dense size="s" icon="delete_forever" @click="removeSingleIO(io,account)"></q-btn></th>
               </tr>
             </tbody>
           </q-markup-table>
-        </div>
-      </div>
+
+
     </q-card>
+  </div>
+
+
     <div class="col">
       <q-dialog v-model="mustPopDeleteAcc" cover transition-show="scale" transition-hide="scale">
         <q-card>
@@ -187,6 +125,7 @@
         </q-card>
       </q-dialog>
     </div>
+
     <div class="col">
       <q-dialog v-model="mustPopDeleteP" cover transition-show="scale" transition-hide="scale">
         <q-card>
@@ -203,6 +142,7 @@
         </q-card>
       </q-dialog>
     </div>
+
     <div class="col">
       <q-dialog v-model="mustPopDeleteSIO" cover transition-show="scale" transition-hide="scale">
         <q-card>
@@ -219,49 +159,27 @@
         </q-card>
       </q-dialog>
     </div>
-    <div class="col">
-      <q-dialog v-model="mustPopaddSIO" cover transition-show="scale" transition-hide="scale">
-        <q-card>
-          <div class="col flex flex center justify-around">
-            <div class="q-ma-md">
-              Vous êtes sur le point de retirer de l'argent d'un compte impliqué dans le rachart de votre crédit à une date antérieure au Rachat
-              Cela supprimera le rachat du crédit si vous confirmez.
-            </div>
-            <div class="row nowrap">
-              <q-btn label="Annuler" @click="mustPopaddSIO = false"></q-btn>
-              <q-btn label="Confirmer" @click="[mustPopaddSIO=false,addElementToSingleIO(true)]"></q-btn>
-            </div>
-          </div>
-        </q-card>
-      </q-dialog>
-    </div>
-  </div>
 </template>
 
 <script setup>
 import { bank, simu } from 'stores/store';
 import { ref } from 'vue'
 import { useQuasar } from 'quasar';
-import { formatCalendar } from '../utils/calendar_utility';
+
 import {BANK_SEARCH_ERROR,getAccId,getSavinPID,getSIOID,isAccountInvolvedInRebuyWithSavings, deleteRebuySavingsEventAndAssociatedInOut} from '../utils/bank_utility'
-import { compareDates ,formatDate} from 'src/utils/date_utility';
+import { compareDates } from 'src/utils/date_utility';
 import accountForm from 'src/components/accountForm.vue';
+import periodicSavingsForm from 'src/components/periodicSavingsForm.vue';
+import singleIOFrom from 'src/components/singleIOFrom.vue';
 const $q = useQuasar();
 
-const _savingP = ref({  account :'',amount: 0.0, rate: 0.0, startMonth: 0, startYear: 0, endMonth: 0, endYear: 0, type: 'mensuelle',startingDate:'',endDate:'' });
-const DEFAULT_DATE='';
-var savingPstartingDateUnformated=ref(DEFAULT_DATE);
-var savingPendDateUnformated=ref(DEFAULT_DATE);
-var singleIODateUnformated=ref(DEFAULT_DATE);
+
+
 var displayAccountForm=ref(false);
-const _single_io =ref({account:'',title: '', type:'entrée', amount:0,year:0,month:0,date:'',rate:0});
-var limitMonth = new Date().getFullYear().toString();
-var limitYear = (new Date().getMonth() + 1).toString().padStart(2, '0');
-var periodicSaveMin = ref(limitMonth + '/' + limitYear);
-var periodicSaveMax = ref('2100/01');
-var mustpopPsStart=ref(false);
-var mustpopPsEnd=ref(false);
-var mustpopSingleIO=ref(false);
+var displayPSForm=ref(false);
+var displaySIOForm=ref(false);
+
+
 var mustPopDeleteAcc=ref(false);
 var mustPopDeleteP=ref(false);
 var accountToBeDeleted=ref();
@@ -270,99 +188,8 @@ var savingPtoDelete=ref();
 var accountOfSIOToDelete=ref();
 var SIOtoDelete=ref();
 var mustPopDeleteSIO=ref(false);
-var mustPopaddSIO=ref(false);
 
-const getAccOpt=function()
-{
-  var toreturn=[]
-  for (var acc =0;acc< bank.value.accounts.length;acc++)
-  {
-    toreturn.push( bank.value.accounts[acc].title);
-  }
-  return toreturn;
-}
 
-const addElementToSavingsP = function () {
-  var indexAcc=0;
-  var startY=Number(_savingP.value.startingDate.split('/')[2]);
-  var endY=0
-  var startM=Number(_savingP.value.startingDate.split('/')[1]);
-  var endM=0;
-  if(DEFAULT_DATE!=_savingP.value.endDate)
-  {
-    endY=Number(_savingP.value.endDate.split('/')[2]);
-    endM=Number(_savingP.value.endDate.split('/')[1]);
-  }
-  if(_savingP.value.startingDate=='')
-  {
-    $q.notify({    color: 'orange-4',    textColor: 'black',    icon: 'warning',    message: 'Il faut renseigner une date de départ',  });
-  }
-  else if(_savingP.value.amount==0)
-  {
-    $q.notify({    color: 'orange-4',    textColor: 'black',    icon: 'warning',    message: 'Une épargne périodique de 0€ ne va rien rapporter',  });
-  }
-  else if(_savingP.value.amount<0)
-  {
-    $q.notify({    color: 'orange-4',    textColor: 'black',    icon: 'warning',    message: 'Une épargne négative n\'est pas un épargne',  });
-  }
-  else
-  {
-    indexAcc=getAccId(_savingP.value.account);
-    if(BANK_SEARCH_ERROR==indexAcc)
-    {
-      $q.notify({    color: 'orange-4',    textColor: 'black',    icon: 'warning',    message: 'compte de rattachement non trouvé',  });
-      return;
-    }
-    bank.value.accounts[indexAcc].periodic_savings.push({ amount: Number(_savingP.value.amount), account: _savingP.value.account, type: _savingP.value.type, startMonth: startM, startYear: startY, endMonth: endM, endYear:endY });
-    _savingP.value.amount=0.0; _savingP.value.account=''; _savingP.value.startMonth=0; _savingP.value.startYear=0; _savingP.value.endMonth=0, _savingP.value.endYear=0; _savingP.value.type='mensuelle'; _savingP.value.startingDate=DEFAULT_DATE;_savingP.value.endDate=DEFAULT_DATE;
-  }
-
-}
-const addElementToSingleIO=function(force=false){
-  var Y=Number(_single_io.value.date.split('/')[2]);
-  var M=Number(_single_io.value.date.split('/')[1]);
-  var indexAcc=0;
-  if(_single_io.value.date=='')
-  {
-    $q.notify({    color: 'orange-4',    textColor: 'black',    icon: 'warning',    message: 'Il faut renseigner une date ! Sinon remplir l\'épargne !',  });
-  }
-  else if(_single_io.value.amount==0)
-  {
-    $q.notify({    color: 'orange-4',    textColor: 'black',    icon: 'warning',    message: 'Une entrée ou sortie d\'argent nulle n\'a pas d\'effet',  });
-  }
-  else if(_single_io.value.title=='rachat avec économies' )
-  {
-    $q.notify({    color: 'orange-4',    textColor: 'black',    icon: 'warning',    message: 'Ce nom est réservé. Choisir un autre nom',  });
-  }
-  else
-  {
-    indexAcc=getAccId(_single_io.value.account);
-    if(BANK_SEARCH_ERROR==indexAcc)
-    {
-      $q.notify({    color: 'orange-4',    textColor: 'black',    icon: 'warning',    message: 'compte de rattachement non trouvé',  });
-      return;
-    }
-    if(!force)
-    {
-      var indexOfrebuy=simu.value.events.length-1;
-      var y_rebuy =simu.value.events[indexOfrebuy].year;
-      var m_rebuy =simu.value.events[indexOfrebuy].month;
-      //warn user in case of removing some money of an account involved in savings if the withdrawal is anterior to rebuy date
-      if(isAccountInvolvedInRebuyWithSavings(indexAcc) && _single_io.value.type=='sortie' && compareDates(y_rebuy,m_rebuy,Y,M)>=0)
-      {
-        mustPopaddSIO.value=true;
-        return;
-      }
-    }
-    if(force)//delete the rebuy with savings event, delete all single io linked to this event
-    {
-      deleteRebuySavingsEventAndAssociatedInOut();
-    }
-    bank.value.accounts[indexAcc].single_in_out.push({account:_single_io.value.account,title:_single_io.value.title,type:_single_io.value.type,amount:Number(_single_io.value.amount),date:_single_io.value.date,month:M,year:Y});
-    _single_io.value.title='';_single_io.value.amount=0;_single_io.value.type='entrée';_single_io.value.date='';_single_io.value.account='';
-  }
-
-}
 
 const removeAccount = function (account,force=false) {
   var i=getAccId(account.title)
@@ -490,5 +317,9 @@ const removeSingleIO = function (SIO,account,force=false) {
 
 .rowNoWrap {
   flex-wrap: nowrap;
+}
+
+.myTitle{
+  font-size:20px;
 }
 </style>
