@@ -9,7 +9,7 @@
           ]" />
       </div>
       <div class="col">
-        <q-input label="Date de signature" bg-color="blue-grey-8" filled v-model="simu.credit.startingDate"  @click="mustpop=true" readonly>
+        <q-input label="Date de signature" bg-color="blue-grey-8" filled v-model="simu.credit.startingDate"  @click="mustpop=true" readonly ref="refDate">
           <template v-slot:append>
             <q-icon name="event" class="cursor-pointer" >
               <q-popup-proxy v-model="mustpop" cover transition-show="scale" transition-hide="scale">
@@ -45,11 +45,11 @@
         <q-input filled type="number" bg-color="blue-grey-8" v-model="simu.credit.amount" label="Somme empruntée"
                   lazy-rules :rules="[
             (val) => val>0 || 'Merci de renseigner la somme',
-          ]" />
+          ]" @update:model-value="simu.credit.amount=Number(simu.credit.amount)"/>
       </div>
       <div class="col">
         <q-input filled label="TAEG" bg-color="blue-grey-8" type="number" step="any" v-model="simu.credit.rate" lazy-rules
-          :rules="[(val) => (val>0) || 'Ce TAEG semble irréel']" />
+          :rules="[(val) => (val>0) || 'Ce TAEG semble irréel']" @update:model-value="simu.credit.rate=Number(simu.credit.rate)" />
       </div>
       <div class="col">
         <q-input filled type="number" bg-color="blue-grey-8" v-model="simu.credit.duration_y" label="Durée d'emprunt" lazy-rules
@@ -57,7 +57,7 @@
       </div>
       <div class="col column content-center">
         <div>
-          <q-btn label="Valider" type="submit" color="black" rounded @click="onSubmit" />
+          <q-btn label="Valider"  type="submit" color="black" rounded @click="onSubmit" />
         </div>
       </div>
     </div>
@@ -81,14 +81,23 @@ import { computeMensuality, computeCredit_init } from '../utils/credit_utility.j
 import { setStartFormFilled,simu } from 'stores/store';
 import { formatCalendar } from '../utils/calendar_utility.js';
 import {formatDate} from '../utils/date_utility.js'
-const router = useRouter();
+import { useQuasar } from 'quasar';
 
+
+const router = useRouter();
+const $q=useQuasar();
 var has_started = ref('CHOOSE');
 var minNav = ref('0000/01');
 var maxNav = ref('0000/01');
 var mustpop=ref(false)
 var resetMustPop=ref(false);
 var unformated=ref('00/00/0000');
+//set focus
+var refDate=ref();
+
+
+
+
 
 const parseCreditDate=function(){
   simu.value.credit.y=Number(simu.value.credit.startingDate.split('/')[2]);
@@ -98,10 +107,13 @@ const parseCreditDate=function(){
 function onSubmit() {
   if(simu.value.events.length==0)
   {
-    computeMensuality();
-    computeCredit_init();
-    setStartFormFilled(true);
-    router.push('/lineChart');
+    if(checkInputs())
+    {
+      computeMensuality();
+      computeCredit_init();
+      setStartFormFilled(true);
+      router.push('/lineChart');
+    }
   }
   else
   {
@@ -111,12 +123,15 @@ function onSubmit() {
 
 function onForceSubmmit(){
   resetMustPop.value=false;
-  simu.value.events=[]
-  simu.value.credit.has_been_rebougth=false;
-  computeMensuality();
-  computeCredit_init();
-  setStartFormFilled(true);
-  router.push('/lineChart');
+  if(checkInputs())
+  {
+    simu.value.events=[]
+    simu.value.credit.has_been_rebougth=false;
+    computeMensuality();
+    computeCredit_init();
+    setStartFormFilled(true);
+    router.push('/lineChart');
+  }
 }
 
 function switchNavConstraint() {
@@ -133,6 +148,36 @@ function switchNavConstraint() {
     maxNav.value = '2100/01';
     minNav.value = limit;
   }
+}
+
+const checkInputs=function()
+{
+  if(has_started.value!='yes' && has_started.value!='no')
+  {
+    $q.notify({ color: 'orange-4', textColor: 'black', icon: 'warning', message: 'Choisir un type de crédit (en cours/simulation)', });
+    return false;
+  }
+  else if(simu.value.credit.startingDate=='')
+  {
+    $q.notify({ color: 'orange-4', textColor: 'black', icon: 'warning', message: 'Renseigner une date de départ', });
+    return false;
+  }
+  else if( simu.value.credit.amount==0 )
+  {
+    $q.notify({ color: 'orange-4', textColor: 'black', icon: 'warning', message: 'Renseigner une somme empruntée', });
+    return false;
+  }
+   else if( simu.value.credit.rate==0)
+  {
+    $q.notify({ color: 'orange-4', textColor: 'black', icon: 'warning', message: 'Renseigner un taux', });
+    return false;
+  }
+  else if (simu.value.credit.duration_y==0)
+  {
+    $q.notify({ color: 'orange-4', textColor: 'black', icon: 'warning', message: 'Renseigner une durée', });
+    return false;
+  }
+  return true;
 }
 
 </script>
