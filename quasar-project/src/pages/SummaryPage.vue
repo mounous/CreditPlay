@@ -1,5 +1,5 @@
 <template>
-  <q-page>
+  <q-page  v-touch-swipe.mouse="handleSwipeExt">
     <div class="full-height column justify-arround content-center verticalFlex">
       <div class="col">
         <q-timeline  class="q-ma-lg text-white">
@@ -22,8 +22,14 @@ import {ref,onBeforeMount } from 'vue'
 import { simu } from 'stores/store';
 import {formatnumber} from '../utils/string_utils'
 import { optionsReBuyType } from '../utils/bank_utility';
+import { useRouter } from 'vue-router';
+import {targetPage} from '../utils/swipe_utils.js'
+const router = useRouter();
 var summaries=ref([]);
-
+const handleSwipeExt=function ({ evt, touch, mouse, direction, duration, distance })
+{
+  router.push(targetPage(direction,router.currentRoute.value.fullPath));
+}
 const beforemount=function() {
   var amort_init=simu.value.credit.amort;
   var interests_paid =amort_init[amort_init.length-1][2];

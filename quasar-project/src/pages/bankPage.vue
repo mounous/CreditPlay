@@ -2,7 +2,7 @@
   <accountForm v-if="displayAccountForm==true"  @account-added="displayAccountForm=false" @account-aborted="displayAccountForm=false"></accountForm>
   <periodicSavingsForm v-if="displayPSForm==true" @ps-added="displayPSForm=false" @ps-aborted="displayPSForm=false"></periodicSavingsForm>
   <singleIOFrom v-if="displaySIOForm==true" @sio-added="displaySIOForm=false" @sio-aborted="displaySIOForm=false"></singleIOFrom>
-  <div class="full-height column justify-arround content-center verticalFlex">
+  <div class="full-height column justify-arround content-center verticalFlex"  v-touch-swipe.mouse="handleSwipeExt">
     <q-card class="bg-grey-9 my-card q-ma-md">
       <div class="column items-center">
         <div class="col">
@@ -165,15 +165,16 @@
 import { bank, simu } from 'stores/store';
 import { ref } from 'vue'
 import { useQuasar } from 'quasar';
-
+import { useRouter } from 'vue-router';
 import {BANK_SEARCH_ERROR,getAccId,getSavinPID,getSIOID,isAccountInvolvedInRebuyWithSavings, deleteRebuySavingsEventAndAssociatedInOut} from '../utils/bank_utility'
 import { compareDates } from 'src/utils/date_utility';
 import accountForm from 'src/components/accountForm.vue';
 import periodicSavingsForm from 'src/components/periodicSavingsForm.vue';
 import singleIOFrom from 'src/components/singleIOFrom.vue';
+import {targetPage} from '../utils/swipe_utils.js'
 const $q = useQuasar();
 
-
+const router = useRouter();
 
 var displayAccountForm=ref(false);
 var displayPSForm=ref(false);
@@ -189,7 +190,10 @@ var accountOfSIOToDelete=ref();
 var SIOtoDelete=ref();
 var mustPopDeleteSIO=ref(false);
 
-
+const handleSwipeExt=function ({ evt, touch, mouse, direction, duration, distance })
+{
+  router.push(targetPage(direction,router.currentRoute.value.fullPath));
+}
 
 const removeAccount = function (account,force=false) {
   var i=getAccId(account.title)

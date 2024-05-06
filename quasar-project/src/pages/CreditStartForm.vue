@@ -1,5 +1,5 @@
 <template>
-  <q-page>
+  <q-page v-touch-swipe.mouse="handleSwipeExt">
     <div class="full-height column justify-arround content-center verticalFlex">
       <div class="col">
         <q-btn-toggle class="q-ma-md"  name="has_started_button" v-model="has_started" unelevated rounded dense size="14px"
@@ -9,7 +9,7 @@
           ]" />
       </div>
       <div class="col">
-        <q-input label="Date de signature" bg-color="blue-grey-8" filled v-model="simu.credit.startingDate"  @click="mustpop=true" readonly ref="refDate">
+        <q-input label="Date de signature" bg-color="blue-grey-8" filled v-model="simu.credit.startingDate"  @click="mustpop=true" readonly >
           <template v-slot:append>
             <q-icon name="event" class="cursor-pointer" >
               <q-popup-proxy v-model="mustpop" cover transition-show="scale" transition-hide="scale">
@@ -82,7 +82,7 @@ import { setStartFormFilled,simu } from 'stores/store';
 import { formatCalendar } from '../utils/calendar_utility.js';
 import {formatDate} from '../utils/date_utility.js'
 import { useQuasar } from 'quasar';
-
+import {targetPage} from '../utils/swipe_utils.js'
 
 const router = useRouter();
 const $q=useQuasar();
@@ -92,10 +92,12 @@ var maxNav = ref('0000/01');
 var mustpop=ref(false)
 var resetMustPop=ref(false);
 var unformated=ref('00/00/0000');
-//set focus
-var refDate=ref();
 
 
+const handleSwipeExt=function ({ evt, touch, mouse, direction, duration, distance })
+{
+  router.push(targetPage(direction,router.currentRoute.value.fullPath));
+}
 
 
 

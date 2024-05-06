@@ -1,8 +1,7 @@
 <template>
   <q-layout>
-    ...
     <q-page-container>
-      <q-page>
+      <q-page  v-touch-swipe.mouse="handleSwipeExt">
     <div>
     <div>
       <q-list class="bg-primary" separator bordered>
@@ -55,6 +54,7 @@ import { LocalStorage } from 'quasar';
 import { onBeforeMount } from 'vue';
 import { bank, simu, startFormFilled } from 'src/stores/store';
 import { useRouter } from 'vue-router';
+import {targetPage} from '../utils/swipe_utils.js'
 const DEFAULT_ID = -1;
 const DEFAULT_NAME = '';
 var mustPopName = ref(false);
@@ -62,7 +62,10 @@ var listSave = ref([]);
 var selected_id = ref(DEFAULT_ID);
 var currentName = ref(DEFAULT_NAME);
 const router = useRouter();
-
+const handleSwipeExt=function ({ evt, touch, mouse, direction, duration, distance })
+{
+  router.push(targetPage(direction,router.currentRoute.value.fullPath));
+}
 const saveCurrentData = function () {
   mustPopName.value = false;
   if(bank.value.accounts.length!=0)

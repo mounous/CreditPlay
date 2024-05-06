@@ -1,5 +1,5 @@
 <template>
-  <q-page>
+  <q-page  v-touch-swipe.mouse="handleSwipeExt">
     <div class="full-height column justify-arround content-center verticalFlex">
 
   <div class="col" :key="refresh">
@@ -63,10 +63,16 @@ import { useRouter } from 'vue-router';
 import { bank, simu } from 'stores/store';
 import {hasBeenRebougthSavings,optionsEvtType} from '../utils/credit_utility'
 import { optionsReBuyType } from '../utils/bank_utility';
+import {targetPage} from '../utils/swipe_utils.js'
 const router = useRouter();
 const $q = useQuasar();
 var refresh=ref(0);
 var addeventactive = ref(false);
+
+const handleSwipeExt=function ({ evt, touch, mouse, direction, duration, distance })
+{
+  router.push(targetPage(direction,router.currentRoute.value.fullPath));
+}
 
 const movetocharts = function () {
   router.push('/lineChart');
