@@ -10,6 +10,8 @@
         <div>{{ item.text3 }}</div>
         <div v-if="item._text4!=''" :class="item.text4_color">{{ item.text4 }}</div>
         <div :class="item.text5_color">{{ item.text5 }}</div>
+        <div v-if="item.text6!=''">{{ item.text6 }}</div>
+        <div v-if="item.text7!=''">{{ item.text7 }}</div>
       </q-timeline-entry>
     </q-timeline>
   </div>
@@ -24,6 +26,8 @@ import {formatnumber} from '../utils/string_utils'
 import { optionsReBuyType } from '../utils/bank_utility';
 import { useRouter } from 'vue-router';
 import {targetPage} from '../utils/swipe_utils.js'
+import { returnBaseData } from 'src/utils/credit_utility';
+
 const router = useRouter();
 var summaries=ref([]);
 const handleSwipeExt=function ({ evt, touch, mouse, direction, duration, distance })
@@ -43,6 +47,8 @@ const beforemount=function() {
   var _text4_color='text-white';
   var _text5='';
   var _text5_color='text-white';
+  var _text6='';
+  var _text7='';
   var delta_abs=0;
   var delta_rel=0;
   summaries.value.push({title :  'Crédit initial',subtitle:_date_to_display,id:_id,text1:_text1,text2:_text2,text3:_text3,text4:_text4,text4_color:_text4_color});
@@ -53,6 +59,8 @@ const beforemount=function() {
       _text5='';
       _text4='';
       _text1='';
+      _text6='';
+      _text7='';
       _id=i+1;
       if(simu.value.events[i].type!=optionsReBuyType[0])//rebuy with savings : no mensuality
       {
@@ -84,8 +92,21 @@ const beforemount=function() {
       {
         _text5_color='text-green';
       }
+      if(simu.value.events[i].type==optionsReBuyType[0]||simu.value.events[i].type==optionsReBuyType[1])
+      {
+        _text6='capital racheté : '+formatnumber(returnBaseData(simu.value.events[i].year, simu.value.events[i].month).capital_left.toString())+' €';
+        if(simu.value.events[i].type==optionsReBuyType[0])
+        {
+          _text7='Economies restantes après rachat : '+formatnumber(simu.value.events[i].savingsLeft)+' €';
+        }
+        else
+        {
+          _text7='Nouveau taux : '+simu.value.events[i].reloanRate+' %';
+        }
+      }
+
       _date_to_display=simu.value.events[i].month.toString()+'/'+simu.value.events[i].year.toString();
-      summaries.value.push({title :  simu.value.events[i].title,subtitle:_date_to_display,id:_id,text1:_text1,text2:_text2,text3:_text3,text4:_text4,text4_color:_text4_color,text5:_text5,text5_color:_text5_color});
+      summaries.value.push({title :  simu.value.events[i].title,subtitle:_date_to_display,id:_id,text1:_text1,text2:_text2,text3:_text3,text4:_text4,text4_color:_text4_color,text5:_text5,text5_color:_text5_color,text6:_text6,text7:_text7});
     }
   }
 }

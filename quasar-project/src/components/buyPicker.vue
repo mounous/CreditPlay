@@ -168,7 +168,7 @@ const sendRebuyPicked = function (force = false) {
       }
     }
     mustPopWarning.value = false;
-    emit('update-from-rebuy-pick', { rebuyType: event_type.value, rebuyVal: rachatVal.value, year_str: event_year_str, month_str: event_month_str, year: event_year, month: event_month, reloanRate: Number(rate_reloan.value), rebuyPenalties: Number(penalties_rebuy.value), reloanDuration: Number(duration_reloan.value) });
+    emit('update-from-rebuy-pick', { rebuyType: event_type.value, rebuyVal: rachatVal.value, year_str: event_year_str, month_str: event_month_str, year: event_year, month: event_month, reloanRate: Number(rate_reloan.value), rebuyPenalties: Number(penalties_rebuy.value), reloanDuration: Number(duration_reloan.value),savingsLeft: rebuy_saving_eco_left.value });
   }
   else {
     //prevent to rebuy with savings before the last event : warn the user and delete all events after rebuy with the user agreeement
@@ -185,7 +185,7 @@ const sendRebuyPicked = function (force = false) {
       mustPopWarning.value = false;
     }
     if (mustPopWarning.value == false) {
-      emit('update-from-rebuy-pick', { rebuyType: event_type.value, rebuyVal: rachatVal.value, year_str: event_year_str, month_str: event_month_str, year: event_year, month: event_month, reloanRate: Number(rate_reloan.value), rebuyPenalties: Number(penalties_rebuy.value), reloanDuration: Number(duration_reloan.value) });
+      emit('update-from-rebuy-pick', { rebuyType: event_type.value, rebuyVal: rachatVal.value, year_str: event_year_str, month_str: event_month_str, year: event_year, month: event_month, reloanRate: Number(rate_reloan.value), rebuyPenalties: Number(penalties_rebuy.value), reloanDuration: Number(duration_reloan.value),savingsLeft: rebuy_saving_eco_left.value });
     }
   }
 };

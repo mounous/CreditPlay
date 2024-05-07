@@ -76,7 +76,8 @@ var event_ = ref({
   reLoanDate:'',
   reLoanRate:0,
   reLoanPenalties:0,
-  reloanDuration:0
+  reloanDuration:0,
+  savingsLeft:0,
 });
 const emit = defineEmits(['save-event']);
 
@@ -111,6 +112,7 @@ const updateFromRebuyPicker=function(evtDataFromPicker){
   if(event_.value.type==optionsReBuyType[0])
   {
     simu.value.credit.has_been_rebougth=true;
+    event_.value['savingsLeft']=evtDataFromPicker['savingsLeft'];
   }
 }
 const sendFinish=function () {
