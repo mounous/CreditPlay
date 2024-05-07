@@ -5,7 +5,7 @@
         Select language :
       </div>
       <div class="col q-ma-md">
-        <q-select :model-value="myLang" :options="supportedLanguages" @update:model-value="saveLanguage" ></q-select>
+        <q-select :model-value="myLang" :options="supportedLanguages" @update:model-value="saveLanguage" style="min-width:100px" ></q-select>
       </div>
     </div>
   </q-card>

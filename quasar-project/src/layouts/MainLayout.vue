@@ -98,14 +98,14 @@ const MustPopObligation=function()
       mustPopRestore.value=false;
     }
   }
-  /*if(LocalStorage.has('currentLanguage'))
+  if(LocalStorage.has('currentLanguage'))
   {
     mustPopLanguage.value=false;
   }
   else
   {
     mustPopLanguage.value=true;
-  }*/
+  }
   mustPopLanguage.value=true;
 }
 onBeforeMount(MustPopObligation);
