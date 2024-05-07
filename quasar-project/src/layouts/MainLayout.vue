@@ -21,6 +21,7 @@
         </KeepAlive>
       </q-page-container>
     </q-layout>
+
     <div class="col">
       <q-dialog v-model="mustPopRestore" cover transition-show="scale" transition-hide="scale">
         <q-card>
@@ -37,17 +38,23 @@
       </q-dialog>
     </div>
 
+    <div class="col">
+      <q-dialog v-model="mustPopLanguage" cover transition-show="scale" transition-hide="scale">
+        <languagePicker @language-picked="mustPopLanguage=false"></languagePicker>
+      </q-dialog>
+    </div>
 </template>
 
 <script setup lang="ts">
 
 
 import { onBeforeMount, ref, watch } from 'vue';
-
+import languagePicker from 'src/components/languagePicker.vue';
 import { simu,bank,startFormFilled } from 'stores/store';
 import { LocalStorage } from 'quasar';
 import { useRouter } from 'vue-router';
 var mustPopRestore=ref(false);
+var mustPopLanguage=ref(false);
 var tab=ref('start');
 var  initFormDone =ref(false);
 var bankDone=ref(false);
@@ -76,7 +83,7 @@ if (simu.value.credit.rate==0) {
 if (simu.value.credit.duration_y==0) {
   simu.value.credit.duration_y= 20;
 }
-const restoreMustPopObligation=function()
+const MustPopObligation=function()
 {
   if(LocalStorage.has('listSave'))
   {
@@ -91,8 +98,17 @@ const restoreMustPopObligation=function()
       mustPopRestore.value=false;
     }
   }
+  /*if(LocalStorage.has('currentLanguage'))
+  {
+    mustPopLanguage.value=false;
+  }
+  else
+  {
+    mustPopLanguage.value=true;
+  }*/
+  mustPopLanguage.value=true;
 }
-onBeforeMount(restoreMustPopObligation);
+onBeforeMount(MustPopObligation);
 const restoreLastSaving=function()
 {
   var listmem=ref();
