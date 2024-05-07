@@ -6,19 +6,19 @@
     <q-card class="bg-grey-9 my-card q-ma-md">
       <div class="column items-center">
         <div class="col">
-          <p class="myTitle">Comptes banquaires</p>
+          <p class="myTitle">{{transStr(stringsIDs.str_title_accounts)}}</p>
         </div>
         <div class="col">
-          <q-btn label="Ajouter" class="q-ma-md" color="blue-grey-8" style="height:40px" @click="displayAccountForm=true"></q-btn>
+          <q-btn :label=transStr(stringsIDs.str_btn_add) class="q-ma-md" color="blue-grey-8" style="height:40px" @click="displayAccountForm=true"></q-btn>
         </div>
       </div>
         <div>
           <q-markup-table class="my-table bg-grey-8" separator="cell" flat bordered>
             <thead>
               <tr>
-                <th span="1" style="width: 40%">Nom</th>
-                <th span="1" style="width: 30%">Somme</th>
-                <th span="1" style="width: 20%">Rentabilité</th>
+                <th span="1" style="width: 40%">{{transStr(stringsIDs.str_head_name)}}</th>
+                <th span="1" style="width: 30%">{{transStr(stringsIDs.str_head_amount)}}</th>
+                <th span="1" style="width: 20%">{{transStr(stringsIDs.str_head_profit)}}</th>
                 <th span="1" style="width: 10%"> </th>
               </tr>
             </thead>
@@ -37,10 +37,10 @@
     <q-card class="bg-grey-9 my-card q-ma-md">
       <div class="column items-center">
         <div class="col">
-          <p class="myTitle">Capacité d'épargne</p>
+          <p class="myTitle">{{transStr(stringsIDs.str_save_capability)}}</p>
         </div>
         <div class="col">
-          <q-btn :disable="bank.accounts.length==0" class="q-ma-md" color="blue-grey-8" style="height:40px" label="ajouter"
+          <q-btn :disable="bank.accounts.length==0" class="q-ma-md" color="blue-grey-8" style="height:40px" :label=transStr(stringsIDs.str_btn_add)
             @click="displayPSForm=true"></q-btn>
         </div>
         </div>
@@ -48,11 +48,11 @@
             <thead>
               <tr>
 
-                <th span="1" style="width: 15%">Somme</th>
-                <th span="1" style="width: 15%">compte</th>
-                <th span="1" style="width: 10%">type</th>
-                <th span="1" style="width: 15%">à partir de</th>
-                <th span="1" style="width: 15%">jusqu'à</th>
+                <th span="1" style="width: 15%">{{transStr(stringsIDs.str_head_amount)}}</th>
+                <th span="1" style="width: 15%">{{transStr(stringsIDs.str_account)}}</th>
+                <th span="1" style="width: 10%">{{transStr(stringsIDs.str_save_type)}}</th>
+                <th span="1" style="width: 15%">{{transStr(stringsIDs.str_save_from)}}</th>
+                <th span="1" style="width: 15%">{{transStr(stringsIDs.str_save_untill)}}</th>
                 <th span="1" style="width: 10%"> </th>
               </tr>
             </thead>
@@ -60,7 +60,7 @@
               <tr v-for="saving in account.periodic_savings" :key="saving.amount">
                 <th>{{ saving.amount }}</th>
                 <th>{{ account.title }}</th>
-                <th>{{ saving.type == 'mensuelle' ? 'Mens.' : 'An.' }}</th>
+                <th>'{{ transoptSaveP(saving.type) }}'</th>
                 <th>{{ saving.startMonth + '/' + saving.startYear }}</th>
                 <th>{{ saving.endMonth != 0 && saving.endYear != 0 ? saving.endMonth + '/' + saving.endYear : '--\--' }}
                 </th>
@@ -77,7 +77,7 @@
           <p class="myTitle">Entrées/Sorties exceptionnelles</p>
         </div>
         <div class="col">
-          <q-btn :disable="bank.accounts.length==0" class="q-ma-md" color="blue-grey-8" style="height:40px" label="ajouter"
+          <q-btn :disable="bank.accounts.length==0" class="q-ma-md" color="blue-grey-8" style="height:40px" :label=transStr(stringsIDs.str_btn_add)
             @click="displaySIOForm=true"></q-btn>
         </div>
       </div>
@@ -166,12 +166,13 @@ import { bank, simu } from 'stores/store';
 import { ref } from 'vue'
 import { useQuasar } from 'quasar';
 import { useRouter } from 'vue-router';
-import {BANK_SEARCH_ERROR,getAccId,getSavinPID,getSIOID,isAccountInvolvedInRebuyWithSavings, deleteRebuySavingsEventAndAssociatedInOut} from '../utils/bank_utility'
+import {BANK_SEARCH_ERROR,getAccId,getSavinPID,getSIOID,isAccountInvolvedInRebuyWithSavings, deleteRebuySavingsEventAndAssociatedInOut,BANK_SAVE_TYPE_MONTHLY} from '../utils/bank_utility'
 import { compareDates } from 'src/utils/date_utility';
 import accountForm from 'src/components/accountForm.vue';
 import periodicSavingsForm from 'src/components/periodicSavingsForm.vue';
 import singleIOFrom from 'src/components/singleIOFrom.vue';
 import {targetPage} from '../utils/swipe_utils.js'
+import {transStr,stringsIDs,transoptSaveP} from '../stores/languages.ts'
 const $q = useQuasar();
 
 const router = useRouter();

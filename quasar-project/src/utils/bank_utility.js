@@ -5,7 +5,8 @@ import { returnBaseData } from './credit_utility';
 import { formatnumber } from './string_utils';
 import { compareDates } from 'src/utils/date_utility';
 const BANK_SEARCH_ERROR=-1;
-
+const BANK_SAVE_TYPE_MONTHLY=0;
+const BANK_SAVE_TYPE_YEARLY=1;
 const deleteRebuySavingsEventAndAssociatedInOut=function()
 {
   simu.value.events.pop();//always the last event
@@ -103,7 +104,7 @@ const isPeriodicConcerned=function(currentY,currentM,accID,psID)
       return false;
     }
   }
-  if(bank.value.accounts[accID].periodic_savings[psID].type!='mensuelle')
+  if(bank.value.accounts[accID].periodic_savings[psID].type!=BANK_SAVE_TYPE_MONTHLY)
   {
     if(ps_startM!=currentM)
     {
@@ -419,4 +420,4 @@ const getAccOpt=function()
 }
 export { getSavingsEarlier,computeDisplaySavings,hasSavings, provideRebuyOptions,optionsReBuyType
   ,BANK_SEARCH_ERROR,getAccId,getSavinPID,getSIOID,getSortedAccountsFromPoorToHighRate,compute_savings,makeAccountNameUnique,
-  isAccountInvolvedInRebuyWithSavings, deleteRebuySavingsEventAndAssociatedInOut,getAccOpt};
+  isAccountInvolvedInRebuyWithSavings, deleteRebuySavingsEventAndAssociatedInOut,getAccOpt,BANK_SAVE_TYPE_MONTHLY,BANK_SAVE_TYPE_YEARLY};

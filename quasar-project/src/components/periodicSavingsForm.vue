@@ -9,8 +9,8 @@
             <p>Choisir le type d'opération</p>
           </div>
         <div class="col">
-          <q-select bg-color="blue-grey-8" style="width:150px; height:100px" v-model="_savingP.type" label="type"
-            :options="['mensuelle', 'annuelle']"></q-select>
+          <q-select bg-color="blue-grey-8" style="width:150px; height:100px" v-model="typeSavings" label="type"
+            :options="[transoptSaveP(BANK_SAVE_TYPE_MONTHLY), transoptSaveP(BANK_SAVE_TYPE_YEARLY)]"></q-select>
         </div>
         <div class="col">
           <q-btn class="q-ma-xs" color="blue-grey-8" label="annuler" size='xl' @click="emit('ps-aborted')"></q-btn>
@@ -124,13 +124,14 @@
 import { ref, defineEmits } from 'vue';
 import { bank } from 'src/stores/store';
 import { useQuasar } from 'quasar';
-import { getAccId, getAccOpt,BANK_SEARCH_ERROR } from 'src/utils/bank_utility';
+import { getAccId, getAccOpt,BANK_SEARCH_ERROR,BANK_SAVE_TYPE_MONTHLY,BANK_SAVE_TYPE_YEARLY } from 'src/utils/bank_utility';
 import { formatDate } from 'src/utils/date_utility';
 import { formatCalendar } from 'src/utils/calendar_utility';
+import {getOptSavePFromStr,transoptSaveP} from '../stores/languages'
 const $q = useQuasar();
 var myPSForm = ref();
 var currentSlide = ref('psType');
-const _savingP = ref({ account: '', amount: 0.0, rate: 0.0, startMonth: 0, startYear: 0, endMonth: 0, endYear: 0, type: 'mensuelle', startingDate: '', endDate: '' });
+const _savingP = ref({ account: '', amount: 0.0, rate: 0.0, startMonth: 0, startYear: 0, endMonth: 0, endYear: 0, type: BANK_SAVE_TYPE_MONTHLY, startingDate: '', endDate: '' });
 var periodicSaveMax = ref('2100/01');
 var mustpopPsStart = ref(false);
 var mustpopPsEnd = ref(false);
@@ -141,7 +142,7 @@ var limitMonth = new Date().getFullYear().toString();
 var limitYear = (new Date().getMonth() + 1).toString().padStart(2, '0');
 var periodicSaveMin = ref(limitMonth + '/' + limitYear);
 const emit = defineEmits(['ps-added', 'ps-aborted']);
-
+var typeSavings=ref();
 
 const addElementToSavingsP = function () {
   var indexAcc = 0;
@@ -172,8 +173,16 @@ const addElementToSavingsP = function () {
       myPSForm.value.goTo('psAccount');
       return;
     }
+    if(BANK_SAVE_TYPE_MONTHLY==getOptSavePFromStr(typeSavings.value))
+    {
+      _savingP.value.type=BANK_SAVE_TYPE_MONTHLY;
+    }
+    else
+    {
+      _savingP.value.type=BANK_SAVE_TYPE_YEARLY;
+    }
     bank.value.accounts[indexAcc].periodic_savings.push({ amount: Number(_savingP.value.amount), account: _savingP.value.account, type: _savingP.value.type, startMonth: startM, startYear: startY, endMonth: endM, endYear: endY });
-    _savingP.value.amount = 0.0; _savingP.value.account = ''; _savingP.value.startMonth = 0; _savingP.value.startYear = 0; _savingP.value.endMonth = 0, _savingP.value.endYear = 0; _savingP.value.type = 'mensuelle'; _savingP.value.startingDate = DEFAULT_DATE; _savingP.value.endDate = DEFAULT_DATE;
+    _savingP.value.amount = 0.0; _savingP.value.account = ''; _savingP.value.startMonth = 0; _savingP.value.startYear = 0; _savingP.value.endMonth = 0, _savingP.value.endYear = 0; _savingP.value.type = BANK_SAVE_TYPE_MONTHLY; _savingP.value.startingDate = DEFAULT_DATE; _savingP.value.endDate = DEFAULT_DATE;
     emit('ps-added');
   }
 

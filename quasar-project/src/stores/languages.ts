@@ -2,8 +2,9 @@
 
 import { LocalStorage } from 'quasar';
 import {ref} from 'vue'
-
+import {BANK_SAVE_TYPE_MONTHLY,BANK_SAVE_TYPE_YEARLY } from 'src/utils/bank_utility';
 export const supportedLanguages=ref(['Français','English']);
+
 export enum stringsIDs {
   //creditStartForm
   str_alreadySigned=0,
@@ -24,6 +25,17 @@ export enum stringsIDs {
   str_notif_warn_amount=15,
   str_notif_warn_rate=16,
   str_notif_warn_duration=17,
+  //bank Page
+  str_title_accounts=18,
+  str_btn_add=19,
+  str_head_name=20,
+  str_head_amount=21,
+  str_head_profit=22,
+  str_save_capability=23,
+  str_account=24,
+  str_save_type=25,
+  str_save_from=26,
+  str_save_untill=27,
 };
 const translatedStrs=ref(
 [
@@ -46,6 +58,18 @@ const translatedStrs=ref(
   ['Renseigner une somme empruntée','Enter a borrowed amount'],
   ['Renseigner un taux','Enter a rate'],
   ['Renseigner une durée','enter a duration'],
+  //bank page
+  ['Comptes banquaires','Bank accounts'],
+  ['Ajouter','Add'],
+  ['Nom','Name'],
+  ['Montant','Amount'],
+  ['Rentabilité','Profitability'],
+  ['Capacité d\'épargne','Savings capacity'],
+  ['Compte','Account'],
+  ['Type','Type'],
+  ['à partir de','from'],
+  ['jusqu\'à','untill'],
+
 ]);
 
 const getLangId=function()
@@ -68,4 +92,30 @@ const translatedSentances=ref(
 export const transSt=function(index:number)
 {
   return translatedSentances.value[index][getLangId()];
+}
+
+
+export const savings_p_opt=ref(
+  [
+['mensuelle','montly'],
+['anuelle','yearly']
+  ]
+);
+export const transoptSaveP=function(index:number)
+{
+  return savings_p_opt.value[index][getLangId()];
+}
+export const getOptSavePFromStr=function(input:string)
+{
+  for(let i=0;i<supportedLanguages.value.length;i++)
+  {
+    if(input==savings_p_opt.value[BANK_SAVE_TYPE_MONTHLY][i])
+    {
+      return BANK_SAVE_TYPE_MONTHLY;
+    }
+    else if(input==savings_p_opt.value[BANK_SAVE_TYPE_YEARLY][i])
+    {
+      return BANK_SAVE_TYPE_YEARLY;
+    }
+  }
 }
