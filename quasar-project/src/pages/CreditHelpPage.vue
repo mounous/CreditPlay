@@ -1,5 +1,5 @@
 <template>
-  <q-page class="q-pa-lg"  v-touch-swipe.mouse="handleSwipeExt">
+  <q-page class="q-pa-lg"  v-touch-swipe.mouse="handleSwipeExt" :key="reRender">
     <h5 class="q-mt-none">Help</h5>
     <p v-touch-swipe.mouse="handleSwipeExt">
       First click on the "Situation initiale" button and fill all required
@@ -14,7 +14,7 @@
     <div class="column">
     <div class="col">
       <q-dialog v-model="mustPopLanguage" cover transition-show="scale" transition-hide="scale">
-        <languagePicker @language-picked="mustPopLanguage=false"></languagePicker>
+        <languagePicker @language-picked="[mustPopLanguage=false,reRender++]"></languagePicker>
       </q-dialog>
     </div>
     <div class="col">
@@ -32,6 +32,7 @@ import { useRouter } from 'vue-router';
 import {targetPage} from '../utils/swipe_utils.js'
 import languagePicker from 'src/components/languagePicker.vue';
 import { ref } from 'vue';
+var reRender=ref(1);
 var mustPopLanguage=ref(false);
 const router = useRouter();
 const handleSwipeExt=function ({ evt, touch, mouse, direction, duration, distance })

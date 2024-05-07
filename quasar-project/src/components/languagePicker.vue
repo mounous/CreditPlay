@@ -5,7 +5,7 @@
         Select language :
       </div>
       <div class="col q-ma-md">
-        <q-select :model-value="myLang" :options="supportedLanguages" @update:model-value="saveLanguage" style="min-width:100px" ></q-select>
+        <q-select v-model="myLang" :options="supportedLanguages" @update:model-value="saveLanguage" style="min-width:100px" ></q-select>
       </div>
     </div>
   </q-card>
@@ -15,6 +15,7 @@
 import {supportedLanguages} from '../stores/languages'
 import { LocalStorage } from 'quasar';
 import { ref ,defineEmits} from 'vue';
+
 var myLang=ref('');
 const emit=defineEmits(['language-picked']);
 const saveLanguage=function()

@@ -1,5 +1,5 @@
 <template>
-    <q-layout view="hhh lpr fFf" class="bg-image">
+    <q-layout view="hhh lpr fFf" class="bg-image" :key="reRenderLang">
       <q-footer class="gutter">
         <q-tabs
         v-model="tab"
@@ -40,7 +40,7 @@
 
     <div class="col">
       <q-dialog v-model="mustPopLanguage" cover transition-show="scale" transition-hide="scale">
-        <languagePicker @language-picked="mustPopLanguage=false"></languagePicker>
+        <languagePicker @language-picked="[mustPopLanguage=false,reRenderLang++]"></languagePicker>
       </q-dialog>
     </div>
 </template>
@@ -54,6 +54,7 @@ import { simu,bank,startFormFilled } from 'stores/store';
 import { LocalStorage } from 'quasar';
 import { useRouter } from 'vue-router';
 var mustPopRestore=ref(false);
+var reRenderLang=ref(1);
 var mustPopLanguage=ref(false);
 var tab=ref('start');
 var  initFormDone =ref(false);

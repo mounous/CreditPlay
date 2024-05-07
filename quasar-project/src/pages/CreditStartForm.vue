@@ -2,21 +2,24 @@
   <q-page v-touch-swipe.mouse="handleSwipeExt">
     <div class="full-height column justify-arround content-center verticalFlex">
       <div class="col">
-        <q-btn-toggle class="q-ma-md"  name="has_started_button" v-model="has_started" unelevated rounded dense size="14px"
-          @click="switchNavConstraint" glossy color=black :options="[
-            { label: 'Crédit en cours', value: 'yes' },
-            { label: 'Simulation', value: 'no' }
+        <q-btn-toggle class="q-ma-md" name="has_started_button" v-model="has_started" unelevated rounded dense
+          size="14px" @click="switchNavConstraint" glossy color=black :options="[
+            { label: transStr(stringsIDs.str_alreadySigned), value: 'yes' },
+            { label: transStr(stringsIDs.str_simulation), value: 'no' }
           ]" />
       </div>
       <div class="col">
-        <q-input label="Date de signature" bg-color="blue-grey-8" filled v-model="simu.credit.startingDate"  @click="mustpop=true" readonly >
+        <q-input :label=transStr(stringsIDs.str_signature_date) bg-color="blue-grey-8" filled
+          v-model="simu.credit.startingDate" @click="mustpop=true" readonly>
           <template v-slot:append>
-            <q-icon name="event" class="cursor-pointer" >
+            <q-icon name="event" class="cursor-pointer">
               <q-popup-proxy v-model="mustpop" cover transition-show="scale" transition-hide="scale">
-                <q-date dark v-model="unformated" :locale="formatCalendar" :navigation-min-year-month="minNav" width="200px"
-                  :navigation-max-year-month="maxNav" :disable="has_started != 'yes' && has_started != 'no'" @update:model-value="[mustpop=false,simu.credit.startingDate=formatDate(unformated),parseCreditDate()]" >
+                <q-date dark v-model="unformated" :locale="formatCalendar" :navigation-min-year-month="minNav"
+                  width="200px" :navigation-max-year-month="maxNav"
+                  :disable="has_started != 'yes' && has_started != 'no'"
+                  @update:model-value="[mustpop=false,simu.credit.startingDate=formatDate(unformated),parseCreditDate()]">
                   <div class="row items-center justify-end">
-                    <q-btn v-close-popup label="Fermer" color="primary" flat />
+                    <q-btn v-close-popup :label=transStr(stringsIDs.str_close) color="primary" flat />
                   </div>
                 </q-date>
               </q-popup-proxy>
@@ -26,38 +29,39 @@
       </div>
       <div class="col">
 
-              <q-dialog v-model="resetMustPop" cover transition-show="scale" transition-hide="scale">
-                <q-card>
-                <div class="col flex flex center justify-around">
-                  <div class="q-ma-md">
-                  Vous êtes sur le point de simuler un nouveau crédit, cela supprimera la simulation en cours si vous ne l'avez pas sauvegardée.
-                  Vous pouvez sauvegarder la simulation dans l'onglet "mémoire". Pour écraser la simulation en cours, choisir "Simuler". Sinon, choisir "Annuler".
-                </div>
-                <div class="row nowrap">
-                <q-btn label="Annuler" @click="resetMustPop=false"></q-btn>
-                <q-btn label="Simuler" @click="onForceSubmmit"></q-btn>
+        <q-dialog v-model="resetMustPop" cover transition-show="scale" transition-hide="scale">
+          <q-card>
+            <div class="col flex flex center justify-around">
+              <div class="q-ma-md">
+                {{transSt(sentancesIDs.s_warning_overwriteSimu)}}
+              </div>
+              <div class="row nowrap">
+                <q-btn :label=transStr(stringsIDs.str_cancel) @click="resetMustPop = false"></q-btn>
+                <q-btn :label=transStr(stringsIDs.str_simulation) @click="onForceSubmmit"></q-btn>
               </div>
             </div>
-              </q-card>
-              </q-dialog>
+          </q-card>
+        </q-dialog>
       </div>
       <div class="col">
-        <q-input filled type="number" bg-color="blue-grey-8" v-model="simu.credit.amount" label="Somme empruntée"
-                  lazy-rules :rules="[
-            (val) => val>0 || 'Merci de renseigner la somme',
-          ]" @update:model-value="simu.credit.amount=Number(simu.credit.amount)"/>
+        <q-input filled type="number" bg-color="blue-grey-8" v-model="simu.credit.amount" :label=transStr(stringsIDs.str_amount_borrowed)
+          lazy-rules :rules="[
+            (val) => val>0 || transStr(stringsIDs.str_neg_amount),
+          ]" @update:model-value="simu.credit.amount=Number(simu.credit.amount)" />
       </div>
       <div class="col">
-        <q-input filled label="TAEG" bg-color="blue-grey-8" type="number" step="any" v-model="simu.credit.rate" lazy-rules
-          :rules="[(val) => (val>0) || 'Ce TAEG semble irréel']" @update:model-value="simu.credit.rate=Number(simu.credit.rate)" />
+        <q-input filled :label=transStr(stringsIDs.str_rate) bg-color="blue-grey-8" type="number" step="any" v-model="simu.credit.rate"
+          lazy-rules :rules="[(val) => (val>0) || transStr(stringsIDs.str_rate_impossible)]"
+          @update:model-value="simu.credit.rate=Number(simu.credit.rate)" />
       </div>
       <div class="col">
-        <q-input filled type="number" bg-color="blue-grey-8" v-model="simu.credit.duration_y" label="Durée d'emprunt" lazy-rules
-        :rules="[(val)=>(val>0)||'Renseigner une durée positive']" @update:model-value="[simu.credit.duration_y=Number(Math.round(simu.credit.duration_y))]" />
+        <q-input filled type="number" bg-color="blue-grey-8" v-model="simu.credit.duration_y" :label=transStr(stringsIDs.str_duration)
+          lazy-rules :rules="[(val)=>(val>0)||transStr(stringsIDs.str_durationPos)]"
+          @update:model-value="[simu.credit.duration_y=Number(Math.round(simu.credit.duration_y))]" />
       </div>
       <div class="col column content-center">
         <div>
-          <q-btn label="Valider"  type="submit" color="black" rounded @click="onSubmit" />
+          <q-btn :label=transStr(stringsIDs.str_valid) type="submit" color="black" rounded @click="onSubmit" />
         </div>
       </div>
     </div>
@@ -83,6 +87,7 @@ import { formatCalendar } from '../utils/calendar_utility.js';
 import {formatDate} from '../utils/date_utility.js'
 import { useQuasar } from 'quasar';
 import {targetPage} from '../utils/swipe_utils.js'
+import {transStr,stringsIDs,transSt,sentancesIDs} from '../stores/languages.ts'
 
 const router = useRouter();
 const $q=useQuasar();
