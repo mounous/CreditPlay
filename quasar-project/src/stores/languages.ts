@@ -19,6 +19,11 @@ export enum stringsIDs {
   str_rate_impossible=10,
   str_durationPos=11,
   str_valid=12,
+  str_notif_warn_credit_type=13,
+  str_notif_warn_date=14,
+  str_notif_warn_amount=15,
+  str_notif_warn_rate=16,
+  str_notif_warn_duration=17,
 };
 const translatedStrs=ref(
 [
@@ -36,6 +41,11 @@ const translatedStrs=ref(
   ['Ce taux semble irréel','this rate seems unreal'],
   ['entre ne durée positive','Enter a positive duration'],
   ['Valider','Launch simulation'],
+  ['Choisir un type de crédit (en cours/simulation)','Choose a credit type (already started/Simulation'],
+  ['Renseigner une date de départ','Enter a starting date'],
+  ['Renseigner une somme empruntée','Enter a borrowed amount'],
+  ['Renseigner un taux','Enter a rate'],
+  ['Renseigner une durée','enter a duration'],
 ]);
 
 const getLangId=function()

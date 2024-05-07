@@ -161,27 +161,27 @@ const checkInputs=function()
 {
   if(has_started.value!='yes' && has_started.value!='no')
   {
-    $q.notify({ color: 'orange-4', textColor: 'black', icon: 'warning', message: 'Choisir un type de crédit (en cours/simulation)', });
+    $q.notify({ color: 'orange-4', textColor: 'black', icon: 'warning', message: transStr(stringsIDs.str_notif_warn_credit_type), });
     return false;
   }
   else if(simu.value.credit.startingDate=='')
   {
-    $q.notify({ color: 'orange-4', textColor: 'black', icon: 'warning', message: 'Renseigner une date de départ', });
+    $q.notify({ color: 'orange-4', textColor: 'black', icon: 'warning', message: transStr(stringsIDs.str_notif_warn_date), });
     return false;
   }
   else if( simu.value.credit.amount==0 )
   {
-    $q.notify({ color: 'orange-4', textColor: 'black', icon: 'warning', message: 'Renseigner une somme empruntée', });
+    $q.notify({ color: 'orange-4', textColor: 'black', icon: 'warning', message: transStr(stringsIDs.str_notif_warn_amount), });
     return false;
   }
    else if( simu.value.credit.rate==0)
   {
-    $q.notify({ color: 'orange-4', textColor: 'black', icon: 'warning', message: 'Renseigner un taux', });
+    $q.notify({ color: 'orange-4', textColor: 'black', icon: 'warning', message: transStr(stringsIDs.str_notif_warn_rate), });
     return false;
   }
   else if (simu.value.credit.duration_y==0)
   {
-    $q.notify({ color: 'orange-4', textColor: 'black', icon: 'warning', message: 'Renseigner une durée', });
+    $q.notify({ color: 'orange-4', textColor: 'black', icon: 'warning', message: transStr(stringsIDs.str_notif_warn_duration), });
     return false;
   }
   return true;
