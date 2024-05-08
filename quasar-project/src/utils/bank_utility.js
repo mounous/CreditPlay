@@ -1,12 +1,16 @@
 
 import { bank, simu } from 'src/stores/store';
 import {month_names,getMonthNbr } from 'src/utils/date_utility'
-import { returnBaseData } from './credit_utility';
+import { returnBaseData,EVT_TYPE_REBUY_SAVINGS  } from './credit_utility';
 import { formatnumber } from './string_utils';
 import { compareDates } from 'src/utils/date_utility';
+import{transSIOspecial,stringsIDs,transStr} from '../stores/languages'
+
 const BANK_SEARCH_ERROR=-1;
 const BANK_SAVE_TYPE_MONTHLY=0;
 const BANK_SAVE_TYPE_YEARLY=1;
+const BANK_SIO_TYPE_IN=0;
+const BANK_SIO_TYPE_OUT=1;
 const deleteRebuySavingsEventAndAssociatedInOut=function()
 {
   simu.value.events.pop();//always the last event
@@ -15,7 +19,7 @@ const deleteRebuySavingsEventAndAssociatedInOut=function()
   {
     for(var io=0;io<bank.value.accounts[accId].single_in_out.length;io++)
     {
-      if(bank.value.accounts[accId].single_in_out[io].title=='rachat avec économies')
+      if(bank.value.accounts[accId].single_in_out[io].title==transSIOspecial())
       {
         bank.value.accounts[accId].single_in_out.splice(io,1);
       }
@@ -26,7 +30,7 @@ const isAccountInvolvedInRebuyWithSavings=function(accId)
 {
   for(var i=0;i<bank.value.accounts[accId].single_in_out.length;i++)
   {
-    if(bank.value.accounts[accId].single_in_out[i].title=='rachat avec économies')
+    if(bank.value.accounts[accId].single_in_out[i].title==transSIOspecial())
     {
       return true;
     }
@@ -39,7 +43,7 @@ const makeAccountNameUnique=function(name,suffix=1)
   //check that the name is not null
   if(name=='')
   {
-    name='compte'
+    name=transStr(stringsIDs.str_account);
   }
   name=name.trim();//remove padding spaces from beginning and end
   //ensure the name is not already used
@@ -259,7 +263,7 @@ const compute_savings=function(startY,startM,durationM,save=false)
       {
         if(isSingleIOConcerned(currentY,currentM,acc,io))
         {
-          if(bank.value.accounts[acc].single_in_out[io].type=='entrée')
+          if(bank.value.accounts[acc].single_in_out[io].type==BANK_SIO_TYPE_IN)
           {
             fictive_accounts[acc]+=bank.value.accounts[acc].single_in_out[io].amount;
           }
@@ -291,19 +295,15 @@ const compute_savings=function(startY,startM,durationM,save=false)
   }
   return result;
 }
-var optionsReBuyType=[
-  'Rachat avec épargne',
-  'Rachat à crédit - meilleur taux'
-]
 const provideRebuyOptions=function(evt_type,penalties){
   var options_rebuy_savings=[];
   var forDisplay_post_select_opt=[];
   var i=0;
-  if(evt_type==optionsReBuyType[0])//Rachat avec épargne
+  if(evt_type==EVT_TYPE_REBUY_SAVINGS)//Rachat avec épargne
   {
     if(!hasSavings())
     {
-      return ['onglet épargne non renseigné'];
+      return [transStr(stringsIDs.str_savings_empty)];
     }
     //dernier paramètre à changer : il faut prendre en compte des modulations qui ralongent TODO
     var computed=compute_savings(getSavingsEarlier()[1],getSavingsEarlier()[0],simu.value.credit.duration_y*12);
@@ -313,7 +313,7 @@ const provideRebuyOptions=function(evt_type,penalties){
     }
     if(i==computed.length)
     {
-      return ['economies insuffisantes'];
+      return [transStr(stringsIDs.str_unsufficient_savings)];
     }
     while(i<computed.length &&
       returnBaseData(Number(computed[i][0].split('-')[1]),getMonthNbr(computed[i][0].split('-')[0])).capital_left!=0)
@@ -418,6 +418,7 @@ const getAccOpt=function()
   }
   return toreturn;
 }
-export { getSavingsEarlier,computeDisplaySavings,hasSavings, provideRebuyOptions,optionsReBuyType
-  ,BANK_SEARCH_ERROR,getAccId,getSavinPID,getSIOID,getSortedAccountsFromPoorToHighRate,compute_savings,makeAccountNameUnique,
-  isAccountInvolvedInRebuyWithSavings, deleteRebuySavingsEventAndAssociatedInOut,getAccOpt,BANK_SAVE_TYPE_MONTHLY,BANK_SAVE_TYPE_YEARLY};
+export { getSavingsEarlier,computeDisplaySavings,hasSavings, provideRebuyOptions,
+  BANK_SEARCH_ERROR,getAccId,getSavinPID,getSIOID,getSortedAccountsFromPoorToHighRate,compute_savings,makeAccountNameUnique,
+  isAccountInvolvedInRebuyWithSavings, deleteRebuySavingsEventAndAssociatedInOut,getAccOpt,
+  BANK_SAVE_TYPE_MONTHLY,BANK_SAVE_TYPE_YEARLY,BANK_SIO_TYPE_IN,BANK_SIO_TYPE_OUT};

@@ -6,18 +6,18 @@
       <div class="oneInThreeRow">
         <div class="column items-center">
           <div class="col myIndication q-ma-md">
-            <p>Saisir un nom (facultatif, 'suivant' pour utiliser le nom par défaut)</p>
+            <p>{{ transStr(stringsIDs.str_acc_name_opt) }}</p>
           </div>
           <div class="col">
-            <q-input class="q-ma-md" label="nom du compte" style="max-width:300px; height:100px" maxlength="20"
+            <q-input class="q-ma-md" :label=transStr(stringsIDs.str_acc_name_hint) style="max-width:300px; height:100px" maxlength="20"
               v-model="_account.title" type="text" lazy-rules
-              :rules="[(val) => (val.length < 20) || 'choisir un nom plus court']" clearable bg-color="blue-grey-8"
+              :rules="[(val) => (val.length < 20) || transStr(stringsIDs.str_shorter_acc_name)]" clearable bg-color="blue-grey-8"
               outlined></q-input>
           </div>
           <div class="col">
-            <q-btn class="q-ma-xs" color="blue-grey-8" label="annuler" size="xl"
+            <q-btn class="q-ma-xs" color="blue-grey-8" :label=transStr(stringsIDs.str_cancel) size="xl"
               @click="emit('account-aborted')"></q-btn>
-            <q-btn class="q-ma-xs" color="blue-grey-8" label="suivant" size="xl"
+            <q-btn class="q-ma-xs" color="blue-grey-8" :label=transStr(stringsIDs.str_next) size="xl"
               @click="currentSlide = 'AmountAccount'"></q-btn>
           </div>
         </div>
@@ -29,16 +29,16 @@
       <div class="oneInThreeRow">
       <div class="column items-center">
         <div class="col myIndication q-ma-md">
-            <p>Saisir le montant actuel sur le compte</p>
+            <p>{{ transStr(stringsIDs.str_current_amount_acc) }}</p>
           </div>
         <div class="col">
-          <q-input class="q-ma-md" label="Somme" maxlength="20" style="max-width:300px; height:100px" v-model="_account.amount"
-            type="number" lazy-rules :rules="[(val) => (val >= 0.0) || 'Les dettes ne sont pas gérées']"
+          <q-input class="q-ma-md" :label=transStr(stringsIDs.str_current_amount) maxlength="20" style="max-width:300px; height:100px" v-model="_account.amount"
+            type="number" lazy-rules :rules="[(val) => (val >= 0.0) || transStr(stringsIDs.str_debts_not_handled)]"
             bg-color="blue-grey-8" outlined></q-input>
         </div>
         <div class="col">
-          <q-btn class="q-ma-xs" color="blue-grey-8" label="précédent" size="xl" @click="currentSlide = 'acountName'"></q-btn>
-          <q-btn class="q-ma-xs" color="blue-grey-8" label="suivant" size="xl" @click="currentSlide = 'Profitability'"></q-btn>
+          <q-btn class="q-ma-xs" color="blue-grey-8" :label=transStr(stringsIDs.str_prev) size="xl" @click="currentSlide = 'acountName'"></q-btn>
+          <q-btn class="q-ma-xs" color="blue-grey-8" :label=transStr(stringsIDs.str_next) size="xl" @click="currentSlide = 'Profitability'"></q-btn>
         </div>
       </div>
     </div>
@@ -49,15 +49,15 @@
       <div class="oneInThreeRow">
       <div class="column items-center">
         <div class="col myIndication q-ma-md">
-            <p>Renseignez la rentabilité annuelle du compte</p>
+            <p>{{ transStr(stringsIDs.str_profitability_st) }}</p>
           </div>
         <div class="col">
-          <q-input class="q-ma-md" label="rentabilité" maxlength="20"  style="max-width:300px; height:100px" v-model="_account.rate"
+          <q-input class="q-ma-md" :label=transStr(stringsIDs.str_profitability_label) maxlength="20"  style="max-width:300px; height:100px" v-model="_account.rate"
             type="number" bg-color="blue-grey-8" outlined></q-input>
         </div>
         <div class="col">
-          <q-btn class="q-ma-xs" label="précédent" size="xl" color="blue-grey-8" @click="currentSlide = 'AmountAccount'"></q-btn>
-          <q-btn class="q-ma-xs" label="valider" size="xl" color="blue-grey-8" @click="addElementToAccounts()"></q-btn>
+          <q-btn class="q-ma-xs" :label=transStr(stringsIDs.str_prev) size="xl" color="blue-grey-8" @click="currentSlide = 'AmountAccount'"></q-btn>
+          <q-btn class="q-ma-xs" :label=transStr(stringsIDs.str_validate) size="xl" color="blue-grey-8" @click="addElementToAccounts()"></q-btn>
         </div>
       </div>
       </div>
@@ -72,6 +72,7 @@ import { ref, defineEmits } from 'vue';
 import { makeAccountNameUnique, } from '../utils/bank_utility';
 import { bank } from 'src/stores/store';
 import { useQuasar } from 'quasar';
+import { transStr,stringsIDs } from 'src/stores/languages';
 const $q = useQuasar();
 var myAccountForm = ref();
 var currentSlide = ref('acountName');
@@ -79,11 +80,11 @@ const _account = ref({ title: '', amount: 0.0, rate: 0.0 });
 const emit = defineEmits(['account-added', 'account-aborted']);
 const addElementToAccounts = function () {
   if (_account.value.amount == 0) {
-    $q.notify({ color: 'orange-4', textColor: 'black', icon: 'warning', message: 'Une épargne de 0€ n\'est pas une épargne', });
+    $q.notify({ color: 'orange-4', textColor: 'black', icon: 'warning', message: transStr(stringsIDs.str_null_save), });
     myAccountForm.value.goTo('AmountAccount');
   }
   else if (_account.value.amount < 0) {
-    $q.notify({ color: 'orange-4', textColor: 'black', icon: 'warning', message: 'Une dette n\'est pas une épargne', });
+    $q.notify({ color: 'orange-4', textColor: 'black', icon: 'warning', message: transStr(stringsIDs.str_neg_save), });
     myAccountForm.value.goTo('AmountAccount');
   }
   else {

@@ -6,15 +6,15 @@
       <div class="oneInThreeRow">
         <div class="column items-center">
           <div class="col myIndication q-ma-md">
-            <p>Renseignez le type d'opération expectionelle</p>
+            <p>{{ transStr(stringsIDs.str_sio_type) }}</p>
           </div>
           <div class="col">
             <q-select bg-color="blue-grey-8" style="width:150px; height:100px"   v-model="_single_io.type" label="type"
-            :options="['entrée', 'sortie']"></q-select>
+            :options="[transoptSIO(BANK_SIO_TYPE_IN), transoptSIO(BANK_SIO_TYPE_OUT)]"></q-select>
           </div>
           <div class="col">
-            <q-btn class="q-ma-xs" color="blue-grey-8" size="xl" label="annuler" @click="emit('sio-aborted')"></q-btn>
-            <q-btn class="q-ma-xs" color="blue-grey-8" size="xl" label="suivant" @click="currentSlide = 'sioName'"></q-btn>
+            <q-btn class="q-ma-xs" color="blue-grey-8" size="xl" :label=transStr(stringsIDs.str_cancel) @click="emit('sio-aborted')"></q-btn>
+            <q-btn class="q-ma-xs" color="blue-grey-8" size="xl" :label=transStr(stringsIDs.str_next) @click="currentSlide = 'sioName'"></q-btn>
           </div>
       </div>
       </div>
@@ -25,15 +25,15 @@
       <div class="oneInThreeRow">
         <div class="column items-center">
           <div class="col myIndication q-ma-md">
-            <p>Renseignez le nom d'opération expectionelle (facultatif)</p>
+            <p>{{ transStr(stringsIDs.str_sio_name) }}</p>
           </div>
         <div class="col">
-          <q-input class="q-mx-xs" label="nom" style="width:150px; height:100px"  maxlength="20" v-model="_single_io.title"
+          <q-input class="q-mx-xs" :label=transStr(stringsIDs.str_sio_hint_name) style="width:150px; height:100px"  maxlength="20" v-model="_single_io.title"
             type="text" bg-color="blue-grey-8" outlined ></q-input>
       </div>
       <div class="col">
-      <q-btn class="q-ma-xs" color="blue-grey-8" size="xl" label="précédent" @click="currentSlide = 'sioType'"></q-btn>
-      <q-btn  class="q-ma-xs" color="blue-grey-8" size="xl" label="suivant" @click="currentSlide = 'sioAmount'"></q-btn>
+      <q-btn class="q-ma-xs" color="blue-grey-8" size="xl" :label=transStr(stringsIDs.str_prev) @click="currentSlide = 'sioType'"></q-btn>
+      <q-btn  class="q-ma-xs" color="blue-grey-8" size="xl" :label=transStr(stringsIDs.str_next) @click="currentSlide = 'sioAmount'"></q-btn>
     </div>
       </div>
       </div>
@@ -44,15 +44,15 @@
       <div class="oneInThreeRow">
         <div class="column items-center">
           <div class="col myIndication q-ma-md">
-            <p>Renseignez le montant de l'opération</p>
+            <p>{{ transStr(stringsIDs.str_sio_amount) }}</p>
           </div>
         <div class="col">
-          <q-input class="q-mx-xs" label="montant" style="width:150px; height:100px"  maxlength="8"
+          <q-input class="q-mx-xs" :label=transStr(stringsIDs.str_sio_hint_amount) style="width:150px; height:100px"  maxlength="8"
             v-model="_single_io.amount" type="number" lazy-rules bg-color="blue-grey-8" outlined ></q-input>
       </div>
       <div class="col">
-      <q-btn  class="q-ma-xs" label="précédent" size="xl" color="blue-grey-8" @click="currentSlide = 'sioName'"></q-btn>
-      <q-btn class="q-ma-xs" label="valider" size="xl" color="blue-grey-8" @click="currentSlide = 'sioAccount'"></q-btn>
+      <q-btn  class="q-ma-xs" :label=transStr(stringsIDs.str_prev) size="xl" color="blue-grey-8" @click="currentSlide = 'sioName'"></q-btn>
+      <q-btn class="q-ma-xs" :label=transStr(stringsIDs.str_next) size="xl" color="blue-grey-8" @click="currentSlide = 'sioAccount'"></q-btn>
     </div>
       </div>
       </div>
@@ -63,15 +63,15 @@
       <div class="oneInThreeRow">
         <div class="column items-center">
           <div class="col myIndication q-ma-md">
-            <p>Renseignez le compte impacté par l'opération</p>
+            <p>{{ transStr(stringsIDs.str_sio_account) }}</p>
           </div>
         <div class="col">
-          <q-select class="q-mx-xs" label="compte" style="width:150px; height:100px"  maxlength="8" v-model="_single_io.account"
+          <q-select class="q-mx-xs" :label=transStr(stringsIDs.str_sio_hint_account) style="width:150px; height:100px"  maxlength="8" v-model="_single_io.account"
             :options="getAccOpt()" bg-color="blue-grey-8" outlined ></q-select>
       </div>
       <div class="col">
-      <q-btn  class="q-ma-xs" label="précédent" size="xl" color="blue-grey-8" @click="currentSlide = 'sioAmount'"></q-btn>
-      <q-btn class="q-ma-xs" label="valider" size="xl" color="blue-grey-8" @click="currentSlide = 'sioDate'"></q-btn>
+      <q-btn  class="q-ma-xs" :label=transStr(stringsIDs.str_prev) size="xl" color="blue-grey-8" @click="currentSlide = 'sioAmount'"></q-btn>
+      <q-btn class="q-ma-xs" :label=transStr(stringsIDs.str_next) size="xl" color="blue-grey-8" @click="currentSlide = 'sioDate'"></q-btn>
     </div>
       </div>
       </div>
@@ -82,19 +82,19 @@
       <div class="oneInThreeRow">
         <div class="column items-center">
           <div class="col myIndication q-ma-md">
-            <p>Renseignez le compte impacté par l'opération</p>
+            <p>{{ transStr(stringsIDs.str_sio_date) }}</p>
           </div>
         <div class="col">
-          <q-input class="q-ma-md"  style="width:150px; height:100px"  label="date" bg-color="blue-grey-8" filled
+          <q-input class="q-ma-md"  style="width:150px; height:100px"  :label=transStr(stringsIDs.str_sio_hint_date) bg-color="blue-grey-8" filled
             v-model="_single_io.date"  @click="mustpopSingleIO=true" readonly>
             <template v-slot:append>
               <q-icon name="event" class="cursor-pointer">
                 <q-popup-proxy cover transition-show="scale" transition-hide="scale" v-model="mustpopSingleIO">
-                  <q-date dark v-model="singleIODateUnformated" :locale="formatCalendar"
+                  <q-date dark v-model="singleIODateUnformated" :locale=getTranslatedFormatedCalendar()
                     :navigation-min-year-month="periodicSaveMin" width="200px"
                     @update:model-value="[_single_io.date=formatDate(singleIODateUnformated), mustpopSingleIO=false]">
                     <div class="row items-center justify-end">
-                      <q-btn v-close-popup label="Close" color="primary" flat />
+                      <q-btn v-close-popup :label=transStr(stringsIDs.str_close) color="primary" flat />
                     </div>
                   </q-date>
                 </q-popup-proxy>
@@ -103,8 +103,8 @@
           </q-input>
       </div>
       <div class="col">
-      <q-btn  class="q-ma-xs" label="précédent" size="xl" color="blue-grey-8" @click="currentSlide = 'sioAccount'"></q-btn>
-      <q-btn class="q-ma-xs" label="valider" size="xl" color="blue-grey-8" @click="addElementToSingleIO()"></q-btn>
+      <q-btn  class="q-ma-xs" :label=transStr(stringsIDs.str_prev) size="xl" color="blue-grey-8" @click="currentSlide = 'sioAccount'"></q-btn>
+      <q-btn class="q-ma-xs" :label=transStr(stringsIDs.str_validate) size="xl" color="blue-grey-8" @click="addElementToSingleIO()"></q-btn>
     </div>
       </div>
       </div>
@@ -116,12 +116,11 @@
         <q-card>
           <div class="col flex flex center justify-around">
             <div class="q-ma-md">
-              Vous êtes sur le point de retirer de l'argent d'un compte impliqué dans le rachart de votre crédit à une date antérieure au Rachat
-              Cela supprimera le rachat du crédit si vous confirmez.
+              {{ transSt(sentancesIDs.s_warning_out_sio_rebuy_del) }}
             </div>
             <div class="row nowrap">
-              <q-btn label="Annuler" @click="mustPopaddSIO = false"></q-btn>
-              <q-btn label="Confirmer" @click="[mustPopaddSIO=false,addElementToSingleIO(true)]"></q-btn>
+              <q-btn :label=transStr(stringsIDs.str_cancel) @click="mustPopaddSIO = false"></q-btn>
+              <q-btn :label=transStr(stringsIDs.str_confirm) @click="[mustPopaddSIO=false,addElementToSingleIO(true)]"></q-btn>
             </div>
           </div>
         </q-card>
@@ -131,11 +130,12 @@
 
 <script setup>
 import { ref, defineEmits } from 'vue';
-import { getAccId ,getAccOpt,isAccountInvolvedInRebuyWithSavings,deleteRebuySavingsEventAndAssociatedInOut, BANK_SEARCH_ERROR} from '../utils/bank_utility';
+import { getAccId ,getAccOpt,isAccountInvolvedInRebuyWithSavings,deleteRebuySavingsEventAndAssociatedInOut, BANK_SEARCH_ERROR,BANK_SIO_TYPE_IN,BANK_SIO_TYPE_OUT} from '../utils/bank_utility';
 import { compareDates ,formatDate} from 'src/utils/date_utility';
 import { bank,simu } from 'src/stores/store';
 import { useQuasar } from 'quasar';
-import { formatCalendar } from '../utils/calendar_utility';
+import { getTranslatedFormatedCalendar } from '../stores/languages';
+import {transoptSIO,transSIOspecial,transStr,stringsIDs,sentancesIDs,transSt} from '../stores/languages'
 const DEFAULT_DATE='';
 var singleIODateUnformated=ref(DEFAULT_DATE);
 var mustpopSingleIO=ref(false);
@@ -143,7 +143,7 @@ var mustPopaddSIO=ref(false);
 const $q=useQuasar();
 var mySioForm = ref();
 var currentSlide = ref('sioType');
-const _single_io =ref({account:'',title: '', type:'entrée', amount:0,year:0,month:0,date:'',rate:0});
+const _single_io =ref({account:'',title: '', type:BANK_SIO_TYPE_IN, amount:0,year:0,month:0,date:'',rate:0});
 const emit = defineEmits(['sio-added','sio-aborted']);
 const addElementToSingleIO=function(force=false){
   var Y=Number(_single_io.value.date.split('/')[2]);
@@ -151,17 +151,17 @@ const addElementToSingleIO=function(force=false){
   var indexAcc=0;
   if(_single_io.value.date=='')
   {
-    $q.notify({    color: 'orange-4',    textColor: 'black',    icon: 'warning',    message: 'Il faut renseigner une date ! Sinon remplir l\'épargne !',  });
+    $q.notify({    color: 'orange-4',    textColor: 'black',    icon: 'warning',    message: transStr(stringsIDs.str_sio_warn_date),  });
     mySioForm.value.goTo('sioDate');
   }
   else if(_single_io.value.amount==0)
   {
-    $q.notify({    color: 'orange-4',    textColor: 'black',    icon: 'warning',    message: 'Une entrée ou sortie d\'argent nulle n\'a pas d\'effet',  });
+    $q.notify({    color: 'orange-4',    textColor: 'black',    icon: 'warning',    message: transStr(stringsIDs.str_sio_warn_null_op),  });
     mySioForm.value.goTo('sioAmount');
   }
-  else if(_single_io.value.title=='rachat avec économies' )
+  else if(_single_io.value.title==transSIOspecial() )
   {
-    $q.notify({    color: 'orange-4',    textColor: 'black',    icon: 'warning',    message: 'Ce nom est réservé. Choisir un autre nom',  });
+    $q.notify({    color: 'orange-4',    textColor: 'black',    icon: 'warning',    message: transStr(stringsIDs.str_sio_warn_reserved),  });
     mySioForm.value.goTo('sioName');
   }
   else
@@ -169,7 +169,7 @@ const addElementToSingleIO=function(force=false){
     indexAcc=getAccId(_single_io.value.account);
     if(BANK_SEARCH_ERROR==indexAcc)
     {
-      $q.notify({    color: 'orange-4',    textColor: 'black',    icon: 'warning',    message: 'compte de rattachement non trouvé',  });
+      $q.notify({    color: 'orange-4',    textColor: 'black',    icon: 'warning',    message: transStr(stringsIDs.str_acc_not_found),  });
       mySioForm.value.goTo('sioAccount');
       return;
     }
@@ -179,7 +179,7 @@ const addElementToSingleIO=function(force=false){
       var y_rebuy =simu.value.events[indexOfrebuy].year;
       var m_rebuy =simu.value.events[indexOfrebuy].month;
       //warn user in case of removing some money of an account involved in savings if the withdrawal is anterior to rebuy date
-      if(isAccountInvolvedInRebuyWithSavings(indexAcc) && _single_io.value.type=='sortie' && compareDates(y_rebuy,m_rebuy,Y,M)>=0)
+      if(isAccountInvolvedInRebuyWithSavings(indexAcc) && _single_io.value.type==transoptSIO(BANK_SIO_TYPE_OUT) && compareDates(y_rebuy,m_rebuy,Y,M)>=0)
       {
         mustPopaddSIO.value=true;
         return;
@@ -190,7 +190,7 @@ const addElementToSingleIO=function(force=false){
       deleteRebuySavingsEventAndAssociatedInOut();
     }
     bank.value.accounts[indexAcc].single_in_out.push({account:_single_io.value.account,title:_single_io.value.title,type:_single_io.value.type,amount:Number(_single_io.value.amount),date:_single_io.value.date,month:M,year:Y});
-    _single_io.value.title='';_single_io.value.amount=0;_single_io.value.type='entrée';_single_io.value.date='';_single_io.value.account='';
+    _single_io.value.title='';_single_io.value.amount=0;_single_io.value.type=BANK_SIO_TYPE_IN;_single_io.value.date='';_single_io.value.account='';
     emit('sio-added');
   }
 

@@ -2,41 +2,40 @@
   <div class="q-ma-xs col flex flex-center">
     <div class="col">
     <div >
-      <q-input class="q-ma-md" label="Pénalités" hint="% du capital restant dû" style="max-width:110px" maxlength="8"
+      <q-input class="q-ma-md" :label=transStr(stringsIDs.str_penalties) :hint=transStr(stringsIDs.str_penalties_hint) style="max-width:110px" maxlength="8"
         v-model="penalties_rebuy" type="number" lazy-rules
-        :rules="[(val) => (val >= 0.0) || 'Les pénalités ne sont pas payées par la banque']" bg-color="blue-grey-8"
+        :rules="[(val) => (val >= 0.0) || transStr(stringsIDs.str_penalties_rule)]" bg-color="blue-grey-8"
         outlined dense></q-input>
     </div>
     <div>
-      <q-select rounded outlined v-model="event_type" :options="options_rebuy" label="choisir un type de rachat action"
-        @update:model-value="[rate_reloan=0,duration_reloan=0, rebuy_saving_eco_left='',rebuy_saving_capital_to_pay='',rachatVal=DEFAULT_RACHAT_VAL_VALUE,getoptRebuy(),emit('can-finish',{val:false})]" :disable="penalties_rebuy <= 0.0"></q-select>
+      <q-select rounded outlined v-model="event_type_str" :options="options_rebuy" :label=transStr(stringsIDs.str_choose_rebuy_type)
+        @update:model-value="[event_type=getrebuyTypeFromStr(event_type_str), rate_reloan=0,duration_reloan=0, rebuy_saving_eco_left='',rebuy_saving_capital_to_pay='',rachatVal=DEFAULT_RACHAT_VAL_VALUE,getoptRebuy(),emit('can-finish',{val:false})]" :disable="penalties_rebuy <= 0.0"></q-select>
     </div>
     <div>
-      <q-select v-if="event_type == optionsReBuyType[0]" class="evtTypeVal" rounded outlined v-model="rachatVal"
-        :options="options_rebuy_val" label="choisir une option" :disable="(event_type != optionsReBuyType[0] &&
-          event_type != optionsReBuyType[1]) || penalties_rebuy == 0.0
+      <q-select v-if="event_type == EVT_TYPE_REBUY_SAVINGS" class="evtTypeVal" rounded outlined v-model="rachatVal"
+        :options="options_rebuy_val" :label=transStr(stringsIDs.str_choose_option) :disable="(event_type !=EVT_TYPE_REBUY_SAVINGS &&
+          event_type != EVT_TYPE_REBUY_CREDIT) || penalties_rebuy == 0.0
           " @update:model-value="[sendRebuyPicked(),emit('can-finish',{val:true})]"></q-select>
     </div>
-    <div v-if="event_type == optionsReBuyType[0] && rebuy_saving_eco_left != '' && rebuy_saving_capital_to_pay != ''">
-      Economies restantes après rachat : {{ rebuy_saving_eco_left }}
+    <div v-if="event_type ==EVT_TYPE_REBUY_SAVINGS && rebuy_saving_eco_left != '' && rebuy_saving_capital_to_pay != ''">
+       {{ transStr(stringsIDs.str_savings_left) + rebuy_saving_eco_left }}
     </div>
-    <div v-if="event_type == optionsReBuyType[0] && rebuy_saving_eco_left != '' && rebuy_saving_capital_to_pay != ''">
-      Valeur du rachat : {{ rebuy_saving_capital_to_pay }}
+    <div v-if="event_type == EVT_TYPE_REBUY_SAVINGS && rebuy_saving_eco_left != '' && rebuy_saving_capital_to_pay != ''">
+       {{ transStr(stringsIDs.str_capital_rebought)+ rebuy_saving_capital_to_pay }}
     </div>
   </div>
-    <q-dialog v-model="mustPopWarning" v-if="event_type == optionsReBuyType[0]">
+    <q-dialog v-model="mustPopWarning" v-if="event_type == EVT_TYPE_REBUY_SAVINGS">
       <q-card>
         <div class="q-ma-xl col flex flex-center">
           <div>
-            Des opérations antérieures au rachat de crédit renseigné ont été renseignées.
-            Ces opérations ne font plus sens après un rachat. Ces opérations seront supprimées si vous validez :
+            {{ transSt(sentancesIDs.s_warning_post_rebuy_ops) }}
           </div>
           <div v-for="elmnt in listToDisplay" :key="elmnt.id">
             <div>{{ elmnt.title }}</div>
           </div>
           <div>
-            <q-btn label="valider" @click="[mustPopWarning = false, sendRebuyPicked(force = true),emit('can-finish',{val:true})]"></q-btn>
-            <q-btn label="Annuler"
+            <q-btn :label=transStr(stringsIDs.str_validate) @click="[mustPopWarning = false, sendRebuyPicked(force = true),emit('can-finish',{val:true})]"></q-btn>
+            <q-btn :label=transStr(stringsIDs.str_cancel)
               @click="[mustPopWarning = false, rachatVal = DEFAULT_RACHAT_VAL_VALUE, listToDisplay = [],emit('can-finish',{val:false})]"></q-btn>
           </div>
         </div>
@@ -44,12 +43,12 @@
     </q-dialog>
   </div>
   <div class="row wrap">
-    <q-input v-if="event_type == optionsReBuyType[1]" class="q-ma-xs" dense style="max-width: 100px;"
-      label="Date de rachat" bg-color="blue-grey-8" filled v-model="date_reloan"  @click="mustpop = true" readonly>
+    <q-input v-if="event_type == EVT_TYPE_REBUY_CREDIT" class="q-ma-xs" dense style="max-width: 100px;"
+      :label=transStr(stringsIDs.str_rebuy_date) bg-color="blue-grey-8" filled v-model="date_reloan"  @click="mustpop = true" readonly>
       <template v-slot:append>
         <q-icon name="event" class="cursor-pointer">
           <q-popup-proxy v-model="mustpop" cover transition-show="scale" transition-hide="scale">
-            <q-date dark v-model="unformatedrebuydate" :locale="formatCalendar" :navigation-min-year-month="reloanMin"
+            <q-date dark v-model="unformatedrebuydate" :locale=getTranslatedFormatedCalendar() :navigation-min-year-month="reloanMin"
               width="200px" :navigation-max-year-month="reloanMax" :default-year-month="reloanMin"
               @update:model-value="[mustpop = false,date_reloan=formatDate(unformatedrebuydate), sendRebuyPicked()]">
               <div class="row items-center justify-end">
@@ -60,22 +59,23 @@
         </q-icon>
       </template>
     </q-input>
-    <q-input v-if="event_type == optionsReBuyType[1]" class="q-ma-xs" label="Taux" style="max-width:70px" maxlength="8"
-      v-model="rate_reloan" type="number" lazy-rules :rules="[(val) => (val >= 0.0) || 'Le taux ne semble pas réel']"
+    <q-input v-if="event_type == EVT_TYPE_REBUY_CREDIT" class="q-ma-xs" :label=transStr(stringsIDs.str_rate) style="max-width:70px" maxlength="8"
+      v-model="rate_reloan" type="number" lazy-rules :rules="[(val) => (val >= 0.0) || transStr(stringsIDs.str_rate_impossible)]"
       bg-color="blue-grey-8" outlined dense @update:model-value="sendRebuyPicked()"></q-input>
-    <q-input v-if="event_type == optionsReBuyType[1]" class="q-ma-xs" label="Durée" style="max-width:70px"
+    <q-input v-if="event_type == EVT_TYPE_REBUY_CREDIT" class="q-ma-xs" :label=transStr(stringsIDs.str_duration) style="max-width:70px"
       maxlength="8" v-model="duration_reloan" type="number" lazy-rules
-      :rules="[(val) => (val >= 0) || 'Cette durée est impossible']" bg-color="blue-grey-8" outlined dense
+      :rules="[(val) => (val >= 0) || transStr(stringsIDs.str_durationPos)]" bg-color="blue-grey-8" outlined dense
       @update:model-value="[duration_reloan=Math.round(duration_reloan),sendRebuyPicked()]"></q-input>
   </div>
 </template>
 
 <script setup>
 import { ref, defineEmits } from 'vue';
-import { provideRebuyOptions, optionsReBuyType, hasSavings } from '../utils/bank_utility';
-import { formatCalendar } from '../utils/calendar_utility';
+import { provideRebuyOptions,  hasSavings } from '../utils/bank_utility';
+import { getTranslatedFormatedCalendar } from '../stores/languages';
 import { simu } from '../stores/store.ts';
-import { getLatestMensuality, getEarliestNewEventDate } from '../utils/credit_utility'
+import { transStr,stringsIDs,transRebuymodType,getrebuyTypeFromStr,transSt,sentancesIDs } from 'src/stores/languages';
+import { getLatestMensuality, getEarliestNewEventDate,EVT_TYPE_REBUY_CREDIT,EVT_TYPE_REBUY_SAVINGS } from '../utils/credit_utility'
 import { subOneMonthToStringDate, addOneMonthToStringDate, compareDates, getMonthNbr, month_names,formatDate } from '../utils/date_utility'
 
 var reloanMax = ref(subOneMonthToStringDate(getLatestMensuality().l_y.toString() + '/' + getLatestMensuality().l_m.toString().padStart(2, '0')));
@@ -83,8 +83,10 @@ console.log('test1');
 var reloanMin = ref(addOneMonthToStringDate(getEarliestNewEventDate().l_y.toString() + '/' + getEarliestNewEventDate().l_m.toString().padStart(2, '0')));
 console.log('test2');
 var date_reloan = ref('');
-var event_type = ref('Sélectionnez une action');
-const DEFAULT_RACHAT_VAL_VALUE = 'choisir une option';
+var event_type_str=ref(transStr(stringsIDs.str_select_action));
+const DEFAUL_EVT_TYPE=-1;
+var event_type = ref(DEFAUL_EVT_TYPE);
+const DEFAULT_RACHAT_VAL_VALUE = transStr(stringsIDs.str_choose_opt);
 var rachatVal = ref(DEFAULT_RACHAT_VAL_VALUE);
 const emit = defineEmits(['update-from-rebuy-pick','can-finish']);
 var rate_reloan = ref(0.0);
@@ -100,15 +102,15 @@ var rebuy_saving_capital_to_pay = ref('');
 var unformatedrebuydate=ref(reloanMin.value);
 const safeRebuyOptions = function () {
   if (hasSavings()) {
-    return optionsReBuyType;
+    return transRebuymodType();
   }
   else {
-    return [optionsReBuyType[1]];
+    return [transRebuymodType()[EVT_TYPE_REBUY_CREDIT]];
   }
 };
 var options_rebuy = ref(safeRebuyOptions());
 const getoptRebuy = function () {
-  if(event_type.value==optionsReBuyType[0]){
+  if(event_type.value==EVT_TYPE_REBUY_SAVINGS){
     var result = provideRebuyOptions(event_type.value, Number(penalties_rebuy.value));
     options_rebuy_val.value = result[0];
     Display_rebuy_savings.value = result[1];
@@ -120,11 +122,11 @@ const sendRebuyPicked = function (force = false) {
   var event_year_str = '0';
   var event_month_str = '0';
   var event_month = 0;
-  if (rachatVal.value == DEFAULT_RACHAT_VAL_VALUE && event_type.value === optionsReBuyType[0]) {
+  if (rachatVal.value == DEFAULT_RACHAT_VAL_VALUE && event_type.value === EVT_TYPE_REBUY_SAVINGS) {
     return;
   }
   else {
-    if (event_type.value === optionsReBuyType[0])//rebuy with savings
+    if (event_type.value === EVT_TYPE_REBUY_SAVINGS)//rebuy with savings
     {
       event_year_str = rachatVal.value.split(' ')[1];
       event_month_str = rachatVal.value.split(' ')[0];
@@ -172,7 +174,7 @@ const sendRebuyPicked = function (force = false) {
   }
   else {
     //prevent to rebuy with savings before the last event : warn the user and delete all events after rebuy with the user agreeement
-    if (event_type.value === optionsReBuyType[0]) {
+    if (event_type.value === EVT_TYPE_REBUY_SAVINGS) {
       for (var i = 0; i < simu.value.events.length; i++) {
         if (compareDates(simu.value.events[i].year, simu.value.events[i].month, event_year, event_month) >= 0) {
           listToDisplay.value.push({ id: 0, title: simu.value.events[i].title });

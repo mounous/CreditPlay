@@ -7,15 +7,11 @@ const targetPage=function(direction,currentRoute)
   {
     if(currentRoute=='/')
     {
-      return'/events';
-    }
-    else if(currentRoute=='/events')
-    {
       if(startFormFilled.value)
       {
-        return '/summary';
+        return'/events';
       }
-      else if(hasSavings())
+      else if (hasSavings())
       {
         return '/lineChart';
       }
@@ -23,6 +19,10 @@ const targetPage=function(direction,currentRoute)
       {
         return '/bank';
       }
+    }
+    else if(currentRoute=='/events')
+    {
+      return '/summary';
     }
     else if(currentRoute=='/summary')
     {
@@ -67,7 +67,7 @@ const targetPage=function(direction,currentRoute)
       }
       else
       {
-        return '/events';
+        return'/';
       }
 
     }
@@ -79,7 +79,7 @@ const targetPage=function(direction,currentRoute)
       }
       else
       {
-        return '/events';
+        return '/';
       }
     }
     else if(currentRoute=='/memory')

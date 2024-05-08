@@ -12,8 +12,7 @@
     <q-dialog v-model="mustPop">
       <q-card>
         <div class="q-ma-xl col flex flex-center">
-          Aucun crédit n'a été renseigné, mais certaines économies oui. Les premières économies ont été renseignées pour
-          le {{ graphMinDate }}. Sur combien d'anées afficher les économies ?
+           {{transSt(sentancesIDs.s_info_savings_only_p1)+ graphMinDate+transSt(sentancesIDs.s_info_savings_only_p2) }}
           <q-select v-model="nbYearDisplaySavings" dense bg-color="blue-grey-8" :options="optionYears"
             @update:model-value="sendSavingComputationOrder"></q-select>
         </div>
@@ -31,6 +30,7 @@ import {getChartXAxis,getLatestMensuality} from '../utils/credit_utility'
 import { GetColor,TYPE_CAPITAL,TYPE_INTERESTS,TYPE_SAVINGS } from 'src/utils/chart_utility';
 import { simu,bank, startFormFilled } from 'stores/store';
 import {getSavingsEarlier,computeDisplaySavings,hasSavings} from '../utils/bank_utility'
+import { transSt,sentancesIDs,stringsIDs,transStr } from 'src/stores/languages';
 import { useQuasar } from 'quasar';
 
 var $q=useQuasar();
@@ -54,7 +54,7 @@ const handleHold=function(){
 const switchDataDisplay=function()
 {
   chartOptions.colors=[];
-  series = [ {  name: 'Capital restant', data: getAmount(), }, {name: 'interets payés', data: getIntests(), }];
+  series = [ {  name: transStr(stringsIDs.str_cap_left), data: getAmount(), }, {name: transStr(stringsIDs.str_interests_paid), data: getIntests(), }];
   chartOptions.colors.push(GetColor(TYPE_CAPITAL,0,true));
   chartOptions.colors.push(GetColor(TYPE_INTERESTS,0,true));
   getEvents(DataDisplayFull.value);
@@ -72,7 +72,7 @@ const getSingleEvent=function(index)
       extractData_interests.push(Math.round(simu.value.events[index].amortEvt[j][2]*100)/100);
     }
     series.push({name:simu.value.events[index].title,data:extractData_capital});
-    series.push({name:'interets ('+simu.value.events[index].title+')',data:extractData_interests});
+    series.push({name:transStr(stringsIDs.str_interests_parenth)+simu.value.events[index].title+')',data:extractData_interests});
     chartOptions.colors.push(GetColor(TYPE_CAPITAL,index,false));
     chartOptions.colors.push(GetColor(TYPE_INTERESTS,index,false));
   }
@@ -115,7 +115,7 @@ const getBanking=function(){
     {
       exctractedSavings.push(Math.round(bank.value.monthly_sum[i][1]*100)/100);
     }
-    series.push({name:'économies',data:exctractedSavings});
+    series.push({name:transStr(stringsIDs.str_savings),data:exctractedSavings});
     chartOptions.colors.push(GetColor(TYPE_SAVINGS,0,false));
   }
 }
@@ -132,7 +132,6 @@ const getTime = function () {
     }
     return xAxisUp2Date;
   }
-  //return new Date();
   return xAxisUp2Date;
 }
 
@@ -170,11 +169,11 @@ const getIntests = function () {
 
 var series = [
   {
-    name: 'Capital restant',
+    name: transStr(stringsIDs.str_cap_left),
     data: getAmount(),
   },
   {
-    name: 'interets payés',
+    name: transStr(stringsIDs.str_interests_paid),
     data: getIntests(),
   },
 ];
@@ -211,7 +210,7 @@ var chartOptions = {
     style:{
       color:'#b4c8d6',
     },
-    text: 'Capital et interêts',
+    text: transStr(stringsIDs.str_graph_title),
     align: 'center',
   },
 
@@ -291,7 +290,7 @@ onBeforeMount(getPopObligation);
 const displayHelp=function(){
   if(simu.value.events.length>1)
   {
-    $q.notify({    color: 'green-4',    textColor: 'black',    icon: 'cloud_done',    message: 'Pour changer l\'affichage, pressez longtemps sur le graphe',  });
+    $q.notify({    color: 'green-4',    textColor: 'black',    icon: 'cloud_done',    message: transStr(stringsIDs.str_graph_indication),  });
   }
 }
 onBeforeMount(displayHelp);

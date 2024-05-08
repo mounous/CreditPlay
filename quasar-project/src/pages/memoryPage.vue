@@ -15,17 +15,17 @@
     </div>
     <div class="col flex flex center q-ma-md">
       <div>
-        <q-btn class="q-ma-md" label="Tout supprimer" color="blue-grey-8" @click="deleteAllData"></q-btn>
+        <q-btn class="q-ma-md" :label=transStr(stringsIDs.str_btn_delete_all) color="blue-grey-8" @click="deleteAllData"></q-btn>
       </div>
       <div>
-        <q-btn class="q-ma-md" label="Sauvegarder la simulation en cours" color="blue-grey-8" @click="mustPopName = true"></q-btn>
+        <q-btn class="q-ma-md" :label=transStr(stringsIDs.str_btn_save_current) color="blue-grey-8" @click="mustPopName = true"></q-btn>
       </div>
       <div>
-        <q-btn class="q-ma-md" label="Supprimer la simulation" color="blue-grey-8" @click="deleteData"
+        <q-btn class="q-ma-md" :label=transStr(stringsIDs.str_btn_delete) color="blue-grey-8" @click="deleteData"
         :disable="selected_id == DEFAULT_ID"></q-btn>
       </div>
       <div>
-        <q-btn class="q-ma-md" label="Restaurer la simulation" color="blue-grey-8" @click="restoreData"
+        <q-btn class="q-ma-md" :label=transStr(stringsIDs.str_btn_restore) color="blue-grey-8" @click="restoreData"
         :disable="selected_id == DEFAULT_ID"></q-btn>
       </div>
     </div>
@@ -33,11 +33,11 @@
       <q-dialog v-model="mustPopName">
         <q-card>
         <div class="q-ma-xl">
-          Donner un nom à la sauvegarde ?
+          {{ transStr(stringsIDs.str_pop_simu_save_name) }}
         </div>
         <q-input class="q-ma-md" v-model="currentName"></q-input>
-        <q-btn class="q-ma-md" label="Nom par Défaut" @click="saveCurrentData"></q-btn>
-        <q-btn class="q-ma-md" label="Ajouter un nom " @click="saveCurrentData"></q-btn>
+        <q-btn class="q-ma-md" :label=transStr(stringsIDs.str_pop_simu_default_name) @click="saveCurrentData"></q-btn>
+        <q-btn class="q-ma-md" :label=transStr(stringsIDs.str_pop_simu_custom_name) @click="saveCurrentData"></q-btn>
       </q-card>
       </q-dialog>
 
@@ -55,6 +55,7 @@ import { onBeforeMount } from 'vue';
 import { bank, simu, startFormFilled } from 'src/stores/store';
 import { useRouter } from 'vue-router';
 import {targetPage} from '../utils/swipe_utils.js'
+import { transStr,stringsIDs } from 'src/stores/languages';
 const DEFAULT_ID = -1;
 const DEFAULT_NAME = '';
 var mustPopName = ref(false);

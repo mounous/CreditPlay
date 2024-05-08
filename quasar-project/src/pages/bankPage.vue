@@ -74,7 +74,7 @@
 
       <div class="column items-center">
         <div class="col">
-          <p class="myTitle">Entrées/Sorties exceptionnelles</p>
+          <p class="myTitle">{{ transStr(stringsIDs.str_title_sio) }}</p>
         </div>
         <div class="col">
           <q-btn :disable="bank.accounts.length==0" class="q-ma-md" color="blue-grey-8" style="height:40px" :label=transStr(stringsIDs.str_btn_add)
@@ -84,18 +84,18 @@
           <q-markup-table class="my-table bg-grey-8" separator="cell" flat bordered>
             <thead>
               <tr>
-                <th span="1" style="width: 20%">nom</th>
-                <th span="1" style="width: 15%">type</th>
-                <th span="1" style="width: 15%">montant</th>
-                <th span="1" style="width: 20%">compte</th>
-                <th span="1" style="width: 20%">date</th>
+                <th span="1" style="width: 20%">{{ transStr(stringsIDs.str_head_name) }}</th>
+                <th span="1" style="width: 15%">{{ transStr(stringsIDs.str_save_type) }}</th>
+                <th span="1" style="width: 15%">{{ transStr(stringsIDs.str_head_amount) }}</th>
+                <th span="1" style="width: 20%">{{ transStr(stringsIDs.str_account) }}</th>
+                <th span="1" style="width: 20%">{{ transStr(stringsIDs.str_head_date) }}</th>
                 <th span="1" style="width: 10"></th>
               </tr>
             </thead>
             <tbody v-for="account in bank.accounts" :key="account.name">
               <tr v-for="io in account.single_in_out" :key="io.amount">
                 <th>{{ io.title }}</th>
-                <th>{{ io.type }}</th>
+                <th>{{ transoptSIO(io.type) }}</th>
                 <th>{{ io.amount }}</th>
                 <th>{{ account.title }}</th>
                 <th>{{ io.month + '/' + io.year }}</th>
@@ -114,12 +114,11 @@
         <q-card>
           <div class="col flex flex center justify-around">
             <div class="q-ma-md">
-              Vous êtes sur le point de supprimer un compte utilisé pour racheter votre crédit.
-              Cela supprimera également le rachat du crédit si vous confirmez.
+              {{transSt(sentancesIDs.s_warning_acc_delete_rebuy_op)}}
             </div>
             <div class="row nowrap">
-              <q-btn label="Annuler" @click="mustPopDeleteAcc = false"></q-btn>
-              <q-btn label="Confirmer" @click="[mustPopDeleteAcc=false,removeAccount(accountToBeDeleted,true)]"></q-btn>
+              <q-btn :label=transStr(stringsIDs.str_cancel) @click="mustPopDeleteAcc = false"></q-btn>
+              <q-btn :label=transStr(stringsIDs.str_btn_valid) @click="[mustPopDeleteAcc=false,removeAccount(accountToBeDeleted,true)]"></q-btn>
             </div>
           </div>
         </q-card>
@@ -131,12 +130,11 @@
         <q-card>
           <div class="col flex flex center justify-around">
             <div class="q-ma-md">
-              Vous êtes sur le point de supprimer une opération sur un compte contribuant au rachat votre crédit.
-              Cela supprimera également le rachat du crédit si vous confirmez.
+              {{ transSt(sentancesIDs.s_warning_acc_rebuy_op) }}
             </div>
             <div class="row nowrap">
-              <q-btn label="Annuler" @click="mustPopDeleteP = false"></q-btn>
-              <q-btn label="Confirmer" @click="[mustPopDeleteP=false,removeSavingP(savingPtoDelete,accountOfSavingPToDelete,true)]"></q-btn>
+              <q-btn :label=transStr(stringsIDs.str_cancel) @click="mustPopDeleteP = false"></q-btn>
+              <q-btn :label=transStr(stringsIDs.str_btn_valid) @click="[mustPopDeleteP=false,removeSavingP(savingPtoDelete,accountOfSavingPToDelete,true)]"></q-btn>
             </div>
           </div>
         </q-card>
@@ -148,12 +146,11 @@
         <q-card>
           <div class="col flex flex center justify-around">
             <div class="q-ma-md">
-              Vous êtes sur le point de supprimer une opération contribuant au rachat votre crédit.
-              Cela supprimera également le rachat du crédit si vous confirmez.
+              {{ transSt(sentancesIDs.s_warning_op_rebuy_delete) }}
             </div>
             <div class="row nowrap">
-              <q-btn label="Annuler" @click="mustPopDeleteSIO = false"></q-btn>
-              <q-btn label="Confirmer" @click="[mustPopDeleteSIO=false,removeSingleIO(SIOtoDelete,accountOfSIOToDelete,true)]"></q-btn>
+              <q-btn :label=transStr(stringsIDs.str_cancel) @click="mustPopDeleteSIO = false"></q-btn>
+              <q-btn :label=transStr(stringsIDs.str_btn_valid) @click="[mustPopDeleteSIO=false,removeSingleIO(SIOtoDelete,accountOfSIOToDelete,true)]"></q-btn>
             </div>
           </div>
         </q-card>
@@ -166,13 +163,13 @@ import { bank, simu } from 'stores/store';
 import { ref } from 'vue'
 import { useQuasar } from 'quasar';
 import { useRouter } from 'vue-router';
-import {BANK_SEARCH_ERROR,getAccId,getSavinPID,getSIOID,isAccountInvolvedInRebuyWithSavings, deleteRebuySavingsEventAndAssociatedInOut,BANK_SAVE_TYPE_MONTHLY} from '../utils/bank_utility'
+import {BANK_SEARCH_ERROR,getAccId,getSavinPID,getSIOID,isAccountInvolvedInRebuyWithSavings, deleteRebuySavingsEventAndAssociatedInOut,BANK_SIO_TYPE_IN} from '../utils/bank_utility'
 import { compareDates } from 'src/utils/date_utility';
 import accountForm from 'src/components/accountForm.vue';
 import periodicSavingsForm from 'src/components/periodicSavingsForm.vue';
 import singleIOFrom from 'src/components/singleIOFrom.vue';
 import {targetPage} from '../utils/swipe_utils.js'
-import {transStr,stringsIDs,transoptSaveP} from '../stores/languages.ts'
+import {transStr,stringsIDs,transoptSaveP,transSt,sentancesIDs,transoptSIO,transSIOspecial} from '../stores/languages.ts'
 const $q = useQuasar();
 
 const router = useRouter();
@@ -217,7 +214,7 @@ const removeAccount = function (account,force=false) {
   }
   else
   {
-      $q.notify({    color: 'orange-4',    textColor: 'black',    icon: 'warning',    message: 'compte de rattachement non trouvé',  });
+      $q.notify({    color: 'orange-4',    textColor: 'black',    icon: 'warning',    message: transStr(stringsIDs.str_acc_not_found),  });
       return;
   }
 }
@@ -247,12 +244,12 @@ const removeSavingP = function (savingP,account,force=false) {
     }
     else
     {
-      $q.notify({    color: 'orange-4',    textColor: 'black',    icon: 'warning',    message: 'Epargne periodique non trouvé',  });
+      $q.notify({    color: 'orange-4',    textColor: 'black',    icon: 'warning',    message: transStr(stringsIDs.str_saving_p_not_found),  });
     }
   }
   else
   {
-      $q.notify({    color: 'orange-4',    textColor: 'black',    icon: 'warning',    message: 'compte de rattachement non trouvé',  });
+      $q.notify({    color: 'orange-4',    textColor: 'black',    icon: 'warning',    message: transStr(stringsIDs.str_acc_not_found),  });
       return;
   }
 }
@@ -270,7 +267,7 @@ const removeSingleIO = function (SIO,account,force=false) {
         var y_rebuy =simu.value.events[indexOfrebuy].year;
         var m_rebuy =simu.value.events[indexOfrebuy].month;
         var sioType = bank.value.accounts[i].single_in_out[ioID].type;
-        if(isAccountInvolvedInRebuyWithSavings(i) && compareDates(y_rebuy,m_rebuy,SIO.year,SIO.month)>0 && sioType=='entrée'|| SIO.title=='rachat avec économies')
+        if(isAccountInvolvedInRebuyWithSavings(i) && compareDates(y_rebuy,m_rebuy,SIO.year,SIO.month)>0 && sioType==BANK_SIO_TYPE_IN|| SIO.title==transSIOspecial())
         {
           accountOfSIOToDelete.value=account;
           SIOtoDelete.value=SIO;
@@ -287,13 +284,13 @@ const removeSingleIO = function (SIO,account,force=false) {
     }
     else
     {
-      $q.notify({    color: 'orange-4',    textColor: 'black',    icon: 'warning',    message: 'Epargne exceptionnelle non trouvé',  });
+      $q.notify({    color: 'orange-4',    textColor: 'black',    icon: 'warning',    message: transStr(stringsIDs.str_sio_not_found),  });
       return;
     }
   }
   else
   {
-      $q.notify({    color: 'orange-4',    textColor: 'black',    icon: 'warning',    message: 'compte de rattachement non trouvé',  });
+      $q.notify({    color: 'orange-4',    textColor: 'black',    icon: 'warning',    message: transStr(stringsIDs.str_acc_not_found),  });
       return;
   }
 }

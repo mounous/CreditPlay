@@ -4,8 +4,8 @@
       <q-carousel v-model="slide" transition-prev="scale" transition-next="scale" animated swipeable
         control-color="primary" class="rounded-borders" ref="carouselElement">
         <q-carousel-slide name="EvtMetaTypeSlide" class="column no-wrap flex-center">
-          <q-btn label="Modulation" @click="[event_.metaType='Modulation',moveToNextSlide()]" color="primary"></q-btn>
-          <q-btn label="Rachat" @click="[event_.metaType='Rachat',moveToNextSlide()]" color="primary"></q-btn>
+          <q-btn :label=transevtmetaType(EVT_META_TYPE_MOD) @click="[event_.metaType=EVT_META_TYPE_MOD,moveToNextSlide()]" color="primary"></q-btn>
+          <q-btn :label=transevtmetaType(EVT_META_TYPE_REBUY) @click="[event_.metaType=EVT_META_TYPE_REBUY,moveToNextSlide()]" color="primary"></q-btn>
         </q-carousel-slide>
         <q-carousel-slide name="EvtTypeSlide" class="column no-wrap flex-center" >
           <div>
@@ -13,11 +13,11 @@
           </div>
           <div class="row">
             <div class="q-ma-md">
-              <q-btn label="retour" @click="moveToPrevSlide" color="primary"></q-btn>
+              <q-btn :label=transStr(stringsIDs.str_prev) @click="moveToPrevSlide" color="primary"></q-btn>
             </div>
 
             <div class="q-ma-md">
-              <q-btn label="Valider"  @click="
+              <q-btn :label=transStr(stringsIDs.str_validate)  @click="
                 sendFinish();
                 " color="primary" :disable="canValidateMod==false"></q-btn>
             </div>
@@ -29,11 +29,11 @@
         </div>
             <div class="row">
             <div class="q-ma-md">
-              <q-btn label="retour" @click="moveToPrevSlide" color="primary"></q-btn>
+              <q-btn :label=transStr(stringsIDs.str_prev) @click="moveToPrevSlide" color="primary"></q-btn>
             </div>
 
             <div class="q-ma-md">
-              <q-btn label="Valider"  @click="sendFinish()
+              <q-btn :label=transStr(stringsIDs.str_validate) @click="sendFinish()
                 " :disable="canValidateRebuy==false" color="primary"></q-btn>
             </div>
           </div>
@@ -52,15 +52,17 @@ import {  apply_events_chain,build_event_name } from '../utils/credit_utility.js
 import SingleEventTypePicker from './SingleEventTypePicker.vue';
 import buyPicker from './buyPicker.vue';
 import { simu } from 'stores/store';
-import { optionsReBuyType } from 'src/utils/bank_utility.js';
+import {EVT_TYPE_REBUY_SAVINGS } from '../utils/credit_utility'
+import {transevtmetaType,transStr,stringsIDs} from '../stores/languages'
+import {EVT_META_TYPE_MOD, EVT_META_TYPE_REBUY} from '../utils/credit_utility'
 var canValidateMod=ref(false);
 var canValidateRebuy=ref(false);
 const carouselElement=ref(null);
-const default_month_str = 'choisir un mois ';
-const default_year_str = 'choisir une année';
+const default_month_str = transStr(stringsIDs.str_sel_month);
+const default_year_str = transStr(stringsIDs.str_sel_year);
 var event_ = ref({
   title: '',
-  type: 'Augmenter mensualité',
+  type: -1,
   year_str: default_year_str,
   month_str: default_month_str,
   year:2020,
@@ -109,7 +111,7 @@ const updateFromRebuyPicker=function(evtDataFromPicker){
   event_.value['year']=evtDataFromPicker['year'];
   event_.value['month']=evtDataFromPicker['month'];
   //rachat épargne
-  if(event_.value.type==optionsReBuyType[0])
+  if(event_.value.type==EVT_TYPE_REBUY_SAVINGS)
   {
     simu.value.credit.has_been_rebougth=true;
     event_.value['savingsLeft']=evtDataFromPicker['savingsLeft'];
@@ -123,7 +125,7 @@ const sendFinish=function () {
   };
 const moveToNextSlide=function(move = true) {
     if (move) {
-      if(slide.value=='EvtMetaTypeSlide' && event_.value.metaType=='Rachat')
+      if(slide.value=='EvtMetaTypeSlide' && event_.value.metaType==EVT_META_TYPE_REBUY)
       {
         carouselElement.value.goTo('Rachat')
       }

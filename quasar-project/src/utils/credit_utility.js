@@ -1,7 +1,15 @@
 
 import { simu ,bank} from 'src/stores/store';
 import { month_names,get_nb_mens_diff,getMonthNbr, compareDates } from './date_utility';
-import {optionsReBuyType,getSortedAccountsFromPoorToHighRate,getSavingsEarlier,compute_savings} from './bank_utility'
+import {getSortedAccountsFromPoorToHighRate,getSavingsEarlier,compute_savings, BANK_SIO_TYPE_OUT} from './bank_utility'
+import {transoptSIO,transStr,stringsIDs,transevtmetaType,transSIOspecial } from '../stores/languages'
+const EVT_META_TYPE_MOD =0;
+const EVT_META_TYPE_REBUY=1;
+const EVT_TYPE_MOD_MENS_UP=1;
+const EVT_TYPE_MOD_MENS_DOWN=0;
+const EVT_TYPE_REBUY_SAVINGS=0;
+const EVT_TYPE_REBUY_CREDIT=1;
+
 const computeMensuality = () => {
   simu.value.credit.mensuality=computeMensuality_noSave(simu.value.credit.duration_y,simu.value.credit.rate,simu.value.credit.amount);
 };
@@ -102,7 +110,7 @@ const apply_events_chain=()=>{
     for(var i = 0; i< simu.value.events.length;i++)
     {
       simu.value.events[i].amortEvt=[];
-      if(simu.value.events[i].metaType=='Modulation')
+      if(simu.value.events[i].metaType==EVT_META_TYPE_MOD)
       {
         if(i==0)//first event : capital left to pay based on simu
         {
@@ -139,7 +147,7 @@ const apply_events_chain=()=>{
             var up2date_rate=simu.value.credit.rate;
             for(var ind=i-1;ind>=0;ind--)
             {
-              if(simu.value.events[ind].type==optionsReBuyType[1])
+              if(simu.value.events[ind].metaType==EVT_META_TYPE_REBUY && simu.value.events[ind].type==EVT_TYPE_REBUY_CREDIT)
               {
                 up2date_rate=simu.value.events[ind].reloanRate;
                 break;
@@ -158,7 +166,7 @@ const apply_events_chain=()=>{
           }
       }
       //Rebuy with savings
-      else if(simu.value.events[i].type==optionsReBuyType[0])
+      else if(simu.value.events[i].metaType==EVT_META_TYPE_REBUY  && simu.value.events[i].type==EVT_TYPE_REBUY_SAVINGS)
       {
         var toPay=0.0;
         //follow last event values until rebuy type
@@ -204,20 +212,20 @@ const apply_events_chain=()=>{
           var amountOnaccountAtDate=bank.value.accounts[from_poor_to_high_rate[indexAccount]].computedOverTime[indexAtDate].amount;
           if(amountOnaccountAtDate>toPay)
           {
-            bank.value.accounts[from_poor_to_high_rate[indexAccount]].single_in_out.push({account :from_poor_to_high_rate[indexAccount], title:'rachat avec économies',type:'sortie',amount:Math.round(100*toPay)/100,date:simu.value.events[i].year_str+'/'+simu.value.events[i].month_str,month:simu.value.events[i].month,year:simu.value.events[i].year,rate:0.0});
+            bank.value.accounts[from_poor_to_high_rate[indexAccount]].single_in_out.push({account :from_poor_to_high_rate[indexAccount], title:transSIOspecial(),type:BANK_SIO_TYPE_OUT,amount:Math.round(100*toPay)/100,date:simu.value.events[i].year_str+'/'+simu.value.events[i].month_str,month:simu.value.events[i].month,year:simu.value.events[i].year,rate:0.0});
             toPay=0;
           }
           else
           {
             //else empty it
-            bank.value.accounts[from_poor_to_high_rate[indexAccount]].single_in_out.push({account :from_poor_to_high_rate[indexAccount], title:'rachat avec économies',type:'sortie',amount:Math.round(100*amountOnaccountAtDate)/100,date:simu.value.events[i].year_str+'/'+simu.value.events[i].month_str,month:simu.value.events[i].month,year:simu.value.events[i].year,rate:0.0});
+            bank.value.accounts[from_poor_to_high_rate[indexAccount]].single_in_out.push({account :from_poor_to_high_rate[indexAccount], title:transSIOspecial(),type:BANK_SIO_TYPE_OUT,amount:Math.round(100*amountOnaccountAtDate)/100,date:simu.value.events[i].year_str+'/'+simu.value.events[i].month_str,month:simu.value.events[i].month,year:simu.value.events[i].year,rate:0.0});
             toPay-=amountOnaccountAtDate;
           }
           indexAccount++;
         }
       }
       //Rebuy with credit
-      else if(simu.value.events[i].type==optionsReBuyType[1])
+      else if(simu.value.events[i].metaType==EVT_META_TYPE_REBUY && simu.value.events[i].type==EVT_TYPE_REBUY_CREDIT)
       {
         var interests_paid_before_mod=0;
         var specific_amort=[];
@@ -308,7 +316,7 @@ const provideModOptions=(evt_type_in,evt_year_in,evt_month_in)=>{
   {
     for(var j=simu.value.events.length-1;j>=0;j--)
     {
-      if(simu.value.events[j].type==optionsReBuyType[1])
+      if(simu.value.events[j].metaType==EVT_META_TYPE_REBUY && simu.value.events[j].type==EVT_TYPE_REBUY_CREDIT)
       {
         up2date_rate=simu.value.events[j].reloanRate;
         break;
@@ -317,7 +325,7 @@ const provideModOptions=(evt_type_in,evt_year_in,evt_month_in)=>{
   }
   if(mensualities_to_end>=0)
   {
-    if(evt_type_in==optionsEvtType[1])//duree - mens +
+    if(evt_type_in==EVT_TYPE_MOD_MENS_UP)//duree - mens +
     {
       for(let i=1;i<mensualities_to_end;i++)
       {
@@ -325,10 +333,10 @@ const provideModOptions=(evt_type_in,evt_year_in,evt_month_in)=>{
       }
       if(mensualities_to_end==1)
       {
-        toreturn.push('1 mensualité restante,modulation impossible');
+        toreturn.push(transStr(stringsIDs.str_mod_impossible));
       }
     }
-    else if(evt_type_in==optionsEvtType[0])//duree+ mens -
+    else if(evt_type_in==EVT_TYPE_MOD_MENS_DOWN)//duree+ mens -
     {
       for(let i=1;i<simu.value.credit.duration_y*12;i++)//max twince the duration
       {
@@ -373,10 +381,7 @@ const getChartXAxis=()=>{
     return simu.value.credit.amort;
   }
 }
-var optionsEvtType = [
-  'Augmenter la durée - réduire la mensualité',
-  'Réduire la durée - augmenter la mensualité',
-];
+
 
 
 const getLatestMensuality=function(){
@@ -386,7 +391,7 @@ const getLatestMensuality=function(){
   {
     for(var i=simu.value.events.length-1;i>=0;i--)
     {
-      if(simu.value.events[i].type!=optionsReBuyType[0])//not a rebuy with savings
+      if(!(simu.value.events[i].metaType==EVT_META_TYPE_REBUY && simu.value.events[i].type==EVT_TYPE_REBUY_SAVINGS))//not a rebuy with savings
       {
         var index =simu.value.events[i].amortEvt.length-1;
         if(compareDates(Number(simu.value.events[i].amortEvt[index][0].split('-')[1]),(simu.value.events[i].amortEvt[index][0].split('-')[0]),latest_year,latest_month)>0)
@@ -418,7 +423,7 @@ const getModulationNbr=function()
   {
     for(var i =0;i<simu.value.events.length;i++)
     {
-      if(simu.value.events[i].metaType=='Modulation')
+      if(simu.value.events[i].metaType==EVT_META_TYPE_MOD)
       {
         count++;
       }
@@ -433,7 +438,7 @@ const getModulationNbr=function()
   {
     for(var i =0;i<simu.value.events.length;i++)
     {
-      if(simu.value.events[i].metaType=='Rachat')
+      if(simu.value.events[i].metaType==EVT_META_TYPE_REBUY)
       {
         count++;
       }
@@ -443,13 +448,15 @@ const getModulationNbr=function()
 }
 const build_event_name=function(metaType)
 {
-  if(metaType=='Modulation')
+  if(metaType==EVT_META_TYPE_MOD)
   {
-    return 'Modulation '+String(getModulationNbr()+1);
+    return transevtmetaType(EVT_META_TYPE_MOD)+' '+String(getModulationNbr()+1);
   }
   else
   {
-    return 'Rachat '+String(getRebuyNbr()+1);
+    return transevtmetaType(EVT_META_TYPE_REBUY)+' '+String(getRebuyNbr()+1);
   }
 }
-export { computeMensuality, computeCredit_init, getEarliestNewEventDate, sortEvents,provideModOptions,apply_events_chain,getChartXAxis,optionsEvtType,returnBaseData,getLatestMensuality,hasBeenRebougthSavings,build_event_name};
+export { computeMensuality, computeCredit_init, getEarliestNewEventDate, sortEvents,provideModOptions,apply_events_chain,getChartXAxis,
+  returnBaseData,getLatestMensuality,hasBeenRebougthSavings,build_event_name,
+  EVT_META_TYPE_MOD, EVT_META_TYPE_REBUY, EVT_TYPE_MOD_MENS_UP, EVT_TYPE_MOD_MENS_DOWN, EVT_TYPE_REBUY_CREDIT, EVT_TYPE_REBUY_SAVINGS};

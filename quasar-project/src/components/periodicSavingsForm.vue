@@ -6,15 +6,15 @@
       <div class="oneInThreeRow">
         <div class="column items-center">
           <div class="col myIndication q-ma-md">
-            <p>Choisir le type d'opération</p>
+            <p>{{transStr(stringsIDs.str_choose_op_type)}}</p>
           </div>
         <div class="col">
           <q-select bg-color="blue-grey-8" style="width:150px; height:100px" v-model="typeSavings" label="type"
             :options="[transoptSaveP(BANK_SAVE_TYPE_MONTHLY), transoptSaveP(BANK_SAVE_TYPE_YEARLY)]"></q-select>
         </div>
         <div class="col">
-          <q-btn class="q-ma-xs" color="blue-grey-8" label="annuler" size='xl' @click="emit('ps-aborted')"></q-btn>
-          <q-btn class="q-ma-xs" color="blue-grey-8" label="suivant" size='xl' @click="currentSlide = 'psAmount'"></q-btn>
+          <q-btn class="q-ma-xs" color="blue-grey-8" :label=transStr(stringsIDs.str_cancel) size='xl' @click="emit('ps-aborted')"></q-btn>
+          <q-btn class="q-ma-xs" color="blue-grey-8" :label=transStr(stringsIDs.str_next) size='xl' @click="currentSlide = 'psAmount'"></q-btn>
         </div>
       </div>
       </div>
@@ -25,7 +25,7 @@
       <div class="oneInThreeRow">
         <div class="column items-center">
           <div class="col myIndication q-ma-md">
-            <p>Saisir le montant de l'opération</p>
+            <p>{{transStr(stringsIDs.str_choose_op_amount)}}</p>
           </div>
         <div class="col">
           <q-input class="q-mx-xs" label="montant" style="max-width:300px; height:100px" maxlength="8" v-model="_savingP.amount"
@@ -33,8 +33,8 @@
             bg-color="blue-grey-8" outlined ></q-input>
         </div>
         <div class="col">
-          <q-btn class="q-ma-xs" color="blue-grey-8" label="précédent" size='xl' @click="currentSlide = 'psType'"></q-btn>
-          <q-btn class="q-ma-xs" color="blue-grey-8" label="suivant" size='xl' @click="currentSlide = 'psAccount'"></q-btn>
+          <q-btn class="q-ma-xs" color="blue-grey-8" :label=transStr(stringsIDs.str_prev) size='xl' @click="currentSlide = 'psType'"></q-btn>
+          <q-btn class="q-ma-xs" color="blue-grey-8" :label=transStr(stringsIDs.str_next) size='xl' @click="currentSlide = 'psAccount'"></q-btn>
         </div>
       </div>
       </div>
@@ -45,15 +45,15 @@
       <div class="oneInThreeRow">
         <div class="column items-center">
           <div class="col myIndication q-ma-md">
-            <p>Saisir le compte impacté par l'opération</p>
+            <p>{{transStr(stringsIDs.str_choose_op_account)}}</p>
           </div>
         <div class="col">
-          <q-select class="q-mx-xs" label="compte"  style="width:150px; height:100px" maxlength="8" v-model="_savingP.account"
+          <q-select class="q-mx-xs" :label=transStr(stringsIDs.str_account)  style="width:150px; height:100px" maxlength="8" v-model="_savingP.account"
             :options="getAccOpt()" type="number" bg-color="blue-grey-8" outlined ></q-select>
         </div>
         <div class="col">
-          <q-btn class="q-ma-xs" label="précédent" color="blue-grey-8" size='xl' @click="currentSlide = 'psAmount'"></q-btn>
-          <q-btn class="q-ma-xs" label="suivant" color="blue-grey-8" size='xl' @click="currentSlide = 'psfromTo'"></q-btn>
+          <q-btn class="q-ma-xs" :label=transStr(stringsIDs.str_prev) color="blue-grey-8" size='xl' @click="currentSlide = 'psAmount'"></q-btn>
+          <q-btn class="q-ma-xs" :label=transStr(stringsIDs.str_next) color="blue-grey-8" size='xl' @click="currentSlide = 'psfromTo'"></q-btn>
         </div>
       </div>
       </div>
@@ -65,20 +65,20 @@
       <div class="oneInThreeRow">
         <div class="column items-center">
           <div class="col myIndication q-ma-md">
-            <p>Saisir la date de la première opération periodique</p>
+            <p>{{transStr(stringsIDs.str_choose_op_strat_date)}}</p>
           </div>
         <div class="col">
-          <q-input class="q-mx-xs"  style="width:150px; height:100px" label="A partir de" bg-color="blue-grey-8" filled
+          <q-input class="q-mx-xs"  style="width:150px; height:100px" :label=transStr(stringsIDs.str_save_from) bg-color="blue-grey-8" filled
             v-model="_savingP.startingDate" @click="mustpopPsStart = true" readonly>
             <template v-slot:append>
               <q-icon name="event" class="cursor-pointer">
                 <q-popup-proxy cover transition-show="scale" transition-hide="scale" v-model="mustpopPsStart">
-                  <q-date dark v-model="savingPstartingDateUnformated" :locale="formatCalendar"
+                  <q-date dark v-model="savingPstartingDateUnformated" :locale=getTranslatedFormatedCalendar()
                     :navigation-min-year-month="periodicSaveMin" width="200px"
                     :navigation-max-year-month="periodicSaveMax"
                     @update:model-value="[_savingP.startingDate = formatDate(savingPstartingDateUnformated), mustpopPsStart = false]">
                     <div class="row items-center justify-end">
-                      <q-btn v-close-popup label="Fermer" color="primary" flat />
+                      <q-btn v-close-popup :label=transStr(stringsIDs.str_close) color="primary" flat />
                     </div>
                   </q-date>
                 </q-popup-proxy>
@@ -87,20 +87,20 @@
           </q-input>
           </div>
           <div class="col myIndication q-ma-md">
-            <p>(Facultatif) Saisir la date de la dernière opération periodique. L'opération sera considérée infinite si non saisie.</p>
+            <p>{{transStr(stringsIDs.str_choose_op_end_date)}}</p>
           </div>
         <div class="col">
-          <q-input class="q-mx-xs"  style="width:150px; height:100px" label="jusqu'à  " bg-color="blue-grey-8" filled
+          <q-input class="q-mx-xs"  style="width:150px; height:100px" :label=transStr(stringsIDs.str_save_untill) bg-color="blue-grey-8" filled
             v-model="_savingP.endDate" @click="mustpopPsEnd = true" readonly>
             <template v-slot:append>
               <q-icon name="event" class="cursor-pointer">
                 <q-popup-proxy cover transition-show="scale" transition-hide="scale" v-model="mustpopPsEnd">
-                  <q-date dark v-model="savingPendDateUnformated" :locale="formatCalendar"
+                  <q-date dark v-model="savingPendDateUnformated" :locale=getTranslatedFormatedCalendar()
                     :navigation-min-year-month="periodicSaveMin" width="200px"
                     :navigation-max-year-month="periodicSaveMax"
                     @update:model-value="[_savingP.endDate = formatDate(savingPendDateUnformated), mustpopPsEnd = false]">
                     <div class="row items-center justify-end">
-                      <q-btn v-close-popup label="Fermer" color="primary" flat />
+                      <q-btn v-close-popup :label=transStr(stringsIDs.str_close) color="primary" flat />
                     </div>
                   </q-date>
                 </q-popup-proxy>
@@ -109,8 +109,8 @@
           </q-input>
         </div>
         <div class="col">
-          <q-btn class="q-ma-xs" label="précédent" color="blue-grey-8" size='xl'  @click="currentSlide = 'psAccount'"></q-btn>
-          <q-btn class="q-ma-xs" label="valider" color="blue-grey-8" size='xl' @click="addElementToSavingsP()"></q-btn>
+          <q-btn class="q-ma-xs" :label=transStr(stringsIDs.str_prev) color="blue-grey-8" size='xl'  @click="currentSlide = 'psAccount'"></q-btn>
+          <q-btn class="q-ma-xs" :label=transStr(stringsIDs.str_validate) color="blue-grey-8" size='xl' @click="addElementToSavingsP()"></q-btn>
         </div>
       </div>
       </div>
@@ -126,8 +126,8 @@ import { bank } from 'src/stores/store';
 import { useQuasar } from 'quasar';
 import { getAccId, getAccOpt,BANK_SEARCH_ERROR,BANK_SAVE_TYPE_MONTHLY,BANK_SAVE_TYPE_YEARLY } from 'src/utils/bank_utility';
 import { formatDate } from 'src/utils/date_utility';
-import { formatCalendar } from 'src/utils/calendar_utility';
-import {getOptSavePFromStr,transoptSaveP} from '../stores/languages'
+import { getTranslatedFormatedCalendar } from '../stores/languages';
+import {getOptSavePFromStr,transoptSaveP,stringsIDs, transStr} from '../stores/languages'
 const $q = useQuasar();
 var myPSForm = ref();
 var currentSlide = ref('psType');
@@ -155,21 +155,21 @@ const addElementToSavingsP = function () {
     endM = Number(_savingP.value.endDate.split('/')[1]);
   }
   if (_savingP.value.startingDate == '') {
-    $q.notify({ color: 'orange-4', textColor: 'black', icon: 'warning', message: 'Il faut renseigner une date de départ', });
+    $q.notify({ color: 'orange-4', textColor: 'black', icon: 'warning', message: transStr(stringsIDs.str_warn_start_date), });
     myPSForm.value.goTo('psfromTo');
   }
   else if (_savingP.value.amount == 0) {
-    $q.notify({ color: 'orange-4', textColor: 'black', icon: 'warning', message: 'Une épargne périodique de 0€ ne va rien rapporter', });
+    $q.notify({ color: 'orange-4', textColor: 'black', icon: 'warning', message: transStr(stringsIDs.str_warn_null_save), });
     myPSForm.value.goTo('psAmount');
   }
   else if (_savingP.value.amount < 0) {
-    $q.notify({ color: 'orange-4', textColor: 'black', icon: 'warning', message: 'Une épargne négative n\'est pas un épargne', });
+    $q.notify({ color: 'orange-4', textColor: 'black', icon: 'warning', message: transStr(stringsIDs.str_warn_neg_save), });
     myPSForm.value.goTo('psAmount');
   }
   else {
     indexAcc = getAccId(_savingP.value.account);
     if (BANK_SEARCH_ERROR == indexAcc) {
-      $q.notify({ color: 'orange-4', textColor: 'black', icon: 'warning', message: 'compte de rattachement non trouvé', });
+      $q.notify({ color: 'orange-4', textColor: 'black', icon: 'warning', message: transStr(stringsIDs.str_acc_not_found), });
       myPSForm.value.goTo('psAccount');
       return;
     }

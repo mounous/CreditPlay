@@ -15,10 +15,10 @@
           <q-checkbox v-model="event.selected" color="primary"  @click="[refresh++,propagateSelection(event)]"> </q-checkbox>
         </q-item-section>
         <q-item-section :key="refresh">
-          <q-item-label v-if="event.metaType=='Modulation' && event.type==optionsEvtType[1]">{{ event.month+'/'+event.year + ' - ' +event.title  +' (Augmentation de la mensualité : '+ event.new_mens+'€)'}}</q-item-label>
-          <q-item-label v-if="event.metaType=='Modulation' && event.type==optionsEvtType[0]">{{ event.month+'/'+event.year + ' - ' +event.title  +' (Réduction de la mensualité : '+ event.new_mens+'€)'}}</q-item-label>
-          <q-item-label v-if="event.metaType=='Rachat' && event.type==optionsReBuyType[0]">{{ event.month+'/'+event.year + ' - Rachat du capital restant dû avec épargne'}}</q-item-label>
-          <q-item-label v-if="event.metaType=='Rachat' && event.type==optionsReBuyType[1]">{{ event.month+'/'+event.year + ' - Rachat du capital restant dû à crédit (taux : '+event.reloanRate+'%)'}}</q-item-label>
+          <q-item-label v-if="event.metaType==EVT_META_TYPE_MOD && event.type==EVT_TYPE_MOD_MENS_UP">{{ event.month+'/'+event.year + ' - ' +event.title  +transStr(stringsIDs.str_mens_increase)+ event.new_mens+'€)'}}</q-item-label>
+          <q-item-label v-if="event.metaType==EVT_META_TYPE_MOD && event.type==EVT_TYPE_MOD_MENS_DOWN">{{ event.month+'/'+event.year + ' - ' +event.title  +transStr(stringsIDs.str_mens_decrease)+ event.new_mens+'€)'}}</q-item-label>
+          <q-item-label v-if="event.metaType==EVT_META_TYPE_REBUY && event.type==EVT_TYPE_REBUY_SAVINGS">{{ event.month+'/'+event.year + transStr(stringsIDs.str_rebuy_savings)}}</q-item-label>
+          <q-item-label v-if="event.metaType==EVT_META_TYPE_REBUY && event.type==EVT_TYPE_REBUY_CREDIT">{{ event.month+'/'+event.year + transStr(stringsIDs.str_rebuy_loan)+event.reloanRate+'%)'}}</q-item-label>
         </q-item-section>
       </q-item>
     </q-list>
@@ -29,7 +29,7 @@
       class="glossy"
       rounded
       color="primary"
-      label="Ajouter"
+      :label=transStr(stringsIDs.str_btn_add)
       @click="addeventactive = true"
       :disable="hasBeenRebougthSavings()"
     />
@@ -38,7 +38,7 @@
       class="glossy"
       rounded
       color="primary"
-      label="supprimer"
+      :label=transStr(stringsIDs.str_btn_del)
       @click="deleteEvents"
       :disable="simu.events.length==0"
     />
@@ -61,9 +61,10 @@ import { ref } from 'vue';
 import SingleEventHandler from '../components/SingleEventHandler.vue';
 import { useRouter } from 'vue-router';
 import { bank, simu } from 'stores/store';
-import {hasBeenRebougthSavings,optionsEvtType} from '../utils/credit_utility'
-import { optionsReBuyType } from '../utils/bank_utility';
+import {hasBeenRebougthSavings} from '../utils/credit_utility'
 import {targetPage} from '../utils/swipe_utils.js'
+import{transSIOspecial,transStr,stringsIDs} from '../stores/languages'
+import {EVT_META_TYPE_MOD, EVT_META_TYPE_REBUY, EVT_TYPE_MOD_MENS_UP, EVT_TYPE_MOD_MENS_DOWN, EVT_TYPE_REBUY_CREDIT, EVT_TYPE_REBUY_SAVINGS} from '../utils/credit_utility'
 const router = useRouter();
 const $q = useQuasar();
 var refresh=ref(0);
@@ -84,13 +85,13 @@ const deleteEvents=function(){
     if(simu.value.events[i].selected==true)//all following events will be deleted because they rely on this event
     {
       //delete fake single_io if rebought credit with savings
-      if(simu.value.events[i].type==optionsReBuyType[0])
+      if(simu.value.events[i].metaType==EVT_META_TYPE_REBUY&& simu.value.events[i].type==EVT_TYPE_REBUY_SAVINGS)
       {
         for(var acc=0;acc<bank.value.accounts.length;acc++)
         {
           for(var io=0;io<bank.value.accounts[acc].single_in_out.length;io++)
           {
-            if(bank.value.accounts[acc].single_in_out[io].title=='rachat avec économies')
+            if(bank.value.accounts[acc].single_in_out[io].title==transSIOspecial())
             {
               bank.value.accounts[acc].single_in_out.splice(io,1);
               simu.value.credit.has_been_rebougth=false;
@@ -124,7 +125,7 @@ const propagateSelection=function (event_in){
     {
       if(simu.value.events[j].selected==true)
       {
-        $q.notify({    color: 'orange-4',    textColor: 'black',    icon: 'warning',    message: 'impossible de déselectionner des évènements dépendant d\'évènements sélectionés',  });
+        $q.notify({    color: 'orange-4',    textColor: 'black',    icon: 'warning',    message: transStr(stringsIDs.str_warn_unselect),  });
         simu.value.events[i-1].selected=true;
         refresh.value++;
         return;
@@ -133,8 +134,8 @@ const propagateSelection=function (event_in){
   }
   while(i<simu.value.events.length) { simu.value.events[i].selected=event_in.selected; i++;hasToNotify=true; }
 
-  if(hasToNotify && event_in.selected)  {   $q.notify({    color: 'green-4',    textColor: 'black',    icon: 'cloud_done',    message: 'évènements dépendants aussi sélectionnés',  });  }
-  if(hasToNotify && !event_in.selected)  {   $q.notify({    color: 'green-4',    textColor: 'black',    icon: 'cloud_done',    message: 'évènements dépendants aussi désélectionnés',  });  }
+  if(hasToNotify && event_in.selected)  {   $q.notify({    color: 'green-4',    textColor: 'black',    icon: 'cloud_done',    message: transStr(stringsIDs.str_info_select_too),  });  }
+  if(hasToNotify && !event_in.selected)  {   $q.notify({    color: 'green-4',    textColor: 'black',    icon: 'cloud_done',    message: transStr(stringsIDs.str_info_unselect_too),  });  }
   refresh.value++;
 }
 </script>

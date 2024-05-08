@@ -14,7 +14,7 @@
           <template v-slot:append>
             <q-icon name="event" class="cursor-pointer">
               <q-popup-proxy v-model="mustpop" cover transition-show="scale" transition-hide="scale">
-                <q-date dark v-model="unformated" :locale="formatCalendar" :navigation-min-year-month="minNav"
+                <q-date dark v-model="unformated" :locale=getTranslatedFormatedCalendar() :navigation-min-year-month="minNav"
                   width="200px" :navigation-max-year-month="maxNav"
                   :disable="has_started != 'yes' && has_started != 'no'"
                   @update:model-value="[mustpop=false,simu.credit.startingDate=formatDate(unformated),parseCreditDate()]">
@@ -83,7 +83,7 @@ import { useRouter } from 'vue-router';
 import { ref } from 'vue';
 import { computeMensuality, computeCredit_init } from '../utils/credit_utility.js';
 import { setStartFormFilled,simu } from 'stores/store';
-import { formatCalendar } from '../utils/calendar_utility.js';
+import { getTranslatedFormatedCalendar } from '../stores/languages';
 import {formatDate} from '../utils/date_utility.js'
 import { useQuasar } from 'quasar';
 import {targetPage} from '../utils/swipe_utils.js'
