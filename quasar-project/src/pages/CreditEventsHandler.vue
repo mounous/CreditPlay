@@ -15,8 +15,8 @@
           <q-checkbox v-model="event.selected" color="primary"  @click="[refresh++,propagateSelection(event)]"> </q-checkbox>
         </q-item-section>
         <q-item-section :key="refresh">
-          <q-item-label v-if="event.metaType==EVT_META_TYPE_MOD && event.type==EVT_TYPE_MOD_MENS_UP">{{ event.month+'/'+event.year + ' - ' +event.title  +transStr(stringsIDs.str_mens_increase)+ event.new_mens+'€)'}}</q-item-label>
-          <q-item-label v-if="event.metaType==EVT_META_TYPE_MOD && event.type==EVT_TYPE_MOD_MENS_DOWN">{{ event.month+'/'+event.year + ' - ' +event.title  +transStr(stringsIDs.str_mens_decrease)+ event.new_mens+'€)'}}</q-item-label>
+          <q-item-label v-if="event.metaType==EVT_META_TYPE_MOD && event.type==EVT_TYPE_MOD_MENS_UP">{{ event.month+'/'+event.year + ' - ' +event.title  +transStr(stringsIDs.str_mens_increase)+ event.new_mens+getCurrencySymbol()+')'}}</q-item-label>
+          <q-item-label v-if="event.metaType==EVT_META_TYPE_MOD && event.type==EVT_TYPE_MOD_MENS_DOWN">{{ event.month+'/'+event.year + ' - ' +event.title  +transStr(stringsIDs.str_mens_decrease)+ event.new_mens+getCurrencySymbol()+')'}}</q-item-label>
           <q-item-label v-if="event.metaType==EVT_META_TYPE_REBUY && event.type==EVT_TYPE_REBUY_SAVINGS">{{ event.month+'/'+event.year + transStr(stringsIDs.str_rebuy_savings)}}</q-item-label>
           <q-item-label v-if="event.metaType==EVT_META_TYPE_REBUY && event.type==EVT_TYPE_REBUY_CREDIT">{{ event.month+'/'+event.year + transStr(stringsIDs.str_rebuy_loan)+event.reloanRate+'%)'}}</q-item-label>
         </q-item-section>
@@ -65,6 +65,7 @@ import {hasBeenRebougthSavings} from '../utils/credit_utility'
 import {targetPage} from '../utils/swipe_utils.js'
 import{transStr,stringsIDs,is_sio_special_name} from '../stores/languages'
 import {EVT_META_TYPE_MOD, EVT_META_TYPE_REBUY, EVT_TYPE_MOD_MENS_UP, EVT_TYPE_MOD_MENS_DOWN, EVT_TYPE_REBUY_CREDIT, EVT_TYPE_REBUY_SAVINGS} from '../utils/credit_utility'
+import {getCurrencySymbol} from '../stores/currencies'
 const router = useRouter();
 const $q = useQuasar();
 var refresh=ref(0);

@@ -43,6 +43,11 @@
         <languagePicker @language-picked="[mustPopLanguage=false,rerenderMainlayout++]"></languagePicker>
       </q-dialog>
     </div>
+    <div class="col">
+      <q-dialog v-model="mustPopCurrency" cover transition-show="scale" transition-hide="scale">
+        <CurrencyPicker @language-picked="[mustPopCurrency=false]"></CurrencyPicker>
+      </q-dialog>
+    </div>
 </template>
 
 <script setup lang="ts">
@@ -55,8 +60,9 @@ import { simu,bank,startFormFilled } from 'stores/store';
 import { LocalStorage } from 'quasar';
 import { useRouter } from 'vue-router';
 import { stringsIDs, transStr ,rerenderMainlayout} from 'src/stores/languages';
+import CurrencyPicker from 'src/components/currencyPicker.vue';
 var mustPopRestore=ref(false);
-//var reRenderLang=ref(1);
+var mustPopCurrency=ref(LocalStorage.has('currentCurrency')?false:true);
 var mustPopLanguage=ref(false);
 var tab=ref('start');
 var  initFormDone =ref(false);

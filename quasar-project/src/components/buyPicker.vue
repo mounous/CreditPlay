@@ -18,7 +18,7 @@
           " @update:model-value="[sendRebuyPicked(),emit('can-finish',{val:true})]"></q-select>
     </div>
     <div v-if="event_type ==EVT_TYPE_REBUY_SAVINGS && rebuy_saving_eco_left != '' && rebuy_saving_capital_to_pay != ''">
-       {{ transStr(stringsIDs.str_savings_left) + rebuy_saving_eco_left }}
+       {{ transStr(stringsIDs.str_savings_left) + rebuy_saving_eco_left+getCurrencySymbol() }}
     </div>
     <div v-if="event_type == EVT_TYPE_REBUY_SAVINGS && rebuy_saving_eco_left != '' && rebuy_saving_capital_to_pay != ''">
        {{ transStr(stringsIDs.str_capital_rebought)+ rebuy_saving_capital_to_pay }}
@@ -77,7 +77,7 @@ import { simu } from '../stores/store.ts';
 import { transStr,stringsIDs,transRebuymodType,getrebuyTypeFromStr,transSt,sentancesIDs,transMonthName,getMonthNbr } from 'src/stores/languages';
 import { getLatestMensuality, getEarliestNewEventDate,EVT_TYPE_REBUY_CREDIT,EVT_TYPE_REBUY_SAVINGS } from '../utils/credit_utility'
 import { subOneMonthToStringDate, addOneMonthToStringDate, compareDates,formatDate } from '../utils/date_utility'
-
+import {getCurrencySymbol} from '../stores/currencies'
 var reloanMax = ref(subOneMonthToStringDate(getLatestMensuality().l_y.toString() + '/' + getLatestMensuality().l_m.toString().padStart(2, '0')));
 console.log('test1');
 var reloanMin = ref(addOneMonthToStringDate(getEarliestNewEventDate().l_y.toString() + '/' + getEarliestNewEventDate().l_m.toString().padStart(2, '0')));

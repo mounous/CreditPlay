@@ -25,7 +25,7 @@
             <tbody>
               <tr v-for="account in bank.accounts" :key="account.id">
                 <th>{{ account.title }}</th>
-                <th>{{ account.amount }}</th>
+                <th>{{ formatnumber(account.amount.toString())+' '+getCurrencySymbol() }}</th>
                 <th>{{ account.rate }}</th>
                 <th><q-btn dense size="s" icon="delete_forever" @click="removeAccount(account)"></q-btn></th>
               </tr>
@@ -58,7 +58,7 @@
             </thead>
             <tbody v-for="account in bank.accounts" :key="account.name">
               <tr v-for="saving in account.periodic_savings" :key="saving.amount">
-                <th>{{ saving.amount }}</th>
+                <th>{{ formatnumber(saving.amount.toString())+' '+getCurrencySymbol() }}</th>
                 <th>{{ account.title }}</th>
                 <th>'{{ transoptSaveP(saving.type) }}'</th>
                 <th>{{ saving.startMonth + '/' + saving.startYear }}</th>
@@ -96,7 +96,7 @@
               <tr v-for="io in account.single_in_out" :key="io.amount">
                 <th>{{ io.title }}</th>
                 <th>{{ transoptSIO(io.type) }}</th>
-                <th>{{ io.amount }}</th>
+                <th>{{ formatnumber(io.amount.toString())+' '+getCurrencySymbol() }}</th>
                 <th>{{ account.title }}</th>
                 <th>{{ io.month + '/' + io.year }}</th>
                 <th><q-btn dense size="s" icon="delete_forever" @click="removeSingleIO(io,account)"></q-btn></th>
@@ -170,6 +170,8 @@ import periodicSavingsForm from 'src/components/periodicSavingsForm.vue';
 import singleIOFrom from 'src/components/singleIOFrom.vue';
 import {targetPage} from '../utils/swipe_utils.js'
 import {transStr,stringsIDs,transoptSaveP,transSt,sentancesIDs,transoptSIO,transSIOspecial} from '../stores/languages.ts'
+import { formatnumber } from 'src/utils/string_utils';
+import { getCurrencySymbol } from 'src/stores/currencies';
 const $q = useQuasar();
 
 const router = useRouter();

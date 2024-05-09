@@ -150,6 +150,7 @@ export enum stringsIDs {
   str_tab_help=125,
   //help page
   str_choose_lang=126,
+  str_choose_currency=127,
 };
 
 const translatedStrs=ref(
@@ -237,7 +238,7 @@ const translatedStrs=ref(
   ['Les dettes ne sont pas gérées','debts are not handled'],
   ['Renseignez la rentabilité annuelle du compte','Enter account profitability'],
   ['rentabilité','profitability'],
-  ['Une épargne de 0€ n\'est pas une épargne','Saving 0 is not saving'],
+  ['Une épargne de 0 n\'est pas une épargne','Saving 0 is not saving'],
   ['Une dette n\'est pas une épargne','A debt is not a saving'],
   //buypicker
   ['Pénalités','Penalties'],
@@ -293,7 +294,8 @@ const translatedStrs=ref(
   ['Mémoire','Memory'],
   ['aide','help'],
   //help page
-  ['changer la langue','choose language'],
+  ['changer la langue','change language'],
+  ['Changer de monnaie','Change currency'],
 ]);
 
 const getLangId=function()
@@ -563,7 +565,7 @@ export const getMonthNbr=function(month_in:string)
   for(let i=0;i<supportedLanguages.value.length;i++)
   {
     let count=1;
-    while(count<=month_names.length)
+    while(count<=month_names[i].length)
     {
       if(month_in==month_names[i][count-1])
       {

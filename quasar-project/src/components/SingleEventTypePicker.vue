@@ -37,6 +37,7 @@ import { useQuasar } from 'quasar';
 import { formatDate } from '../utils/date_utility.js';
 import{subOneMonthToStringDate,addOneMonthToStringDate} from '../utils/date_utility.js'
 import{transevtmodType,getModTypeFromStr,transStr,stringsIDs} from '../stores/languages'
+import {getCurrencySymbol} from '../stores/currencies'
 const DEFAULT_EVENT_TYPE_STR=transStr(stringsIDs.str_select_action);
 const DEFAULT_EVENT_TYPE=-1;
 var event_type_str = ref(DEFAULT_EVENT_TYPE_STR);
@@ -77,7 +78,7 @@ const validateMod = function () {
     modVal.value != DEFAULT_MODVAL
   ) {
     mensDiff.value = Number(modVal.value.split('(')[1].split('mois')[0]);
-    new_mens.value = Number(modVal.value.split('€')[0])
+    new_mens.value = Number(modVal.value.split(getCurrencySymbol())[0])
     emit('can-finish',{val:true});
     return true;
   }

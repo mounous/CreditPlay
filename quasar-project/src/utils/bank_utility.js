@@ -4,6 +4,7 @@ import { returnBaseData,EVT_TYPE_REBUY_SAVINGS  } from './credit_utility';
 import { formatnumber } from './string_utils';
 import { compareDates } from 'src/utils/date_utility';
 import{transSIOspecial,stringsIDs,transStr,transMonthName,getMonthNbr} from '../stores/languages'
+import {getCurrencySymbol} from '../stores/currencies'
 
 const BANK_SEARCH_ERROR=-1;
 const BANK_SAVE_TYPE_MONTHLY=0;
@@ -319,7 +320,7 @@ const provideRebuyOptions=function(evt_type,penalties){
     {
       var to_pay=returnBaseData(Number(computed[i][0].split('-')[1]),getMonthNbr(computed[i][0].split('-')[0])).capital_left*(1+penalties/100);
       options_rebuy_savings.push(computed[i][0].split('-').join(' '));
-      forDisplay_post_select_opt.push({eco_left:formatnumber(String(Math.round(100*(computed[i][1]-to_pay))/100))+' €',value_paid:formatnumber(String(Math.round(100*to_pay)/100)+' €')});
+      forDisplay_post_select_opt.push({eco_left:formatnumber(String(Math.round(100*(computed[i][1]-to_pay))/100))+' ',value_paid:formatnumber(String(Math.round(100*to_pay)/100)+' '+getCurrencySymbol())});
       i++;
     }
     return [options_rebuy_savings,forDisplay_post_select_opt];

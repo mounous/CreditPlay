@@ -3,6 +3,7 @@ import { simu ,bank} from 'src/stores/store';
 import { get_nb_mens_diff, compareDates } from './date_utility';
 import {getSortedAccountsFromPoorToHighRate,getSavingsEarlier,compute_savings, BANK_SIO_TYPE_OUT} from './bank_utility'
 import {transStr,stringsIDs,transevtmetaType,transSIOspecial ,transMonthName,getMonthNbr} from '../stores/languages'
+import {getCurrencySymbol} from '../stores/currencies'
 const EVT_META_TYPE_MOD =0;
 const EVT_META_TYPE_REBUY=1;
 const EVT_TYPE_MOD_MENS_UP=1;
@@ -329,7 +330,7 @@ const provideModOptions=(evt_type_in,evt_year_in,evt_month_in)=>{
     {
       for(let i=1;i<mensualities_to_end;i++)
       {
-        toreturn.push((Math.round(computeMensuality_noSave_Months(mensualities_to_end-i,up2date_rate,ret.capital_left)*100)/100).toString() +'€ (-'+i.toString()+' mois)');
+        toreturn.push((Math.round(computeMensuality_noSave_Months(mensualities_to_end-i,up2date_rate,ret.capital_left)*100)/100).toString() +getCurrencySymbol()+' (-'+i.toString()+' mois)');
       }
       if(mensualities_to_end==1)
       {
@@ -340,7 +341,7 @@ const provideModOptions=(evt_type_in,evt_year_in,evt_month_in)=>{
     {
       for(let i=1;i<simu.value.credit.duration_y*12;i++)//max twince the duration
       {
-        toreturn.push((Math.round(computeMensuality_noSave_Months(mensualities_to_end+i,up2date_rate,ret.capital_left)*100)/100).toString() +'€ (+'+i.toString()+' mois)');
+        toreturn.push((Math.round(computeMensuality_noSave_Months(mensualities_to_end+i,up2date_rate,ret.capital_left)*100)/100).toString() +getCurrencySymbol()+' (+'+i.toString()+' mois)');
       }
     }
     return toreturn;
