@@ -63,7 +63,7 @@ import { useRouter } from 'vue-router';
 import { bank, simu } from 'stores/store';
 import {hasBeenRebougthSavings} from '../utils/credit_utility'
 import {targetPage} from '../utils/swipe_utils.js'
-import{transSIOspecial,transStr,stringsIDs} from '../stores/languages'
+import{transStr,stringsIDs,is_sio_special_name} from '../stores/languages'
 import {EVT_META_TYPE_MOD, EVT_META_TYPE_REBUY, EVT_TYPE_MOD_MENS_UP, EVT_TYPE_MOD_MENS_DOWN, EVT_TYPE_REBUY_CREDIT, EVT_TYPE_REBUY_SAVINGS} from '../utils/credit_utility'
 const router = useRouter();
 const $q = useQuasar();
@@ -91,7 +91,7 @@ const deleteEvents=function(){
         {
           for(var io=0;io<bank.value.accounts[acc].single_in_out.length;io++)
           {
-            if(bank.value.accounts[acc].single_in_out[io].title==transSIOspecial())
+            if(is_sio_special_name(bank.value.accounts[acc].single_in_out[io].title))
             {
               bank.value.accounts[acc].single_in_out.splice(io,1);
               simu.value.credit.has_been_rebougth=false;

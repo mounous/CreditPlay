@@ -406,13 +406,24 @@ export const getOptSIOFromStr=function(input:string)
   }
 }
 export const sio_special_name=ref(
-  [
+
 ['rachat avec économies','rebuy with savings'],
-  ]
+
 );
+export const is_sio_special_name=function(name:string)
+{
+  for(let i=0;i<supportedLanguages.value.length;i++)
+  {
+    if(name==sio_special_name.value[i])
+    {
+      return true;
+    }
+  }
+  return false;
+}
 export const transSIOspecial=function()
 {
-  return sio_special_name.value[0][getLangId()];
+  return sio_special_name.value[getLangId()];
 }
 //------------------------------------------------------------------------//
 //                     Event type and metatype                            //
