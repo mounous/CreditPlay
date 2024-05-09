@@ -1,8 +1,8 @@
 
 import { simu ,bank} from 'src/stores/store';
-import { month_names,get_nb_mens_diff,getMonthNbr, compareDates } from './date_utility';
+import { get_nb_mens_diff, compareDates } from './date_utility';
 import {getSortedAccountsFromPoorToHighRate,getSavingsEarlier,compute_savings, BANK_SIO_TYPE_OUT} from './bank_utility'
-import {transoptSIO,transStr,stringsIDs,transevtmetaType,transSIOspecial } from '../stores/languages'
+import {transStr,stringsIDs,transevtmetaType,transSIOspecial ,transMonthName,getMonthNbr} from '../stores/languages'
 const EVT_META_TYPE_MOD =0;
 const EVT_META_TYPE_REBUY=1;
 const EVT_TYPE_MOD_MENS_UP=1;
@@ -51,7 +51,7 @@ const computeAmort=(starting_year,starting_month,amount,nb_mens,mens,rate_rebuy=
     capital_to_pay -= capital_paid;
 
     amort_monthly.push([
-      month_names[curentMonth-1] + '-' + currentYear.toString(),
+      transMonthName(curentMonth-1) + '-' + currentYear.toString(),
       Math.round(capital_to_pay * 100) / 100,
       Math.round(interests_paid * 100) / 100,
     ]);
@@ -66,7 +66,7 @@ const computeAmort=(starting_year,starting_month,amount,nb_mens,mens,rate_rebuy=
   interests_to_pay = mens - capital_to_pay;
   interests_paid += interests_to_pay;
   amort_monthly.push([
-      month_names[curentMonth-1] + '-' + currentYear.toString(),
+    transMonthName(curentMonth-1) + '-' + currentYear.toString(),
       0,
       Math.round(interests_paid * 100) / 100,
     ]);
@@ -193,7 +193,7 @@ const apply_events_chain=()=>{
           interestsToLog=simu.value.events[i-1].amortEvt[j][2];
         }
         //then update with zero to drop
-        var monthToLog=month_names[getMonthNbr(simu.value.events[i].amortEvt[simu.value.events[i].amortEvt.length-1][0].split('-')[0])];
+        var monthToLog=transMonthName(getMonthNbr(simu.value.events[i].amortEvt[simu.value.events[i].amortEvt.length-1][0].split('-')[0]));
         var yearToLog=simu.value.events[i].amortEvt[simu.value.events[i].amortEvt.length-1][0].split('-')[1];
         simu.value.events[i].amortEvt.push([monthToLog+'-'+yearToLog,0.00,interestsToLog]);
         //substract amount to pay, on the less rentable account first

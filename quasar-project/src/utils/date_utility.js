@@ -1,30 +1,5 @@
 import {ref} from 'vue'
 
-const month_names = [
-  'Janvier',
-  'Fevrier',
-  'Mars',
-  'Avril',
-  'Mai',
-  'Juin',
-  'Juillet',
-  'Aout',
-  'Septembre',
-  'Octobre',
-  'Novembre',
-  'Decembre',
-];
-const getMonthNbr=(evt_month_in)=>{
-  var count=1;
-  while(count<=month_names.length)
-  {
-    if(evt_month_in==month_names[count-1])
-    {
-      return count;
-    }
-    count++;
-  }
-}
 
 const compareDates=function (y_1,m_1,y_2,m_2)
 {
@@ -148,4 +123,4 @@ const formatDate=function(unformated)
 
   return unformated.split('/')[2]+'/'+unformated.split('/')[1]+'/'+unformated.split('/')[0];
 }
-export { month_names,get_nb_mens_diff,getMonthNbr,subOneMonthToStringDate,addOneMonthToStringDate,compareDates,formatDate};
+export { get_nb_mens_diff,subOneMonthToStringDate,addOneMonthToStringDate,compareDates,formatDate};

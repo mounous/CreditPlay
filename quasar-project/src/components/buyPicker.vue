@@ -74,9 +74,9 @@ import { ref, defineEmits } from 'vue';
 import { provideRebuyOptions,  hasSavings } from '../utils/bank_utility';
 import { getTranslatedFormatedCalendar } from '../stores/languages';
 import { simu } from '../stores/store.ts';
-import { transStr,stringsIDs,transRebuymodType,getrebuyTypeFromStr,transSt,sentancesIDs } from 'src/stores/languages';
+import { transStr,stringsIDs,transRebuymodType,getrebuyTypeFromStr,transSt,sentancesIDs,transMonthName,getMonthNbr } from 'src/stores/languages';
 import { getLatestMensuality, getEarliestNewEventDate,EVT_TYPE_REBUY_CREDIT,EVT_TYPE_REBUY_SAVINGS } from '../utils/credit_utility'
-import { subOneMonthToStringDate, addOneMonthToStringDate, compareDates, getMonthNbr, month_names,formatDate } from '../utils/date_utility'
+import { subOneMonthToStringDate, addOneMonthToStringDate, compareDates,formatDate } from '../utils/date_utility'
 
 var reloanMax = ref(subOneMonthToStringDate(getLatestMensuality().l_y.toString() + '/' + getLatestMensuality().l_m.toString().padStart(2, '0')));
 console.log('test1');
@@ -151,7 +151,7 @@ const sendRebuyPicked = function (force = false) {
     else {//rebuy with credit
       event_year_str = date_reloan.value.split('/')[2];
       event_month = Number(date_reloan.value.split('/')[1]);
-      event_month_str = month_names[event_month - 1];
+      event_month_str = transMonthName(event_month - 1);
       if(rate_reloan.value!=0 && duration_reloan.value!=0 &&date_reloan.value!='' && event_month>0 && Number(event_year_str)<=getLatestMensuality().l_y && Number(event_year_str)>=getEarliestNewEventDate().l_y)
       {
         emit('can-finish',{val:true});

@@ -82,12 +82,12 @@
 import { useRouter } from 'vue-router';
 import { ref } from 'vue';
 import { computeMensuality, computeCredit_init } from '../utils/credit_utility.js';
-import { setStartFormFilled,simu } from 'stores/store';
+import { bank, setStartFormFilled,simu } from 'stores/store';
 import { getTranslatedFormatedCalendar } from '../stores/languages';
 import {formatDate} from '../utils/date_utility.js'
 import { useQuasar } from 'quasar';
 import {targetPage} from '../utils/swipe_utils.js'
-import {transStr,stringsIDs,transSt,sentancesIDs} from '../stores/languages.ts'
+import {transStr,stringsIDs,transSt,sentancesIDs,is_sio_special_name} from '../stores/languages.ts'
 
 const router = useRouter();
 const $q=useQuasar();
@@ -134,6 +134,18 @@ function onForceSubmmit(){
   {
     simu.value.events=[]
     simu.value.credit.has_been_rebougth=false;
+    //remove rebuy with credit single io if any existing
+    for(let i=0;i<bank.value.accounts.length;i++)
+    {
+      for(let sio=0;sio<bank.value.accounts[i].single_in_out.length;sio++)
+      {
+        if(is_sio_special_name(bank.value.accounts[i].single_in_out[sio].title))
+        {
+          //remove "rebuy with savings sio" as it will be re-created by apply_events_chain
+          bank.value.accounts[i].single_in_out.splice(sio,1);
+        }
+      }
+    }
     computeMensuality();
     computeCredit_init();
     setStartFormFilled(true);

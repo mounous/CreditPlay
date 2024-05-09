@@ -47,13 +47,12 @@
 <script setup>
 
 import { ref ,defineEmits} from 'vue';
-import { month_names } from '../utils/date_utility.js';
 import {  apply_events_chain,build_event_name } from '../utils/credit_utility.js';
 import SingleEventTypePicker from './SingleEventTypePicker.vue';
 import buyPicker from './buyPicker.vue';
 import { simu } from 'stores/store';
 import {EVT_TYPE_REBUY_SAVINGS } from '../utils/credit_utility'
-import {transevtmetaType,transStr,stringsIDs} from '../stores/languages'
+import {transevtmetaType,transStr,stringsIDs,transMonthName} from '../stores/languages'
 import {EVT_META_TYPE_MOD, EVT_META_TYPE_REBUY} from '../utils/credit_utility'
 var canValidateMod=ref(false);
 var canValidateRebuy=ref(false);
@@ -97,7 +96,7 @@ const updateFromPicker=function(evtDataFromPicker){
   event_.value['year']=evtDataFromPicker['year'];
   event_.value['month']=evtDataFromPicker['month'];
   event_.value['year_str']=String(evtDataFromPicker['year']);
-  event_.value['month_str']=month_names[event_.value.month-1];
+  event_.value['month_str']=transMonthName(event_.value.month-1);
   console.log(evtDataFromPicker);
 };
 const updateFromRebuyPicker=function(evtDataFromPicker){

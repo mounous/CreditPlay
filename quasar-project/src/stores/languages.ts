@@ -5,7 +5,7 @@ import {ref} from 'vue'
 import {BANK_SAVE_TYPE_MONTHLY,BANK_SAVE_TYPE_YEARLY,BANK_SIO_TYPE_IN,BANK_SIO_TYPE_OUT } from 'src/utils/bank_utility';
 import {  EVT_TYPE_MOD_MENS_UP, EVT_TYPE_MOD_MENS_DOWN, EVT_TYPE_REBUY_CREDIT, EVT_TYPE_REBUY_SAVINGS} from '../utils/credit_utility'
 export const supportedLanguages=ref(['Français','English']);
-
+export const rerenderMainlayout=ref(0);
 //------------------------------------------------------------------------//
 //                      labels                                            //
 //------------------------------------------------------------------------//
@@ -486,7 +486,9 @@ export const getrebuyTypeFromStr=function(input:string)
       }
     }
 }
-
+//------------------------------------------------------------------------//
+//                        DATES HANDLING                                  //
+//------------------------------------------------------------------------//
 
  const formatCalendar_fr = {
   /* starting with Sunday */
@@ -519,4 +521,55 @@ export const getTranslatedFormatedCalendar=function()
   return formatcalendars[getLangId()];
 }
 
-export const rerenderMainlayout=ref(0);
+
+
+
+
+const month_names = [[
+  'Janvier',
+  'Fevrier',
+  'Mars',
+  'Avril',
+  'Mai',
+  'Juin',
+  'Juillet',
+  'Aout',
+  'Septembre',
+  'Octobre',
+  'Novembre',
+  'Decembre'],
+  [
+  'January',
+  'February',
+  'March',
+  'April',
+  'May',
+  'June',
+  'July',
+  'August',
+  'September',
+  'October',
+  'November',
+  'December'
+  ]
+];
+export const transMonthName=function(month:number)
+{
+  return month_names[getLangId()][month];
+}
+export const getMonthNbr=function(month_in:string)
+{
+  //walk over all languages to prevent bugs if user switched
+  for(let i=0;i<supportedLanguages.value.length;i++)
+  {
+    let count=1;
+    while(count<=month_names.length)
+    {
+      if(month_in==month_names[i][count-1])
+      {
+        return count;
+      }
+      count++;
+    }
+  }
+}

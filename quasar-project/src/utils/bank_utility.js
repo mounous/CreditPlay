@@ -1,10 +1,9 @@
 
 import { bank, simu } from 'src/stores/store';
-import {month_names,getMonthNbr } from 'src/utils/date_utility'
 import { returnBaseData,EVT_TYPE_REBUY_SAVINGS  } from './credit_utility';
 import { formatnumber } from './string_utils';
 import { compareDates } from 'src/utils/date_utility';
-import{transSIOspecial,stringsIDs,transStr} from '../stores/languages'
+import{transSIOspecial,stringsIDs,transStr,transMonthName,getMonthNbr} from '../stores/languages'
 
 const BANK_SEARCH_ERROR=-1;
 const BANK_SAVE_TYPE_MONTHLY=0;
@@ -277,12 +276,12 @@ const compute_savings=function(startY,startM,durationM,save=false)
       fictive_avg_month_spent[acc]++;
       total_savings+=fictive_accounts[acc];
     }
-    result.push([(month_names[currentM-1]+'-'+currentY.toString()),total_savings]);
+    result.push([(transMonthName(currentM-1)+'-'+currentY.toString()),total_savings]);
     if(save)
     {
       for(var accID=0;accID<bank.value.accounts.length;accID++)
       {
-        bank.value.accounts[accID].computedOverTime.push({date:month_names[currentM-1]+'-'+currentY.toString(),amount:fictive_accounts[accID]})
+        bank.value.accounts[accID].computedOverTime.push({date:transMonthName(currentM-1)+'-'+currentY.toString(),amount:fictive_accounts[accID]})
       }
     }
     total_savings=0;
