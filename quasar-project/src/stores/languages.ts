@@ -3,7 +3,7 @@
 import { LocalStorage } from 'quasar';
 import {ref} from 'vue'
 import {BANK_SAVE_TYPE_MONTHLY,BANK_SAVE_TYPE_YEARLY,BANK_SIO_TYPE_IN,BANK_SIO_TYPE_OUT } from 'src/utils/bank_utility';
-import {EVT_META_TYPE_MOD, EVT_META_TYPE_REBUY, EVT_TYPE_MOD_MENS_UP, EVT_TYPE_MOD_MENS_DOWN, EVT_TYPE_REBUY_CREDIT, EVT_TYPE_REBUY_SAVINGS} from '../utils/credit_utility'
+import {  EVT_TYPE_MOD_MENS_UP, EVT_TYPE_MOD_MENS_DOWN, EVT_TYPE_REBUY_CREDIT, EVT_TYPE_REBUY_SAVINGS} from '../utils/credit_utility'
 export const supportedLanguages=ref(['Français','English']);
 
 //------------------------------------------------------------------------//
@@ -137,6 +137,19 @@ export enum stringsIDs {
   //bank_utils
   str_savings_empty=114,
   str_unsufficient_savings=115,
+  //main layout
+  str_restore_last=116,
+  str_yes=117,
+  str_no=118,
+  str_tab_credit=119,
+  str_tab_ops=120,
+  str_tab_sum=121,
+  str_tab_chart=122,
+  str_tab_savings=123,
+  str_tab_mem=124,
+  str_tab_help=125,
+  //help page
+  str_choose_lang=126,
 };
 
 const translatedStrs=ref(
@@ -268,6 +281,19 @@ const translatedStrs=ref(
   //bank_utils
   ['onglet épargne non renseigné','Savings not filled'],
   ['economies insuffisantes','unsufficient savings'],
+  //main layout
+  ['Reprendre la dernière simulation sauvegardée ?','Resume last saved simulation ?'],
+  ['oui','yes'],
+  ['non','no'],
+  ['Crédit','Loan'],
+  ['Opérations','Operations'],
+  ['Résumé','Summary'],
+  ['Graphique','Chart'],
+  ['épargne','Savings'],
+  ['Mémoire','Memory'],
+  ['aide','help'],
+  //help page
+  ['changer la langue','choose language'],
 ]);
 
 const getLangId=function()
@@ -481,3 +507,5 @@ export const getTranslatedFormatedCalendar=function()
 {
   return formatcalendars[getLangId()];
 }
+
+export const rerenderMainlayout=ref(0);

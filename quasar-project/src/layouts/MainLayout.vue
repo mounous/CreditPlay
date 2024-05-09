@@ -1,17 +1,17 @@
 <template>
-    <q-layout view="hhh lpr fFf" class="bg-image" :key="reRenderLang">
+    <q-layout view="hhh lpr fFf" class="bg-image" :key="rerenderMainlayout">
       <q-footer class="gutter">
         <q-tabs
         v-model="tab"
         class="footer-bg text-white shadow-2 gutter"
       >
-        <q-route-tab name="start" label="crédit" nocaps icon="feed" to="/" />
-        <q-route-tab name="events" label="Opérations" icon="toc" to="/events" :disable="initFormDone==false"/>
-        <q-route-tab name="summary" label="résumé" icon="money" to="/summary" :disable="initFormDone==false"/>
-        <q-route-tab name="chart" label="graphique" icon="bar_chart" to="/lineChart" :disable="initFormDone==false&&bankDone==false" />
-        <q-route-tab name="save" label="épargne" icon="account_balance" to="/bank"/>
-        <q-route-tab name="memory" label="Mémoire" icon="import_export" to="/memory"/>
-        <q-route-tab name="help" label="aide" icon="help" to="/help"/>
+        <q-route-tab name="start" :label=transStr(stringsIDs.str_tab_credit) nocaps icon="feed" to="/" />
+        <q-route-tab name="events" :label=transStr(stringsIDs.str_tab_ops) icon="toc" to="/events" :disable="initFormDone==false"/>
+        <q-route-tab name="summary" :label=transStr(stringsIDs.str_tab_sum) icon="money" to="/summary" :disable="initFormDone==false"/>
+        <q-route-tab name="chart" :label=transStr(stringsIDs.str_tab_chart) icon="bar_chart" to="/lineChart" :disable="initFormDone==false&&bankDone==false" />
+        <q-route-tab name="save" :label=transStr(stringsIDs.str_tab_savings) icon="account_balance" to="/bank"/>
+        <q-route-tab name="memory" :label=transStr(stringsIDs.str_tab_mem) icon="import_export" to="/memory"/>
+        <q-route-tab name="help" :label=transStr(stringsIDs.str_tab_help) icon="help" to="/help"/>
 
       </q-tabs>
       </q-footer>
@@ -23,24 +23,24 @@
     </q-layout>
 
     <div class="col">
-      <q-dialog v-model="mustPopRestore" cover transition-show="scale" transition-hide="scale">
+      <q-dialog v-model="mustPopRestore" cover transition-show="scale" transition-hide="scale" :key="rerenderMainlayout">
         <q-card>
           <div class="col flex flex center justify-around">
             <div class="q-ma-md">
-              Reprendre la dernière simulation sauvegardée ?
+              {{ transStr(stringsIDs.str_restore_last) }}
             </div>
             <div class="row nowrap">
-              <q-btn label="Non" @click="mustPopRestore = false"></q-btn>
-              <q-btn label="Oui" @click="[mustPopRestore=false,restoreLastSaving()]"></q-btn>
+              <q-btn :label=transStr(stringsIDs.str_no) @click="mustPopRestore = false"></q-btn>
+              <q-btn :label=transStr(stringsIDs.str_yes) @click="[mustPopRestore=false,restoreLastSaving()]"></q-btn>
             </div>
           </div>
         </q-card>
       </q-dialog>
     </div>
 
-    <div class="col">
+    <div class="col" :key="rerenderMainlayout">
       <q-dialog v-model="mustPopLanguage" cover transition-show="scale" transition-hide="scale">
-        <languagePicker @language-picked="[mustPopLanguage=false,reRenderLang++]"></languagePicker>
+        <languagePicker @language-picked="[mustPopLanguage=false,rerenderMainlayout++]"></languagePicker>
       </q-dialog>
     </div>
 </template>
@@ -50,11 +50,13 @@
 
 import { onBeforeMount, ref, watch } from 'vue';
 import languagePicker from 'src/components/languagePicker.vue';
+
 import { simu,bank,startFormFilled } from 'stores/store';
 import { LocalStorage } from 'quasar';
 import { useRouter } from 'vue-router';
+import { stringsIDs, transStr ,rerenderMainlayout} from 'src/stores/languages';
 var mustPopRestore=ref(false);
-var reRenderLang=ref(1);
+//var reRenderLang=ref(1);
 var mustPopLanguage=ref(false);
 var tab=ref('start');
 var  initFormDone =ref(false);
