@@ -277,12 +277,12 @@ const compute_savings=function(startY,startM,durationM,save=false)
       fictive_avg_month_spent[acc]++;
       total_savings+=fictive_accounts[acc];
     }
-    result.push([(transMonthName(currentM-1)+'-'+currentY.toString()),total_savings]);
+    result.push([(transMonthName(currentM)+'-'+currentY.toString()),total_savings]);
     if(save)
     {
       for(var accID=0;accID<bank.value.accounts.length;accID++)
       {
-        bank.value.accounts[accID].computedOverTime.push({date:transMonthName(currentM-1)+'-'+currentY.toString(),amount:fictive_accounts[accID]})
+        bank.value.accounts[accID].computedOverTime.push({date:transMonthName(currentM)+'-'+currentY.toString(),amount:fictive_accounts[accID]})
       }
     }
     total_savings=0;
@@ -309,6 +309,7 @@ const provideRebuyOptions=function(evt_type,penalties){
     var computed=compute_savings(getSavingsEarlier()[1],getSavingsEarlier()[0],simu.value.credit.duration_y*12);
     while(computed[i][1]<returnBaseData(Number(computed[i][0].split('-')[1]),getMonthNbr(computed[i][0].split('-')[0])).capital_left*(1+penalties/100) && i!=computed.length)
     {
+      console.log(i);
       i++;
     }
     if(i==computed.length)

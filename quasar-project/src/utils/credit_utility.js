@@ -67,7 +67,7 @@ const computeAmort=(starting_year,starting_month,amount,nb_mens,mens,rate_rebuy=
   interests_to_pay = mens - capital_to_pay;
   interests_paid += interests_to_pay;
   amort_monthly.push([
-    transMonthName(curentMonth-1) + '-' + currentYear.toString(),
+    transMonthName(curentMonth) + '-' + currentYear.toString(),
       0,
       Math.round(interests_paid * 100) / 100,
     ]);

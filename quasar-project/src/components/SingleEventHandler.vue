@@ -96,7 +96,7 @@ const updateFromPicker=function(evtDataFromPicker){
   event_.value['year']=evtDataFromPicker['year'];
   event_.value['month']=evtDataFromPicker['month'];
   event_.value['year_str']=String(evtDataFromPicker['year']);
-  event_.value['month_str']=transMonthName(event_.value.month-1);
+  event_.value['month_str']=transMonthName(event_.value.month);
   console.log(evtDataFromPicker);
 };
 const updateFromRebuyPicker=function(evtDataFromPicker){

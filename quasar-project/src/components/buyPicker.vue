@@ -151,7 +151,7 @@ const sendRebuyPicked = function (force = false) {
     else {//rebuy with credit
       event_year_str = date_reloan.value.split('/')[2];
       event_month = Number(date_reloan.value.split('/')[1]);
-      event_month_str = transMonthName(event_month - 1);
+      event_month_str = transMonthName(event_month);
       if(rate_reloan.value!=0 && duration_reloan.value!=0 &&date_reloan.value!='' && event_month>0 && Number(event_year_str)<=getLatestMensuality().l_y && Number(event_year_str)>=getEarliestNewEventDate().l_y)
       {
         emit('can-finish',{val:true});
