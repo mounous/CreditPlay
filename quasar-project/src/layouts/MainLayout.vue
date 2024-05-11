@@ -115,7 +115,6 @@ const MustPopObligation=function()
   {
     mustPopLanguage.value=true;
   }
-  mustPopLanguage.value=true;
 }
 onBeforeMount(MustPopObligation);
 const restoreLastSaving=function()
