@@ -60,7 +60,9 @@ import { simu,bank,startFormFilled } from 'stores/store';
 import { LocalStorage } from 'quasar';
 import { useRouter } from 'vue-router';
 import { stringsIDs, transStr ,rerenderMainlayout} from 'src/stores/languages';
+import { reapplyLanguageToData} from 'src/utils/credit_utility';
 import CurrencyPicker from 'src/components/currencyPicker.vue';
+
 var mustPopRestore=ref(false);
 var mustPopCurrency=ref(LocalStorage.has('currentCurrency')?false:true);
 var mustPopLanguage=ref(false);
@@ -127,6 +129,8 @@ const restoreLastSaving=function()
     simu.value=lastSave[0].simu;
     bank.value=lastSave[0].bank;
     startFormFilled.value = lastSave[0].startFormFilled;
+    // in case events and simu have been saved in a different language, recompute the whole simu
+    reapplyLanguageToData();
     router.push('/lineChart');
   }
 }

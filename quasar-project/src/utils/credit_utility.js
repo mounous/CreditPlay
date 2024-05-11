@@ -1,8 +1,8 @@
 
-import { simu ,bank} from 'src/stores/store';
+import { bank, simu, startFormFilled } from 'src/stores/store';
 import { get_nb_mens_diff, compareDates } from './date_utility';
 import {getSortedAccountsFromPoorToHighRate,getSavingsEarlier,compute_savings, BANK_SIO_TYPE_OUT} from './bank_utility'
-import {transStr,stringsIDs,transevtmetaType,transSIOspecial ,transMonthName,getMonthNbr} from '../stores/languages'
+import {transStr,stringsIDs,transevtmetaType,transSIOspecial ,transMonthName,getMonthNbr,is_sio_special_name} from '../stores/languages'
 import {getCurrencySymbol} from '../stores/currencies'
 const EVT_META_TYPE_MOD =0;
 const EVT_META_TYPE_REBUY=1;
@@ -52,7 +52,7 @@ const computeAmort=(starting_year,starting_month,amount,nb_mens,mens,rate_rebuy=
     capital_to_pay -= capital_paid;
 
     amort_monthly.push([
-      transMonthName(curentMonth-1) + '-' + currentYear.toString(),
+      transMonthName(curentMonth) + '-' + currentYear.toString(),
       Math.round(capital_to_pay * 100) / 100,
       Math.round(interests_paid * 100) / 100,
     ]);
@@ -458,6 +458,36 @@ const build_event_name=function(metaType)
     return transevtmetaType(EVT_META_TYPE_REBUY)+' '+String(getRebuyNbr()+1);
   }
 }
+
+
+const reapplyLanguageToData=function()
+{
+    for(let i=0;i<simu.value.events.length;i++)
+    {
+      simu.value.events[i].month_str=transMonthName(getMonthNbr(simu.value.events[i].month_str));
+    }
+    if(startFormFilled.value==true)
+    {
+      //apply language switching to the special sio : remove
+      for(let i=0;i<bank.value.accounts.length;i++)
+      {
+        for(let sio=0;sio<bank.value.accounts[i].single_in_out.length;sio++)
+        {
+          if(is_sio_special_name(bank.value.accounts[i].single_in_out[sio].title))
+          {
+            //remove "rebuy with savings sio" as it will be re-created by apply_events_chain
+            bank.value.accounts[i].single_in_out.splice(sio,1);
+          }
+        }
+      }
+      //recompute to have everything switched to desired language
+      computeCredit_init();
+      apply_events_chain();
+    }
+}
+
+
+
 export { computeMensuality, computeCredit_init, getEarliestNewEventDate, sortEvents,provideModOptions,apply_events_chain,getChartXAxis,
-  returnBaseData,getLatestMensuality,hasBeenRebougthSavings,build_event_name,
+  returnBaseData,getLatestMensuality,hasBeenRebougthSavings,build_event_name,reapplyLanguageToData,
   EVT_META_TYPE_MOD, EVT_META_TYPE_REBUY, EVT_TYPE_MOD_MENS_UP, EVT_TYPE_MOD_MENS_DOWN, EVT_TYPE_REBUY_CREDIT, EVT_TYPE_REBUY_SAVINGS};

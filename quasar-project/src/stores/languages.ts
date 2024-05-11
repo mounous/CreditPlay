@@ -565,7 +565,7 @@ const month_names = [[
 ];
 export const transMonthName=function(month:number)
 {
-  return month_names[getLangId()][month];
+  return month_names[getLangId()][month-1];
 }
 export const getMonthNbr=function(month_in:string)
 {
