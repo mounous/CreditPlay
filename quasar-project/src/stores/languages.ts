@@ -151,6 +151,10 @@ export enum stringsIDs {
   //help page
   str_choose_lang=126,
   str_choose_currency=127,
+  //notify utils
+  str_not_show_again=128,
+  //help page notifs
+  str_display_help=129,
 };
 
 const translatedStrs=ref(
@@ -296,6 +300,10 @@ const translatedStrs=ref(
   //help page
   ['changer la langue','change language'],
   ['Changer de monnaie','Change currency'],
+  //notify utils
+  ['ne plus voir','don\'t show again'],
+  //help page notifs
+  ['afficher l\'aide','Display tips'],
 ]);
 
 const getLangId=function()

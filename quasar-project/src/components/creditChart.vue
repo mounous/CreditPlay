@@ -290,7 +290,9 @@ onBeforeMount(getPopObligation);
 const displayHelp=function(){
   if(simu.value.events.length>1)
   {
-    $q.notify({    color: 'green-4',    textColor: 'black',    icon: 'cloud_done',    message: transStr(stringsIDs.str_graph_indication),  });
+    $q.notify({    color: 'green-4',    textColor: 'black', message: transStr(stringsIDs.str_graph_indication), actions: [
+      { icon: 'close', color: 'white', round: true }
+    ] });
   }
 }
 onBeforeMount(displayHelp);
