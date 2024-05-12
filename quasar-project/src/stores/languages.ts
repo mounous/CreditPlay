@@ -157,6 +157,8 @@ export enum stringsIDs {
   str_display_help=129,
   //picker
   str_choose_evt_type=130,
+  str_indic_penalties=131,
+  str_indic_rebuy_type=132,
 };
 
 const translatedStrs=ref(
@@ -307,6 +309,9 @@ const translatedStrs=ref(
   //help page notifs
   ['afficher l\'aide','Display tips'],
   ['choisir le type d\'évènement','Choose event type'],
+  //Picker
+  ['Renseignez les pénalités contractuelles de rachat','Enter contractual rebuy penalties'],
+  ['Reseignez le type de rachat. Rachat avec épargne disponible seulement si l\'épargne a été renseignée','Select rebuy type. Rebuy with savings allowed only if savings are filled'],
 ]);
 
 const getLangId=function()

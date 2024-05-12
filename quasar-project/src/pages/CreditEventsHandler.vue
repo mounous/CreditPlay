@@ -59,7 +59,7 @@
         @save-event="[(addeventactive = false), movetocharts()]"
       />
     </q-dialog>
-    <eventForm v-if="addeventactiveNew==true" @event-done="[addeventactiveNew=false, movetocharts()]"></eventForm>
+    <eventForm v-if="addeventactiveNew==true" @event-done="[addeventactiveNew=false, movetocharts()]" @event-abort="addeventactiveNew=false"></eventForm>
     </div>
   </div>
   </div>
