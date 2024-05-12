@@ -17,7 +17,7 @@
     <p> {{transStr(stringsIDs.str_capital_left)+ situationAtDate }}</p>
   </div>
   <div v-if="event_y != 0 && event_m != 0">
-    <q-select rounded outlined v-model="event_type_str" :options=transevtmodType() :label=transStr(stringsIDs.str_choose_act)
+    <q-select rounded outlined v-model="event_type_str" :options=transevtmodType() :label=transStr(stringsIDs.str_choose_mod)
       @update:model-value="[event_type=getModTypeFromStr(event_type_str) ,getopt(),modVal=DEFAULT_MODVAL,emit('can-finish',{val:false})]"/>
     <div v-if="event_y != 0 && event_m != 0" class="row">
       <div class="q-ma-md">

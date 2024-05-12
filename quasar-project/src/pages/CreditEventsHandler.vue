@@ -38,6 +38,16 @@
       class="glossy"
       rounded
       color="primary"
+      label="TESTNEWCOMPONENT"
+      @click="addeventactiveNew = true"
+      :disable="hasBeenRebougthSavings()"
+    />
+
+
+    <q-btn
+      class="glossy"
+      rounded
+      color="primary"
       :label=transStr(stringsIDs.str_btn_del)
       @click="deleteEvents"
       :disable="simu.events.length==0"
@@ -49,6 +59,7 @@
         @save-event="[(addeventactive = false), movetocharts()]"
       />
     </q-dialog>
+    <eventForm v-if="addeventactiveNew==true" @event-done="[addeventactiveNew=false, movetocharts()]"></eventForm>
     </div>
   </div>
   </div>
@@ -66,11 +77,12 @@ import {targetPage} from '../utils/swipe_utils.js'
 import{transStr,stringsIDs,is_sio_special_name} from '../stores/languages'
 import {EVT_META_TYPE_MOD, EVT_META_TYPE_REBUY, EVT_TYPE_MOD_MENS_UP, EVT_TYPE_MOD_MENS_DOWN, EVT_TYPE_REBUY_CREDIT, EVT_TYPE_REBUY_SAVINGS} from '../utils/credit_utility'
 import {getCurrencySymbol} from '../stores/currencies'
+import eventForm from 'src/components/eventForm.vue';
 const router = useRouter();
 const $q = useQuasar();
 var refresh=ref(0);
 var addeventactive = ref(false);
-
+var addeventactiveNew=ref(false);
 const handleSwipeExt=function ({ evt, touch, mouse, direction, duration, distance })
 {
   router.push(targetPage(direction,router.currentRoute.value.fullPath));

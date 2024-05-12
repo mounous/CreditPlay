@@ -49,7 +49,7 @@ export enum stringsIDs {
   //crediteventsHandler
   str_mod_date=34,
   str_capital_left=35,
-  str_choose_act=36,
+  str_choose_mod=36,
   str_choose_mensuality=37,
   str_select_action=38,
   str_choose_opt=39,
@@ -155,6 +155,8 @@ export enum stringsIDs {
   str_not_show_again=128,
   //help page notifs
   str_display_help=129,
+  //picker
+  str_choose_evt_type=130,
 };
 
 const translatedStrs=ref(
@@ -196,9 +198,9 @@ const translatedStrs=ref(
   ['Epargne periodique non trouvé','Periodic saving not found'],
   ['Epargne exceptionnelle non trouvé','Exceptional income/outcome not found'],
   //crediteventsHandler
-  ['Date de modulation','modulation date'],
+  ['Date de modulation :','Modulation date :'],
   ['Capital restant du à la date de l\'évènement : ','Capital left to pay at event date :'],
-  ['choisir une action','choose an action'],
+  ['Renseignez le type de modulation ainsi que la mensualité souhaitée','Select modulation type and desired mensuality'],
   ['choisir une mensualité','choose mensuality'],
   ['Sélectionnez une action','Select an action'],
   ['choisir une option','choose an option'],
@@ -304,6 +306,7 @@ const translatedStrs=ref(
   ['ne plus voir','don\'t show again'],
   //help page notifs
   ['afficher l\'aide','Display tips'],
+  ['choisir le type d\'évènement','Choose event type'],
 ]);
 
 const getLangId=function()
