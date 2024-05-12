@@ -170,7 +170,7 @@
             <q-btn class="q-ma-xs" color="blue-grey-8" :label=transStr(stringsIDs.str_prev) size="xl"
               @click="[currentSlide='rebuypenalties',event_.type=DEFAULT_EVENT_TYPE]"></q-btn>
             <q-btn class="q-ma-xs" color="blue-grey-8" :label=transStr(stringsIDs.str_next) size="xl"
-              @click="RebuyPicked()"></q-btn>
+              @click="RebuyPicked()" ></q-btn>
           </div>
         </div>
       </div>
@@ -180,17 +180,17 @@
 <div>
     <q-dialog v-model="mustPopWarning" v-if="event_.type == EVT_TYPE_REBUY_SAVINGS">
       <q-card>
-        <div class="q-ma-xl col flex flex-center">
-          <div>
+        <div class="q-ma-xl column items-center">
+          <div class="col">
             {{ transSt(sentancesIDs.s_warning_post_rebuy_ops) }}
           </div>
-          <div v-for="elmnt in listToDisplay" :key="elmnt.id">
+          <div class="col q-ma-md" v-for="elmnt in listToDisplay" :key="elmnt.id">
             <div>{{ elmnt.title }}</div>
           </div>
-          <div>
-            <q-btn :label=transStr(stringsIDs.str_validate) @click="[mustPopWarning = false, RebuyPicked(force = true),emit('can-finish',{val:true})]"></q-btn>
+          <div class="col q-ma-md">
+            <q-btn :label=transStr(stringsIDs.str_validate) @click="[mustPopWarning = false, RebuyPicked(force = true)]"></q-btn>
             <q-btn :label=transStr(stringsIDs.str_cancel)
-              @click="[mustPopWarning = false, rachatVal = DEFAULT_RACHAT_VAL_VALUE, listToDisplay = [],emit('can-finish',{val:false})]"></q-btn>
+              @click="[mustPopWarning = false, rachatVal = DEFAULT_RACHAT_VAL_VALUE, listToDisplay = []]"></q-btn>
           </div>
         </div>
       </q-card>
@@ -212,7 +212,7 @@ const emit=defineEmits(['event-done','event-abort']);
 // Language handling                  //
 //------------------------------------//
 import { transStr, stringsIDs,transevtmetaType, transMonthName,getTranslatedFormatedCalendar,transevtmodType,
-        getModTypeFromStr,transRebuymodType,getrebuyTypeFromStr,getMonthNbr,
+        getModTypeFromStr,transRebuymodType,getrebuyTypeFromStr,getMonthNbr,transSt,sentancesIDs,
  } from 'src/stores/languages';
 //------------------------------------//
 // events computation handling        //
@@ -325,7 +325,7 @@ const finishEvt=function () {
 //  Rebuy options         //
 //------------------------//
 import {hasSavings} from '../utils/bank_utility.js'
-
+import {compareDates} from '../utils/date_utility.js'
 
 const safeRebuyOptions = function () {
   if (hasSavings()) {
@@ -383,13 +383,14 @@ const formatAndExtracteventdateFrom=function()
   event_.value.year = Number(event_.value.year_str);
   event_.value.month_str = transMonthName(event_.value.month);
 }
+var listToDisplay = ref([]);
 var mustPopWarning=ref(false);
 const RebuyPicked = function (force = false) {
   //compute event attributes based on the event value
 
   if (force) {
     for (var i = simu.value.events.length-1; i >=0; i--) {
-      if (compareDates(simu.value.events[i].year, simu.value.events[i].month, event_year, event_month)>0) {
+      if (compareDates(simu.value.events[i].year, simu.value.events[i].month, event_.value.year, event_.value.month)>0) {
         simu.value.events.pop();
       }
     }
@@ -400,12 +401,15 @@ const RebuyPicked = function (force = false) {
     //prevent to rebuy with savings before the last event : warn the user and delete all events after rebuy with the user agreeement
     if (event_.value.type === EVT_TYPE_REBUY_SAVINGS) {
       for (var i = 0; i < simu.value.events.length; i++) {
-        if (compareDates(simu.value.events[i].year, simu.value.events[i].month, event_year, event_month) >= 0) {
+        if (compareDates(simu.value.events[i].year, simu.value.events[i].month, event_.value.year, event_.value.month) >= 0) {
           listToDisplay.value.push({ id: 0, title: simu.value.events[i].title });
           listToDisplay.value.at(-1).id = listToDisplay.value.length;
           mustPopWarning.value = true;
-          return;
         }
+      }
+      if(mustPopWarning.value==true)
+      {
+        return;
       }
       finishEvt();
     }
