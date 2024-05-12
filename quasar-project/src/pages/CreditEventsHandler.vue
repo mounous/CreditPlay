@@ -135,8 +135,8 @@ const propagateSelection=function (event_in){
   }
   while(i<simu.value.events.length) { simu.value.events[i].selected=event_in.selected; i++;hasToNotify=true; }
 
-  if(hasToNotify && event_in.selected)  {   $q.notify({    color: 'green-4',    textColor: 'black',    icon: 'cloud_done',    message: transStr(stringsIDs.str_info_select_too),  });  }
-  if(hasToNotify && !event_in.selected)  {   $q.notify({    color: 'green-4',    textColor: 'black',    icon: 'cloud_done',    message: transStr(stringsIDs.str_info_unselect_too),  });  }
+  if(hasToNotify && event_in.selected)  {   $q.notify({    color: 'green-4',    textColor: 'black',        message: transStr(stringsIDs.str_info_select_too),  });  }
+  if(hasToNotify && !event_in.selected)  {   $q.notify({    color: 'green-4',    textColor: 'black',       message: transStr(stringsIDs.str_info_unselect_too),  });  }
   refresh.value++;
 }
 </script>
