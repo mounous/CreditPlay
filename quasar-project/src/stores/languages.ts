@@ -311,7 +311,7 @@ const translatedStrs=ref(
   ['choisir le type d\'évènement','Choose event type'],
   //Picker
   ['Renseignez les pénalités contractuelles de rachat','Enter contractual rebuy penalties'],
-  ['Reseignez le type de rachat. Rachat avec épargne disponible seulement si l\'épargne a été renseignée','Select rebuy type. Rebuy with savings allowed only if savings are filled'],
+  ['Renseignez le type de rachat. Rachat avec épargne disponible seulement si l\'épargne a été renseignée','Select rebuy type. Rebuy with savings allowed only if savings are filled'],
 ]);
 
 const getLangId=function()

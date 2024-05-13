@@ -25,20 +25,13 @@
     </div>
     <div class ="col column content-center">
       <div class="col">
-    <q-btn
-      class="glossy"
-      rounded
-      color="primary"
-      :label=transStr(stringsIDs.str_btn_add)
-      @click="addeventactive = true"
-      :disable="hasBeenRebougthSavings()"
-    />
+
 
     <q-btn
       class="glossy"
       rounded
       color="primary"
-      label="TESTNEWCOMPONENT"
+      :label=transStr(stringsIDs.str_btn_add)
       @click="addeventactiveNew = true"
       :disable="hasBeenRebougthSavings()"
     />
@@ -52,13 +45,7 @@
       @click="deleteEvents"
       :disable="simu.events.length==0"
     />
-    <q-dialog full-width v-model="addeventactive">
 
-      <!--https://v0-14.quasar-framework.org/components/building-reusable-components.html-->
-      <SingleEventHandler
-        @save-event="[(addeventactive = false), movetocharts()]"
-      />
-    </q-dialog>
     <eventForm v-if="addeventactiveNew==true" @event-done="[addeventactiveNew=false, movetocharts()]" @event-abort="addeventactiveNew=false"></eventForm>
     </div>
   </div>
@@ -69,7 +56,6 @@
 <script setup>
 import {   useQuasar } from 'quasar';
 import { ref } from 'vue';
-import SingleEventHandler from '../components/SingleEventHandler.vue';
 import { useRouter } from 'vue-router';
 import { bank, simu } from 'stores/store';
 import {hasBeenRebougthSavings} from '../utils/credit_utility'
