@@ -407,6 +407,7 @@ export const sio_opt=ref(
 );
 export const transoptSIO=function(index:number)
 {
+  console.log(index);
   return sio_opt.value[index][getLangId()];
 }
 export const getOptSIOFromStr=function(input:string)

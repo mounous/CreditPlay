@@ -9,8 +9,9 @@
             <p>{{ transStr(stringsIDs.str_sio_type) }}</p>
           </div>
           <div class="col">
-            <q-select bg-color="blue-grey-8" style="width:150px; height:100px"   v-model="_single_io.type" label="type"
-            :options="[transoptSIO(BANK_SIO_TYPE_IN), transoptSIO(BANK_SIO_TYPE_OUT)]"></q-select>
+            <q-select bg-color="blue-grey-8" style="width:150px; height:100px"   v-model="single_io_type" label="type"
+            :options="[transoptSIO(BANK_SIO_TYPE_IN), transoptSIO(BANK_SIO_TYPE_OUT)]"
+            @update:model-value="single_io_type==transoptSIO(BANK_SIO_TYPE_IN) ? _single_io.type=BANK_SIO_TYPE_IN : _single_io.type=BANK_SIO_TYPE_OUT  "></q-select>
           </div>
           <div class="col">
             <q-btn class="q-ma-xs" color="blue-grey-8" size="xl" :label=transStr(stringsIDs.str_cancel) @click="emit('sio-aborted')"></q-btn>
@@ -136,6 +137,7 @@ import { bank,simu } from 'src/stores/store';
 import { useQuasar } from 'quasar';
 import { getTranslatedFormatedCalendar } from '../stores/languages';
 import {transoptSIO,transSIOspecial,transStr,stringsIDs,sentancesIDs,transSt} from '../stores/languages'
+var single_io_type=ref(transoptSIO(BANK_SIO_TYPE_IN));
 const DEFAULT_DATE='';
 var singleIODateUnformated=ref(DEFAULT_DATE);
 var mustpopSingleIO=ref(false);
@@ -173,7 +175,7 @@ const addElementToSingleIO=function(force=false){
       mySioForm.value.goTo('sioAccount');
       return;
     }
-    if(!force)
+    if(!force && simu.value.events.length!=0  )
     {
       var indexOfrebuy=simu.value.events.length-1;
       var y_rebuy =simu.value.events[indexOfrebuy].year;
