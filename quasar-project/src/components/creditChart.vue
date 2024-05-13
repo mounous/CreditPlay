@@ -235,10 +235,19 @@ var chartOptions = {
       },
   },
   yaxis:{
+    tickAmount:6,
     labels:{
       formatter:function(val)
       {
-        return Math.round(val);
+        if(onlydisplaySavings.value)
+        {
+          return  val.toFixed(2);
+        }
+        else
+        {
+          return Math.round(val);
+        }
+
       },
         style: {
               colors: '#b4c8d6',
@@ -252,11 +261,13 @@ var chartOptions = {
 //https://apexcharts.com/docs/annotations/
 //https://apexcharts.com/docs/annotations/
 //https://apexcharts.com/docs/annotations/
-
+var onlydisplaySavings=ref(false);
 var nbYearDisplaySavings=ref('0');
 var graphMinDate = ref('1900/01');
 const sendSavingComputationOrder=function()
 {
+  series=[];
+  onlydisplaySavings.value=true;
   var earlierY=getSavingsEarlier()[1];
   var earlierM=getSavingsEarlier()[0];
   computeDisplaySavings(earlierY,earlierM,Number(nbYearDisplaySavings.value));
