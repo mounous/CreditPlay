@@ -14,7 +14,6 @@
             <q-btn class="q-ma-md" size='xl' color="blue-grey-8" :label=transevtmetaType(EVT_META_TYPE_REBUY)
               @click="[event_.metaType = EVT_META_TYPE_REBUY, currentSlide='rebuypenalties']" ></q-btn>
           </div>
-
         </div>
       </div>
       <div class="oneInThreeRowB">
@@ -53,7 +52,7 @@
           </div>
           <div class="col">
             <q-btn class="q-ma-xs" color="blue-grey-8" :label=transStr(stringsIDs.str_prev) size="xl"
-              @click="[currentSlide='metatype',event_.metaType='',situationAtDate='',event_.month=0,event_.year=0]"></q-btn>
+              @click="[currentSlide='metatype',event_.metaType=DEFAULT_EVENT_META_TYPE,situationAtDate='',event_.month=0,event_.year=0,date_mod=mod_min_date,event_.year_str='',event_.month_str='']"></q-btn>
             <q-btn class="q-ma-xs" color="blue-grey-8" :label=transStr(stringsIDs.str_next) size="xl"
               @click="currentSlide = 'modulationval'" :disable="event_.month==0 || event_.year==0"></q-btn>
           </div>
@@ -82,7 +81,7 @@
             <q-btn class="q-ma-xs" color="blue-grey-8" :label=transStr(stringsIDs.str_prev) size="xl"
               @click="[currentSlide='modulationDate', event_.type=DEFAULT_EVENT_TYPE,event_type_str=DEFAULT_EVENT_TYPE_STR,event_.new_mens=0,event_.modVal='',event_.mensDiff=0]"></q-btn>
             <q-btn class="q-ma-xs" color="blue-grey-8" :label=transStr(stringsIDs.str_validate) size="xl"
-              @click="finishEvt()" :disable="modVal==DEFAULT_MODVAL"></q-btn>
+              @click="finishEvt()" :disable="modVal==DEFAULT_MODVAL || event_.type==DEFAULT_EVENT_TYPE"></q-btn>
           </div>
         </div>
       </div>
@@ -120,25 +119,25 @@
           <div class="col myIndication q-ma-md">
             <p>{{ transStr(stringsIDs.str_indic_rebuy_type) }}</p>
           </div>
-          <div class="col">
-            <q-select rounded outlined v-model="event_type_str" :options="options_rebuy" :label=transStr(stringsIDs.str_choose_rebuy_type)
+          <div class="col q-ma-md">
+            <q-select rounded outlined v-model="event_type_str" :options="options_rebuy" :label=transStr(stringsIDs.str_choose_rebuy_type) style="width: 250px;"
             @update:model-value="[event_.type=getrebuyTypeFromStr(event_type_str), event_.reloanRate=0,event_.reloanDuration=0, event_.savingsLeft=0,
             rebuy_saving_capital_to_pay='',rachatVal=DEFAULT_RACHAT_VAL_VALUE,getoptRebuy()]"
             ></q-select>
           </div>
-          <div class="col">
-            <q-select v-if="event_.type == EVT_TYPE_REBUY_SAVINGS" class="evtTypeVal" rounded outlined v-model="rachatVal"
+          <div class="col q-ma-md">
+            <q-select v-if="event_.type == EVT_TYPE_REBUY_SAVINGS" class="evtTypeVal" rounded outlined v-model="rachatVal" style="width: 250px;"
               :options="options_rebuy_val" :label=transStr(stringsIDs.str_choose_option)
               @update:model-value="extractDataFromRebuySavings()"></q-select>
           </div>
-          <div class="col" v-if="event_.type ==EVT_TYPE_REBUY_SAVINGS && event_.savingsLeft != 0 && rebuy_saving_capital_to_pay != ''">
+          <div class="col q-ma-md" v-if="event_.type ==EVT_TYPE_REBUY_SAVINGS && event_.savingsLeft != 0 && rebuy_saving_capital_to_pay != ''">
             {{ transStr(stringsIDs.str_savings_left) + event_.savingsLeft.toString()+getCurrencySymbol() }}
           </div>
-          <div class="col" v-if="event_.type == EVT_TYPE_REBUY_SAVINGS &&  event_.savingsLeft != 0 && rebuy_saving_capital_to_pay != ''">
+          <div class="col q-ma-md" v-if="event_.type == EVT_TYPE_REBUY_SAVINGS &&  event_.savingsLeft != 0 && rebuy_saving_capital_to_pay != ''">
             {{ transStr(stringsIDs.str_capital_rebought)+ rebuy_saving_capital_to_pay }}
           </div>
           <div class="row wrap">
-          <q-input v-if="event_.type == EVT_TYPE_REBUY_CREDIT" class="q-ma-xs"  style="max-width: 100px;"
+          <q-input v-if="event_.type == EVT_TYPE_REBUY_CREDIT" class="q-ma-md"  style="width: 200px;"
             :label=transStr(stringsIDs.str_rebuy_date) bg-color="blue-grey-8" filled v-model="event_.reLoanDate"  @click="mustpop = true" readonly>
             <template v-slot:append>
               <q-icon name="event" class="cursor-pointer">
@@ -155,23 +154,25 @@
             </template>
           </q-input>
           </div>
-          <div class="col">
+          <div class="col q-ma-md">
             <q-input v-if="event_.type == EVT_TYPE_REBUY_CREDIT" class="q-ma-xs" :label=transStr(stringsIDs.str_rate) style="width:200px"
               v-model="event_.reloanRate" type="number" lazy-rules :rules="[(val) => (val >= 0.0) || transStr(stringsIDs.str_rate_impossible)]"
               bg-color="blue-grey-8" outlined @update:model-value="event_.reloanRate=Number(event_.reloanRate)"></q-input>
           </div>
-          <div class="col">
+          <div class="col q-ma-md">
             <q-input v-if="event_.type == EVT_TYPE_REBUY_CREDIT " class="q-ma-xs" :label=transStr(stringsIDs.str_duration) style="width:200px"
             v-model="event_.reloanDuration" type="number" lazy-rules
             :rules="[(val) => (val > 0) || transStr(stringsIDs.str_durationPos)]" bg-color="blue-grey-8" outlined
             @update:model-value="[event_.reloanDuration=Number(event_.reloanDuration)]"></q-input>
         </div>
-          <div class="col">
+          <div class="col q-ma-md">
             <q-btn class="q-ma-xs" color="blue-grey-8" :label=transStr(stringsIDs.str_prev) size="xl"
-              @click="[currentSlide='rebuypenalties',event_.type=DEFAULT_EVENT_TYPE]"></q-btn>
+              @click="[currentSlide='rebuypenalties',event_.type=DEFAULT_EVENT_TYPE,event_type_str=DEFAULT_EVENT_TYPE_STR,
+                event_.reloanDuration=0, event_.reloanRate=0,unformatedrebuydate=reloanMin,event_.year=0,event_.month=0,
+                event_.month_str='',event_.year_str='',event_.savingsLeft=0,rebuy_saving_capital_to_pay='',event_.reLoanDate='',rachatVal=DEFAULT_RACHAT_VAL_VALUE]"></q-btn>
             <q-btn class="q-ma-xs" color="blue-grey-8" :label=transStr(stringsIDs.str_next) size="xl"
               @click="RebuyPicked()"
-              :disable="event_.type==EVT_TYPE_REBUY_CREDIT ? (event_.reloanDuration==0 || event_.reloanRate<=0 || event_.reloanRate=='')
+              :disable="event_.type== DEFAULT_EVENT_TYPE ? true : event_.type==EVT_TYPE_REBUY_CREDIT ? (event_.reloanDuration==0 || event_.reloanRate<=0 || event_.reloanRate=='')
                                                             :(event_.savingsLeft==0 || event_.year==0 || event_.month==0)" ></q-btn>
           </div>
         </div>
