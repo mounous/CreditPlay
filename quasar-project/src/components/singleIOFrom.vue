@@ -90,7 +90,7 @@
             v-model="_single_io.date"  @click="mustpopSingleIO=true" readonly>
             <template v-slot:append>
               <q-icon name="event" class="cursor-pointer">
-                <q-popup-proxy cover transition-show="scale" transition-hide="scale" v-model="mustpopSingleIO">
+                <q-popup-proxy cover transition-show="scale" transition-hide="scale" v-model="mustpopSingleIO" persistent>
                   <q-date dark v-model="singleIODateUnformated" :locale=getTranslatedFormatedCalendar()
                     :navigation-min-year-month="periodicSaveMin" width="200px"
                     @update:model-value="[_single_io.date=formatDate(singleIODateUnformated), mustpopSingleIO=false]">

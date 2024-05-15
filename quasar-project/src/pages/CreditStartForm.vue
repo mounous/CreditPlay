@@ -13,7 +13,7 @@
           v-model="simu.credit.startingDate" @click="mustpop=true" readonly>
           <template v-slot:append>
             <q-icon name="event" class="cursor-pointer">
-              <q-popup-proxy v-model="mustpop" cover transition-show="scale" transition-hide="scale">
+              <q-popup-proxy v-model="mustpop" cover transition-show="scale" transition-hide="scale" persistent>
                 <q-date dark v-model="unformated" :locale=getTranslatedFormatedCalendar() :navigation-min-year-month="minNav"
                   width="200px" :navigation-max-year-month="maxNav"
                   :disable="has_started != 'yes' && has_started != 'no'"

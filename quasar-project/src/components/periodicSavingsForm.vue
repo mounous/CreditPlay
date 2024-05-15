@@ -72,7 +72,7 @@
             v-model="_savingP.startingDate" @click="mustpopPsStart = true" readonly>
             <template v-slot:append>
               <q-icon name="event" class="cursor-pointer">
-                <q-popup-proxy cover transition-show="scale" transition-hide="scale" v-model="mustpopPsStart">
+                <q-popup-proxy cover transition-show="scale" transition-hide="scale" v-model="mustpopPsStart" persistent>
                   <q-date dark v-model="savingPstartingDateUnformated" :locale=getTranslatedFormatedCalendar()
                     :navigation-min-year-month="periodicSaveMin" width="200px"
                     :navigation-max-year-month="periodicSaveMax"
@@ -94,7 +94,7 @@
             v-model="_savingP.endDate" @click="mustpopPsEnd = true" readonly>
             <template v-slot:append>
               <q-icon name="event" class="cursor-pointer">
-                <q-popup-proxy cover transition-show="scale" transition-hide="scale" v-model="mustpopPsEnd">
+                <q-popup-proxy cover transition-show="scale" transition-hide="scale" v-model="mustpopPsEnd" persistent>
                   <q-date dark v-model="savingPendDateUnformated" :locale=getTranslatedFormatedCalendar()
                     :navigation-min-year-month="periodicSaveMin" width="200px"
                     :navigation-max-year-month="periodicSaveMax"

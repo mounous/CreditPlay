@@ -35,7 +35,7 @@
             <q-input class="q-ma-md"  style="width: 200px;" :label=transStr(stringsIDs.str_mod_date) bg-color="blue-grey-8" filled v-model="date_mod" @click="mustpopDateMod=true" readonly>
               <template v-slot:append>
                 <q-icon name="event" class="cursor-pointer">
-                  <q-popup-proxy v-model="mustpopDateMod" cover transition-show="scale" transition-hide="scale">
+                  <q-popup-proxy v-model="mustpopDateMod" cover transition-show="scale" transition-hide="scale" persistent>
                     <q-date dark v-model="date_modunformated" :locale=getTranslatedFormatedCalendar() :navigation-min-year-month="mod_min_date"
                       width="200px" :navigation-max-year-month="mod_max_date" :default-year-month="mod_min_date" @update:model-value="date_mod=formatDate(date_modunformated),[validateModDate(),mustpopDateMod=false,event_.type =DEFAULT_EVENT_TYPE,modVal=DEFAULT_MODVAL]">
                       <div class="row items-center justify-end" >
@@ -141,7 +141,7 @@
             :label=transStr(stringsIDs.str_rebuy_date) bg-color="blue-grey-8" filled v-model="event_.reLoanDate"  @click="mustpop = true" readonly>
             <template v-slot:append>
               <q-icon name="event" class="cursor-pointer">
-                <q-popup-proxy v-model="mustpop" cover transition-show="scale" transition-hide="scale">
+                <q-popup-proxy v-model="mustpop" cover transition-show="scale" transition-hide="scale" persistent>
                   <q-date dark v-model="unformatedrebuydate" :locale=getTranslatedFormatedCalendar() :navigation-min-year-month="reloanMin"
                     width="200px" :navigation-max-year-month="reloanMax" :default-year-month="reloanMin"
                     @update:model-value="[mustpop = false,formatAndExtracteventdateFrom()]">
