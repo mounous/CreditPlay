@@ -1,5 +1,5 @@
 <template>
-  <q-page v-touch-swipe.mouse="handleSwipeExt">
+  <q-page v-touch-swipe.mouse.left.right="handleSwipeExt">
     <div class="full-height column justify-arround content-center verticalFlex">
       <div class="col">
         <q-btn-toggle class="q-ma-md" name="has_started_button" v-model="has_started" unelevated rounded dense

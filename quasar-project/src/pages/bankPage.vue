@@ -2,7 +2,8 @@
   <accountForm v-if="displayAccountForm==true"  @account-added="displayAccountForm=false" @account-aborted="displayAccountForm=false"></accountForm>
   <periodicSavingsForm v-if="displayPSForm==true" @ps-added="displayPSForm=false" @ps-aborted="displayPSForm=false"></periodicSavingsForm>
   <singleIOFrom v-if="displaySIOForm==true" @sio-added="displaySIOForm=false" @sio-aborted="displaySIOForm=false"></singleIOFrom>
-  <div class="full-height column justify-arround content-center verticalFlex"  v-touch-swipe.mouse="handleSwipeExt">
+  <q-page>
+  <div class="full-height column justify-arround content-center verticalFlex"  v-touch-swipe.mouse.left.right="handleSwipeExt">
     <q-card class="bg-grey-9 my-card q-ma-md">
       <div class="column items-center">
         <div class="col">
@@ -156,6 +157,7 @@
         </q-card>
       </q-dialog>
     </div>
+  </q-page>
 </template>
 
 <script setup>

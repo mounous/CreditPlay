@@ -1,5 +1,5 @@
 <template>
-  <q-page  v-touch-swipe.mouse="handleSwipeExt">
+  <q-page  v-touch-swipe.mouse.left.right="handleSwipeExt">
     <div class="full-height column justify-arround content-center verticalFlex">
       <div class="col">
         <q-timeline  class="q-ma-lg text-white">

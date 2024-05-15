@@ -1,7 +1,7 @@
 <template>
   <q-layout>
     <q-page-container>
-      <q-page  v-touch-swipe.mouse="handleSwipeExt">
+      <q-page  v-touch-swipe.mouse.left.right="handleSwipeExt">
     <div>
     <div>
       <q-list class="bg-primary" separator bordered>

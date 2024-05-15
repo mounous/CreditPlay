@@ -1,5 +1,5 @@
 <template  >
-  <creditChart v-touch-swipe.mouse="handleSwipeExt"></creditChart>
+  <creditChart v-touch-swipe.mouse.left.right="handleSwipeExt"></creditChart>
 
 </template>
 

@@ -1,5 +1,5 @@
 <template>
-  <q-page class="q-pa-lg"  v-touch-swipe.mouse="handleSwipeExt" :key="reRender">
+  <q-page class="q-pa-lg"  v-touch-swipe.mouse.left.right="handleSwipeExt" :key="reRender">
     <h5 class="q-mt-none">{{ transStr(stringsIDs.str_tab_help) }}</h5>
     <div class="column">
     <div class="col">
