@@ -14,7 +14,7 @@
         </div>
       </div>
         <div>
-          <q-markup-table class="my-table bg-grey-8" separator="cell" flat bordered>
+          <q-markup-table class="my-table bg-grey-8" separator="cell" flat bordered @touchstart.stop>
             <thead>
               <tr>
                 <th span="1" style="width: 40%">{{transStr(stringsIDs.str_head_name)}}</th>
@@ -45,7 +45,7 @@
             @click="displayPSForm=true"></q-btn>
         </div>
         </div>
-          <q-markup-table class="my-table bg-grey-8" separator="cell" flat bordered>
+          <q-markup-table class="my-table bg-grey-8" separator="cell" flat bordered @touchstart.stop>
             <thead>
               <tr>
 
@@ -81,8 +81,8 @@
           <q-btn :disable="bank.accounts.length==0" class="q-ma-md" color="blue-grey-8" style="height:40px" :label=transStr(stringsIDs.str_btn_add)
             @click="displaySIOForm=true"></q-btn>
         </div>
-      </div>
-          <q-markup-table class="my-table bg-grey-8" separator="cell" flat bordered>
+      </div >
+          <q-markup-table class="my-table bg-grey-8" separator="cell" flat bordered @touchstart.stop>
             <thead>
               <tr>
                 <th span="1" style="width: 20%">{{ transStr(stringsIDs.str_head_name) }}</th>
