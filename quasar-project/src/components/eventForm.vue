@@ -320,6 +320,10 @@ const validateMod = function () {
 const finishEvt=function () {
   event_.value.title=build_event_name(event_.value.metaType);
   simu.value.events.push(event_.value);
+  if(event_.value.metaType==EVT_META_TYPE_REBUY && event_.value.type==EVT_TYPE_REBUY_SAVINGS)
+  {
+    simu.value.credit.has_been_rebougth=true;
+  }
   apply_events_chain();
   emit('event-done');
   };

@@ -41,7 +41,7 @@ const makeAccountNameUnique=function(name,suffix=1)
 {
   var is_duplicate=false;
   //check that the name is not null
-  if(name=='')
+  if(name==''|| name==null)
   {
     name=transStr(stringsIDs.str_account);
   }
@@ -339,30 +339,58 @@ const getAccId=function(name){
   return BANK_SEARCH_ERROR;
 }
 
-const getSavinPID=function(accId,Saving_name){
+const getSavinPID=function(accId,savingP){
   //get the account id
   if (accId<bank.value.accounts.length)
   {
     for(var sp=0;sp<bank.value.accounts[accId].periodic_savings.length;sp++)
     {
-      if(bank.value.accounts[accId].periodic_savings[sp].title==Saving_name)
+      if(bank.value.accounts[accId].periodic_savings[sp].amount==savingP.amount
+        && bank.value.accounts[accId].periodic_savings[sp].startMonth ==savingP.startMonth
+        && bank.value.accounts[accId].periodic_savings[sp].startYear ==savingP.startYear
+        && bank.value.accounts[accId].periodic_savings[sp].type ==savingP.type
+      )
       {
-        return sp;
+        if(savingP.endMonth!=0 && savingP.endYear!=0)
+        {
+          if(   savingP.endMonth==bank.value.accounts[accId].periodic_savings[sp].endMonth
+            &&  savingP.endYear==bank.value.accounts[accId].periodic_savings[sp].endYear)
+            {
+              return sp;
+            }
+        }
+        else
+        {
+          return sp;
+        }
       }
     }
   }
   return BANK_SEARCH_ERROR;
 }
 
-const getSIOID=function(accId,Saving_name){
+const getSIOID=function(accId,single_io){
   //get the account id
   if (accId<bank.value.accounts.length)
   {
     for(var sio=0;sio<bank.value.accounts[accId].single_in_out.length;sio++)
     {
-      if(bank.value.accounts[accId].single_in_out[sio].title==Saving_name)
+      if(   bank.value.accounts[accId].single_in_out[sio].amount==single_io.amount
+        &&  bank.value.accounts[accId].single_in_out[sio].year==single_io.year
+        &&  bank.value.accounts[accId].single_in_out[sio].month==single_io.month
+      )
       {
-        return sio;
+        if(single_io.title!='')
+          {
+            if(bank.value.accounts[accId].single_in_out[sio].title==single_io.title)
+            {
+                return sio;
+            }
+          }
+          else
+          {
+            return sio;
+          }
       }
     }
   }

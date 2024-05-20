@@ -1,9 +1,10 @@
 
 import { bank, simu, startFormFilled } from 'src/stores/store';
-import { get_nb_mens_diff, compareDates } from './date_utility';
+import { get_nb_mens_diff, compareDates,subOneMonth } from './date_utility';
 import {getSortedAccountsFromPoorToHighRate,getSavingsEarlier,compute_savings, BANK_SIO_TYPE_OUT} from './bank_utility'
 import {transStr,stringsIDs,transevtmetaType,transSIOspecial ,transMonthName,getMonthNbr,is_sio_special_name} from '../stores/languages'
 import {getCurrencySymbol} from '../stores/currencies'
+import { ref } from 'vue';
 const EVT_META_TYPE_MOD =0;
 const EVT_META_TYPE_REBUY=1;
 const EVT_TYPE_MOD_MENS_UP=1;
@@ -204,7 +205,7 @@ const apply_events_chain=()=>{
         var ret=getSavingsEarlier();
         var savErlyM=ret[0];
         var savErlyY=ret[1];
-        compute_savings(savErlyY,savErlyM,get_nb_mens_diff(savErlyY,savErlyM,simu.value.events[i].year,simu.value.events[i].month),true);
+        compute_savings(savErlyY,savErlyM,1+get_nb_mens_diff(savErlyY,savErlyM,simu.value.events[i].year,simu.value.events[i].month),true);
         //3 substract desired amount on each account
         var indexAccount=0;
         while(toPay>0)
@@ -290,7 +291,7 @@ const returnBaseData=(evt_year_in_fmt,evt_month_in_fmt)=>{
       e_y++;
       e_m=1;
     }
-    return {end_year:e_y,end_month:e_m,capital_left:event_.amortEvt[index-1][1]};
+    return {end_year:e_y,end_month:e_m,capital_left:event_.amortEvt[index][1]};
   }
   else
   {
@@ -298,7 +299,7 @@ const returnBaseData=(evt_year_in_fmt,evt_month_in_fmt)=>{
     var index=get_nb_mens_diff(simu.value.credit.y,simu.value.credit.m,evt_year_in_fmt,evt_month_in_fmt);
     if(index<=simu.value.credit.amort.length)
     {
-      return {end_year:origin_end_year,end_month:simu.value.credit.m,capital_left:simu.value.credit.amort[index-1][1]};
+      return {end_year:origin_end_year,end_month:simu.value.credit.m,capital_left:simu.value.credit.amort[index][1]};
     }
     else
     {
@@ -308,7 +309,11 @@ const returnBaseData=(evt_year_in_fmt,evt_month_in_fmt)=>{
 }
 const provideModOptions=(evt_type_in,evt_year_in,evt_month_in)=>{
   var toreturn =[];
-  var ret=returnBaseData(evt_year_in,evt_month_in);
+  var finalMonth=ref(evt_month_in);
+  var finalYear=ref(evt_year_in);
+  //get the capital at date -1 month
+  subOneMonth(finalMonth,finalYear);
+  var ret=returnBaseData(finalYear.value,finalMonth.value);
   var up2date_rate=simu.value.credit.rate;
   var mensualities_to_end=0;
   mensualities_to_end=get_nb_mens_diff(evt_year_in,evt_month_in,ret.end_year,ret.end_month);

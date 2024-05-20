@@ -131,7 +131,7 @@ import {getOptSavePFromStr,transoptSaveP,stringsIDs, transStr} from '../stores/l
 const $q = useQuasar();
 var myPSForm = ref();
 var currentSlide = ref('psType');
-const _savingP = ref({ account: '', amount: 0.0, rate: 0.0, startMonth: 0, startYear: 0, endMonth: 0, endYear: 0, type: BANK_SAVE_TYPE_MONTHLY, startingDate: '', endDate: '' });
+const _savingP = ref({ account: '', amount: 0.0, startMonth: 0, startYear: 0, endMonth: 0, endYear: 0, type: BANK_SAVE_TYPE_MONTHLY, startingDate: '', endDate: '' });
 var periodicSaveMax = ref('2100/01');
 var mustpopPsStart = ref(false);
 var mustpopPsEnd = ref(false);

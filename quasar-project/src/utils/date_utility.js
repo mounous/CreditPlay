@@ -123,4 +123,4 @@ const formatDate=function(unformated)
 
   return unformated.split('/')[2]+'/'+unformated.split('/')[1]+'/'+unformated.split('/')[0];
 }
-export { get_nb_mens_diff,subOneMonthToStringDate,addOneMonthToStringDate,compareDates,formatDate};
+export { get_nb_mens_diff,subOneMonthToStringDate,addOneMonthToStringDate,compareDates,formatDate,subOneMonth};

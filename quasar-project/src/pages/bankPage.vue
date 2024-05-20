@@ -197,7 +197,8 @@ const handleSwipeExt=function ({ evt, touch, mouse, direction, duration, distanc
   router.push(targetPage(direction,router.currentRoute.value.fullPath));
 }
 
-const removeAccount = function (account,force=false) {
+const removeAccount = function (account,force=false)
+{
   var i=getAccId(account.title)
   if(i!=BANK_SEARCH_ERROR)
   {
@@ -226,7 +227,7 @@ const removeSavingP = function (savingP,account,force=false) {
   var i=getAccId(account.title)
   if(i!=BANK_SEARCH_ERROR)
   {
-    var psId=getSavinPID(i,savingP.title);
+    var psId=getSavinPID(i,savingP);
     if(psId!=BANK_SEARCH_ERROR)
     {
       if(simu.value.credit.has_been_rebougth && force==false)
@@ -262,7 +263,7 @@ const removeSingleIO = function (SIO,account,force=false) {
   var i=getAccId(account.title)
   if(i!=BANK_SEARCH_ERROR)
   {
-    var ioID=getSIOID(i,SIO.title);
+    var ioID=getSIOID(i,SIO);
     if(ioID!=BANK_SEARCH_ERROR)
     {
       if(simu.value.credit.has_been_rebougth && force==false)
