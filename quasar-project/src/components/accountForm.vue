@@ -79,11 +79,7 @@ var currentSlide = ref('acountName');
 const _account = ref({ title: '', amount: 0.0, rate: 0.0 });
 const emit = defineEmits(['account-added', 'account-aborted']);
 const addElementToAccounts = function () {
-  if (_account.value.amount == 0) {
-    $q.notify({ color: 'orange-4', textColor: 'black', icon: 'warning', message: transStr(stringsIDs.str_null_save), });
-    myAccountForm.value.goTo('AmountAccount');
-  }
-  else if (_account.value.amount < 0) {
+  if (_account.value.amount < 0) {
     $q.notify({ color: 'orange-4', textColor: 'black', icon: 'warning', message: transStr(stringsIDs.str_neg_save), });
     myAccountForm.value.goTo('AmountAccount');
   }
