@@ -28,6 +28,7 @@ import {targetPage} from '../utils/swipe_utils.js'
 import { returnBaseData,EVT_TYPE_REBUY_SAVINGS,  EVT_META_TYPE_REBUY } from 'src/utils/credit_utility';
 import { transStr,stringsIDs } from 'src/stores/languages';
 import {getCurrencySymbol} from '../stores/currencies'
+import { subOneMonth } from 'src/utils/date_utility';
 const router = useRouter();
 var summaries=ref([]);
 const handleSwipeExt=function ({ evt, touch, mouse, direction, duration, distance })
@@ -35,6 +36,8 @@ const handleSwipeExt=function ({ evt, touch, mouse, direction, duration, distanc
   router.push(targetPage(direction,router.currentRoute.value.fullPath));
 }
 const beforemount=function() {
+  var capital_rebuy_s_end_month=ref(0);
+  var capital_rebuy_s_end_year=ref(0);
   var amort_init=simu.value.credit.amort;
   var interests_paid =amort_init[amort_init.length-1][2];
   var EndDate = amort_init[amort_init.length-1][0];
@@ -71,7 +74,6 @@ const beforemount=function() {
       delta_abs=Math.round((simu.value.events[i].amortEvt[simu.value.events[i].amortEvt.length-1][2]-interests_paid)*100)/100;
       if(i!=0)
       {
-
         delta_rel=Math.round((simu.value.events[i].amortEvt[simu.value.events[i].amortEvt.length-1][2]-simu.value.events[i-1].amortEvt[simu.value.events[i-1].amortEvt.length-1][2])*100)/100;
         _text4=transStr(stringsIDs.str_cost_diff_rel)+simu.value.events[i-1].title+') : '+formatnumber(String(delta_rel))+' '+getCurrencySymbol();
       }
@@ -94,13 +96,18 @@ const beforemount=function() {
       }
       if(simu.value.events[i].metaType==EVT_META_TYPE_REBUY )
       {
-        _text6=transStr(stringsIDs.str_capital_rebought)+formatnumber(returnBaseData(simu.value.events[i].year, simu.value.events[i].month).capital_left.toString())+' '+getCurrencySymbol();
         if(simu.value.events[i].type==EVT_TYPE_REBUY_SAVINGS)
         {
+          //in case of a rebuy with savings the capital end month and capital end year date must be substracted of one month because at event's date capital is null
+          capital_rebuy_s_end_month.value=simu.value.events[i].month;
+          capital_rebuy_s_end_year.value=simu.value.events[i].year;
+          subOneMonth(capital_rebuy_s_end_month,capital_rebuy_s_end_year);
+          _text6=transStr(stringsIDs.str_capital_rebought)+formatnumber(returnBaseData(capital_rebuy_s_end_year.value, capital_rebuy_s_end_month.value).capital_left.toString())+' '+getCurrencySymbol();
           _text7=transStr(stringsIDs.str_savings_left)+formatnumber(simu.value.events[i].savingsLeft)+' '+getCurrencySymbol();
         }
         else
         {
+          _text6=transStr(stringsIDs.str_capital_rebought)+formatnumber(returnBaseData(simu.value.events[i].year, simu.value.events[i].month).capital_left.toString())+' '+getCurrencySymbol();
           _text7=transStr(stringsIDs.str_new_rate)+simu.value.events[i].reloanRate+' %';
         }
       }
