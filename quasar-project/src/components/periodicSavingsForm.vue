@@ -14,7 +14,7 @@
         </div>
         <div class="col">
           <q-btn class="q-ma-xs" color="blue-grey-8" :label=transStr(stringsIDs.str_cancel) size='xl' @click="emit('ps-aborted')"></q-btn>
-          <q-btn class="q-ma-xs" color="blue-grey-8" :label=transStr(stringsIDs.str_next) size='xl' @click="currentSlide = 'psAmount'"></q-btn>
+          <q-btn class="q-ma-xs" color="blue-grey-8" :label=transStr(stringsIDs.str_next) size='xl' @click="currentSlide = 'psAmount'" :disable="typeSavings!=transoptSaveP(BANK_SAVE_TYPE_MONTHLY) && typeSavings!=transoptSaveP(BANK_SAVE_TYPE_YEARLY)"></q-btn>
         </div>
       </div>
       </div>
