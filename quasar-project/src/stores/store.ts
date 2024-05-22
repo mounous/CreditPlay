@@ -9,7 +9,7 @@ export const simu=ref({
     has_been_rebougth:false,
     mensuality:0,
     amount:0,
-    duration_y:0,
+    duration_m:0,
     rate:0,
     startingDate:'',
     amort:[],

@@ -54,10 +54,16 @@
           lazy-rules :rules="[(val) => (val>0) || transStr(stringsIDs.str_rate_impossible)]"
           @update:model-value="simu.credit.rate=Number(simu.credit.rate)" />
       </div>
-      <div class="col">
-        <q-input filled type="number" bg-color="blue-grey-8" v-model="simu.credit.duration_y" :label=transStr(stringsIDs.str_duration)
+      <div class="row items-center align-center">
+        <q-input filled type="number" bg-color="blue-grey-8" v-model="duration_no_unit" :label=transStr(stringsIDs.str_duration)
           lazy-rules :rules="[(val)=>(val>0)||transStr(stringsIDs.str_durationPos)]"
-          @update:model-value="[simu.credit.duration_y=Number(Math.round(simu.credit.duration_y))]" />
+          @update:model-value="[duration_units==transStr(stringsIDs.str_unit_y) ? simu.credit.duration_m=Number(Math.round(duration_no_unit)*12):simu.credit.duration_m=Number(Math.round(duration_no_unit)) ]" />
+          <q-btn-toggle class="q-ma-md" name="durationUnits" v-model="duration_units" unelevated
+          size="14px" glossy color=black :options="[
+            { label: transStr(stringsIDs.str_unit_y), value: transStr(stringsIDs.str_unit_y) },
+            { label: transStr(stringsIDs.str_unit_m), value: transStr(stringsIDs.str_unit_m) }
+          ]"
+          @update:model-value="duration_units==transStr(stringsIDs.str_unit_y) ? duration_no_unit=Math.round(duration_no_unit/12) : duration_no_unit=duration_no_unit*12"/>
       </div>
       <div class="col column content-center">
         <div>
@@ -97,7 +103,8 @@ var maxNav = ref('0000/01');
 var mustpop=ref(false)
 var resetMustPop=ref(false);
 var unformated=ref('00/00/0000');
-
+var duration_units=ref(transStr(stringsIDs.str_unit_y));
+var duration_no_unit=ref('0');
 
 const handleSwipeExt=function ({ evt, touch, mouse, direction, duration, distance })
 {
@@ -191,7 +198,7 @@ const checkInputs=function()
     $q.notify({ color: 'orange-4', textColor: 'black', icon: 'warning', message: transStr(stringsIDs.str_notif_warn_rate), });
     return false;
   }
-  else if (simu.value.credit.duration_y==0)
+  else if (simu.value.credit.duration_m==0)
   {
     $q.notify({ color: 'orange-4', textColor: 'black', icon: 'warning', message: transStr(stringsIDs.str_notif_warn_duration), });
     return false;

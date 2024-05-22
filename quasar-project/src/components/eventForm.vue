@@ -113,7 +113,7 @@
     </q-carousel-slide>
 
     <q-carousel-slide name="rebuyPick" class="bg-grey-9">
-      <div class="oneInThreeRowH"></div>
+
       <div class="oneInThreeRow">
         <div class="column items-center">
           <div class="col myIndication q-ma-md">
@@ -121,7 +121,7 @@
           </div>
           <div class="col q-ma-md">
             <q-select rounded outlined v-model="event_type_str" :options="options_rebuy" :label=transStr(stringsIDs.str_choose_rebuy_type) style="width: 250px;"
-            @update:model-value="[event_.type=getrebuyTypeFromStr(event_type_str), event_.reloanRate=0,event_.reloanDuration=0, event_.savingsLeft=0,
+            @update:model-value="[event_.type=getrebuyTypeFromStr(event_type_str), event_.reloanRate=0,event_.reloanDuration_m=0, event_.savingsLeft=0,
             rebuy_saving_capital_to_pay='',rachatVal=DEFAULT_RACHAT_VAL_VALUE,getoptRebuy()]"
             ></q-select>
           </div>
@@ -159,20 +159,26 @@
               v-model="event_.reloanRate" type="number" lazy-rules :rules="[(val) => (val >= 0.0) || transStr(stringsIDs.str_rate_impossible)]"
               bg-color="blue-grey-8" outlined @update:model-value="event_.reloanRate=Number(event_.reloanRate)"></q-input>
           </div>
-          <div class="col q-ma-md">
+          <div class="row q-ma-md align-center">
             <q-input v-if="event_.type == EVT_TYPE_REBUY_CREDIT " class="q-ma-xs" :label=transStr(stringsIDs.str_duration) style="width:200px"
-            v-model="event_.reloanDuration" type="number" lazy-rules
+            v-model="duration_no_unit" type="number" lazy-rules
             :rules="[(val) => (val > 0) || transStr(stringsIDs.str_durationPos)]" bg-color="blue-grey-8" outlined
-            @update:model-value="[event_.reloanDuration=Number(event_.reloanDuration)]"></q-input>
+            @update:model-value="duration_units==transStr(stringsIDs.str_unit_y) ? event_.reloanDuration_m=Number(duration_no_unit)*12 : event_.reloanDuration_m=Number(duration_no_unit)"></q-input>
+            <q-btn-toggle v-if="event_.type == EVT_TYPE_REBUY_CREDIT " class="q-ma-md" name="durationUnits" v-model="duration_units" unelevated
+          size="14px" glossy color=black :options="[
+            { label: transStr(stringsIDs.str_unit_y), value: transStr(stringsIDs.str_unit_y) },
+            { label: transStr(stringsIDs.str_unit_m), value: transStr(stringsIDs.str_unit_m) }
+          ]"
+          @update:model-value="duration_units==transStr(stringsIDs.str_unit_y) ? duration_no_unit=Math.round(duration_no_unit/12) : duration_no_unit=duration_no_unit*12"/>
         </div>
           <div class="col q-ma-md">
             <q-btn class="q-ma-xs" color="blue-grey-8" :label=transStr(stringsIDs.str_prev) size="xl"
               @click="[currentSlide='rebuypenalties',event_.type=DEFAULT_EVENT_TYPE,event_type_str=DEFAULT_EVENT_TYPE_STR,
-                event_.reloanDuration=0, event_.reloanRate=0,unformatedrebuydate=reloanMin,event_.year=0,event_.month=0,
+                event_.reloanDuration_m=0, event_.reloanRate=0,unformatedrebuydate=reloanMin,event_.year=0,event_.month=0,
                 event_.month_str='',event_.year_str='',event_.savingsLeft=0,rebuy_saving_capital_to_pay='',event_.reLoanDate='',rachatVal=DEFAULT_RACHAT_VAL_VALUE]"></q-btn>
             <q-btn class="q-ma-xs" color="blue-grey-8" :label=transStr(stringsIDs.str_next) size="xl"
               @click="RebuyPicked()"
-              :disable="event_.type== DEFAULT_EVENT_TYPE ? true : event_.type==EVT_TYPE_REBUY_CREDIT ? (event_.reloanDuration==0 || event_.reloanRate<=0 || event_.reloanRate=='')
+              :disable="event_.type== DEFAULT_EVENT_TYPE ? true : event_.type==EVT_TYPE_REBUY_CREDIT ? (event_.reloanDuration_m==0 || event_.reloanRate<=0 || event_.reloanRate=='')
                                                             :(event_.savingsLeft==0 || event_.year==0 || event_.month==0)" ></q-btn>
           </div>
         </div>
@@ -217,12 +223,14 @@ const emit=defineEmits(['event-done','event-abort']);
 import { transStr, stringsIDs,transevtmetaType, transMonthName,getTranslatedFormatedCalendar,transevtmodType,
         getModTypeFromStr,transRebuymodType,getrebuyTypeFromStr,getMonthNbr,transSt,sentancesIDs,
  } from 'src/stores/languages';
+ var duration_units=ref(transStr(stringsIDs.str_unit_y));
+ var duration_no_unit=ref('0');
 //------------------------------------//
 // events computation handling        //
 //------------------------------------//
 import { apply_events_chain, build_event_name } from '../utils/credit_utility.js';
 import {provideRebuyOptions} from '../utils/bank_utility'
-import { simu ,bank} from 'stores/store';
+import { simu } from 'stores/store';
 import { getLatestMensuality,getEarliestNewEventDate,EVT_TYPE_REBUY_SAVINGS,EVT_META_TYPE_MOD, EVT_META_TYPE_REBUY ,
   provideModOptions,returnBaseData,EVT_TYPE_REBUY_CREDIT} from '../utils/credit_utility'
 const default_month_str = transStr(stringsIDs.str_sel_month);
@@ -248,7 +256,7 @@ var event_ = ref({
   reLoanDate: '',
   reloanRate: 0,
   rebuyPenalties: DEFAULT_PENALTIES,
-  reloanDuration: 0,
+  reloanDuration_m: 0,
   savingsLeft: 0,
 });
 //------------------------------------//

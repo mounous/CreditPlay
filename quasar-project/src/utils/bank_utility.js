@@ -306,7 +306,7 @@ const provideRebuyOptions=function(evt_type,penalties){
       return [transStr(stringsIDs.str_savings_empty)];
     }
     //dernier paramètre à changer : il faut prendre en compte des modulations qui ralongent TODO
-    var computed=compute_savings(getSavingsEarlier()[1],getSavingsEarlier()[0],simu.value.credit.duration_y*12);
+    var computed=compute_savings(getSavingsEarlier()[1],getSavingsEarlier()[0],simu.value.credit.duration_m);
     while(computed[i][1]<returnBaseData(Number(computed[i][0].split('-')[1]),getMonthNbr(computed[i][0].split('-')[0])).capital_left*(1+penalties/100) && i!=computed.length)
     {
       console.log(i);

@@ -159,6 +159,9 @@ export enum stringsIDs {
   str_choose_evt_type=130,
   str_indic_penalties=131,
   str_indic_rebuy_type=132,
+  //creditstratform
+  str_unit_y=133,
+  str_unit_m=134,
 };
 
 const translatedStrs=ref(
@@ -173,7 +176,7 @@ const translatedStrs=ref(
   ['Somme empruntée','amount borrowed'],
   ['Vous empruntez, vous ne prêtez pas','You borrow, you don\'t lend'],
   ['Taux','rate'],
-  ['Durée d\'meprunt (années)','Loan duration (years)'],
+  ['Durée d\'meprunt','Loan duration'],
   ['Ce taux semble irréel','this rate seems unreal'],
   ['Entrer une durée positive','Enter a positive duration'],
   ['Valider','Launch simulation'],
@@ -312,6 +315,9 @@ const translatedStrs=ref(
   //Picker
   ['Renseignez les pénalités contractuelles de rachat','Enter contractual rebuy penalties'],
   ['Renseignez le type de rachat. Rachat avec épargne disponible seulement si l\'épargne a été renseignée','Select rebuy type. Rebuy with savings allowed only if savings are filled'],
+  //creditstratform
+  ['Années','Years'],
+  ['Mois','Month'],
 ]);
 
 const getLangId=function()
