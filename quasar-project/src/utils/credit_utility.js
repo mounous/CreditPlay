@@ -345,7 +345,7 @@ const provideModOptions=(evt_type_in,evt_year_in,evt_month_in)=>{
   {
     if(evt_type_in==EVT_TYPE_MOD_MENS_UP)//duree - mens +
     {
-      for(let i=1;i<mensualities_to_end;i++)
+      for(let i=1;i<mensualities_to_end-3;i++)//mensualities_to_end-3 to prevent mimicking a rebuy with a mod
       {
         toreturn.push((Math.round(computeMensuality_noSave_Months(mensualities_to_end-i,up2date_rate,ret.capital_left)*100)/100).toString() +getCurrencySymbol()+' (-'+i.toString()+' mois)');
       }
@@ -417,21 +417,21 @@ const getLatestMensuality=function(){
     }
     nb_mens_to_pay--;
   }
+  //if some events exist, the latest mensuality is the latest mensuality of the last event
   if(simu.value.events.length!=0)
   {
-    for(var i=simu.value.events.length-1;i>=0;i--)
+    var i=simu.value.events.length-1;
+    if(!(simu.value.events[i].metaType==EVT_META_TYPE_REBUY && simu.value.events[i].type==EVT_TYPE_REBUY_SAVINGS))//not a rebuy with savings
     {
-      if(!(simu.value.events[i].metaType==EVT_META_TYPE_REBUY && simu.value.events[i].type==EVT_TYPE_REBUY_SAVINGS))//not a rebuy with savings
+      var index =simu.value.events[i].amortEvt.length-1;
+      if(compareDates(Number(simu.value.events[i].amortEvt[index][0].split('-')[1]),getMonthNbr(simu.value.events[i].amortEvt[index][0].split('-')[0]),latest_year,latest_month)<0)
       {
-        var index =simu.value.events[i].amortEvt.length-1;
-        if(compareDates(Number(simu.value.events[i].amortEvt[index][0].split('-')[1]),(simu.value.events[i].amortEvt[index][0].split('-')[0]),latest_year,latest_month)>0)
-        {
-          latest_year=Number(simu.value.events[i].amortEvt[index][0].split('-')[1]);
-          latest_month=getMonthNbr(simu.value.events[i].amortEvt[index][0].split('-')[0]);
-        }
+        latest_year=Number(simu.value.events[i].amortEvt[index][0].split('-')[1]);
+        latest_month=getMonthNbr(simu.value.events[i].amortEvt[index][0].split('-')[0]);
       }
-
     }
+
+
   }
   return {l_y:latest_year,l_m:latest_month};
 }
