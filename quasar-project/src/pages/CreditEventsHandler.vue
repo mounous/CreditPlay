@@ -2,7 +2,7 @@
   <q-page  v-touch-swipe.mouse.left.right="handleSwipeExt">
     <div class="full-height column justify-arround content-center verticalFlex">
 
-  <div class="col" :key="refresh">
+  <div class="col q-ma-md" :key="refresh">
     <q-list class="bg-primary" separator bordered>
       <q-item
         v-for="event in simu.events"

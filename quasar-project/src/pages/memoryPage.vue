@@ -1,51 +1,51 @@
 <template>
-  <q-layout>
-    <q-page-container>
-      <q-page  v-touch-swipe.mouse.left.right="handleSwipeExt">
-    <div>
-    <div>
-      <q-list class="bg-primary" separator bordered>
-        <q-item v-for="item in listSave" :key="item.id" clickable
-          @click="selected_id == item.id ? selected_id = DEFAULT_ID : selected_id = item.id" v-ripple>
-          <q-item-section>
-            <q-item-label>{{ item.name }}</q-item-label>
-          </q-item-section>
-        </q-item>
-      </q-list>
-    </div>
-    <div class="col flex flex center q-ma-md">
-      <div>
-        <q-btn class="q-ma-md" :label=transStr(stringsIDs.str_btn_delete_all) color="blue-grey-8" @click="deleteAllData"></q-btn>
-      </div>
-      <div>
-        <q-btn class="q-ma-md" :label=transStr(stringsIDs.str_btn_save_current) color="blue-grey-8" @click="mustPopName = true"></q-btn>
-      </div>
-      <div>
-        <q-btn class="q-ma-md" :label=transStr(stringsIDs.str_btn_delete) color="blue-grey-8" @click="deleteData"
-        :disable="selected_id == DEFAULT_ID"></q-btn>
-      </div>
-      <div>
-        <q-btn class="q-ma-md" :label=transStr(stringsIDs.str_btn_restore) color="blue-grey-8" @click="restoreData"
-        :disable="selected_id == DEFAULT_ID"></q-btn>
-      </div>
-    </div>
-    <div class="col q-ma-md">
-      <q-dialog v-model="mustPopName">
-        <q-card>
-        <div class="q-ma-xl">
-          {{ transStr(stringsIDs.str_pop_simu_save_name) }}
-        </div>
-        <q-input class="q-ma-md" v-model="currentName"></q-input>
-        <q-btn class="q-ma-md" :label=transStr(stringsIDs.str_pop_simu_default_name) @click="saveCurrentData"></q-btn>
-        <q-btn class="q-ma-md" :label=transStr(stringsIDs.str_pop_simu_custom_name) @click="saveCurrentData"></q-btn>
-      </q-card>
-      </q-dialog>
+  <q-page v-touch-swipe.mouse.left.right="handleSwipeExt">
 
+    <div class="full-height column justify-arround content-center verticalFlex">
+      <div class="sixtyPercentTOP">
+        <q-dialog v-model="mustPopName">
+          <q-card>
+            <div class="q-ma-xl">
+              {{ transStr(stringsIDs.str_pop_simu_save_name) }}
+            </div>
+            <q-input class="q-ma-md" v-model="currentName"></q-input>
+            <q-btn class="q-ma-md" :label=transStr(stringsIDs.str_pop_simu_default_name)
+              @click="saveCurrentData"></q-btn>
+            <q-btn class="q-ma-md" :label=transStr(stringsIDs.str_pop_simu_custom_name) @click="saveCurrentData"
+              :disable="isNameAlreadyInUse(currentName)"></q-btn>
+          </q-card>
+        </q-dialog>
+        <div class="col q-ma-md">
+          <q-list class="bg-primary" separator bordered>
+            <q-item v-for="item in listSave" :key="item.id" clickable
+              @click="selected_id == item.id ? selected_id = DEFAULT_ID : selected_id = item.id" v-ripple
+              :active="selected_id == item.id" active-class="bg-blue-grey-8 text-black">
+              <q-item-section> {{ item.name }} </q-item-section>
+              <q-item-section avatar>
+                <q-btn style="width:20px" icon="delete_forever" @click="deleteData(item.id)"></q-btn>
+              </q-item-section>
+            </q-item>
+          </q-list>
+        </div>
+      </div>
+      <div class="fourtyPercentBottom">
+        <div class="column justify-center items-center content-center q-ma-md">
+          <div>
+            <q-btn class="q-ma-md" :label=transStr(stringsIDs.str_btn_restore) color="blue-grey-8" @click="restoreData"
+              :disable="selected_id == DEFAULT_ID"></q-btn>
+          </div>
+          <div>
+            <q-btn class="q-ma-md" :label=transStr(stringsIDs.str_btn_save_current) color="blue-grey-8"
+              @click="mustPopName = true"></q-btn>
+          </div>
+          <div>
+            <q-btn class="q-ma-md" :label=transStr(stringsIDs.str_btn_delete_all) color="blue-grey-8"
+              @click="deleteAllData"></q-btn>
+          </div>
+        </div>
+      </div>
     </div>
-  </div>
   </q-page>
-    </q-page-container>
-  </q-layout>
 </template>
 
 <script setup>
@@ -54,8 +54,9 @@ import { LocalStorage } from 'quasar';
 import { onBeforeMount } from 'vue';
 import { bank, simu, startFormFilled } from 'src/stores/store';
 import { useRouter } from 'vue-router';
-import {targetPage} from '../utils/swipe_utils.js'
-import { transStr,stringsIDs } from 'src/stores/languages';
+import { targetPage } from '../utils/swipe_utils.js'
+import { transStr, stringsIDs } from 'src/stores/languages';
+
 const DEFAULT_ID = -1;
 const DEFAULT_NAME = '';
 var mustPopName = ref(false);
@@ -63,22 +64,61 @@ var listSave = ref([]);
 var selected_id = ref(DEFAULT_ID);
 var currentName = ref(DEFAULT_NAME);
 const router = useRouter();
-const handleSwipeExt=function ({ evt, touch, mouse, direction, duration, distance })
-{
-  router.push(targetPage(direction,router.currentRoute.value.fullPath));
+const handleSwipeExt = function ({ evt, touch, mouse, direction, duration, distance }) {
+  router.push(targetPage(direction, router.currentRoute.value.fullPath));
 }
 const saveCurrentData = function () {
   mustPopName.value = false;
-  if(bank.value.accounts.length!=0)
-  {
-    for(var i=0;i<bank.value.accounts.length;i++)
-    {
-      bank.value.accounts[i].computedOverTime=[];
+  //clean heavy data that can be recomputed easily
+  if (bank.value.accounts.length != 0) {
+    for (var i = 0; i < bank.value.accounts.length; i++) {
+      bank.value.accounts[i].computedOverTime = [];
     }
   }
-  listSave.value.push({ simu: simu.value, bank: bank.value, id: listSave.value.length, name: currentName.value == DEFAULT_NAME ? 'Simulation ' + String(listSave.value.length) : currentName.value, startFormFilled: startFormFilled.value });
+  //generate unique name
+  var nameSim = '';
+
+
+  if (currentName.value == DEFAULT_NAME) {
+    nameSim = 'Simulation ' + (getHighestIndex() + 1).toString();
+  }
+  else {
+    nameSim = currentName.value;
+  }
+  listSave.value.push({ simu: simu.value, bank: bank.value, id: generateuniqueID(), name: nameSim, startFormFilled: startFormFilled.value });
   LocalStorage.set('listSave', listSave.value);
   currentName.value = DEFAULT_NAME;
+}
+
+const isNameAlreadyInUse = function (name) {
+  for (var j = 0; j < listSave.value.length - 1; j++) {
+    if (listSave.value[j].name == name) {
+      return true;
+    }
+  }
+  return false;
+}
+const getHighestIndex = function () {
+  var current_index = 0;
+  var highest_index = 0;
+  for (var j = 0; j < listSave.value.length; j++) {
+    if (listSave.value[j].name.split(' ')[0] == 'Simulation') {
+      current_index = Number(listSave.value[j].name.split(' ')[1]);
+      if (current_index > highest_index) {
+        highest_index = current_index;
+      }
+    }
+  }
+  return highest_index;
+}
+const generateuniqueID = function () {
+  var highest_id = 0;
+  for (var i = 0; i < listSave.value.length; i++) {
+    if (listSave.value[i].id > highest_id) {
+      highest_id = listSave.value[i].id;
+    }
+  }
+  return highest_id + 1;
 }
 const getSimuIndexInStorage = function (id_in) {
   var index = -1;
@@ -108,22 +148,19 @@ const restoreData = function () {
     router.push('/lineChart');
   }
 }
-const deleteData = function () {
-  var index = getSimuIndexInStorage(selected_id.value);
+const deleteData = function (selected_id) {
+  var index = getSimuIndexInStorage(selected_id);
   if (index == -1) {
     //notify
   }
   else {
-    if(listSave.value.length>1)
-    {
+    if (listSave.value.length > 1) {
       listSave.value.splice(index, 1);
       LocalStorage.set('listSave', listSave.value);
     }
-    else
-    {
+    else {
       deleteAllData();
     }
-
   }
 }
 const deleteAllData = function () {
@@ -132,3 +169,15 @@ const deleteAllData = function () {
 }
 onBeforeMount(getStorage);
 </script>
+
+<style lang="scss">
+.sixtyPercentTOP {
+  width: 100%;
+  height: 60%;
+}
+
+.fourtyPercentbottom {
+  width: 100%;
+  height: 40%;
+}
+</style>
