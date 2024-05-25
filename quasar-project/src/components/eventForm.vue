@@ -95,11 +95,17 @@
           <div class="col myIndication q-ma-md">
             <p>{{ transStr(stringsIDs.str_indic_penalties) }}</p>
           </div>
-          <div class="col">
+          <div class="row items-center">
             <q-input class="q-ma-md" :label=transStr(stringsIDs.str_penalties) :hint=transStr(stringsIDs.str_penalties_hint) style="max-width:200px"
-            v-model="event_.rebuyPenalties" type="number" lazy-rules @update:model-value="event_.rebuyPenalties=Number(event_.rebuyPenalties)"
+            v-model="penalties_no_unit" type="number" lazy-rules @update:model-value="event_.rebuyPenaltiesType== getCurrencySymbol() ? event_.rebuyPenalties_abs= Number(penalties_no_unit): event_.rebuyPenalties=Number(penalties_no_unit)"
             :rules="[(val) => (val >= 0.0) || transStr(stringsIDs.str_penalties_rule)]" bg-color="blue-grey-8"
             outlined ></q-input>
+            <q-btn-toggle style="height: 20px;" class="q-ma-md" name="durationUnits" v-model="event_.rebuyPenaltiesType" unelevated
+              size="14px" glossy color=black :options="[
+                { label: getCurrencySymbol(), value: getCurrencySymbol() },
+                { label: '%', value: '%' }
+            ]"
+          @update:model-value="penalties_no_unit=0"/>
           </div>
           <div class="col">
             <q-btn class="q-ma-xs" color="blue-grey-8" :label=transStr(stringsIDs.str_prev) size="xl"
@@ -238,6 +244,7 @@ const default_year_str = transStr(stringsIDs.str_sel_year);
 const DEFAULT_EVENT_TYPE=-1;
 const DEFAULT_EVENT_META_TYPE=-1;
 const DEFAULT_PENALTIES=0.0;
+var penalties_no_unit=ref(0);
 var event_ = ref({
   title: '',
   metaType: DEFAULT_EVENT_META_TYPE,
@@ -255,7 +262,9 @@ var event_ = ref({
   rebuyVal: '',
   reLoanDate: '',
   reloanRate: 0,
+  rebuyPenaltiesType:'%',
   rebuyPenalties: DEFAULT_PENALTIES,
+  rebuyPenalties_abs :DEFAULT_PENALTIES,
   reloanDuration_m: 0,
   savingsLeft: 0,
 });
