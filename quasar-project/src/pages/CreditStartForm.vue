@@ -1,209 +1,100 @@
 <template>
+  <startForm v-if="displayStartForm == true" @credit-aborted="displayStartForm = false"
+    @credit-done="[displayStartForm = false, onSubmit()]"></startForm>
   <q-page v-touch-swipe.mouse.left.right="handleSwipeExt">
-    <div class="full-height column justify-arround content-center verticalFlex">
-      <div class="col">
-        <q-btn-toggle class="q-ma-md" name="has_started_button" v-model="has_started" unelevated rounded dense
-          size="14px" @click="switchNavConstraint" glossy color=black :options="[
-            { label: transStr(stringsIDs.str_alreadySigned), value: 'yes' },
-            { label: transStr(stringsIDs.str_simulation), value: 'no' }
-          ]" />
-      </div>
-      <div class="col">
-        <q-input :label=transStr(stringsIDs.str_signature_date) bg-color="blue-grey-8" filled
-          v-model="simu.credit.startingDate" @click="mustpop=true" readonly>
-          <template v-slot:append>
-            <q-icon name="event" class="cursor-pointer">
-              <q-popup-proxy v-model="mustpop" cover transition-show="scale" transition-hide="scale" persistent>
-                <q-date dark v-model="unformated" :locale=getTranslatedFormatedCalendar() :navigation-min-year-month="minNav"
-                  width="200px" :navigation-max-year-month="maxNav"
-                  :disable="has_started != 'yes' && has_started != 'no'"
-                  @update:model-value="[mustpop=false,simu.credit.startingDate=formatDate(unformated),parseCreditDate()]">
-                  <div class="row items-center justify-end">
-                    <q-btn v-close-popup :label=transStr(stringsIDs.str_close) color="primary" flat />
-                  </div>
-                </q-date>
-              </q-popup-proxy>
-            </q-icon>
-          </template>
-        </q-input>
-      </div>
-      <div class="col">
-
-        <q-dialog v-model="resetMustPop" cover transition-show="scale" transition-hide="scale">
-          <q-card>
-            <div class="col flex flex center justify-around">
-              <div class="q-ma-md">
-                {{transSt(sentancesIDs.s_warning_overwriteSimu)}}
-              </div>
-              <div class="row nowrap">
-                <q-btn :label=transStr(stringsIDs.str_cancel) @click="resetMustPop = false"></q-btn>
-                <q-btn :label=transStr(stringsIDs.str_simulation) @click="onForceSubmmit"></q-btn>
-              </div>
-            </div>
-          </q-card>
-        </q-dialog>
-      </div>
-      <div class="col">
-        <q-input filled type="number" bg-color="blue-grey-8" v-model="simu.credit.amount" :label=transStr(stringsIDs.str_amount_borrowed)
-          lazy-rules :rules="[
-            (val) => val>0 || transStr(stringsIDs.str_neg_amount),
-          ]" @update:model-value="simu.credit.amount=Number(simu.credit.amount)" />
-      </div>
-      <div class="col">
-        <q-input filled :label=transStr(stringsIDs.str_rate) bg-color="blue-grey-8" type="number" step="any" v-model="simu.credit.rate"
-          lazy-rules :rules="[(val) => (val>0) || transStr(stringsIDs.str_rate_impossible)]"
-          @update:model-value="simu.credit.rate=Number(simu.credit.rate)" />
-      </div>
-      <div class="row items-center align-center">
-        <q-input filled type="number" bg-color="blue-grey-8" v-model="duration_no_unit" :label=transStr(stringsIDs.str_duration)
-          lazy-rules :rules="[(val)=>(val>0)||transStr(stringsIDs.str_durationPos)]"
-          @update:model-value="[duration_units==transStr(stringsIDs.str_unit_y) ? simu.credit.duration_m=Number(Math.round(duration_no_unit)*12):simu.credit.duration_m=Number(Math.round(duration_no_unit)) ]" />
-          <q-btn-toggle class="q-ma-md" name="durationUnits" v-model="duration_units" unelevated
-          size="14px" glossy color=black :options="[
-            { label: transStr(stringsIDs.str_unit_y), value: transStr(stringsIDs.str_unit_y) },
-            { label: transStr(stringsIDs.str_unit_m), value: transStr(stringsIDs.str_unit_m) }
-          ]"
-          @update:model-value="duration_units==transStr(stringsIDs.str_unit_y) ? duration_no_unit=Math.round(duration_no_unit/12) : duration_no_unit=duration_no_unit*12"/>
-      </div>
-      <div class="col column content-center">
-        <div>
-          <q-btn :label=transStr(stringsIDs.str_valid) type="submit" color="black" rounded @click="onSubmit" />
+    <q-dialog v-model="resetMustPop" cover transition-show="scale" transition-hide="scale">
+      <q-card>
+        <div class="col flex flex center justify-around">
+          <div class="q-ma-md">
+            {{ transSt(sentancesIDs.s_warning_overwriteSimu) }}
+          </div>
+          <div class="row nowrap">
+            <q-btn :label=transStr(stringsIDs.str_cancel) @click="resetMustPop = false"></q-btn>
+            <q-btn :label=transStr(stringsIDs.str_simulation) @click="onForceSubmmit"></q-btn>
+          </div>
         </div>
-      </div>
+      </q-card>
+    </q-dialog>
+    <div class="column content-cent items-center justify-around">
+      <div class="oneInThreeRowH"></div>
+      <div class="oneInThreeRow"><q-btn size=xl color="blue-grey-8" :label="transStr(stringsIDs.str_credit_fill)" @click="displayStartForm = true"> </q-btn></div>
+      <div class="oneInThreeRowL"></div>
     </div>
   </q-page>
 </template>
 
-<style lang="scss">
-.verticalFlex {
-  min-height: inherit;
-  max-width: 100%;
-}
-</style>
-
-
-
 <script setup>
-
+import startForm from 'src/components/startForm.vue';
 import { useRouter } from 'vue-router';
 import { ref } from 'vue';
 import { computeMensuality, computeCredit_init } from '../utils/credit_utility.js';
-import { bank, setStartFormFilled,simu } from 'stores/store';
-import { getTranslatedFormatedCalendar } from '../stores/languages';
-import {formatDate} from '../utils/date_utility.js'
-import { useQuasar } from 'quasar';
-import {targetPage} from '../utils/swipe_utils.js'
-import {transStr,stringsIDs,transSt,sentancesIDs,is_sio_special_name} from '../stores/languages.ts'
+import { bank, setStartFormFilled, simu } from 'stores/store';
+import { targetPage } from '../utils/swipe_utils.js'
+import { transStr, stringsIDs, transSt, sentancesIDs, is_sio_special_name } from '../stores/languages.ts'
 
 const router = useRouter();
-const $q=useQuasar();
-var has_started = ref('CHOOSE');
-var minNav = ref('0000/01');
-var maxNav = ref('0000/01');
-var mustpop=ref(false)
-var resetMustPop=ref(false);
-var unformated=ref('00/00/0000');
-var duration_units=ref(transStr(stringsIDs.str_unit_y));
-var duration_no_unit=ref('0');
 
-const handleSwipeExt=function ({ evt, touch, mouse, direction, duration, distance })
-{
-  router.push(targetPage(direction,router.currentRoute.value.fullPath));
+var displayStartForm = ref(false);
+var resetMustPop = ref(false);
+
+
+const handleSwipeExt = function ({ evt, touch, mouse, direction, duration, distance }) {
+  router.push(targetPage(direction, router.currentRoute.value.fullPath));
 }
 
 
 
-const parseCreditDate=function(){
-  simu.value.credit.y=Number(simu.value.credit.startingDate.split('/')[2]);
-  simu.value.credit.m=Number(simu.value.credit.startingDate.split('/')[1]);
-}
 
 function onSubmit() {
-  if(simu.value.events.length==0)
-  {
-    if(checkInputs())
-    {
-      computeMensuality();
-      computeCredit_init();
-      setStartFormFilled(true);
-      router.push('/lineChart');
-    }
-  }
-  else
-  {
-    resetMustPop.value=true;
-  }
-};
-
-function onForceSubmmit(){
-  resetMustPop.value=false;
-  if(checkInputs())
-  {
-    simu.value.events=[]
-    simu.value.credit.has_been_rebougth=false;
-    //remove rebuy with credit single io if any existing
-    for(let i=0;i<bank.value.accounts.length;i++)
-    {
-      for(let sio=0;sio<bank.value.accounts[i].single_in_out.length;sio++)
-      {
-        if(is_sio_special_name(bank.value.accounts[i].single_in_out[sio].title))
-        {
-          //remove "rebuy with savings sio" as it will be re-created by apply_events_chain
-          bank.value.accounts[i].single_in_out.splice(sio,1);
-        }
-      }
-    }
+  if (simu.value.events.length == 0) {
     computeMensuality();
     computeCredit_init();
     setStartFormFilled(true);
     router.push('/lineChart');
   }
-}
-
-function switchNavConstraint() {
-  var currentY = new Date().getFullYear().toString();
-  var currentM = (new Date().getMonth() + 1).toString().padStart(2, '0');
-  var limit = currentY + '/' + currentM;
-  if (has_started.value == 'yes') {
-    maxNav.value = limit;
-    minNav.value = '1900/01';
-    simu.value.credit.startingDate='10/07/2023';
-    parseCreditDate();
-  }
   else {
-    maxNav.value = '2100/01';
-    minNav.value = limit;
+    resetMustPop.value = true;
   }
-}
+};
 
-const checkInputs=function()
-{
-  if(has_started.value!='yes' && has_started.value!='no')
-  {
-    $q.notify({ color: 'orange-4', textColor: 'black', icon: 'warning', message: transStr(stringsIDs.str_notif_warn_credit_type), });
-    return false;
+function onForceSubmmit() {
+  resetMustPop.value = false;
+  simu.value.events = []
+  simu.value.credit.has_been_rebougth = false;
+  //remove rebuy with credit single io if any existing
+  for (let i = 0; i < bank.value.accounts.length; i++) {
+    for (let sio = 0; sio < bank.value.accounts[i].single_in_out.length; sio++) {
+      if (is_sio_special_name(bank.value.accounts[i].single_in_out[sio].title)) {
+        //remove "rebuy with savings sio" as it will be re-created by apply_events_chain
+        bank.value.accounts[i].single_in_out.splice(sio, 1);
+      }
+    }
   }
-  else if(simu.value.credit.startingDate=='')
-  {
-    $q.notify({ color: 'orange-4', textColor: 'black', icon: 'warning', message: transStr(stringsIDs.str_notif_warn_date), });
-    return false;
-  }
-  else if( simu.value.credit.amount==0 )
-  {
-    $q.notify({ color: 'orange-4', textColor: 'black', icon: 'warning', message: transStr(stringsIDs.str_notif_warn_amount), });
-    return false;
-  }
-   else if( simu.value.credit.rate==0)
-  {
-    $q.notify({ color: 'orange-4', textColor: 'black', icon: 'warning', message: transStr(stringsIDs.str_notif_warn_rate), });
-    return false;
-  }
-  else if (simu.value.credit.duration_m==0)
-  {
-    $q.notify({ color: 'orange-4', textColor: 'black', icon: 'warning', message: transStr(stringsIDs.str_notif_warn_duration), });
-    return false;
-  }
-  return true;
+  computeMensuality();
+  computeCredit_init();
+  setStartFormFilled(true);
+  router.push('/lineChart');
 }
 
 </script>
+
+<style lang="scss">
+.myIndication {
+  font-size: 20px;
+}
+
+.oneInThreeRowH {
+  width: 100%;
+  height: 20%;
+}
+
+.oneInThreeRow {
+  width: 100%;
+  height: 50%;
+}
+
+.oneInThreeRowB {
+  width: 100%;
+  height: 30%;
+}
+</style>

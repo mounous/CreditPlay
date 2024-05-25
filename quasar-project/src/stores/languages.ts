@@ -162,6 +162,7 @@ export enum stringsIDs {
   //creditstratform
   str_unit_y=133,
   str_unit_m=134,
+  str_credit_fill=135,
 };
 
 const translatedStrs=ref(
@@ -169,14 +170,14 @@ const translatedStrs=ref(
   //creditStartForm
   ['Crédit en cours','already signed'],
   ['Simulation','Simulation'],
-  ['Date de signature','Signature Date'],
+  ['Entrez la date de signature','Set signature date'],
   ['fermer','close'],
   ['Annuler','Cancel'],
   ['Simuler','Simulate'],
-  ['Somme empruntée','amount borrowed'],
+  ['Renseignez la somme empruntée','Set the amount borrowed'],
   ['Vous empruntez, vous ne prêtez pas','You borrow, you don\'t lend'],
-  ['Taux','rate'],
-  ['Durée d\'meprunt','Loan duration'],
+  ['Renseignez le taux d\'emprunt hors assurance','Set the loan rate, credit insurance excluded'],
+  ['Renseignez la durée de l\'emprunt','Set the loan duration'],
   ['Ce taux semble irréel','this rate seems unreal'],
   ['Entrer une durée positive','Enter a positive duration'],
   ['Valider','Launch simulation'],
@@ -318,6 +319,7 @@ const translatedStrs=ref(
   //creditstratform
   ['Années','Years'],
   ['Mois','Month'],
+  ['Simuler','Simulate']
 ]);
 
 const getLangId=function()
