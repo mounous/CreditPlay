@@ -1,7 +1,7 @@
 <template>
   <startForm v-if="displayStartForm == true" @credit-aborted="displayStartForm = false"
     @credit-done="[displayStartForm = false, onSubmit()]"></startForm>
-  <q-page v-touch-swipe.mouse.left.right="handleSwipeExt">
+  <q-page style="display: flex;flex-direction: column; height:100%;width: 100%;align-items:center; justify-content: center;" v-touch-swipe.mouse.left.right="handleSwipeExt">
     <q-dialog v-model="resetMustPop" cover transition-show="scale" transition-hide="scale">
       <q-card>
         <div class="col flex flex center justify-around">
@@ -15,11 +15,9 @@
         </div>
       </q-card>
     </q-dialog>
-    <div class="column content-cent items-center justify-around">
-      <div class="oneInThreeRowH"></div>
-      <div class="oneInThreeRow"><q-btn size=xl color="blue-grey-8" :label="transStr(stringsIDs.str_credit_fill)" @click="displayStartForm = true"> </q-btn></div>
-      <div class="oneInThreeRowL"></div>
-    </div>
+
+      <q-btn size=xl color="blue-grey-8" :label="transStr(stringsIDs.str_credit_fill)" @click="displayStartForm = true"> </q-btn>
+
   </q-page>
 </template>
 
