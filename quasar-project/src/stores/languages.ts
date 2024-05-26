@@ -163,6 +163,8 @@ export enum stringsIDs {
   str_unit_y=133,
   str_unit_m=134,
   str_credit_fill=135,
+  //bank again
+  str_ps_period=136,
 };
 
 const translatedStrs=ref(
@@ -211,10 +213,10 @@ const translatedStrs=ref(
   ['Sélectionnez une action','Select an action'],
   ['choisir une option','choose an option'],
   ['1 mensualité restante, modulation impossible','1 mensuality left, impossible to modulate'],
-  [' (Augmentation de la mensualité : ',' (Mensuality increase : '],
-  [' (Réduction de la mensualité : ',' (Mensuality decrease : '],
-  [' - Rachat du capital restant dû avec épargne',' - Rebuy of capital with savings'],
-  [' - Rachat du capital restant dû à crédit (taux : ',' - reloan (rate : '],
+  ['Augmentation de la mensualité : ','Mensuality increase : '],
+  ['Réduction de la mensualité : ','Mensuality decrease : '],
+  ['Rachat du capital restant dû avec épargne',' - Rebuy of capital with savings'],
+  ['Rachat du capital restant dû à crédit (taux : ',' - reloan (rate : '],
   ['supprimer','delete'],
   ['impossible de déselectionner des évènements dépendant d\'évènements sélectionés','Impossible to unselect events depending on selected events'],
   ['évènements dépendants aussi sélectionnés','depending events selected too'],
@@ -319,7 +321,9 @@ const translatedStrs=ref(
   //creditstratform
   ['Années','Years'],
   ['Mois','Month'],
-  ['Simuler','Simulate']
+  ['Simuler','Simulate'],
+  //bank again
+  ['Période','from/to']
 ]);
 
 const getLangId=function()

@@ -1,7 +1,7 @@
 <template>
   <q-page v-touch-swipe.mouse.left.right="handleSwipeExt">
 
-    <div class="full-height column justify-arround content-center verticalFlex">
+    <div class="full-height column justify-arround content-center" style="display: flex;width: 100%; height: 100%;">
       <div class="sixtyPercentTOP">
         <q-dialog v-model="mustPopName">
           <q-card>

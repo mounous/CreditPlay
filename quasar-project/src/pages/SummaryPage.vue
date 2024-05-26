@@ -1,8 +1,8 @@
 <template>
   <q-page  v-touch-swipe.mouse.left.right="handleSwipeExt">
-    <div class="full-height column justify-arround content-center verticalFlex">
-      <div class="col">
-        <q-timeline  class="q-ma-lg text-white">
+    <div class="full-height column justify-arround content-center" style="display:flex; width: 100%; height: 100%;">
+      <div class="col q-ma-xs">
+        <q-timeline  class="q-ma-xs text-white">
       <q-timeline-entry heading>{{transStr(stringsIDs.str_simu_summary)}}</q-timeline-entry>
       <q-timeline-entry  v-for="item in summaries.values()" :key="item.id" :title="item.title" :subtitle="item.subtitle" id="item.id">
         <div v-if="!(item.type==EVT_TYPE_REBUY_SAVINGS && item.metaType==EVT_META_TYPE_REBUY)" >{{ item.text1 }}</div>

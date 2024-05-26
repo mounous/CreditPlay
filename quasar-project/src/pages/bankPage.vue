@@ -3,8 +3,8 @@
   <periodicSavingsForm v-if="displayPSForm==true" @ps-added="displayPSForm=false" @ps-aborted="displayPSForm=false"></periodicSavingsForm>
   <singleIOFrom v-if="displaySIOForm==true" @sio-added="displaySIOForm=false" @sio-aborted="displaySIOForm=false"></singleIOFrom>
   <q-page>
-  <div class="full-height column justify-arround content-center verticalFlex"  v-touch-swipe.mouse.left.right="handleSwipeExt">
-    <q-card class="bg-grey-9 my-card q-ma-md">
+  <div class="full-height column justify-arround content-center" style="display: flex; width: 100%; height: 100%;" v-touch-swipe.mouse.left.right="handleSwipeExt">
+    <q-card class="bg-grey-9 my-card q-mt-md">
       <div class="column items-center">
         <div class="col">
           <p class="myTitle">{{transStr(stringsIDs.str_title_accounts)}}</p>
@@ -17,25 +17,25 @@
           <q-markup-table class="my-table bg-grey-8" separator="cell" flat bordered @touchstart.stop>
             <thead>
               <tr>
-                <th span="1" style="width: 40%">{{transStr(stringsIDs.str_head_name)}}</th>
-                <th span="1" style="width: 30%">{{transStr(stringsIDs.str_head_amount)}}</th>
-                <th span="1" style="width: 20%">{{transStr(stringsIDs.str_head_profit)}}</th>
+                <th span="1" style="width: 40%;font-weight: bold;font-size: larger;">{{transStr(stringsIDs.str_head_name)}}</th>
+                <th span="1" style="width: 30%;font-weight: bold;font-size: larger;">{{transStr(stringsIDs.str_head_amount)}}</th>
+                <th span="1" style="width: 20%;font-weight: bold;font-size: larger;">{{transStr(stringsIDs.str_head_profit)}}</th>
                 <th span="1" style="width: 10%"> </th>
               </tr>
             </thead>
             <tbody>
-              <tr v-for="account in bank.accounts" :key="account.id">
-                <th>{{ account.title }}</th>
-                <th>{{ formatnumber(account.amount.toString())+' '+getCurrencySymbol() }}</th>
-                <th>{{ account.rate }}</th>
-                <th><q-btn dense size="s" icon="delete_forever" @click="removeAccount(account)"></q-btn></th>
+                <tr style="font-size: larger" v-for="account in bank.accounts" :key="account.id">
+                <th style="font-size: larger">{{ account.title }}</th>
+                <th style="font-size: larger">{{ formatnumber(account.amount.toString())+' '+getCurrencySymbol() }}</th>
+                <th style="font-size: larger">{{ account.rate }}</th>
+                <th ><q-btn dense size="s" icon="delete_forever" @click="removeAccount(account)"></q-btn></th>
               </tr>
             </tbody>
           </q-markup-table>
         </div>
     </q-card>
 
-    <q-card class="bg-grey-9 my-card q-ma-md">
+    <q-card class="bg-grey-9 my-card q-mt-md">
       <div class="column items-center">
         <div class="col">
           <p class="myTitle">{{transStr(stringsIDs.str_save_capability)}}</p>
@@ -49,29 +49,27 @@
             <thead>
               <tr>
 
-                <th span="1" style="width: 15%">{{transStr(stringsIDs.str_head_amount)}}</th>
-                <th span="1" style="width: 15%">{{transStr(stringsIDs.str_account)}}</th>
-                <th span="1" style="width: 10%">{{transStr(stringsIDs.str_save_type)}}</th>
-                <th span="1" style="width: 15%">{{transStr(stringsIDs.str_save_from)}}</th>
-                <th span="1" style="width: 15%">{{transStr(stringsIDs.str_save_untill)}}</th>
+                <th span="1" style="width: 20%;font-weight: bold;font-size: larger;">{{transStr(stringsIDs.str_head_amount)}}</th>
+                <th span="1" style="width: 15%;font-weight: bold;font-size: larger;">{{transStr(stringsIDs.str_account)}}</th>
+                <th span="1" style="width: 15%;font-weight: bold;font-size: larger;">{{transStr(stringsIDs.str_save_type)}}</th>
+                <th span="1" style="width: 20%;font-weight: bold;font-size: larger;">{{transStr(stringsIDs.str_ps_period)}}</th>
+
                 <th span="1" style="width: 10%"> </th>
               </tr>
             </thead>
             <tbody v-for="account in bank.accounts" :key="account.name">
               <tr v-for="saving in account.periodic_savings" :key="saving.amount">
-                <th>{{ formatnumber(saving.amount.toString())+' '+getCurrencySymbol() }}</th>
-                <th>{{ account.title }}</th>
-                <th>'{{ transoptSaveP(saving.type) }}'</th>
-                <th>{{ saving.startMonth + '/' + saving.startYear }}</th>
-                <th>{{ saving.endMonth != 0 && saving.endYear != 0 ? saving.endMonth + '/' + saving.endYear : '--\--' }}
-                </th>
+                <th  style="font-size: larger">{{ formatnumber(saving.amount.toString())+' '+getCurrencySymbol() }}</th>
+                <th  style="font-size: larger">{{ account.title }}</th>
+                <th  style="font-size: larger">{{ transoptSaveP(saving.type) }}</th>
+                <th  style="font-size: larger">{{ saving.startMonth + '/' + saving.startYear + ' - '+(saving.endMonth != 0 && saving.endYear != 0 ? saving.endMonth + '/' + saving.endYear : '?/?')}}</th>
                 <th><q-btn dense size="s" icon="delete_forever" @click="removeSavingP(saving,account)"></q-btn></th>
               </tr>
             </tbody>
           </q-markup-table>
     </q-card>
 
-    <q-card class="bg-grey-9 my-card q-ma-md">
+    <q-card class="bg-grey-9 my-card q-mt-md">
 
       <div class="column items-center">
         <div class="col">
@@ -85,21 +83,20 @@
           <q-markup-table class="my-table bg-grey-8" separator="cell" flat bordered @touchstart.stop>
             <thead>
               <tr>
-                <th span="1" style="width: 20%">{{ transStr(stringsIDs.str_head_name) }}</th>
-                <th span="1" style="width: 15%">{{ transStr(stringsIDs.str_save_type) }}</th>
-                <th span="1" style="width: 15%">{{ transStr(stringsIDs.str_head_amount) }}</th>
-                <th span="1" style="width: 20%">{{ transStr(stringsIDs.str_account) }}</th>
-                <th span="1" style="width: 20%">{{ transStr(stringsIDs.str_head_date) }}</th>
+                <th span="1" style="width: 20%;font-weight: bold;font-size: larger;">{{ transStr(stringsIDs.str_head_name) }}</th>
+                <th span="1" style="width: 20%;font-weight: bold;font-size: larger;">{{ transStr(stringsIDs.str_head_amount) }}</th>
+                <th span="1" style="width: 25%;font-weight: bold;font-size: larger;">{{ transStr(stringsIDs.str_account) }}</th>
+                <th span="1" style="width: 25%;font-weight: bold;font-size: larger;">{{ transStr(stringsIDs.str_head_date) }}</th>
                 <th span="1" style="width: 10"></th>
               </tr>
             </thead>
             <tbody v-for="account in bank.accounts" :key="account.name">
               <tr v-for="io in account.single_in_out" :key="io.amount">
-                <th>{{ io.title }}</th>
-                <th>{{ transoptSIO(io.type) }}</th>
-                <th>{{ formatnumber(io.amount.toString())+' '+getCurrencySymbol() }}</th>
-                <th>{{ account.title }}</th>
-                <th>{{ io.month + '/' + io.year }}</th>
+                <th style="font-size: larger">{{ io.title }}</th>
+                <th v-if="io.type==BANK_SIO_TYPE_OUT" style="font-size: larger"  class="text-red">{{ '- '+formatnumber(io.amount.toString())+' '+getCurrencySymbol() }}</th>
+                <th v-if="io.type==BANK_SIO_TYPE_IN" style="font-size: larger"  class="text-green">{{'+ '+formatnumber(io.amount.toString())+' '+getCurrencySymbol() }}</th>
+                <th style="font-size: larger">{{ account.title }}</th>
+                <th style="font-size: larger">{{ io.month + '/' + io.year }}</th>
                 <th><q-btn dense size="s" icon="delete_forever" @click="removeSingleIO(io,account)"></q-btn></th>
               </tr>
             </tbody>
@@ -165,7 +162,7 @@ import { bank, simu } from 'stores/store';
 import { ref } from 'vue'
 import { useQuasar } from 'quasar';
 import { useRouter } from 'vue-router';
-import {BANK_SEARCH_ERROR,getAccId,getSavinPID,getSIOID,isAccountInvolvedInRebuyWithSavings, deleteRebuySavingsEventAndAssociatedInOut,BANK_SIO_TYPE_IN} from '../utils/bank_utility'
+import {BANK_SEARCH_ERROR,getAccId,getSavinPID,getSIOID,isAccountInvolvedInRebuyWithSavings, deleteRebuySavingsEventAndAssociatedInOut,BANK_SIO_TYPE_IN,BANK_SIO_TYPE_OUT} from '../utils/bank_utility'
 import { compareDates } from 'src/utils/date_utility';
 import accountForm from 'src/components/accountForm.vue';
 import periodicSavingsForm from 'src/components/periodicSavingsForm.vue';

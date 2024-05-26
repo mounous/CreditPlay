@@ -1,6 +1,6 @@
 <template>
   <q-page  v-touch-swipe.mouse.left.right="handleSwipeExt">
-    <div class="full-height column justify-arround content-center verticalFlex">
+    <div class="full-height column justify-arround content-center" style="display:flex; width: 100%; height: 100%;">
 
   <div class="col q-ma-md" :key="refresh">
     <q-list class="bg-primary" separator bordered>
@@ -15,10 +15,11 @@
           <q-checkbox v-model="event.selected" color="primary"  @click="[refresh++,propagateSelection(event)]"> </q-checkbox>
         </q-item-section>
         <q-item-section :key="refresh">
-          <q-item-label v-if="event.metaType==EVT_META_TYPE_MOD && event.type==EVT_TYPE_MOD_MENS_UP">{{ event.month+'/'+event.year + ' - ' +event.title  +transStr(stringsIDs.str_mens_increase)+ event.new_mens+getCurrencySymbol()+')'}}</q-item-label>
-          <q-item-label v-if="event.metaType==EVT_META_TYPE_MOD && event.type==EVT_TYPE_MOD_MENS_DOWN">{{ event.month+'/'+event.year + ' - ' +event.title  +transStr(stringsIDs.str_mens_decrease)+ event.new_mens+getCurrencySymbol()+')'}}</q-item-label>
-          <q-item-label v-if="event.metaType==EVT_META_TYPE_REBUY && event.type==EVT_TYPE_REBUY_SAVINGS">{{ event.month+'/'+event.year + transStr(stringsIDs.str_rebuy_savings)}}</q-item-label>
-          <q-item-label v-if="event.metaType==EVT_META_TYPE_REBUY && event.type==EVT_TYPE_REBUY_CREDIT">{{ event.month+'/'+event.year + transStr(stringsIDs.str_rebuy_loan)+event.reloanRate+'%)'}}</q-item-label>
+          <q-item-label style="font-weight: bold;"  no-wrap="false" >{{ event.month+'/'+event.year + ' - ' +event.title  }}</q-item-label>
+          <q-item-label no-wrap="false" v-if="event.metaType==EVT_META_TYPE_MOD && event.type==EVT_TYPE_MOD_MENS_UP">{{     transStr(stringsIDs.str_mens_increase)+ event.new_mens+getCurrencySymbol()}}</q-item-label>
+          <q-item-label no-wrap="false" v-if="event.metaType==EVT_META_TYPE_MOD && event.type==EVT_TYPE_MOD_MENS_DOWN">{{   transStr(stringsIDs.str_mens_decrease)+ event.new_mens+getCurrencySymbol()}}</q-item-label>
+          <q-item-label no-wrap="false" v-if="event.metaType==EVT_META_TYPE_REBUY && event.type==EVT_TYPE_REBUY_SAVINGS">{{ transStr(stringsIDs.str_rebuy_savings)}}</q-item-label>
+          <q-item-label no-wrap="false" v-if="event.metaType==EVT_META_TYPE_REBUY && event.type==EVT_TYPE_REBUY_CREDIT">{{  transStr(stringsIDs.str_rebuy_loan)+event.reloanRate+'%)'}}</q-item-label>
         </q-item-section>
       </q-item>
     </q-list>
