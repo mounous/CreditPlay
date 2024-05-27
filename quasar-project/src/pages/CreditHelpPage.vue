@@ -1,6 +1,5 @@
 <template>
   <q-page class="q-pa-lg"  v-touch-swipe.mouse.left.right="handleSwipeExt" :key="reRender">
-    <h5 class="q-mt-none">{{ transStr(stringsIDs.str_tab_help) }}</h5>
     <div class="column">
     <div class="col">
       <q-dialog v-model="mustPopLanguage" cover transition-show="scale" transition-hide="scale">
@@ -10,12 +9,11 @@
         <currencyPicker @language-picked="[mustPopCurrency=false]"></currencyPicker>
       </q-dialog>
     </div>
-    <div class="col">
-      <q-btn :label=transStr(stringsIDs.str_choose_lang) @click="mustPopLanguage=true" color='blue-grey-8'></q-btn>
-      <q-btn :label=transStr(stringsIDs.str_choose_currency) @click="mustPopCurrency=true" color='blue-grey-8'></q-btn>
+    <div class="row">
+      <q-btn class="q-ma-xs" :label=transStr(stringsIDs.str_choose_lang) @click="mustPopLanguage=true" color='blue-grey-8'></q-btn>
+      <q-btn class="q-ma-xs" :label=transStr(stringsIDs.str_choose_currency) @click="mustPopCurrency=true" color='blue-grey-8'></q-btn>
     </div>
   </div>
-
   </q-page>
 </template>
 
