@@ -1,56 +1,49 @@
 <template>
-  <q-page  v-touch-swipe.mouse.left.right="handleSwipeExt">
-    <div class="full-height column justify-arround content-center" style="display:flex; width: 100%; height: 100%;">
+  <q-page v-touch-swipe.mouse.left.right="handleSwipeExt" style="display:flex;">
+    <div class="column justify-arround content-center" style=" flex-direction: column;">
 
-  <div class="col q-ma-md" :key="refresh">
-    <q-list class="bg-primary" separator bordered>
-      <q-item
-        v-for="event in simu.events"
-        :key="event.title"
-        clickable
-        @click="[event.selected = !event.selected,refresh++,propagateSelection(event)]"
-        v-ripple
-      >
-        <q-item-section avatar>
-          <q-checkbox v-model="event.selected" color="primary"  @click="[refresh++,propagateSelection(event)]"> </q-checkbox>
-        </q-item-section>
-        <q-item-section :key="refresh">
-          <q-item-label style="font-weight: bold;"  no-wrap="false" >{{ event.month+'/'+event.year + ' - ' +event.title  }}</q-item-label>
-          <q-item-label no-wrap="false" v-if="event.metaType==EVT_META_TYPE_MOD && event.type==EVT_TYPE_MOD_MENS_UP">{{     transStr(stringsIDs.str_mens_increase)+ event.new_mens+getCurrencySymbol()}}</q-item-label>
-          <q-item-label no-wrap="false" v-if="event.metaType==EVT_META_TYPE_MOD && event.type==EVT_TYPE_MOD_MENS_DOWN">{{   transStr(stringsIDs.str_mens_decrease)+ event.new_mens+getCurrencySymbol()}}</q-item-label>
-          <q-item-label no-wrap="false" v-if="event.metaType==EVT_META_TYPE_REBUY && event.type==EVT_TYPE_REBUY_SAVINGS">{{ transStr(stringsIDs.str_rebuy_savings)}}</q-item-label>
-          <q-item-label no-wrap="false" v-if="event.metaType==EVT_META_TYPE_REBUY && event.type==EVT_TYPE_REBUY_CREDIT">{{  transStr(stringsIDs.str_rebuy_loan)+event.reloanRate+'%)'}}</q-item-label>
-        </q-item-section>
-      </q-item>
-    </q-list>
+      <div class="col q-mt-md q-ml-md" style="height:60%;" :key="refresh">
+        <q-scroll-area style="height:100%;">
+        <q-list class="bg-primary" separator bordered>
+          <q-item v-for="event in simu.events" :key="event.title" clickable
+            @click="[event.selected = !event.selected, refresh++, propagateSelection(event)]" v-ripple>
+            <q-item-section avatar>
+              <q-checkbox v-model="event.selected" color="primary" @click="[refresh++, propagateSelection(event)]">
+              </q-checkbox>
+            </q-item-section>
+            <q-item-section :key="refresh">
+              <q-item-label style="font-weight: bold;" no-wrap="false">{{ event.month + '/' + event.year + ' - '
+                +event.title }}</q-item-label>
+              <q-item-label no-wrap="false"
+                v-if="event.metaType == EVT_META_TYPE_MOD && event.type == EVT_TYPE_MOD_MENS_UP">{{
+                  transStr(stringsIDs.str_mens_increase) + event.new_mens +getCurrencySymbol()}}</q-item-label>
+              <q-item-label no-wrap="false"
+                v-if="event.metaType == EVT_META_TYPE_MOD && event.type == EVT_TYPE_MOD_MENS_DOWN">{{
+                  transStr(stringsIDs.str_mens_decrease) + event.new_mens +getCurrencySymbol()}}</q-item-label>
+              <q-item-label no-wrap="false"
+                v-if="event.metaType == EVT_META_TYPE_REBUY && event.type == EVT_TYPE_REBUY_SAVINGS">{{
+                  transStr(stringsIDs.str_rebuy_savings)}}</q-item-label>
+              <q-item-label no-wrap="false"
+                v-if="event.metaType == EVT_META_TYPE_REBUY && event.type == EVT_TYPE_REBUY_CREDIT">{{
+                  transStr(stringsIDs.str_rebuy_loan) + event.reloanRate+'%)'}}</q-item-label>
+            </q-item-section>
+          </q-item>
+        </q-list>
+      </q-scroll-area>
+      </div>
+      <div class="column content-center" style="height: 40%;">
+        <div class="col" >
+          <q-btn class="q-ma-md glossy" size="xl" color="blue-grey-8" :label=transStr(stringsIDs.str_btn_add)
+            @click="addeventactiveNew = true" :disable="hasBeenRebougthSavings()" />
+
+          <q-btn class="q-ma-md glossy" size="xl" color="blue-grey-8" :label=transStr(stringsIDs.str_btn_del) @click="deleteEvents"
+            :disable="simu.events.length == 0" />
+
+          <eventForm v-if="addeventactiveNew == true" @event-done="[addeventactiveNew = false, movetocharts()]"
+            @event-abort="addeventactiveNew = false"></eventForm>
+        </div>
+      </div>
     </div>
-    <div class ="col column content-center">
-      <div class="col">
-
-
-    <q-btn
-      class="glossy"
-      rounded
-      color="primary"
-      :label=transStr(stringsIDs.str_btn_add)
-      @click="addeventactiveNew = true"
-      :disable="hasBeenRebougthSavings()"
-    />
-
-
-    <q-btn
-      class="glossy"
-      rounded
-      color="primary"
-      :label=transStr(stringsIDs.str_btn_del)
-      @click="deleteEvents"
-      :disable="simu.events.length==0"
-    />
-
-    <eventForm v-if="addeventactiveNew==true" @event-done="[addeventactiveNew=false, movetocharts()]" @event-abort="addeventactiveNew=false"></eventForm>
-    </div>
-  </div>
-  </div>
   </q-page>
 </template>
 
