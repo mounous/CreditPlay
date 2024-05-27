@@ -1,34 +1,27 @@
 <template>
-  <q-page v-touch-swipe.mouse.left.right="handleSwipeExt">
+  <q-page v-touch-swipe.mouse.left.right="handleSwipeExt" style="display: flex">
 
-    <div class="full-height column justify-arround content-center" style="display: flex;width: 100%; height: 100%;">
-      <div class="sixtyPercentTOP">
-        <q-dialog v-model="mustPopName">
-          <q-card>
-            <div class="q-ma-xl">
-              {{ transStr(stringsIDs.str_pop_simu_save_name) }}
-            </div>
-            <q-input class="q-ma-md" v-model="currentName"></q-input>
-            <q-btn class="q-ma-md" :label=transStr(stringsIDs.str_pop_simu_default_name)
-              @click="saveCurrentData"></q-btn>
-            <q-btn class="q-ma-md" :label=transStr(stringsIDs.str_pop_simu_custom_name) @click="saveCurrentData"
-              :disable="isNameAlreadyInUse(currentName)"></q-btn>
-          </q-card>
-        </q-dialog>
-        <div class="col q-ma-md">
-          <q-list class="bg-primary" separator bordered>
+    <div
+      style="flex-direction: column">
+      <div class="col q-mt-md" style="height: 60%;">
+
+        <q-scroll-area style="height:100%;">
+          <q-list class="bg-primary q-ma-md" separator bordered>
             <q-item v-for="item in listSave" :key="item.id" clickable
               @click="selected_id == item.id ? selected_id = DEFAULT_ID : selected_id = item.id" v-ripple
               :active="selected_id == item.id" active-class="bg-blue-grey-8 text-black">
-              <q-item-section> {{ item.name }} </q-item-section>
+              <q-item-section>
+                <q-item-label no-wrap="false" style="font-weight: bold;"> {{ item.name}} </q-item-label >
+                <q-item-label no-wrap="false"> {{ item.date}} </q-item-label >
+              </q-item-section>
               <q-item-section avatar>
                 <q-btn style="width:20px" icon="delete_forever" @click="deleteData(item.id)"></q-btn>
               </q-item-section>
             </q-item>
           </q-list>
-        </div>
+        </q-scroll-area>
       </div>
-      <div class="fourtyPercentBottom">
+      <div class="col" style="height: 40%;">
         <div class="column justify-center items-center content-center q-ma-md">
           <div>
             <q-btn class="q-ma-md" :label=transStr(stringsIDs.str_btn_restore) color="blue-grey-8" @click="restoreData"
@@ -45,6 +38,17 @@
         </div>
       </div>
     </div>
+    <q-dialog v-model="mustPopName">
+      <q-card>
+        <div class="q-ma-xl">
+          {{ transStr(stringsIDs.str_pop_simu_save_name) }}
+        </div>
+        <q-input class="q-ma-md" v-model="currentName"></q-input>
+        <q-btn class="q-ma-md" :label=transStr(stringsIDs.str_pop_simu_default_name) @click="saveCurrentData"></q-btn>
+        <q-btn class="q-ma-md" :label=transStr(stringsIDs.str_pop_simu_custom_name) @click="saveCurrentData"
+          :disable="isNameAlreadyInUse(currentName)"></q-btn>
+      </q-card>
+    </q-dialog>
   </q-page>
 </template>
 
@@ -68,6 +72,7 @@ const handleSwipeExt = function ({ evt, touch, mouse, direction, duration, dista
   router.push(targetPage(direction, router.currentRoute.value.fullPath));
 }
 const saveCurrentData = function () {
+  var date = new Date();
   mustPopName.value = false;
   //clean heavy data that can be recomputed easily
   if (bank.value.accounts.length != 0) {
@@ -85,7 +90,7 @@ const saveCurrentData = function () {
   else {
     nameSim = currentName.value;
   }
-  listSave.value.push({ simu: simu.value, bank: bank.value, id: generateuniqueID(), name: nameSim, startFormFilled: startFormFilled.value });
+  listSave.value.push({ simu: simu.value, bank: bank.value, id: generateuniqueID(), name: nameSim, startFormFilled: startFormFilled.value,date : date.toLocaleDateString()+' ('+date.getHours().toString()+':'+date.getMinutes().toString()+':'+date.getSeconds().toString()+')' });
   LocalStorage.set('listSave', listSave.value);
   currentName.value = DEFAULT_NAME;
 }
@@ -170,14 +175,4 @@ const deleteAllData = function () {
 onBeforeMount(getStorage);
 </script>
 
-<style lang="scss">
-.sixtyPercentTOP {
-  width: 100%;
-  height: 60%;
-}
-
-.fourtyPercentbottom {
-  width: 100%;
-  height: 40%;
-}
-</style>
+<style lang="scss"></style>
