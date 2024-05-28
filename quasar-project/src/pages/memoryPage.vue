@@ -1,8 +1,8 @@
 <template>
-  <q-page v-touch-swipe.mouse.left.right="handleSwipeExt" style="display: flex">
+  <q-page v-touch-swipe.mouse.left.right="handleSwipeExt" style="display: flex; ">
 
     <div
-      style="flex-direction: column">
+      style="flex-direction: column;width: 100%;">
       <div class="col q-mt-md" style="height: 60%;">
 
         <q-scroll-area style="height:100%;">
@@ -24,15 +24,15 @@
       <div class="col" style="height: 40%;">
         <div class="column justify-center items-center content-center q-ma-md">
           <div>
-            <q-btn class="q-ma-md" :label=transStr(stringsIDs.str_btn_restore) color="blue-grey-8" @click="restoreData"
+            <q-btn class="q-ma-md" size='large' :label=transStr(stringsIDs.str_btn_restore) color="blue-grey-8" @click="restoreData"
               :disable="selected_id == DEFAULT_ID"></q-btn>
           </div>
           <div>
-            <q-btn class="q-ma-md" :label=transStr(stringsIDs.str_btn_save_current) color="blue-grey-8"
+            <q-btn class="q-ma-md" size='large' style="font-size: medium;" :label=transStr(stringsIDs.str_btn_save_current) color="blue-grey-8"
               @click="mustPopName = true"></q-btn>
           </div>
           <div>
-            <q-btn class="q-ma-md" :label=transStr(stringsIDs.str_btn_delete_all) color="blue-grey-8"
+            <q-btn class="q-ma-md" size='large' :label=transStr(stringsIDs.str_btn_delete_all) color="blue-grey-8"
               @click="deleteAllData"></q-btn>
           </div>
         </div>

@@ -1,10 +1,10 @@
 <template>
   <q-page v-touch-swipe.mouse.left.right="handleSwipeExt" style="display:flex;">
-    <div class="column justify-arround content-center" style=" flex-direction: column;">
+    <div class="column justify-arround content-center" style=" flex-direction: column;width:100%">
 
-      <div class="col q-mt-md q-ml-md" style="height:60%;" :key="refresh">
+      <div class="column" style="height:80%;width: 100%;" :key="refresh">
         <q-scroll-area style="height:100%;">
-        <q-list class="bg-primary" separator bordered>
+        <q-list class=" q-ma-md bg-primary" separator bordered>
           <q-item v-for="event in simu.events" :key="event.title" clickable
             @click="[event.selected = !event.selected, refresh++, propagateSelection(event)]" v-ripple>
             <q-item-section avatar>
@@ -12,18 +12,18 @@
               </q-checkbox>
             </q-item-section>
             <q-item-section :key="refresh">
-              <q-item-label style="font-weight: bold;" no-wrap="false">{{ event.month + '/' + event.year + ' - '
+              <q-item-label style="font-weight: bold;font-size: large;" no-wrap="false">{{ event.month + '/' + event.year + ' - '
                 +event.title }}</q-item-label>
-              <q-item-label no-wrap="false"
+              <q-item-label no-wrap="false" style="font-size: large;"
                 v-if="event.metaType == EVT_META_TYPE_MOD && event.type == EVT_TYPE_MOD_MENS_UP">{{
                   transStr(stringsIDs.str_mens_increase) + event.new_mens +getCurrencySymbol()}}</q-item-label>
-              <q-item-label no-wrap="false"
+              <q-item-label no-wrap="false" style="font-size: large;"
                 v-if="event.metaType == EVT_META_TYPE_MOD && event.type == EVT_TYPE_MOD_MENS_DOWN">{{
                   transStr(stringsIDs.str_mens_decrease) + event.new_mens +getCurrencySymbol()}}</q-item-label>
-              <q-item-label no-wrap="false"
+              <q-item-label no-wrap="false" style="font-size: large;"
                 v-if="event.metaType == EVT_META_TYPE_REBUY && event.type == EVT_TYPE_REBUY_SAVINGS">{{
                   transStr(stringsIDs.str_rebuy_savings)}}</q-item-label>
-              <q-item-label no-wrap="false"
+              <q-item-label no-wrap="false" style="font-size: large;"
                 v-if="event.metaType == EVT_META_TYPE_REBUY && event.type == EVT_TYPE_REBUY_CREDIT">{{
                   transStr(stringsIDs.str_rebuy_loan) + event.reloanRate+'%)'}}</q-item-label>
             </q-item-section>
@@ -31,8 +31,8 @@
         </q-list>
       </q-scroll-area>
       </div>
-      <div class="column content-center" style="height: 40%;">
-        <div class="col" >
+      <div class="column content-center justify-center" style="height: 20%;">
+        <div class="row" >
           <q-btn class="q-ma-md glossy" size="xl" color="blue-grey-8" :label=transStr(stringsIDs.str_btn_add)
             @click="addeventactiveNew = true" :disable="hasBeenRebougthSavings()" />
 

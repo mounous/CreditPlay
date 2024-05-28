@@ -10,7 +10,7 @@
           <p class="myTitle">{{transStr(stringsIDs.str_title_accounts)}}</p>
         </div>
         <div class="col">
-          <q-btn :label=transStr(stringsIDs.str_btn_add) class="q-ma-md" color="blue-grey-8" style="height:40px" @click="displayAccountForm=true"></q-btn>
+          <q-btn :label=transStr(stringsIDs.str_btn_add) class="q-mb-xs" color="blue-grey-8" style="height:40px" @click="displayAccountForm=true"></q-btn>
         </div>
       </div>
         <div>
@@ -41,7 +41,7 @@
           <p class="myTitle">{{transStr(stringsIDs.str_save_capability)}}</p>
         </div>
         <div class="col">
-          <q-btn :disable="bank.accounts.length==0" class="q-ma-md" color="blue-grey-8" style="height:40px" :label=transStr(stringsIDs.str_btn_add)
+          <q-btn :disable="bank.accounts.length==0" class="q-mb-xs" color="blue-grey-8" style="height:40px" :label=transStr(stringsIDs.str_btn_add)
             @click="displayPSForm=true"></q-btn>
         </div>
         </div>
@@ -76,7 +76,7 @@
           <p class="myTitle">{{ transStr(stringsIDs.str_title_sio) }}</p>
         </div>
         <div class="col">
-          <q-btn :disable="bank.accounts.length==0" class="q-ma-md" color="blue-grey-8" style="height:40px" :label=transStr(stringsIDs.str_btn_add)
+          <q-btn :disable="bank.accounts.length==0" class="q-mb-xs" color="blue-grey-8" style="height:40px" :label=transStr(stringsIDs.str_btn_add)
             @click="displaySIOForm=true"></q-btn>
         </div>
       </div >
