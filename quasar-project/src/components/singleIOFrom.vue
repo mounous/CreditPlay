@@ -8,10 +8,14 @@
           <div class="col myIndication q-ma-md">
             <p>{{ transStr(stringsIDs.str_sio_type) }}</p>
           </div>
-          <div class="col">
-            <q-select bg-color="blue-grey-8" style="width:150px; height:100px"   v-model="single_io_type" label="type"
+          <div class="row q-mb-md" style="display: flex;">
+          <div style="flex:1"></div>
+          <div style="flex:2">
+            <q-select bg-color="blue-grey-8" style="font-size: x-large;"   v-model="single_io_type"
             :options="[transoptSIO(BANK_SIO_TYPE_IN), transoptSIO(BANK_SIO_TYPE_OUT)]"
             @update:model-value="single_io_type==transoptSIO(BANK_SIO_TYPE_IN) ? _single_io.type=BANK_SIO_TYPE_IN : _single_io.type=BANK_SIO_TYPE_OUT  "></q-select>
+          </div>
+            <div style="flex:1"></div>
           </div>
           <div class="col">
             <q-btn class="q-ma-xs" color="blue-grey-8" size="xl" :label=transStr(stringsIDs.str_cancel) @click="emit('sio-aborted')"></q-btn>
@@ -28,9 +32,13 @@
           <div class="col myIndication q-ma-md">
             <p>{{ transStr(stringsIDs.str_sio_name) }}</p>
           </div>
-        <div class="col">
-          <q-input class="q-mx-xs" :label=transStr(stringsIDs.str_sio_hint_name) style="width:150px; height:100px"  maxlength="20" v-model="_single_io.title"
+          <div class="row" style="display: flex;">
+          <div style="flex:1"></div>
+          <div style="flex:2">
+          <q-input class="q-mb-md" clearable  style="font-size: x-large;"   v-model="_single_io.title"
             type="text" bg-color="blue-grey-8" outlined ></q-input>
+          </div>
+            <div style="flex:1"></div>
       </div>
       <div class="col">
       <q-btn class="q-ma-xs" color="blue-grey-8" size="xl" :label=transStr(stringsIDs.str_prev) @click="currentSlide = 'sioType'"></q-btn>
@@ -40,6 +48,8 @@
       </div>
       <div class="oneInThreeRowB"></div>
     </q-carousel-slide>
+
+
     <q-carousel-slide name="sioAmount" class="bg-grey-9">
       <div class="oneInThreeRowH"></div>
       <div class="oneInThreeRow">
@@ -47,9 +57,13 @@
           <div class="col myIndication q-ma-md">
             <p>{{ transStr(stringsIDs.str_sio_amount) }}</p>
           </div>
-        <div class="col">
-          <q-input class="q-mx-xs" :label=transStr(stringsIDs.str_sio_hint_amount) style="width:150px; height:100px"  maxlength="8"
+        <div class="row q-mb-md" style="display: flex;">
+          <div style="flex:1"></div>
+          <div style="flex:2">
+          <q-input  class="q-mb-md" clearable style="font-size: x-large;"  size="10" maxlength="10"
             v-model="_single_io.amount" type="number" lazy-rules bg-color="blue-grey-8" outlined ></q-input>
+            </div>
+            <div style="flex:1"></div>
       </div>
       <div class="col">
       <q-btn  class="q-ma-xs" :label=transStr(stringsIDs.str_prev) size="xl" color="blue-grey-8" @click="currentSlide = 'sioName'"></q-btn>
@@ -66,9 +80,13 @@
           <div class="col myIndication q-ma-md">
             <p>{{ transStr(stringsIDs.str_sio_account) }}</p>
           </div>
-        <div class="col">
-          <q-select class="q-mx-xs" :label=transStr(stringsIDs.str_sio_hint_account) style="width:150px; height:100px"  maxlength="8" v-model="_single_io.account"
+          <div class="row" style="display: flex;">
+          <div style="flex:1"></div>
+          <div style="flex:2">
+          <q-select class="q-mb-md" style="font-size: x-large;" v-model="_single_io.account"
             :options="getAccOpt()" bg-color="blue-grey-8" outlined ></q-select>
+          </div>
+            <div style="flex:1"></div>
       </div>
       <div class="col">
       <q-btn  class="q-ma-xs" :label=transStr(stringsIDs.str_prev) size="xl" color="blue-grey-8" @click="currentSlide = 'sioAmount'"></q-btn>
@@ -85,8 +103,10 @@
           <div class="col myIndication q-ma-md">
             <p>{{ transStr(stringsIDs.str_sio_date) }}</p>
           </div>
-        <div class="col">
-          <q-input class="q-ma-md"  style="width:150px; height:100px"  :label=transStr(stringsIDs.str_sio_hint_date) bg-color="blue-grey-8" filled
+          <div class="row" style="display: flex;">
+          <div style="flex:1"></div>
+          <div style="flex:4">
+          <q-input class="q-ma-md"  style="font-size: x-large;"  bg-color="blue-grey-8" filled
             v-model="_single_io.date"  @click="mustpopSingleIO=true" readonly>
             <template v-slot:append>
               <q-icon name="event" class="cursor-pointer">
@@ -102,6 +122,8 @@
               </q-icon>
             </template>
           </q-input>
+        </div>
+            <div style="flex:1"></div>
       </div>
       <div class="col">
       <q-btn  class="q-ma-xs" :label=transStr(stringsIDs.str_prev) size="xl" color="blue-grey-8" @click="currentSlide = 'sioAccount'"></q-btn>

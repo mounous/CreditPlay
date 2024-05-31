@@ -8,11 +8,15 @@
           <div class="col myIndication q-ma-md">
             <p>{{ transStr(stringsIDs.str_acc_name_opt) }}</p>
           </div>
-          <div class="col">
-            <q-input class="q-ma-md" :label=transStr(stringsIDs.str_acc_name_hint) style="max-width:300px; height:100px" maxlength="20"
+          <div class="row" style="display: flex;">
+          <div style="flex:1"></div>
+          <div style="flex:4">
+            <q-input class="q-ma-md" clearable style="font-size: x-large;" maxlength="20"
               v-model="_account.title" type="text" lazy-rules
-              :rules="[(val) => (val.length < 20) || transStr(stringsIDs.str_shorter_acc_name)]" clearable bg-color="blue-grey-8"
+              :rules="[(val) => (val.length < 20) || transStr(stringsIDs.str_shorter_acc_name)]" bg-color="blue-grey-8"
               outlined></q-input>
+            </div>
+            <div style="flex:1"></div>
           </div>
           <div class="col">
             <q-btn class="q-ma-xs" color="blue-grey-8" :label=transStr(stringsIDs.str_cancel) size="xl"
@@ -31,10 +35,14 @@
         <div class="col myIndication q-ma-md">
             <p>{{ transStr(stringsIDs.str_current_amount_acc) }}</p>
           </div>
-        <div class="col">
-          <q-input class="q-ma-md" :label=transStr(stringsIDs.str_current_amount) maxlength="20" style="max-width:300px; height:100px" v-model="_account.amount"
+          <div class="row" style="display: flex;">
+          <div style="flex:1"></div>
+          <div style="flex:4">
+          <q-input class="q-ma-md" style="font-size: x-large;" v-model="_account.amount"
             type="number" lazy-rules :rules="[(val) => (val >= 0.0) || transStr(stringsIDs.str_debts_not_handled)]"
             bg-color="blue-grey-8" outlined></q-input>
+          </div>
+            <div style="flex:1"></div>
         </div>
         <div class="col">
           <q-btn class="q-ma-xs" color="blue-grey-8" :label=transStr(stringsIDs.str_prev) size="xl" @click="currentSlide = 'acountName'"></q-btn>
@@ -51,9 +59,13 @@
         <div class="col myIndication q-ma-md">
             <p>{{ transStr(stringsIDs.str_profitability_st) }}</p>
           </div>
-        <div class="col">
-          <q-input class="q-ma-md" :label=transStr(stringsIDs.str_profitability_label) maxlength="20"  style="max-width:300px; height:100px" v-model="_account.rate"
+          <div class="row" style="display: flex;">
+          <div style="flex:1"></div>
+          <div style="flex:4">
+          <q-input class="q-ma-md"   style="font-size: x-large;" clearable v-model="_account.rate"
             type="number" bg-color="blue-grey-8" outlined></q-input>
+          </div>
+            <div style="flex:1"></div>
         </div>
         <div class="col">
           <q-btn class="q-ma-xs" :label=transStr(stringsIDs.str_prev) size="xl" color="blue-grey-8" @click="currentSlide = 'AmountAccount'"></q-btn>

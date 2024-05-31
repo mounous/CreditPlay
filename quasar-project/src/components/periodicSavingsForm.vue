@@ -8,9 +8,13 @@
           <div class="col myIndication q-ma-md">
             <p>{{transStr(stringsIDs.str_choose_op_type)}}</p>
           </div>
-        <div class="col">
-          <q-select bg-color="blue-grey-8" style="width:150px; height:100px" v-model="typeSavings" label="type"
+          <div class="row q-mb-md" style="display: flex;">
+          <div style="flex:1"></div>
+          <div style="flex:4">
+          <q-select bg-color="blue-grey-8" style="font-size: x-large;" v-model="typeSavings"
             :options="[transoptSaveP(BANK_SAVE_TYPE_MONTHLY), transoptSaveP(BANK_SAVE_TYPE_YEARLY)]"></q-select>
+          </div>
+            <div style="flex:1"></div>
         </div>
         <div class="col">
           <q-btn class="q-ma-xs" color="blue-grey-8" :label=transStr(stringsIDs.str_cancel) size='xl' @click="emit('ps-aborted')"></q-btn>
@@ -27,10 +31,14 @@
           <div class="col myIndication q-ma-md">
             <p>{{transStr(stringsIDs.str_choose_op_amount)}}</p>
           </div>
-        <div class="col">
-          <q-input class="q-mx-xs" label="montant" style="max-width:300px; height:100px" maxlength="8" v-model="_savingP.amount"
+          <div class="row" style="display: flex;">
+          <div style="flex:1"></div>
+          <div style="flex:4">
+          <q-input class="q-mx-xs" style="font-size: x-large;" v-model="_savingP.amount"
             type="number" lazy-rules :rules="[(val) => (val >= 0.0) || 'Les retraits ne sont pas gérées']"
-            bg-color="blue-grey-8" outlined ></q-input>
+            bg-color="blue-grey-8" outlined clearable ></q-input>
+          </div>
+            <div style="flex:1"></div>
         </div>
         <div class="col">
           <q-btn class="q-ma-xs" color="blue-grey-8" :label=transStr(stringsIDs.str_prev) size='xl' @click="currentSlide = 'psType'"></q-btn>
@@ -40,6 +48,7 @@
       </div>
       <div class="oneInThreeRowB"></div>
     </q-carousel-slide>
+
     <q-carousel-slide name="psAccount" class="bg-grey-9">
       <div class="oneInThreeRowH"></div>
       <div class="oneInThreeRow">
@@ -47,9 +56,13 @@
           <div class="col myIndication q-ma-md">
             <p>{{transStr(stringsIDs.str_choose_op_account)}}</p>
           </div>
-        <div class="col">
-          <q-select class="q-mx-xs" :label=transStr(stringsIDs.str_account)  style="width:150px; height:100px" maxlength="8" v-model="_savingP.account"
+          <div class="row" style="display: flex;">
+          <div style="flex:1"></div>
+          <div style="flex:4">
+          <q-select class="q-mb-md" v-model="_savingP.account" style="font-size: x-large;"
             :options="getAccOpt()" type="number" bg-color="blue-grey-8" outlined ></q-select>
+          </div>
+            <div style="flex:1"></div>
         </div>
         <div class="col">
           <q-btn class="q-ma-xs" :label=transStr(stringsIDs.str_prev) color="blue-grey-8" size='xl' @click="currentSlide = 'psAmount'"></q-btn>
@@ -67,8 +80,10 @@
           <div class="col myIndication q-ma-md">
             <p>{{transStr(stringsIDs.str_choose_op_strat_date)}}</p>
           </div>
-        <div class="col">
-          <q-input class="q-mx-xs"  style="width:150px; height:100px" :label=transStr(stringsIDs.str_save_from) bg-color="blue-grey-8" filled
+          <div class="row" style="display: flex;">
+          <div style="flex:1"></div>
+          <div style="flex:4">
+          <q-input class="q-mx-xs"  style="font-size: x-large;"  bg-color="blue-grey-8" filled
             v-model="_savingP.startingDate" @click="mustpopPsStart = true" readonly>
             <template v-slot:append>
               <q-icon name="event" class="cursor-pointer">
@@ -85,12 +100,16 @@
               </q-icon>
             </template>
           </q-input>
+        </div>
+            <div style="flex:1"></div>
           </div>
           <div class="col myIndication q-ma-md">
             <p>{{transStr(stringsIDs.str_choose_op_end_date)}}</p>
           </div>
-        <div class="col">
-          <q-input class="q-mx-xs"  style="width:150px; height:100px" :label=transStr(stringsIDs.str_save_untill) bg-color="blue-grey-8" filled
+          <div class="row" style="display: flex;">
+          <div style="flex:1"></div>
+          <div style="flex:4">
+          <q-input class="q-mb-md"  style="font-size: x-large;"  bg-color="blue-grey-8" filled
             v-model="_savingP.endDate" @click="mustpopPsEnd = true" readonly>
             <template v-slot:append>
               <q-icon name="event" class="cursor-pointer">
@@ -108,7 +127,9 @@
             </template>
           </q-input>
         </div>
-        <div class="col">
+            <div style="flex:1"></div>
+        </div>
+        <div class="q-mb-md">
           <q-btn class="q-ma-xs" :label=transStr(stringsIDs.str_prev) color="blue-grey-8" size='xl'  @click="currentSlide = 'psAccount'"></q-btn>
           <q-btn class="q-ma-xs" :label=transStr(stringsIDs.str_validate) color="blue-grey-8" size='xl' @click="addElementToSavingsP()"></q-btn>
         </div>
@@ -131,7 +152,7 @@ import {getOptSavePFromStr,transoptSaveP,stringsIDs, transStr} from '../stores/l
 const $q = useQuasar();
 var myPSForm = ref();
 var currentSlide = ref('psType');
-const _savingP = ref({ account: '', amount: 0.0, startMonth: 0, startYear: 0, endMonth: 0, endYear: 0, type: BANK_SAVE_TYPE_MONTHLY, startingDate: '', endDate: '' });
+const _savingP = ref({ account: bank.value.accounts[0].title, amount: 0.0, startMonth: 0, startYear: 0, endMonth: 0, endYear: 0, type: BANK_SAVE_TYPE_MONTHLY, startingDate: '', endDate: '' });
 var periodicSaveMax = ref('2100/01');
 var mustpopPsStart = ref(false);
 var mustpopPsEnd = ref(false);
@@ -142,7 +163,7 @@ var limitMonth = new Date().getFullYear().toString();
 var limitYear = (new Date().getMonth() + 1).toString().padStart(2, '0');
 var periodicSaveMin = ref(limitMonth + '/' + limitYear);
 const emit = defineEmits(['ps-added', 'ps-aborted']);
-var typeSavings=ref();
+var typeSavings=ref(transoptSaveP(BANK_SAVE_TYPE_MONTHLY));
 
 const addElementToSavingsP = function () {
   var indexAcc = 0;

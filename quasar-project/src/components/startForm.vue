@@ -1,15 +1,15 @@
 <template>
 
   <q-carousel ref="myCreditForm" fullscreen animated :arrows="false" :navigation="false" v-model="currentSlide">
-    <q-carousel-slide name="creditDate" class="bg-grey-9">
-      <div class="oneInThreeRowH"></div>
-      <div class="oneInThreeRow">
-        <div class="column items-center">
-          <div class="col myIndication q-ma-md">
+    <q-carousel-slide name="creditDate" class="bg-grey-9" style="display: flex;">
+      <div style="display: flex; flex-direction: column;width: 100%;height: 100%;">
+        <div style="flex: 1;"></div>
+        <div style="display:flex;flex: 3;flex-direction: column;justify-content: space-evenly;align-items: center;justify-content: center;">
+          <div class=" myIndication q-ma-md" style="flex: 1;">
             <p>{{ transStr(stringsIDs.str_signature_date) }}</p>
           </div>
-          <div class="col q-ma-md">
-            <q-input bg-color="blue-grey-8" filled v-model="simu.credit.startingDate" @click="mustpop = true" readonly>
+          <div style="flex: 1;">
+            <q-input bg-color="blue-grey-8" filled v-model="simu.credit.startingDate" @click="mustpop = true" readonly size="10" style="font-size: x-large;">
               <template v-slot:append>
                 <q-icon name="event" class="cursor-pointer">
                   <q-popup-proxy v-model="mustpop" cover transition-show="scale" transition-hide="scale" persistent>
@@ -24,32 +24,36 @@
               </template>
             </q-input>
           </div>
-          <div class="col q-ma-xl">
-            <q-btn class="q-ma-xs" color="blue-grey-8" :label=transStr(stringsIDs.str_cancel) size="xl"
+        </div>
+        <div style="flex: 2;display: flex;">
+          <div style="display: flex; flex-direction : row;width:100% ;justify-content: space-evenly;align-items: center;justify-content: center; flex-wrap: wrap;">
+            <q-btn class="q-ma-xs" color="blue-grey-8" :label=transStr(stringsIDs.str_cancel) size="xl" style="max-height: 50px;"
               @click="emit('credit-aborted')"></q-btn>
-            <q-btn class="q-ma-xs" color="blue-grey-8" :label=transStr(stringsIDs.str_next) size="xl"
+            <q-btn class="q-ma-xs" color="blue-grey-8" :label=transStr(stringsIDs.str_next) size="xl" style="max-height: 50px;"
               @click="simu.credit.startingDate==''?
               $q.notify({ color: 'orange-4', textColor: 'black', icon: 'warning', message: transStr(stringsIDs.str_notif_warn_date), }) :
               currentSlide = 'creditAmount'"></q-btn>
           </div>
         </div>
+
       </div>
-      <div class="oneInThreeRowB"></div>
     </q-carousel-slide>
 
-    <q-carousel-slide name="creditAmount" class="bg-grey-9">
-      <div class="oneInThreeRowH"></div>
-      <div class="oneInThreeRow">
-        <div class="column items-center">
-          <div class="col myIndication q-ma-md">
+    <q-carousel-slide name="creditAmount" class="bg-grey-9"  style="display: flex;">
+      <div style="display: flex; flex-direction: column;width: 100%;height: 100%;">
+        <div style="flex: 1;"></div>
+        <div style="display:flex;flex: 3;flex-direction: column;justify-content: space-evenly;align-items: center;justify-content: center;">
+          <div class=" myIndication q-ma-md" style="flex: 1;">
             <p>{{ transStr(stringsIDs.str_amount_borrowed) }}</p>
           </div>
-          <div class="col q-ma-md">
-            <q-input filled type="number" bg-color="blue-grey-8" v-model="simu.credit.amount" lazy-rules :rules="[
+          <div style="flex: 1;">
+            <q-input filled size="10" style="font-size: x-large;" clearable type="number" bg-color="blue-grey-8" v-model="simu.credit.amount" lazy-rules :rules="[
               (val) => val > 0 || transStr(stringsIDs.str_neg_amount),
             ]" @update:model-value="simu.credit.amount = Number(simu.credit.amount)" />
           </div>
-          <div class="col q-ma-xl">
+        </div>
+        <div style="flex: 2;display: flex;">
+          <div style="display: flex; flex-direction : row;width:100% ;justify-content: space-evenly;align-items: center;justify-content: center; flex-wrap: wrap;">
             <q-btn class="q-ma-xs" color="blue-grey-8" :label=transStr(stringsIDs.str_prev) size="xl"
               @click="currentSlide = 'creditDate'"></q-btn>
             <q-btn class="q-ma-xs" color="blue-grey-8" :label=transStr(stringsIDs.str_next) size="xl"
@@ -59,22 +63,23 @@
           </div>
         </div>
       </div>
-      <div class="oneInThreeRowB"></div>
     </q-carousel-slide>
 
-    <q-carousel-slide name="creditRate" class="bg-grey-9">
-      <div class="oneInThreeRowH"></div>
-      <div class="oneInThreeRow">
-        <div class="column items-center">
-          <div class="col myIndication q-ma-md">
+    <q-carousel-slide name="creditRate" class="bg-grey-9"  style="display: flex;">
+      <div style="display: flex; flex-direction: column;width: 100%;height: 100%;">
+        <div style="flex: 1;"></div>
+        <div style="display:flex;flex: 3;flex-direction: column;justify-content: space-evenly;align-items: center;justify-content: center;">
+          <div class=" myIndication q-ma-md" style="flex: 1;">
             <p>{{ transStr(stringsIDs.str_rate) }}</p>
           </div>
-          <div class="col q-ma-md">
-            <q-input filled bg-color="blue-grey-8" type="number" step="any" v-model="simu.credit.rate" lazy-rules
+          <div style="flex: 1;">
+            <q-input filled size="10" style="font-size: x-large;" bg-color="blue-grey-8" type="number" step="any" v-model="simu.credit.rate" lazy-rules
               :rules="[(val) => (val > 0) || transStr(stringsIDs.str_rate_impossible)]"
-              @update:model-value="simu.credit.rate = Number(simu.credit.rate)" />
+              @update:model-value="simu.credit.rate = Number(simu.credit.rate)" clearable />
           </div>
-          <div class="col q-ma-xl">
+        </div>
+        <div style="flex: 2;display: flex;">
+          <div style="display: flex; flex-direction : row;width:100% ;justify-content: space-evenly;align-items: center;justify-content: center; flex-wrap: wrap;">
             <q-btn class="q-ma-xs" color="blue-grey-8" :label=transStr(stringsIDs.str_prev) size="xl"
               @click="currentSlide = 'creditAmount'"></q-btn>
             <q-btn class="q-ma-xs" color="blue-grey-8" :label=transStr(stringsIDs.str_next) size="xl"
@@ -84,23 +89,22 @@
           </div>
         </div>
       </div>
-      <div class="oneInThreeRowB"></div>
     </q-carousel-slide>
 
-    <q-carousel-slide name="creditDuration" class="bg-grey-9">
-      <div class="oneInThreeRowH"></div>
-      <div class="oneInThreeRow">
-        <div class="column items-center">
-          <div class="col myIndication q-ma-md">
+    <q-carousel-slide name="creditDuration" class="bg-grey-9"  style="display: flex;">
+      <div style="display: flex; flex-direction: column;width: 100%;height: 100%;">
+        <div style="flex: 1;"></div>
+        <div style="display:flex;flex: 3;flex-direction: column;justify-content: space-evenly;align-items: center;justify-content: center;">
+          <div class=" myIndication q-ma-md" style="flex: 1;">
             <p>{{ transStr(stringsIDs.str_duration) }}</p>
           </div>
-          <div class="col q-ma-md">
-            <q-input filled type="number" bg-color="blue-grey-8" v-model="duration_no_unit"
+          <div style="flex: 1;display:flex ;flex-direction: column;justify-content: space-evenly;align-items: center;justify-content: center;">
+            <q-input size="10" style="font-size: x-large;" filled type="number" bg-color="blue-grey-8" v-model="duration_no_unit"
               lazy-rules :rules="[(val) => (val > 0) || transStr(stringsIDs.str_durationPos)]"
               @update:model-value="[duration_units == transStr(stringsIDs.str_unit_y) ?
               simu.credit.duration_m = Number(Math.round(duration_no_unit) * 12) :
-              simu.credit.duration_m = Number(Math.round(duration_no_unit))]" />
-            <q-btn-toggle class="q-ma-md" name="durationUnits" v-model="duration_units" unelevated size="14px" glossy
+              simu.credit.duration_m = Number(Math.round(duration_no_unit))]" clearable/>
+            <q-btn-toggle class="q-ma-md" name="durationUnits" v-model="duration_units" unelevated size="20px" glossy
               color=black :options="[
                 { label: transStr(stringsIDs.str_unit_y), value: transStr(stringsIDs.str_unit_y) },
                 { label: transStr(stringsIDs.str_unit_m), value: transStr(stringsIDs.str_unit_m) }
@@ -109,7 +113,9 @@
               duration_no_unit = Math.round(duration_no_unit / 12) :
               duration_no_unit = duration_no_unit * 12" />
           </div>
-          <div class="col q-ma-xl">
+        </div>
+        <div style="flex: 2;display: flex;">
+          <div style="display: flex; flex-direction : row;width:100% ;justify-content: space-evenly;align-items: center;justify-content: center; flex-wrap: wrap;">
             <q-btn class="q-ma-xs" color="blue-grey-8" :label=transStr(stringsIDs.str_prev) size="xl"
               @click="currentSlide = 'creditRate'"></q-btn>
             <q-btn class="q-ma-xs" color="blue-grey-8" :label=transStr(stringsIDs.str_validate) size="xl"
@@ -119,7 +125,6 @@
           </div>
         </div>
       </div>
-      <div class="oneInThreeRowB"></div>
     </q-carousel-slide>
 
   </q-carousel>

@@ -21,10 +21,10 @@
           </q-list>
         </q-scroll-area>
       </div>
-      <div class="col" style="height: 40%;">
-        <div class="column justify-center items-center content-center q-ma-md">
+      <div class="col q-ma-md" style="height: 40%;">
+        <div class="column justify-center items-center content-center">
           <div>
-            <q-btn class="q-ma-md" size='large' :label=transStr(stringsIDs.str_btn_restore) color="blue-grey-8" @click="restoreData"
+            <q-btn class="q-ma-xs" size='large' :label=transStr(stringsIDs.str_btn_restore) color="blue-grey-8" @click="restoreData"
               :disable="selected_id == DEFAULT_ID"></q-btn>
           </div>
           <div>
@@ -32,7 +32,7 @@
               @click="mustPopName = true"></q-btn>
           </div>
           <div>
-            <q-btn class="q-ma-md" size='large' :label=transStr(stringsIDs.str_btn_delete_all) color="blue-grey-8"
+            <q-btn class="q-ma-xs" size='large' :label=transStr(stringsIDs.str_btn_delete_all) color="blue-grey-8"
               @click="deleteAllData"></q-btn>
           </div>
         </div>

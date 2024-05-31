@@ -8,10 +8,10 @@
           <div class="col myIndication q-ma-md">
             <p>{{ transStr(stringsIDs.str_choose_evt_type) }}</p>
           </div>
-          <div class="col">
-            <q-btn class="q-ma-md" size='xl' color="blue-grey-8" :label=transevtmetaType(EVT_META_TYPE_MOD)
+          <div class="row" style="display: flex;justify-content: space-evenly;align-items: center;justify-content: center;">
+            <q-btn class="q-ma-xs" size='xl' color="blue-grey-8" :label=transevtmetaType(EVT_META_TYPE_MOD)
               @click="[event_.metaType = EVT_META_TYPE_MOD,currentSlide='modulationDate']"></q-btn>
-            <q-btn class="q-ma-md" size='xl' color="blue-grey-8" :label=transevtmetaType(EVT_META_TYPE_REBUY)
+            <q-btn class="q-ma-xs" size='xl' color="blue-grey-8" :label=transevtmetaType(EVT_META_TYPE_REBUY)
               @click="[event_.metaType = EVT_META_TYPE_REBUY, currentSlide='rebuypenalties']" ></q-btn>
           </div>
         </div>
@@ -28,11 +28,13 @@
       <div class="oneInThreeRowH"></div>
       <div class="oneInThreeRow">
         <div class="column items-center">
-          <div class="col myIndication q-ma-md">
+          <div class="col myIndication q-ma-md" >
             <p>{{ transStr(stringsIDs.str_mod_date) }}</p>
           </div>
-          <div class="col">
-            <q-input class="q-ma-md"  style="width: 200px;" :label=transStr(stringsIDs.str_mod_date) bg-color="blue-grey-8" filled v-model="date_mod" @click="mustpopDateMod=true" readonly>
+          <div class="row" style="display: flex;">
+          <div style="flex:1"></div>
+          <div style="flex:4">
+            <q-input class="q-ma-md"  style="font-size: x-large;"  bg-color="blue-grey-8" filled v-model="date_mod" @click="mustpopDateMod=true" readonly>
               <template v-slot:append>
                 <q-icon name="event" class="cursor-pointer">
                   <q-popup-proxy v-model="mustpopDateMod" cover transition-show="scale" transition-hide="scale" persistent>
@@ -47,10 +49,12 @@
               </template>
             </q-input>
           </div>
+            <div style="flex:1"></div>
+          </div>
           <div class="col myIndication" v-if="event_.year != 0 && event_.month!=0 != 0">
              <p> {{transStr(stringsIDs.str_capital_left)+ situationAtDate }}</p>
           </div>
-          <div class="col">
+          <div class="row q-mt-md" style="display: flex;justify-content: space-evenly;align-items: center;justify-content: center;">
             <q-btn class="q-ma-xs" color="blue-grey-8" :label=transStr(stringsIDs.str_prev) size="xl"
               @click="[currentSlide='metatype',event_.metaType=DEFAULT_EVENT_META_TYPE,situationAtDate='',event_.month=0,event_.year=0,date_mod=mod_min_date,event_.year_str='',event_.month_str='']"></q-btn>
             <q-btn class="q-ma-xs" color="blue-grey-8" :label=transStr(stringsIDs.str_next) size="xl"
@@ -69,15 +73,25 @@
             <p>{{ transStr(stringsIDs.str_choose_mod) }}</p>
           </div>
           <div class="col q-ma-md">
-            <q-select rounded outlined v-model="event_type_str" :options=transevtmodType() :label=transStr(stringsIDs.str_choose_mod)
-            @update:model-value="[event_.type=getModTypeFromStr(event_type_str) ,getopt(),modVal=DEFAULT_MODVAL]"  bg-color="blue-grey-8"/>
+            <div class="row q-mb-md" style="display: flex;">
+              <div style="flex:1"></div>
+              <div style="flex:4">
+                <q-select  dense rounded outlined v-model="event_type_str" :options=transevtmodType() style="font-size: large"
+                @update:model-value="[event_.type=getModTypeFromStr(event_type_str) ,getopt(),modVal=DEFAULT_MODVAL]"  bg-color="blue-grey-8"/>
+                </div>
+              <div style="flex:1"></div>
+            </div>
+            <div class="row" style="display: flex;">
+              <div style="flex:1"></div>
+              <div style="flex:4">
+                <q-select class="evtTypeVal"  style="font-size:large" rounded outlined v-model="modVal" :options="options_mod"
+                :disable="event_.type == DEFAULT_EVENT_TYPE"
+                @update:model-value="validateMod()" bg-color="blue-grey-8"></q-select>
+                </div>
+              <div style="flex:1"></div>
+            </div>
           </div>
-          <div class="col q-ma-md">
-            <q-select class="evtTypeVal" rounded outlined v-model="modVal" :options="options_mod"
-            :label=transStr(stringsIDs.str_choose_mensuality) :disable="event_.type == DEFAULT_EVENT_TYPE"
-            @update:model-value="validateMod()" bg-color="blue-grey-8"></q-select>
-          </div>
-          <div class="col">
+          <div class="row q-mt-md" style="display: flex;justify-content: space-evenly;align-items: center;justify-content: center;">
             <q-btn class="q-ma-xs" color="blue-grey-8" :label=transStr(stringsIDs.str_prev) size="xl"
               @click="[currentSlide='modulationDate', event_.type=DEFAULT_EVENT_TYPE,event_type_str=DEFAULT_EVENT_TYPE_STR,event_.new_mens=0,event_.modVal='',event_.mensDiff=0]"></q-btn>
             <q-btn class="q-ma-xs" color="blue-grey-8" :label=transStr(stringsIDs.str_validate) size="xl"
@@ -95,102 +109,175 @@
           <div class="col myIndication q-ma-md">
             <p>{{ transStr(stringsIDs.str_indic_penalties) }}</p>
           </div>
-          <div class="row items-center">
-            <q-input class="q-ma-md" :label=transStr(stringsIDs.str_penalties) :hint=transStr(stringsIDs.str_penalties_hint) style="max-width:200px"
+          <div class="row" style="display: flex;align-content: center;">
+          <div style="flex:1"></div>
+          <div style="flex:4;align-items: center;align-content: center;" >
+            <q-input class="q-ma-md"  style="font-size: x-large;"
             v-model="penalties_no_unit" type="number" lazy-rules @update:model-value="event_.rebuyPenaltiesType== getCurrencySymbol() ? event_.rebuyPenalties_abs= Number(penalties_no_unit): event_.rebuyPenalties=Number(penalties_no_unit)"
             :rules="[(val) => (val >= 0.0) || transStr(stringsIDs.str_penalties_rule)]" bg-color="blue-grey-8"
-            outlined ></q-input>
-            <q-btn-toggle style="height: 20px;" class="q-ma-md" name="durationUnits" v-model="event_.rebuyPenaltiesType" unelevated
-              size="14px" glossy color=black :options="[
+            outlined clearable ></q-input>
+            </div>
+            <div style="flex: 2;align-items: center;align-content: center;;">
+            <q-btn-toggle style="font-size: xx-large;" class="q-ma-md" name="durationUnits" v-model="event_.rebuyPenaltiesType" unelevated
+              size="20px" glossy color=black :options="[
                 { label: getCurrencySymbol(), value: getCurrencySymbol() },
                 { label: '%', value: '%' }
-            ]"
-          @update:model-value="penalties_no_unit=0"/>
+            ]" @update:model-value="penalties_no_unit=0"/>
+            </div>
+          <div style="flex:1"></div>
+            </div>
           </div>
-          <div class="col">
+          <div class="row q-mt-md" style="display: flex;justify-content: space-evenly;align-items: center;justify-content: center;">
             <q-btn class="q-ma-xs" color="blue-grey-8" :label=transStr(stringsIDs.str_prev) size="xl"
               @click="[currentSlide='metatype',event_.metaType='',situationAtDate='',event_.month=0,event_.year=0,event_.rebuyPenalties=DEFAULT_PENALTIES]"></q-btn>
             <q-btn class="q-ma-xs" color="blue-grey-8" :label=transStr(stringsIDs.str_next) size="xl"
-              @click="[currentSlide = 'rebuyPick',event_.rebuyPenalties==DEFAULT_PENALTIES ? event_.rebuyPenalties=0 :event_.rebuyPenalties=event_.rebuyPenalties ]" :disable="event_.rebuyPenalties<0"></q-btn>
+              @click="[currentSlide = 'rebuyType',event_.rebuyPenalties==DEFAULT_PENALTIES ? event_.rebuyPenalties=0 :event_.rebuyPenalties=event_.rebuyPenalties ]" :disable="event_.rebuyPenalties<0"></q-btn>
           </div>
         </div>
-      </div>
+
       <div class="oneInThreeRowB"></div>
     </q-carousel-slide>
 
-    <q-carousel-slide name="rebuyPick" class="bg-grey-9">
+    <q-carousel-slide name="rebuyType" class="bg-grey-9">
+      <div class="oneInThreeRowH">
 
+      </div>
       <div class="oneInThreeRow">
         <div class="column items-center">
           <div class="col myIndication q-ma-md">
             <p>{{ transStr(stringsIDs.str_indic_rebuy_type) }}</p>
           </div>
           <div class="col q-ma-md">
-            <q-select rounded outlined v-model="event_type_str" :options="options_rebuy" :label=transStr(stringsIDs.str_choose_rebuy_type) style="width: 250px;"
+            <q-select rounded outlined v-model="event_type_str" :options="options_rebuy" bg-color="blue-grey-8" style="font-size: x-large;"
             @update:model-value="[event_.type=getrebuyTypeFromStr(event_type_str), event_.reloanRate=0,event_.reloanDuration_m=0, event_.savingsLeft=0,
             rebuy_saving_capital_to_pay='',rachatVal=DEFAULT_RACHAT_VAL_VALUE,getoptRebuy()]"
             ></q-select>
           </div>
-          <div class="col q-ma-md">
-            <q-select v-if="event_.type == EVT_TYPE_REBUY_SAVINGS" class="evtTypeVal" rounded outlined v-model="rachatVal" style="width: 250px;"
-              :options="options_rebuy_val" :label=transStr(stringsIDs.str_choose_option)
-              @update:model-value="extractDataFromRebuySavings()"></q-select>
-          </div>
-          <div class="col q-ma-md" v-if="event_.type ==EVT_TYPE_REBUY_SAVINGS && event_.savingsLeft != 0 && rebuy_saving_capital_to_pay != ''">
-            {{ transStr(stringsIDs.str_savings_left) + event_.savingsLeft.toString()+getCurrencySymbol() }}
-          </div>
-          <div class="col q-ma-md" v-if="event_.type == EVT_TYPE_REBUY_SAVINGS &&  event_.savingsLeft != 0 && rebuy_saving_capital_to_pay != ''">
-            {{ transStr(stringsIDs.str_capital_rebought)+ rebuy_saving_capital_to_pay }}
-          </div>
-          <div class="row wrap">
-          <q-input v-if="event_.type == EVT_TYPE_REBUY_CREDIT" class="q-ma-md"  style="width: 200px;"
-            :label=transStr(stringsIDs.str_rebuy_date) bg-color="blue-grey-8" filled v-model="event_.reLoanDate"  @click="mustpop = true" readonly>
-            <template v-slot:append>
-              <q-icon name="event" class="cursor-pointer">
-                <q-popup-proxy v-model="mustpop" cover transition-show="scale" transition-hide="scale" persistent>
-                  <q-date dark v-model="unformatedrebuydate" :locale=getTranslatedFormatedCalendar() :navigation-min-year-month="reloanMin"
-                    width="200px" :navigation-max-year-month="reloanMax" :default-year-month="reloanMin"
-                    @update:model-value="[mustpop = false,formatAndExtracteventdateFrom()]">
-                    <div class="row items-center justify-end">
-                      <q-btn v-close-popup label="Fermer" color="primary" flat />
-                    </div>
-                  </q-date>
-                </q-popup-proxy>
-              </q-icon>
-            </template>
-          </q-input>
-          </div>
-          <div class="col q-ma-md">
-            <q-input v-if="event_.type == EVT_TYPE_REBUY_CREDIT" class="q-ma-xs" :label=transStr(stringsIDs.str_rate) style="width:200px"
-              v-model="event_.reloanRate" type="number" lazy-rules :rules="[(val) => (val >= 0.0) || transStr(stringsIDs.str_rate_impossible)]"
-              bg-color="blue-grey-8" outlined @update:model-value="event_.reloanRate=Number(event_.reloanRate)"></q-input>
-          </div>
-          <div class="row q-ma-md align-center">
-            <q-input v-if="event_.type == EVT_TYPE_REBUY_CREDIT " class="q-ma-xs" :label=transStr(stringsIDs.str_duration) style="width:200px"
-            v-model="duration_no_unit" type="number" lazy-rules
-            :rules="[(val) => (val > 0) || transStr(stringsIDs.str_durationPos)]" bg-color="blue-grey-8" outlined
-            @update:model-value="duration_units==transStr(stringsIDs.str_unit_y) ? event_.reloanDuration_m=Number(duration_no_unit)*12 : event_.reloanDuration_m=Number(duration_no_unit)"></q-input>
-            <q-btn-toggle v-if="event_.type == EVT_TYPE_REBUY_CREDIT " class="q-ma-md" name="durationUnits" v-model="duration_units" unelevated
-          size="14px" glossy color=black :options="[
-            { label: transStr(stringsIDs.str_unit_y), value: transStr(stringsIDs.str_unit_y) },
-            { label: transStr(stringsIDs.str_unit_m), value: transStr(stringsIDs.str_unit_m) }
-          ]"
-          @update:model-value="duration_units==transStr(stringsIDs.str_unit_y) ? duration_no_unit=Math.round(duration_no_unit/12) : duration_no_unit=duration_no_unit*12"/>
-        </div>
-          <div class="col q-ma-md">
+
+          <div class="row q-mt-md" style="display: flex;justify-content: space-evenly;align-items: center;justify-content: center;">
             <q-btn class="q-ma-xs" color="blue-grey-8" :label=transStr(stringsIDs.str_prev) size="xl"
-              @click="[currentSlide='rebuypenalties',event_.type=DEFAULT_EVENT_TYPE,event_type_str=DEFAULT_EVENT_TYPE_STR,
-                event_.reloanDuration_m=0, event_.reloanRate=0,unformatedrebuydate=reloanMin,event_.year=0,event_.month=0,
-                event_.month_str='',event_.year_str='',event_.savingsLeft=0,rebuy_saving_capital_to_pay='',event_.reLoanDate='',rachatVal=DEFAULT_RACHAT_VAL_VALUE]"></q-btn>
+              @click="[currentSlide='rebuypenalties',event_.type=DEFAULT_EVENT_TYPE,event_type_str=DEFAULT_EVENT_TYPE_STR]"></q-btn>
             <q-btn class="q-ma-xs" color="blue-grey-8" :label=transStr(stringsIDs.str_next) size="xl"
-              @click="RebuyPicked()"
-              :disable="event_.type== DEFAULT_EVENT_TYPE ? true : event_.type==EVT_TYPE_REBUY_CREDIT ? (event_.reloanDuration_m==0 || event_.reloanRate<=0 || event_.reloanRate=='')
-                                                            :(event_.savingsLeft==0 || event_.year==0 || event_.month==0)" ></q-btn>
+              @click="event_.type==EVT_TYPE_REBUY_SAVINGS ? currentSlide='rebuySave' : currentSlide='rebuyReloan'"
+              :disable="event_.type== DEFAULT_EVENT_TYPE ? true : false" ></q-btn>
           </div>
         </div>
       </div>
       <div class="oneInThreeRowB"></div>
     </q-carousel-slide>
+
+    <q-carousel-slide name="rebuySave" class="bg-grey-9">
+      <div class="oneInThreeRowH">
+
+      </div>
+      <div class="oneInThreeRow">
+        <div class="column items-center">
+
+          <div class="col q-ma-md">
+
+            <q-select v-if="event_.type == EVT_TYPE_REBUY_SAVINGS" class="evtTypeVal" rounded outlined v-model="rachatVal" bg-color="blue-grey-8" style="font-size: x-large;"
+            :options="options_rebuy_val"
+            @update:model-value="extractDataFromRebuySavings()"></q-select>
+          </div>
+          <div style="font-size: x-large;"  class="col q-ma-md" v-if="event_.type ==EVT_TYPE_REBUY_SAVINGS && event_.savingsLeft != 0 && rebuy_saving_capital_to_pay != ''">
+               {{ transStr(stringsIDs.str_savings_left) + event_.savingsLeft.toString()+getCurrencySymbol() }}
+             </div>
+             <div style="font-size: x-large;" class="col q-ma-md" v-if="event_.type == EVT_TYPE_REBUY_SAVINGS &&  event_.savingsLeft != 0 && rebuy_saving_capital_to_pay != ''">
+               {{ transStr(stringsIDs.str_capital_rebought)+ rebuy_saving_capital_to_pay }}
+             </div>
+          <div class="row q-mt-md" style="display: flex;justify-content: space-evenly;align-items: center;justify-content: center;">
+            <q-btn class="q-ma-xs" color="blue-grey-8" :label=transStr(stringsIDs.str_prev) size="xl"
+              @click="[currentSlide='rebuyType',event_.type=DEFAULT_EVENT_TYPE,event_type_str=DEFAULT_EVENT_TYPE_STR]"></q-btn>
+            <q-btn class="q-ma-xs" color="blue-grey-8" :label=transStr(stringsIDs.str_next) size="xl"
+              @click="RebuyPicked()"
+              :disable="event_.type== DEFAULT_EVENT_TYPE ? true : false" ></q-btn>
+          </div>
+        </div>
+      </div>
+      <div class="oneInThreeRowB"></div>
+    </q-carousel-slide>
+
+
+
+    <q-carousel-slide name="rebuyReloan" class="bg-grey-9">
+
+<div class="oneInThreeRow">
+  <div class="column items-center">
+    <div class="col" style="font-size: large;">
+      <p>{{ transStr(stringsIDs.str_rebuy_date)  }}</p>
+    </div>
+
+
+    <div class="row" style="display: flex;align-content: center;">
+    <div style="flex:1"></div>
+    <div style="flex:4;align-items: center;align-content: center;" >
+    <q-input v-if="event_.type == EVT_TYPE_REBUY_CREDIT" class="q-mt-md"  style="font-size: x-large;"
+       bg-color="blue-grey-8" filled v-model="event_.reLoanDate"  @click="mustpop = true" readonly>
+      <template v-slot:append>
+        <q-icon name="event" class="cursor-pointer">
+          <q-popup-proxy v-model="mustpop" cover transition-show="scale" transition-hide="scale" persistent>
+            <q-date dark v-model="unformatedrebuydate" :locale=getTranslatedFormatedCalendar() :navigation-min-year-month="reloanMin"
+              width="200px" :navigation-max-year-month="reloanMax" :default-year-month="reloanMin"
+              @update:model-value="[mustpop = false,formatAndExtracteventdateFrom()]">
+              <div class="row items-center justify-end">
+                <q-btn v-close-popup label="Fermer" color="primary" flat />
+              </div>
+            </q-date>
+          </q-popup-proxy>
+        </q-icon>
+      </template>
+    </q-input>
+    </div>
+    <div style="flex:1"></div>
+    </div>
+    <div class="col q-mt-md" style="font-size: large;">
+      <p>{{ transStr(stringsIDs.str_rate)  }}</p>
+    </div>
+    <div class="row" style="display: flex;align-content: center;">
+    <div style="flex:1"></div>
+    <div style="flex:4;align-items: center;align-content: center;" >
+      <q-input clearable v-if="event_.type == EVT_TYPE_REBUY_CREDIT" class="q-ma-xs"  style="font-size: x-large;"
+        v-model="event_.reloanRate" type="number" lazy-rules :rules="[(val) => (val >= 0.0) || transStr(stringsIDs.str_rate_impossible)]"
+        bg-color="blue-grey-8" outlined @update:model-value="event_.reloanRate=Number(event_.reloanRate)"></q-input>
+        </div>
+        <div style="flex:1"></div>
+    </div>
+    <div class="col q-mt-md" style="font-size: large;">
+      <p>{{ transStr(stringsIDs.str_duration)   }}</p>
+    </div>
+    <div class="row" style="display: flex;align-content: center;">
+
+    <div style="flex:1;align-items: center;align-content: center;" >
+      <q-input clearable v-if="event_.type == EVT_TYPE_REBUY_CREDIT " class="q-ma-xs" style="font-size: x-large;"
+      v-model="duration_no_unit" type="number" lazy-rules
+      :rules="[(val) => (val > 0) || transStr(stringsIDs.str_durationPos)]" bg-color="blue-grey-8" outlined
+      @update:model-value="duration_units==transStr(stringsIDs.str_unit_y) ? event_.reloanDuration_m=Number(duration_no_unit)*12 : event_.reloanDuration_m=Number(duration_no_unit)"></q-input>
+      </div>
+      <div style="flex: 1;align-items: center;justify-items: center;" >
+      <q-btn-toggle v-if="event_.type == EVT_TYPE_REBUY_CREDIT " class="q-ma-md" name="durationUnits" v-model="duration_units" unelevated
+    size="14px" glossy color=black :options="[
+      { label: transStr(stringsIDs.str_unit_y), value: transStr(stringsIDs.str_unit_y) },
+      { label: transStr(stringsIDs.str_unit_m), value: transStr(stringsIDs.str_unit_m) }
+    ]"
+    @update:model-value="duration_units==transStr(stringsIDs.str_unit_y) ? duration_no_unit=Math.round(duration_no_unit/12) : duration_no_unit=duration_no_unit*12"/>
+  </div>
+
+  </div>
+  <div class="row q-mt-md" style="display: flex;justify-content: space-evenly;align-items: center;justify-content: center;">
+      <q-btn class="q-ma-xs" color="blue-grey-8" :label=transStr(stringsIDs.str_prev) size="xl"
+        @click="[currentSlide='rebuyType',event_.type=DEFAULT_EVENT_TYPE,event_type_str=DEFAULT_EVENT_TYPE_STR,
+          event_.reloanDuration_m=0, event_.reloanRate=0,unformatedrebuydate=reloanMin,event_.year=0,event_.month=0,
+          event_.month_str='',event_.year_str='',event_.savingsLeft=0,rebuy_saving_capital_to_pay='',event_.reLoanDate='',rachatVal=DEFAULT_RACHAT_VAL_VALUE]"></q-btn>
+      <q-btn class="q-ma-xs" color="blue-grey-8" :label=transStr(stringsIDs.str_next) size="xl"
+        @click="RebuyPicked()"
+        :disable="event_.type== DEFAULT_EVENT_TYPE ? true : event_.type==EVT_TYPE_REBUY_CREDIT ? (event_.reloanDuration_m==0 || event_.reloanRate<=0 || event_.reloanRate=='')
+                                                      :(event_.savingsLeft==0 || event_.year==0 || event_.month==0)" ></q-btn>
+    </div>
+  </div>
+</div>
+<div class="oneInThreeRowB"></div>
+</q-carousel-slide>
+
   </q-carousel>
 <div>
     <q-dialog v-model="mustPopWarning" v-if="event_.type == EVT_TYPE_REBUY_SAVINGS">
