@@ -295,7 +295,7 @@ const compute_savings=function(startY,startM,durationM,save=false)
   }
   return result;
 }
-const provideRebuyOptions=function(evt_type,penalties){
+const provideRebuyOptions=function(evt_type,penalties,penalties_abs,penalties_type){
   var options_rebuy_savings=[];
   var forDisplay_post_select_opt=[];
   var i=0;
@@ -307,10 +307,21 @@ const provideRebuyOptions=function(evt_type,penalties){
     }
     //dernier paramètre à changer : il faut prendre en compte des modulations qui ralongent TODO
     var computed=compute_savings(getSavingsEarlier()[1],getSavingsEarlier()[0],simu.value.credit.duration_m);
-    while(computed[i][1]<returnBaseData(Number(computed[i][0].split('-')[1]),getMonthNbr(computed[i][0].split('-')[0])).capital_left*(1+penalties/100) && i!=computed.length)
+    if(penalties_type=='%')
     {
-      console.log(i);
-      i++;
+      while(computed[i][1]<returnBaseData(Number(computed[i][0].split('-')[1]),getMonthNbr(computed[i][0].split('-')[0])).capital_left*(1+penalties/100) && i!=computed.length)
+      {
+        console.log(i);
+        i++;
+      }
+    }
+    else
+    {
+      while(computed[i][1]<returnBaseData(Number(computed[i][0].split('-')[1]),getMonthNbr(computed[i][0].split('-')[0])).capital_left+penalties_abs && i!=computed.length)
+      {
+        console.log(i);
+        i++;
+      }
     }
     if(i==computed.length)
     {
@@ -319,7 +330,15 @@ const provideRebuyOptions=function(evt_type,penalties){
     while(i<computed.length &&
       returnBaseData(Number(computed[i][0].split('-')[1]),getMonthNbr(computed[i][0].split('-')[0])).capital_left!=0)
     {
-      var to_pay=returnBaseData(Number(computed[i][0].split('-')[1]),getMonthNbr(computed[i][0].split('-')[0])).capital_left*(1+penalties/100);
+      var to_pay=0;
+      if(penalties_type=='%')
+      {
+        to_pay=returnBaseData(Number(computed[i][0].split('-')[1]),getMonthNbr(computed[i][0].split('-')[0])).capital_left*(1+penalties/100);
+      }
+      else
+      {
+        to_pay=returnBaseData(Number(computed[i][0].split('-')[1]),getMonthNbr(computed[i][0].split('-')[0])).capital_left+penalties_abs;
+      }
       options_rebuy_savings.push(computed[i][0].split('-').join(' '));
       forDisplay_post_select_opt.push({eco_left:formatnumber(String(Math.round(100*(computed[i][1]-to_pay))/100))+' ',value_paid:formatnumber(String(Math.round(100*to_pay)/100)+' '+getCurrencySymbol())});
       i++;

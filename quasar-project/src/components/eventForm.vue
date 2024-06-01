@@ -454,7 +454,7 @@ var options_rebuy_val = ref([]);
 var Display_rebuy_savings = ref([]);
 const getoptRebuy = function () {
   if(event_.value.type==EVT_TYPE_REBUY_SAVINGS){
-    var result = provideRebuyOptions(event_.value.type, Number(event_.value.rebuyPenalties));
+    var result = provideRebuyOptions(event_.value.type, Number(event_.value.rebuyPenalties),Number(event_.value.rebuyPenalties_abs),event_.value.rebuyPenaltiesType);
     options_rebuy_val.value = result[0];
     Display_rebuy_savings.value = result[1];
   }
