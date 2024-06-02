@@ -207,10 +207,12 @@ const scrollAreas=async()=>
   scrollAreaIORef.value.setScrollPercentage('horizontal',1.0,0);
   scrollAreaPSRef.value.setScrollPercentage('horizontal',1.0,0);
   await nextTick();
-  scrollAreaAccRef.value.setScrollPercentage('horizontal',0.0,600);
-  scrollAreaIORef.value.setScrollPercentage('horizontal',0.0,600);
-  scrollAreaPSRef.value.setScrollPercentage('horizontal',0.0,600);
 
+  setTimeout(function() {
+    scrollAreaAccRef.value.setScrollPercentage('horizontal',0.0,600);
+    scrollAreaIORef.value.setScrollPercentage('horizontal',0.0,600);
+    scrollAreaPSRef.value.setScrollPercentage('horizontal',0.0,600);},
+    900);
 }
 onMounted(scrollAreas);
 
