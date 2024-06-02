@@ -4,16 +4,16 @@
   <singleIOFrom v-if="displaySIOForm==true" @sio-added="displaySIOForm=false" @sio-aborted="displaySIOForm=false"></singleIOFrom>
   <q-page>
   <div class="full-height column justify-arround content-center" style="display: flex; width: 100%; height: 100%;" v-touch-swipe.mouse.left.right="handleSwipeExt">
-    <q-card class="bg-grey-9 my-card q-mt-md">
-      <div class="column items-center">
-        <div class="col">
+    <q-card class="bg-grey-9 my-card q-mt-md" style="display: flex;width: 100%;align-items:flex-start;justify-content: center;align-content: center">
+      <div style="display: flex;flex-direction: column;width: 100%;">
+        <div style="display: flex;flex-direction: row;align-items: center;justify-content: center;align-content: center;width: 100%;">
           <p class="myTitle">{{transStr(stringsIDs.str_title_accounts)}}</p>
         </div>
-        <div class="col">
+        <div style="display: flex;flex-direction: row;align-items: center;justify-content: center;align-content: center;width: 100%;">
           <q-btn :label=transStr(stringsIDs.str_btn_add) class="q-mb-xs" color="blue-grey-8" style="height:40px" @click="displayAccountForm=true"></q-btn>
         </div>
-      </div>
-        <div>
+        <div style="display: flex;flex-direction: row;align-items: center;justify-content: center;align-content: center;width: 100%;">
+          <q-scroll-area ref="scrollAreaAccRef" style="display:flex;width: 100%;height: 200px;">
           <q-markup-table class="my-table bg-grey-8" separator="cell" flat bordered @touchstart.stop>
             <thead>
               <tr>
@@ -32,19 +32,22 @@
               </tr>
             </tbody>
           </q-markup-table>
+        </q-scroll-area>
         </div>
+      </div >
     </q-card>
 
-    <q-card class="bg-grey-9 my-card q-mt-md">
-      <div class="column items-center">
-        <div class="col">
+    <q-card class="bg-grey-9 my-card q-mt-md" style="display: flex;width: 100%;align-items:flex-start;justify-content: center;align-content: center">
+      <div style="display: flex;flex-direction: column;width: 100%;">
+        <div style="display: flex;flex-direction: row;align-items: center;justify-content: center;align-content: center;width: 100%;">
           <p class="myTitle">{{transStr(stringsIDs.str_save_capability)}}</p>
         </div>
-        <div class="col">
+        <div style="display: flex;flex-direction: row;align-items: center;justify-content: center;align-content: center;width: 100%;">
           <q-btn :disable="bank.accounts.length==0" class="q-mb-xs" color="blue-grey-8" style="height:40px" :label=transStr(stringsIDs.str_btn_add)
             @click="displayPSForm=true"></q-btn>
         </div>
-        </div>
+        <div style="display: flex;flex-direction: row;align-items: center;justify-content: center;align-content: center;width: 100%;">
+          <q-scroll-area ref="scrollAreaPSRef" style="display:flex;width: 100%;height: 200px;">
           <q-markup-table class="my-table bg-grey-8" separator="cell" flat bordered @touchstart.stop>
             <thead>
               <tr>
@@ -67,19 +70,23 @@
               </tr>
             </tbody>
           </q-markup-table>
+        </q-scroll-area>
+        </div>
+      </div >
     </q-card>
 
-    <q-card class="bg-grey-9 my-card q-mt-md">
+    <q-card class="bg-grey-9 my-card q-mt-md" style="display: flex;width: 100%;align-items:flex-start;justify-content: center;align-content: center">
 
-      <div class="column items-center">
-        <div class="col">
+      <div style="display: flex;flex-direction: column;width: 100%;">
+        <div style="display: flex;flex-direction: row;align-items: center;justify-content: center;align-content: center;width: 100%;">
           <p class="myTitle">{{ transStr(stringsIDs.str_title_sio) }}</p>
         </div>
-        <div class="col">
+        <div style="display: flex;flex-direction: row;align-items: center;justify-content: center;align-content: center;width: 100%;">
           <q-btn :disable="bank.accounts.length==0" class="q-mb-xs" color="blue-grey-8" style="height:40px" :label=transStr(stringsIDs.str_btn_add)
             @click="displaySIOForm=true"></q-btn>
         </div>
-      </div >
+        <div style="display: flex;flex-direction: row;align-items: center;justify-content: center;align-content: center;width: 100%;">
+          <q-scroll-area ref="scrollAreaIORef" style="display:flex;width: 100%;height: 200px;">
           <q-markup-table class="my-table bg-grey-8" separator="cell" flat bordered @touchstart.stop>
             <thead>
               <tr>
@@ -101,8 +108,9 @@
               </tr>
             </tbody>
           </q-markup-table>
-
-
+      </q-scroll-area>
+        </div>
+      </div >
     </q-card>
   </div>
 
@@ -159,7 +167,7 @@
 
 <script setup>
 import { bank, simu } from 'stores/store';
-import { ref } from 'vue'
+import { onMounted, ref,nextTick } from 'vue'
 import { useQuasar } from 'quasar';
 import { useRouter } from 'vue-router';
 import {BANK_SEARCH_ERROR,getAccId,getSavinPID,getSIOID,isAccountInvolvedInRebuyWithSavings, deleteRebuySavingsEventAndAssociatedInOut,BANK_SIO_TYPE_IN,BANK_SIO_TYPE_OUT} from '../utils/bank_utility'
@@ -168,7 +176,7 @@ import accountForm from 'src/components/accountForm.vue';
 import periodicSavingsForm from 'src/components/periodicSavingsForm.vue';
 import singleIOFrom from 'src/components/singleIOFrom.vue';
 import {targetPage} from '../utils/swipe_utils.js'
-import {transStr,stringsIDs,transoptSaveP,transSt,sentancesIDs,transoptSIO,transSIOspecial} from '../stores/languages.ts'
+import {transStr,stringsIDs,transoptSaveP,transSt,sentancesIDs,transSIOspecial} from '../stores/languages.ts'
 import { formatnumber } from 'src/utils/string_utils';
 import { getCurrencySymbol } from 'src/stores/currencies';
 const $q = useQuasar();
@@ -188,6 +196,23 @@ var savingPtoDelete=ref();
 var accountOfSIOToDelete=ref();
 var SIOtoDelete=ref();
 var mustPopDeleteSIO=ref(false);
+var scrollAreaPSRef = ref();
+var scrollAreaIORef = ref();
+var scrollAreaAccRef = ref();
+
+const scrollAreas=async()=>
+{
+
+  scrollAreaAccRef.value.setScrollPercentage('horizontal',1.0,0);
+  scrollAreaIORef.value.setScrollPercentage('horizontal',1.0,0);
+  scrollAreaPSRef.value.setScrollPercentage('horizontal',1.0,0);
+  await nextTick();
+  scrollAreaAccRef.value.setScrollPercentage('horizontal',0.0,600);
+  scrollAreaIORef.value.setScrollPercentage('horizontal',0.0,600);
+  scrollAreaPSRef.value.setScrollPercentage('horizontal',0.0,600);
+
+}
+onMounted(scrollAreas);
 
 const handleSwipeExt=function ({ evt, touch, mouse, direction, duration, distance })
 {
