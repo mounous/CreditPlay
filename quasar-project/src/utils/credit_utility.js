@@ -431,7 +431,7 @@ const getChartXAxis=()=>{
 
 
 
-const getLatestMensuality=function(){
+const getLastMensuality=function(){
   //by default, compute the 'no-event' end year
   var latest_year=simu.value.credit.y;
   var latest_month=simu.value.credit.m;
@@ -459,8 +459,40 @@ const getLatestMensuality=function(){
         latest_month=getMonthNbr(simu.value.events[i].amortEvt[index][0].split('-')[0]);
       }
     }
+  }
+  return {l_y:latest_year,l_m:latest_month};
+}
 
-
+const getLatestMensuality=function(){
+  //by default, compute the 'no-event' end year
+  var latest_year=simu.value.credit.y;
+  var latest_month=simu.value.credit.m;
+  var nb_mens_to_pay=Number(simu.value.credit.duration_m);
+  while(nb_mens_to_pay!=0)
+  {
+    latest_month++;
+    if(latest_month==13)
+    {
+      latest_year++;
+      latest_month=1;
+    }
+    nb_mens_to_pay--;
+  }
+  //if some events exist, the latest mensuality is the latest mensuality of all events
+  if(simu.value.events.length!=0)
+  {
+    for(var i=0;i< simu.value.events.length;i++)
+    {
+      if(!(simu.value.events[i].metaType==EVT_META_TYPE_REBUY && simu.value.events[i].type==EVT_TYPE_REBUY_SAVINGS))//not a rebuy with savings
+      {
+        var index =simu.value.events[i].amortEvt.length-1;
+        if(compareDates(Number(simu.value.events[i].amortEvt[index][0].split('-')[1]),getMonthNbr(simu.value.events[i].amortEvt[index][0].split('-')[0]),latest_year,latest_month)>0)
+          {
+            latest_year=Number(simu.value.events[i].amortEvt[index][0].split('-')[1]);
+            latest_month=getMonthNbr(simu.value.events[i].amortEvt[index][0].split('-')[0]);
+          }
+      }
+    }
   }
   return {l_y:latest_year,l_m:latest_month};
 }
@@ -547,5 +579,5 @@ const reapplyLanguageToData=function()
 
 
 export { computeMensuality, computeCredit_init, getEarliestNewEventDate, sortEvents,provideModOptions,apply_events_chain,getChartXAxis,
-  returnBaseData,getLatestMensuality,hasBeenRebougthSavings,build_event_name,reapplyLanguageToData,
+  returnBaseData,getLastMensuality,hasBeenRebougthSavings,build_event_name,reapplyLanguageToData,getLatestMensuality,
   EVT_META_TYPE_MOD, EVT_META_TYPE_REBUY, EVT_TYPE_MOD_MENS_UP, EVT_TYPE_MOD_MENS_DOWN, EVT_TYPE_REBUY_CREDIT, EVT_TYPE_REBUY_SAVINGS};

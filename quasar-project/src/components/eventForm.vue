@@ -324,7 +324,7 @@ import { transStr, stringsIDs,transevtmetaType, transMonthName,getTranslatedForm
 import { apply_events_chain, build_event_name } from '../utils/credit_utility.js';
 import {provideRebuyOptions} from '../utils/bank_utility'
 import { simu } from 'stores/store';
-import { getLatestMensuality,getEarliestNewEventDate,EVT_TYPE_REBUY_SAVINGS,EVT_META_TYPE_MOD, EVT_META_TYPE_REBUY ,
+import { getLastMensuality,getEarliestNewEventDate,EVT_TYPE_REBUY_SAVINGS,EVT_META_TYPE_MOD, EVT_META_TYPE_REBUY ,
   provideModOptions,returnBaseData,EVT_TYPE_REBUY_CREDIT} from '../utils/credit_utility'
 const default_month_str = transStr(stringsIDs.str_sel_month);
 const default_year_str = transStr(stringsIDs.str_sel_year);
@@ -370,9 +370,9 @@ import {formatnumber} from '../utils/string_utils'
 //************************* */
 // Modulation date handling //
 //************************* */
-var mod_max_date=ref(subOneMonthToStringDate(getLatestMensuality().l_y.toString()+'/'+getLatestMensuality().l_m.toString().padStart(2,'0')));
+var mod_max_date=ref(subOneMonthToStringDate(getLastMensuality().l_y.toString()+'/'+getLastMensuality().l_m.toString().padStart(2,'0')));
 var mod_min_date=ref(addOneMonthToStringDate(getEarliestNewEventDate().l_y.toString()+'/'+getEarliestNewEventDate().l_m.toString().padStart(2,'0')));
-var reloanMax = ref(subOneMonthToStringDate(getLatestMensuality().l_y.toString() + '/' + getLatestMensuality().l_m.toString().padStart(2, '0')));
+var reloanMax = ref(subOneMonthToStringDate(getLastMensuality().l_y.toString() + '/' + getLastMensuality().l_m.toString().padStart(2, '0')));
 var reloanMin = ref(addOneMonthToStringDate(getEarliestNewEventDate().l_y.toString() + '/' + getEarliestNewEventDate().l_m.toString().padStart(2, '0')));
 var date_mod=ref(mod_min_date.value);
 var date_modunformated=ref(date_mod.value);

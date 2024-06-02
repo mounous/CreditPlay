@@ -1,8 +1,8 @@
 
 import { bank, simu } from 'src/stores/store';
-import { returnBaseData,EVT_TYPE_REBUY_SAVINGS  } from './credit_utility';
+import { returnBaseData,EVT_TYPE_REBUY_SAVINGS, getLatestMensuality  } from './credit_utility';
 import { formatnumber } from './string_utils';
-import { compareDates } from 'src/utils/date_utility';
+import { compareDates, get_nb_mens_diff } from 'src/utils/date_utility';
 import{transSIOspecial,stringsIDs,transStr,transMonthName,getMonthNbr} from '../stores/languages'
 import {getCurrencySymbol} from '../stores/currencies'
 
@@ -103,7 +103,7 @@ const isPeriodicConcerned=function(currentY,currentM,accID,psID)
   //2 if so, hasn't it ended is a stop date is defined
   if(ps_endY!=0 && ps_endM!=0)
   {
-    if(compareDates(ps_endY,ps_endM,currentY,currentM)<=0)
+    if(compareDates(ps_endY,ps_endM,currentY,currentM)<0)
     {
       return false;
     }
@@ -305,8 +305,8 @@ const provideRebuyOptions=function(evt_type,penalties,penalties_abs,penalties_ty
     {
       return [transStr(stringsIDs.str_savings_empty)];
     }
-    //dernier paramètre à changer : il faut prendre en compte des modulations qui ralongent TODO
-    var computed=compute_savings(getSavingsEarlier()[1],getSavingsEarlier()[0],simu.value.credit.duration_m);
+    var nb_mens_compute=get_nb_mens_diff(Number(simu.value.credit.startingDate.split('/')[2]),Number(simu.value.credit.startingDate.split('/')[1]),getLatestMensuality().l_y,getLatestMensuality().l_m);
+    var computed=compute_savings(getSavingsEarlier()[1],getSavingsEarlier()[0],nb_mens_compute);
     if(penalties_type=='%')
     {
       while(computed[i][1]<returnBaseData(Number(computed[i][0].split('-')[1]),getMonthNbr(computed[i][0].split('-')[0])).capital_left*(1+penalties/100) && i!=computed.length)

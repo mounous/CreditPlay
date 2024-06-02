@@ -91,7 +91,11 @@
                   <q-date dark v-model="savingPstartingDateUnformated" :locale=getTranslatedFormatedCalendar()
                     :navigation-min-year-month="periodicSaveMin" width="200px"
                     :navigation-max-year-month="periodicSaveMax"
-                    @update:model-value="[_savingP.startingDate = formatDate(savingPstartingDateUnformated), mustpopPsStart = false]">
+                    @update:model-value="[_savingP.startingDate = formatDate(savingPstartingDateUnformated), mustpopPsStart = false,
+                    periodicSaveMinEnd=addOneMonthToStringDate(savingPstartingDateUnformated.split('/')[0]+'/'+savingPstartingDateUnformated.split('/')[1]),
+                    savingPendDateUnformated=periodicSaveMinEnd+'/'+savingPstartingDateUnformated.split('/')[2],
+                    _savingP.endDate = ''
+                    ]">
                     <div class="row items-center justify-end">
                       <q-btn v-close-popup :label=transStr(stringsIDs.str_close) color="primary" flat />
                     </div>
@@ -101,21 +105,23 @@
             </template>
           </q-input>
         </div>
-            <div style="flex:1"></div>
+            <div style="flex:1">
+            </div>
           </div>
           <div class="col myIndication q-ma-md">
             <p>{{transStr(stringsIDs.str_choose_op_end_date)}}</p>
           </div>
-          <div class="row" style="display: flex;">
+          <div class="row" style="display: flex">
           <div style="flex:1"></div>
-          <div style="flex:4">
+          <div style="flex:4;align-items: center;">
           <q-input class="q-mb-md"  style="font-size: x-large;"  bg-color="blue-grey-8" filled
             v-model="_savingP.endDate" @click="mustpopPsEnd = true" readonly>
             <template v-slot:append>
               <q-icon name="event" class="cursor-pointer">
                 <q-popup-proxy cover transition-show="scale" transition-hide="scale" v-model="mustpopPsEnd" persistent>
                   <q-date dark v-model="savingPendDateUnformated" :locale=getTranslatedFormatedCalendar()
-                    :navigation-min-year-month="periodicSaveMin" width="200px"
+                    :navigation-min-year-month="periodicSaveMinEnd" width="200px"
+                    :default-year-month="periodicSaveMinEnd"
                     :navigation-max-year-month="periodicSaveMax"
                     @update:model-value="[_savingP.endDate = formatDate(savingPendDateUnformated), mustpopPsEnd = false]">
                     <div class="row items-center justify-end">
@@ -127,7 +133,9 @@
             </template>
           </q-input>
         </div>
-            <div style="flex:1"></div>
+        <div style="flex:1">
+          <q-btn v-if="_savingP.endDate!=''"  color="grey-9" size='xl' class="q-ml-xs q-mt-xs" label="X" style="font-size: large ;" @click="[_savingP.endDate='']"></q-btn>
+        </div>
         </div>
         <div class="q-mb-md">
           <q-btn class="q-ma-xs" :label=transStr(stringsIDs.str_prev) color="blue-grey-8" size='xl'  @click="currentSlide = 'psAccount'"></q-btn>
@@ -146,7 +154,7 @@ import { ref, defineEmits } from 'vue';
 import { bank } from 'src/stores/store';
 import { useQuasar } from 'quasar';
 import { getAccId, getAccOpt,BANK_SEARCH_ERROR,BANK_SAVE_TYPE_MONTHLY,BANK_SAVE_TYPE_YEARLY } from 'src/utils/bank_utility';
-import { formatDate } from 'src/utils/date_utility';
+import { formatDate ,addOneMonthToStringDate} from 'src/utils/date_utility';
 import { getTranslatedFormatedCalendar } from '../stores/languages';
 import {getOptSavePFromStr,transoptSaveP,stringsIDs, transStr} from '../stores/languages'
 const $q = useQuasar();
@@ -159,9 +167,10 @@ var mustpopPsEnd = ref(false);
 const DEFAULT_DATE = '';
 var savingPstartingDateUnformated = ref(DEFAULT_DATE);
 var savingPendDateUnformated = ref(DEFAULT_DATE);
-var limitMonth = new Date().getFullYear().toString();
-var limitYear = (new Date().getMonth() + 1).toString().padStart(2, '0');
-var periodicSaveMin = ref(limitMonth + '/' + limitYear);
+var limitYear = new Date().getFullYear().toString();
+var limitMonth = (new Date().getMonth() + 1).toString().padStart(2, '0');
+var periodicSaveMin = ref(limitYear + '/' +limitMonth );
+var periodicSaveMinEnd=ref('');
 const emit = defineEmits(['ps-added', 'ps-aborted']);
 var typeSavings=ref(transoptSaveP(BANK_SAVE_TYPE_MONTHLY));
 

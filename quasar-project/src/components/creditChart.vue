@@ -9,7 +9,7 @@
       :series="series"
       :key="mustPop"
     ></VueApexCharts>
-    <q-dialog v-model="mustPop">
+    <q-dialog v-model="mustPop" persistent>
       <q-card>
         <div class="q-ma-xl col flex flex-center">
            {{transSt(sentancesIDs.s_info_savings_only_p1)+ graphMinDate+transSt(sentancesIDs.s_info_savings_only_p2) }}

@@ -273,7 +273,7 @@ const translatedStrs=ref(
   ['Saisir le montant de l\'opération','Choose periodic saving amount'],
   ['Saisir le compte impacté par l`\'opération','select account to proceed periodic saving'],
   ['Saisir la date de la première opération periodique','Select a starting date for periodic saving'],
-  ['(Facultatif) Saisir la date de la dernière opération periodique. L\'opération sera considérée infinite si non saisie.','(Optional) Select periodic saving end date. Operation considered infinite if not set'],
+  ['(Facultatif) Saisir la date de la dernière opération periodique. L\'opération sera considérée infinite si non saisie. Dernier mois inclus.','(Optional) Select periodic saving end date. Operation considered infinite if not set. Last month is included.'],
   ['Il faut renseigner une date de départ','Setting a starting date is mandatory'],
   ['Une épargne de 0, même périodique, ne va rien rapporter','Saving 0 periodically will not make you rich'],
   ['Une épargne négative n\'est pas un épargne','A negative saving is a spending'],
