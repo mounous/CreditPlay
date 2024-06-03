@@ -32,7 +32,7 @@
       </q-scroll-area>
       </div>
       <div class="column content-center justify-center" style="height: 20%;">
-        <div class="row" >
+        <div style="display: flex;flex-direction: row;align-items: center;align-content: center;justify-content: center;justify-items: center;">
           <q-btn class="q-ma-md glossy" size="xl" color="blue-grey-8" :label=transStr(stringsIDs.str_btn_add)
             @click="addeventactiveNew = true" :disable="hasBeenRebougthSavings()" />
 
