@@ -165,6 +165,9 @@ export enum stringsIDs {
   str_credit_fill=135,
   //bank again
   str_ps_period=136,
+  //credit start form again
+  str_credit_fill_again=137,
+  str_mens_only=138,
 };
 
 const translatedStrs=ref(
@@ -323,7 +326,10 @@ const translatedStrs=ref(
   ['Mois','Month'],
   ['Simuler','Simulate'],
   //bank again
-  ['Période','from/to']
+  ['Période','from/to'],
+  //credit start form again
+  ['Nouvelle simulation','New Simulaiton'],
+  ['mensualités','mensualities'],
 ]);
 
 const getLangId=function()
