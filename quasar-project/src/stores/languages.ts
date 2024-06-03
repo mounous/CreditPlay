@@ -168,6 +168,13 @@ export enum stringsIDs {
   //credit start form again
   str_credit_fill_again=137,
   str_mens_only=138,
+  //help again !!
+  str_settings=139,
+  str_simulate_credit=140,
+  str_modulate_credit=141,
+  str_reloan_credit=142,
+  str_savings_help=143,
+  str_rebuy_savings_help=144,
 };
 
 const translatedStrs=ref(
@@ -330,6 +337,13 @@ const translatedStrs=ref(
   //credit start form again
   ['Nouvelle simulation','New Simulaiton'],
   ['mensualités','mensualities'],
+  //help again !!
+  ['Paramètres','Settings'],
+  ['Comment simuler un crédit','How to simulate credit'],
+  ['Comment moduler un crédit','How to modulate credit'],
+  ['Comment racheter avec un crédit','How to reloan'],
+  ['Comment renseigner l\'épargne','How to set your savings'],
+  ['Comment racheter votre crédit avec votre éoargne','How to rebuy your credit with savings'],
 ]);
 
 const getLangId=function()
