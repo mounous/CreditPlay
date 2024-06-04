@@ -308,10 +308,6 @@ const returnBaseData=(evt_year_in_fmt,evt_month_in_fmt)=>{
     var event_=simu.value.events[simu.value.events.length-1];
     //get the capital left to pay at date
     var index=get_nb_mens_diff(simu.value.credit.y,simu.value.credit.m,evt_year_in_fmt,evt_month_in_fmt);
-    if(index==0)
-    {
-      return {end_year:0,end_month:0,capital_left:0};
-    }
     var endDate=event_.amortEvt[event_.amortEvt.length-1][0]
     var e_m=getMonthNbr(endDate.split('-')[0])+1;
     var e_y=Number(endDate.split('-')[1]);

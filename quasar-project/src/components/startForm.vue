@@ -74,7 +74,7 @@
           </div>
           <div style="flex: 1;">
             <q-input filled size="10" style="font-size: x-large;" bg-color="blue-grey-8" type="number" step="any" v-model="simu.credit.rate" lazy-rules
-              :rules="[(val) => (val > 0) || transStr(stringsIDs.str_rate_impossible)]"
+              :rules="[(val) => (val > 0 || val >10) || transStr(stringsIDs.str_rate_impossible)]"
               @update:model-value="simu.credit.rate = Number(simu.credit.rate)" clearable />
           </div>
         </div>
@@ -119,9 +119,11 @@
             <q-btn class="q-ma-xs" color="blue-grey-8" :label=transStr(stringsIDs.str_prev) size="xl"
               @click="currentSlide = 'creditRate'"></q-btn>
             <q-btn class="q-ma-xs" color="blue-grey-8" :label=transStr(stringsIDs.str_validate) size="xl"
-              @click="simu.credit.duration_m==0 ?
-              $q.notify({ color: 'orange-4', textColor: 'black', icon: 'warning', message: transStr(stringsIDs.str_notif_warn_rate), }):
-              emit('credit-done')"></q-btn>
+              @click="[duration_units == transStr(stringsIDs.str_unit_y) ?
+              simu.credit.duration_m = Number(Math.round(duration_no_unit) * 12) :
+              simu.credit.duration_m = Number(Math.round(duration_no_unit)),
+              checkdata() && emit('credit-done')]
+              "></q-btn>
           </div>
         </div>
       </div>
@@ -153,6 +155,32 @@ var duration_no_unit = ref('0');
 const parseCreditDate = function () {
   simu.value.credit.y = Number(simu.value.credit.startingDate.split('/')[2]);
   simu.value.credit.m = Number(simu.value.credit.startingDate.split('/')[1]);
+}
+
+
+
+const checkdata=function()
+{
+  //date is constraint by picker and cannot be changed
+  if(simu.value.credit.amount<=0)
+  {
+    $q.notify({ color: 'orange-4', textColor: 'black', icon: 'warning', message: transStr(stringsIDs.str_neg_amount), });
+    currentSlide.value='creditAmount';
+    return false;
+  }
+  else if(simu.value.credit.rate<0 || simu.value.credit.rate>10)
+  {
+    $q.notify({ color: 'orange-4', textColor: 'black', icon: 'warning', message: transStr(stringsIDs.str_rate_impossible), });
+    currentSlide.value='creditRate';
+    return false;
+  }
+  else if(simu.value.credit.duration_m<=0)
+  {
+    $q.notify({ color: 'orange-4', textColor: 'black', icon: 'warning', message: transStr(stringsIDs.str_durationPos), });
+    currentSlide.value='creditDuration';
+    return false;
+  }
+  return true;
 }
 </script>
 <style lang="scss">

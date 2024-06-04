@@ -122,7 +122,7 @@
               size="20px" glossy color=black :options="[
                 { label: getCurrencySymbol(), value: getCurrencySymbol() },
                 { label: '%', value: '%' }
-            ]" @update:model-value="penalties_no_unit=0"/>
+            ]" @update:model-value="[penalties_no_unit=0,event_.rebuyPenalties=0,event_.rebuyPenalties_abs=0]"/>
             </div>
           <div style="flex:1"></div>
             </div>
@@ -131,7 +131,7 @@
             <q-btn class="q-ma-xs" color="blue-grey-8" :label=transStr(stringsIDs.str_prev) size="xl"
               @click="[currentSlide='metatype',event_.metaType='',situationAtDate='',event_.month=0,event_.year=0,event_.rebuyPenalties=DEFAULT_PENALTIES]"></q-btn>
             <q-btn class="q-ma-xs" color="blue-grey-8" :label=transStr(stringsIDs.str_next) size="xl"
-              @click="[currentSlide = 'rebuyType',event_.rebuyPenalties==DEFAULT_PENALTIES ? event_.rebuyPenalties=0 :event_.rebuyPenalties=event_.rebuyPenalties ]" :disable="event_.rebuyPenalties<0"></q-btn>
+              @click="[currentSlide = 'rebuyType',event_.rebuyPenalties==DEFAULT_PENALTIES ? event_.rebuyPenalties=0 :event_.rebuyPenalties=event_.rebuyPenalties ]" :disable="event_.rebuyPenalties<0||event_.rebuyPenalties_abs<0"></q-btn>
           </div>
         </div>
 
@@ -270,7 +270,7 @@
           event_.month_str='',event_.year_str='',event_.savingsLeft=0,rebuy_saving_capital_to_pay='',event_.reLoanDate='',rachatVal=DEFAULT_RACHAT_VAL_VALUE]"></q-btn>
       <q-btn class="q-ma-xs" color="blue-grey-8" :label=transStr(stringsIDs.str_next) size="xl"
         @click="RebuyPicked()"
-        :disable="event_.type== DEFAULT_EVENT_TYPE ? true : event_.type==EVT_TYPE_REBUY_CREDIT ? (event_.reloanDuration_m==0 || event_.reloanRate<=0 || event_.reloanRate=='')
+        :disable="event_.type== DEFAULT_EVENT_TYPE ? true : event_.type==EVT_TYPE_REBUY_CREDIT ? (event_.reloanDuration_m<=0 || event_.reloanRate<=0 || event_.reloanRate==''|| event_.year==0 || event_.month==0)
                                                       :(event_.savingsLeft==0 || event_.year==0 || event_.month==0)" ></q-btn>
     </div>
   </div>
