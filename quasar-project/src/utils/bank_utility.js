@@ -323,7 +323,8 @@ const provideRebuyOptions=function(evt_type,penalties,penalties_abs,penalties_ty
         i++;
       }
     }
-    if(i==computed.length)
+    i++;
+    if(i>=computed.length)
     {
       return [transStr(stringsIDs.str_unsufficient_savings)];
     }
