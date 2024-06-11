@@ -14,12 +14,12 @@
 <script setup>
 import { LocalStorage } from 'quasar';
 import { ref ,defineEmits} from 'vue';
-import {getCurrencySymbol,supportedCurrencies} from '../stores/currencies'
-var myCurrency=ref(getCurrencySymbol());
+import {supportedCurrencies} from '../stores/currencies'
+var myCurrency=ref('');
 const emit=defineEmits(['currency-picked']);
 const saveCurrency=function()
 {
   LocalStorage.set('currentCurrency',myCurrency.value);
-  emit('language-picked');
+  emit('currency-picked');
 }
 </script>

@@ -18,7 +18,7 @@ import { LocalStorage } from 'quasar';
 import { reapplyLanguageToData} from 'src/utils/credit_utility';
 import { ref ,defineEmits} from 'vue';
 
-var myLang=ref(LocalStorage.has('currentLanguage') ? LocalStorage.getItem('currentLanguage') : 'Français');
+var myLang=ref('');
 const emit=defineEmits(['language-picked']);
 const saveLanguage=function()
 {

@@ -45,7 +45,7 @@
     </div>
     <div class="col">
       <q-dialog v-model="mustPopCurrency" cover transition-show="scale" transition-hide="scale">
-        <CurrencyPicker @language-picked="[mustPopCurrency=false]"></CurrencyPicker>
+        <CurrencyPicker @currency-picked="[mustPopCurrency=false]"></CurrencyPicker>
       </q-dialog>
     </div>
 </template>
@@ -65,7 +65,7 @@ import CurrencyPicker from 'src/components/currencyPicker.vue';
 
 var mustPopRestore=ref(false);
 var mustPopCurrency=ref(LocalStorage.has('currentCurrency')?false:true);
-var mustPopLanguage=ref(false);
+var mustPopLanguage=ref(LocalStorage.has('currentLanguage')?false:true);
 var tab=ref('start');
 var  initFormDone =ref(false);
 var bankDone=ref(false);

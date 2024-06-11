@@ -18,7 +18,7 @@
             {{ transStr(stringsIDs.str_simulate_credit) }}
           </div>
           <div style="display: flex;justify-items:center;justify-content:center;align-items: center;align-content: center;">
-            <q-video src="https://www.youtube.com/embed/k3_tw44QsZQ?rel=0" />
+            <q-video src="https://www.youtube.com/embed/e2sg0ZxO55g?si=Bjd9LRIQCRgNFT8v" />
           </div>
         </div>
       </q-card>
