@@ -112,10 +112,11 @@
           <div class="row" style="display: flex;align-content: center;">
           <div style="flex:1"></div>
           <div style="flex:4;align-items: center;align-content: center;" >
-            <q-input class="q-ma-md"  style="font-size: x-large;"
+            <q-input ref="myPenalties" class="q-ma-md"  style="font-size: x-large;"
             v-model="penalties_no_unit" type="number" lazy-rules @update:model-value="event_.rebuyPenaltiesType== getCurrencySymbol() ? event_.rebuyPenalties_abs= Number(penalties_no_unit): event_.rebuyPenalties=Number(penalties_no_unit)"
             :rules="[(val) => (val >= 0.0) || transStr(stringsIDs.str_penalties_rule)]" bg-color="blue-grey-8"
-            outlined clearable ></q-input>
+            outlined clearable
+            @keyup.enter="penatlies_nxt.click()" ></q-input>
             </div>
             <div style="flex: 2;align-items: center;align-content: center;;">
             <q-btn-toggle style="font-size: xx-large;" class="q-ma-md" name="durationUnits" v-model="event_.rebuyPenaltiesType" unelevated
@@ -127,10 +128,14 @@
           <div style="flex:1"></div>
             </div>
           </div>
+          <div class="q-ma-md"  style="display:flex; width: 95%;">
+                <q-slider class="q-ma-md" v-model="penalties_no_unit" :min="0" :max="event_.rebuyPenaltiesType == '%'?5:simu.credit.amount/30"
+                :step="event_.rebuyPenaltiesType == '%'?0.01:10" @change="myPenalties.focus()"/>
+          </div>
           <div class="row q-mt-md" style="display: flex;justify-content: space-evenly;align-items: center;justify-content: center;">
             <q-btn class="q-ma-xs" color="blue-grey-8" :label=transStr(stringsIDs.str_prev) size="xl"
               @click="[currentSlide='metatype',event_.metaType='',situationAtDate='',event_.month=0,event_.year=0,event_.rebuyPenalties=DEFAULT_PENALTIES]"></q-btn>
-            <q-btn class="q-ma-xs" color="blue-grey-8" :label=transStr(stringsIDs.str_next) size="xl"
+            <q-btn ref="penatlies_nxt" class="q-ma-xs" color="blue-grey-8" :label=transStr(stringsIDs.str_next) size="xl"
               @click="[currentSlide = 'rebuyType',event_.rebuyPenalties==DEFAULT_PENALTIES ? event_.rebuyPenalties=0 :event_.rebuyPenalties=event_.rebuyPenalties ]" :disable="event_.rebuyPenalties<0||event_.rebuyPenalties_abs<0"></q-btn>
           </div>
         </div>
@@ -236,11 +241,16 @@
     <div class="row" style="display: flex;align-content: center;">
     <div style="flex:1"></div>
     <div style="flex:4;align-items: center;align-content: center;" >
-      <q-input clearable v-if="event_.type == EVT_TYPE_REBUY_CREDIT" class="q-ma-xs"  style="font-size: x-large;"
+      <q-input ref="myreloanrate" clearable  class="q-ma-xs"  style="font-size: x-large;"
         v-model="event_.reloanRate" type="number" lazy-rules :rules="[(val) => (val >= 0.0) || transStr(stringsIDs.str_rate_impossible)]"
-        bg-color="blue-grey-8" outlined @update:model-value="event_.reloanRate=Number(event_.reloanRate)"></q-input>
+        bg-color="blue-grey-8" outlined @update:model-value="event_.reloanRate=Number(event_.reloanRate)"
+        @keyup.enter="myreloanrate.blur()"></q-input>
         </div>
         <div style="flex:1"></div>
+    </div>
+    <div class="q-ma-md"  style="display:flex; width: 95%;">
+      <q-slider class="q-ma-md" v-model="event_.reloanRate" :min="0" :max="5"
+      :step="0.01" @change="myreloanrate.focus()"/>
     </div>
     <div class="col q-mt-md" style="font-size: large;">
       <p>{{ transStr(stringsIDs.str_duration)   }}</p>
@@ -248,10 +258,11 @@
     <div class="row" style="display: flex;align-content: center;">
 
     <div style="flex:1;align-items: center;align-content: center;" >
-      <q-input clearable v-if="event_.type == EVT_TYPE_REBUY_CREDIT " class="q-ma-xs" style="font-size: x-large;"
+      <q-input ref="myreloandur" clearable class="q-ma-xs" style="font-size: x-large;"
       v-model="duration_no_unit" type="number" lazy-rules
       :rules="[(val) => (val > 0) || transStr(stringsIDs.str_durationPos)]" bg-color="blue-grey-8" outlined
-      @update:model-value="duration_units==transStr(stringsIDs.str_unit_y) ? event_.reloanDuration_m=Number(duration_no_unit)*12 : event_.reloanDuration_m=Number(duration_no_unit)"></q-input>
+      @update:model-value="duration_units==transStr(stringsIDs.str_unit_y) ? event_.reloanDuration_m=Number(duration_no_unit)*12 : event_.reloanDuration_m=Number(duration_no_unit)"
+      @keyup.enter="myreloandur.blur()"></q-input>
       </div>
       <div style="flex: 1;align-items: center;justify-items: center;" >
       <q-btn-toggle v-if="event_.type == EVT_TYPE_REBUY_CREDIT " class="q-ma-md" name="durationUnits" v-model="duration_units" unelevated
@@ -261,7 +272,11 @@
     ]"
     @update:model-value="duration_units==transStr(stringsIDs.str_unit_y) ? duration_no_unit=Math.round(duration_no_unit/12) : duration_no_unit=duration_no_unit*12"/>
   </div>
-
+  <div class="q-ma-md"  style="display:flex; width: 95%;">
+      <q-slider class="q-ma-md" v-model="duration_no_unit" :min="0" :max="duration_units==transStr(stringsIDs.str_unit_y) ? 30:30*12"
+      :step="1" @change="myreloandur.focus()"
+      @update:model-value="duration_units==transStr(stringsIDs.str_unit_y) ? event_.reloanDuration_m=Number(duration_no_unit)*12 : event_.reloanDuration_m=Number(duration_no_unit)"/>
+    </div>
   </div>
   <div class="row q-mt-md" style="display: flex;justify-content: space-evenly;align-items: center;justify-content: center;">
       <q-btn class="q-ma-xs" color="blue-grey-8" :label=transStr(stringsIDs.str_prev) size="xl"
@@ -270,8 +285,7 @@
           event_.month_str='',event_.year_str='',event_.savingsLeft=0,rebuy_saving_capital_to_pay='',event_.reLoanDate='',rachatVal=DEFAULT_RACHAT_VAL_VALUE]"></q-btn>
       <q-btn class="q-ma-xs" color="blue-grey-8" :label=transStr(stringsIDs.str_next) size="xl"
         @click="RebuyPicked()"
-        :disable="event_.type== DEFAULT_EVENT_TYPE ? true : event_.type==EVT_TYPE_REBUY_CREDIT ? (event_.reloanDuration_m<=0 || event_.reloanRate<=0 || event_.reloanRate==''|| event_.year==0 || event_.month==0)
-                                                      :(event_.savingsLeft==0 || event_.year==0 || event_.month==0)" ></q-btn>
+        :disable=" (event_.reloanDuration_m<=0 || event_.reloanRate<=0 || event_.reloanRate==''|| event_.year==0 || event_.month==0)" ></q-btn>
     </div>
   </div>
 </div>
@@ -362,7 +376,11 @@ import {subOneMonthToStringDate,addOneMonthToStringDate,formatDate} from '../uti
 //------------------------------------//
 //      DOM handling                  //
 //------------------------------------//
+var myPenalties=ref();
 var myEventForm = ref();
+var penatlies_nxt=ref();
+var myreloanrate=ref();
+var myreloandur=ref();
 var currentSlide = ref('metatype');
 var situationAtDate = ref('');
 import {getCurrencySymbol} from '../stores/currencies'

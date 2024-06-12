@@ -47,16 +47,21 @@
             <p>{{ transStr(stringsIDs.str_amount_borrowed) }}</p>
           </div>
           <div style="flex: 1;">
-            <q-input filled size="10" style="font-size: x-large;" clearable type="number" bg-color="blue-grey-8" v-model="simu.credit.amount" lazy-rules :rules="[
+            <q-input ref="myAmount" filled size="10" style="font-size: x-large;" clearable type="number" bg-color="blue-grey-8" v-model="simu.credit.amount" lazy-rules :rules="[
               (val) => val > 0 || transStr(stringsIDs.str_neg_amount),
-            ]" @update:model-value="simu.credit.amount = Number(simu.credit.amount)" />
+            ]" @update:model-value="simu.credit.amount = Number(simu.credit.amount)"
+            @keyup.enter="credit_amount_nxt.click()"
+            :suffix="getCurrencySymbol()"/>
+          </div>
+          <div style="flex: 1;width: 100%;">
+          <q-slider v-model="simu.credit.amount" :min="0" :max="500000" :step="1000" @change="myAmount.focus()"/>
           </div>
         </div>
         <div style="flex: 2;display: flex;">
           <div style="display: flex; flex-direction : row;width:100% ;justify-content: space-evenly;align-items: center;justify-content: center; flex-wrap: wrap;">
             <q-btn class="q-ma-xs" color="blue-grey-8" :label=transStr(stringsIDs.str_prev) size="xl"
               @click="currentSlide = 'creditDate'"></q-btn>
-            <q-btn class="q-ma-xs" color="blue-grey-8" :label=transStr(stringsIDs.str_next) size="xl"
+            <q-btn ref="credit_amount_nxt" class="q-ma-xs" color="blue-grey-8" :label=transStr(stringsIDs.str_next) size="xl"
               @click="simu.credit.amount==0 ?
               $q.notify({ color: 'orange-4', textColor: 'black', icon: 'warning', message: transStr(stringsIDs.str_notif_warn_amount), }):
               currentSlide = 'creditRate'"></q-btn>
@@ -73,16 +78,21 @@
             <p>{{ transStr(stringsIDs.str_rate) }}</p>
           </div>
           <div style="flex: 1;">
-            <q-input filled size="10" style="font-size: x-large;" bg-color="blue-grey-8" type="number" step="any" v-model="simu.credit.rate" lazy-rules
+            <q-input ref="myRate" filled size="10" style="font-size: x-large;" bg-color="blue-grey-8" type="number" step="any" v-model="simu.credit.rate" lazy-rules
               :rules="[(val) => (val > 0 || val >10) || transStr(stringsIDs.str_rate_impossible)]"
-              @update:model-value="simu.credit.rate = Number(simu.credit.rate)" clearable />
+              @update:model-value="simu.credit.rate = Number(simu.credit.rate)" clearable
+              suffix="%"
+              @keyup.enter="credit_rate_nxt.click()"/>
+          </div>
+          <div style="flex: 1;width: 100%;">
+          <q-slider v-model="simu.credit.rate" :min="0" :max="10" :step="0.01" @change="myRate.focus()"/>
           </div>
         </div>
         <div style="flex: 2;display: flex;">
           <div style="display: flex; flex-direction : row;width:100% ;justify-content: space-evenly;align-items: center;justify-content: center; flex-wrap: wrap;">
             <q-btn class="q-ma-xs" color="blue-grey-8" :label=transStr(stringsIDs.str_prev) size="xl"
               @click="currentSlide = 'creditAmount'"></q-btn>
-            <q-btn class="q-ma-xs" color="blue-grey-8" :label=transStr(stringsIDs.str_next) size="xl"
+            <q-btn ref="credit_rate_nxt" class="q-ma-xs" color="blue-grey-8" :label=transStr(stringsIDs.str_next) size="xl"
               @click="simu.credit.rate==0 ?
               $q.notify({ color: 'orange-4', textColor: 'black', icon: 'warning', message: transStr(stringsIDs.str_notif_warn_rate), }):
               currentSlide = 'creditDuration'"></q-btn>
@@ -98,12 +108,16 @@
           <div class=" myIndication q-ma-md" style="flex: 1;">
             <p>{{ transStr(stringsIDs.str_duration) }}</p>
           </div>
-          <div style="flex: 1;display:flex ;flex-direction: column;justify-content: space-evenly;align-items: center;justify-content: center;">
-            <q-input size="10" style="font-size: x-large;" filled type="number" bg-color="blue-grey-8" v-model="duration_no_unit"
-              lazy-rules :rules="[(val) => (val > 0) || transStr(stringsIDs.str_durationPos)]"
+          <div style="flex: 1;display:flex ;flex-direction: column;justify-content: space-evenly;align-items: center;justify-content: center;" @click="myDur.focus()">
+            <q-input class="q-ma-md" ref="myDur" size="10" style="font-size: x-large;" filled type="number" bg-color="blue-grey-8" v-model="duration_no_unit"
+              lazy-rules :rules="[(val) => (val > 0 ||( duration_units == transStr(stringsIDs.str_unit_y) && val< 50) ||( duration_units == transStr(stringsIDs.str_unit_m) && val< 600)) || transStr(stringsIDs.str_durationPos)]"
               @update:model-value="[duration_units == transStr(stringsIDs.str_unit_y) ?
               simu.credit.duration_m = Number(Math.round(duration_no_unit) * 12) :
-              simu.credit.duration_m = Number(Math.round(duration_no_unit))]" clearable/>
+              simu.credit.duration_m = Number(Math.round(duration_no_unit))]"
+              @keyup.enter="credit_dur_next.click()"
+              @focus="[myDur.focus(),disableRateSlider=true]"
+              @blur="disableRateSlider=false"
+              />
             <q-btn-toggle class="q-ma-md" name="durationUnits" v-model="duration_units" unelevated size="20px" glossy
               color=black :options="[
                 { label: transStr(stringsIDs.str_unit_y), value: transStr(stringsIDs.str_unit_y) },
@@ -113,12 +127,15 @@
               duration_no_unit = Math.round(duration_no_unit / 12) :
               duration_no_unit = duration_no_unit * 12" />
           </div>
+          <div v-if="disableRateSlider==false" style="display:flex;width: 95%;">
+          <q-slider class="q-ma-md" v-model="duration_no_unit" :min="0" :max="duration_units == transStr(stringsIDs.str_unit_y)?30:360" :step="1" @change="myDur.focus()"/>
+          </div>
         </div>
         <div style="flex: 2;display: flex;">
           <div style="display: flex; flex-direction : row;width:100% ;justify-content: space-evenly;align-items: center;justify-content: center; flex-wrap: wrap;">
             <q-btn class="q-ma-xs" color="blue-grey-8" :label=transStr(stringsIDs.str_prev) size="xl"
               @click="currentSlide = 'creditRate'"></q-btn>
-            <q-btn class="q-ma-xs" color="blue-grey-8" :label=transStr(stringsIDs.str_validate) size="xl"
+            <q-btn ref="credit_dur_next" class="q-ma-xs" color="blue-grey-8" :label=transStr(stringsIDs.str_validate) size="xl"
               @click="[duration_units == transStr(stringsIDs.str_unit_y) ?
               simu.credit.duration_m = Number(Math.round(duration_no_unit) * 12) :
               simu.credit.duration_m = Number(Math.round(duration_no_unit)),
@@ -134,6 +151,7 @@
 </template>
 
 <script setup>
+import {getCurrencySymbol} from '../stores/currencies.ts'
 import { ref, defineEmits } from 'vue';
 import { simu } from 'src/stores/store';
 import { useQuasar } from 'quasar';
@@ -148,7 +166,13 @@ var mustpop = ref(false);
 var unformated = ref('00/00/0000');
 var duration_units = ref(transStr(stringsIDs.str_unit_y));
 var duration_no_unit = ref('0');
-
+var myAmount=ref();
+var credit_amount_nxt=ref();
+var myRate=ref();
+var credit_rate_nxt=ref();
+var myDur=ref();
+var credit_dur_next=ref();
+var disableRateSlider=ref(false);
 var duration_units = ref(transStr(stringsIDs.str_unit_y));
 var duration_no_unit = ref('0');
 
