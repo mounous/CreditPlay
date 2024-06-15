@@ -32,17 +32,22 @@
             <p>{{transStr(stringsIDs.str_choose_op_amount)}}</p>
           </div>
           <div class="row" style="display: flex;">
-          <div style="flex:1"></div>
-          <div style="flex:4">
-          <q-input class="q-mx-xs" style="font-size: x-large;" v-model="_savingP.amount"
-            type="number" lazy-rules :rules="[(val) => (val >= 0.0) || 'Les retraits ne sont pas gérées']"
-            bg-color="blue-grey-8" outlined clearable ></q-input>
-          </div>
+            <div style="flex:1"></div>
+            <div style="flex:4">
+            <q-input ref="myAmount" class="q-mx-xs" style="font-size: x-large;" v-model="_savingP.amount"
+              type="number" lazy-rules :rules="[(val) => (val >= 0.0) || 'Les retraits ne sont pas gérées']"
+              bg-color="blue-grey-8" outlined clearable @keyup.enter="amount_nxt.click()"></q-input>
+            </div>
+            <div style="display:flex;width: 95%;">
+                <q-slider class="q-ma-md" v-model="_savingP.amount" :min="0.0"
+                :max="typeSavings==transoptSaveP(BANK_SAVE_TYPE_MONTHLY) ? 1000:10000"
+                :step="typeSavings==transoptSaveP(BANK_SAVE_TYPE_MONTHLY) ? 10:100" @change="myAmount.focus()"/>
+            </div>
             <div style="flex:1"></div>
         </div>
         <div class="col">
           <q-btn class="q-ma-xs" color="blue-grey-8" :label=transStr(stringsIDs.str_prev) size='xl' @click="currentSlide = 'psType'"></q-btn>
-          <q-btn class="q-ma-xs" color="blue-grey-8" :label=transStr(stringsIDs.str_next) size='xl' @click="currentSlide = 'psAccount'"></q-btn>
+          <q-btn class="q-ma-xs" color="blue-grey-8" :label=transStr(stringsIDs.str_next) size='xl' @click="currentSlide = 'psAccount'" ref="amount_nxt"></q-btn>
         </div>
       </div>
       </div>
@@ -158,6 +163,8 @@ import { formatDate ,addOneMonthToStringDate} from 'src/utils/date_utility';
 import { getTranslatedFormatedCalendar } from '../stores/languages';
 import {getOptSavePFromStr,transoptSaveP,stringsIDs, transStr} from '../stores/languages'
 const $q = useQuasar();
+var myAmount=ref();
+var amount_nxt=ref();
 var myPSForm = ref();
 var currentSlide = ref('psType');
 const _savingP = ref({ account: bank.value.accounts[0].title, amount: 0.0, startMonth: 0, startYear: 0, endMonth: 0, endYear: 0, type: BANK_SAVE_TYPE_MONTHLY, startingDate: '', endDate: '' });

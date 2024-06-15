@@ -60,14 +60,17 @@
         <div class="row q-mb-md" style="display: flex;">
           <div style="flex:1"></div>
           <div style="flex:2">
-          <q-input  class="q-mb-md" clearable style="font-size: x-large;"  size="10" maxlength="10"
-            v-model="_single_io.amount" type="number" lazy-rules bg-color="blue-grey-8" outlined ></q-input>
+          <q-input ref="myAmount" class="q-mb-md" clearable style="font-size: x-large;"  size="10" maxlength="10"
+            v-model="_single_io.amount" type="number" lazy-rules bg-color="blue-grey-8" outlined @keyup.enter="amount_nxt.click()" :suffix="getCurrencySymbol()"></q-input>
             </div>
             <div style="flex:1"></div>
+            <div style="display:flex;width: 95%;">
+                <q-slider class="q-ma-md" v-model="_single_io.amount" :min="0.0" :max="50000" :step="100" @change="myAmount.focus()"/>
+            </div>
       </div>
       <div class="col">
       <q-btn  class="q-ma-xs" :label=transStr(stringsIDs.str_prev) size="xl" color="blue-grey-8" @click="currentSlide = 'sioName'"></q-btn>
-      <q-btn class="q-ma-xs" :label=transStr(stringsIDs.str_next) size="xl" color="blue-grey-8" @click="currentSlide = 'sioAccount'"></q-btn>
+      <q-btn class="q-ma-xs" :label=transStr(stringsIDs.str_next) size="xl" color="blue-grey-8" @click="currentSlide = 'sioAccount'" ref="amount_nxt"></q-btn>
     </div>
       </div>
       </div>
@@ -152,6 +155,7 @@
 </template>
 
 <script setup>
+import {getCurrencySymbol} from '../stores/currencies.ts'
 import { ref, defineEmits } from 'vue';
 import { getAccId ,getAccOpt,isAccountInvolvedInRebuyWithSavings,deleteRebuySavingsEventAndAssociatedInOut, BANK_SEARCH_ERROR,BANK_SIO_TYPE_IN,BANK_SIO_TYPE_OUT} from '../utils/bank_utility';
 import { compareDates ,formatDate} from 'src/utils/date_utility';
@@ -159,6 +163,8 @@ import { bank,simu } from 'src/stores/store';
 import { useQuasar } from 'quasar';
 import { getTranslatedFormatedCalendar } from '../stores/languages';
 import {transoptSIO,transSIOspecial,transStr,stringsIDs,sentancesIDs,transSt} from '../stores/languages'
+var myAmount=ref();
+var amount_nxt=ref();
 var single_io_type=ref(transoptSIO(BANK_SIO_TYPE_IN));
 const DEFAULT_DATE='';
 var singleIODateUnformated=ref(DEFAULT_DATE);
