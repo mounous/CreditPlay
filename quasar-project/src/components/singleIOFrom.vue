@@ -36,13 +36,13 @@
           <div style="flex:1"></div>
           <div style="flex:2">
           <q-input class="q-mb-md" clearable  style="font-size: x-large;"   v-model="_single_io.title"
-            type="text" bg-color="blue-grey-8" outlined ></q-input>
+            type="text" bg-color="blue-grey-8" outlined  @keyup.enter="sio_name_nxt.click()"></q-input>
           </div>
             <div style="flex:1"></div>
       </div>
       <div class="col">
       <q-btn class="q-ma-xs" color="blue-grey-8" size="xl" :label=transStr(stringsIDs.str_prev) @click="currentSlide = 'sioType'"></q-btn>
-      <q-btn  class="q-ma-xs" color="blue-grey-8" size="xl" :label=transStr(stringsIDs.str_next) @click="currentSlide = 'sioAmount'"></q-btn>
+      <q-btn  class="q-ma-xs" color="blue-grey-8" size="xl" :label=transStr(stringsIDs.str_next) @click="currentSlide = 'sioAmount'" ref="sio_name_nxt"></q-btn>
     </div>
       </div>
       </div>
@@ -164,6 +164,7 @@ import { useQuasar } from 'quasar';
 import { getTranslatedFormatedCalendar } from '../stores/languages';
 import {transoptSIO,transSIOspecial,transStr,stringsIDs,sentancesIDs,transSt} from '../stores/languages'
 var myAmount=ref();
+var sio_name_nxt=ref();
 var amount_nxt=ref();
 var single_io_type=ref(transoptSIO(BANK_SIO_TYPE_IN));
 const DEFAULT_DATE='';

@@ -43,7 +43,7 @@
         <div class="q-ma-xl">
           {{ transStr(stringsIDs.str_pop_simu_save_name) }}
         </div>
-        <q-input class="q-ma-md" v-model="currentName"></q-input>
+        <q-input class="q-ma-md" v-model="currentName" @keyup.enter="saveCurrentData"></q-input>
         <q-btn class="q-ma-md" :label=transStr(stringsIDs.str_pop_simu_default_name) @click="saveCurrentData"></q-btn>
         <q-btn class="q-ma-md" :label=transStr(stringsIDs.str_pop_simu_custom_name) @click="saveCurrentData"
           :disable="isNameAlreadyInUse(currentName)"></q-btn>

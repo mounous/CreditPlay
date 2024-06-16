@@ -14,7 +14,7 @@
             <q-input class="q-ma-md" clearable style="font-size: x-large;" maxlength="20"
               v-model="_account.title" type="text" lazy-rules
               :rules="[(val) => (val.length < 20) || transStr(stringsIDs.str_shorter_acc_name)]" bg-color="blue-grey-8"
-              outlined></q-input>
+              outlined @keyup.enter="title_nxt.click()"></q-input>
             </div>
             <div style="flex:1"></div>
           </div>
@@ -22,7 +22,7 @@
             <q-btn class="q-ma-xs" color="blue-grey-8" :label=transStr(stringsIDs.str_cancel) size="xl"
               @click="emit('account-aborted')"></q-btn>
             <q-btn class="q-ma-xs" color="blue-grey-8" :label=transStr(stringsIDs.str_next) size="xl"
-              @click="currentSlide = 'AmountAccount'"></q-btn>
+              @click="currentSlide = 'AmountAccount'" ref="title_nxt"></q-btn>
           </div>
         </div>
       </div>
@@ -94,6 +94,7 @@ import { useQuasar } from 'quasar';
 import { transStr,stringsIDs } from 'src/stores/languages';
 import {getCurrencySymbol} from '../stores/currencies.ts'
 const $q = useQuasar();
+var title_nxt=ref();
 var myAmount=ref();
 var amount_nxt=ref();
 var myProfit=ref();
