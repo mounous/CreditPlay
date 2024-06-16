@@ -61,7 +61,7 @@ function onSubmit() {
     computeMensuality();
     computeCredit_init();
     setStartFormFilled(true);
-    router.push('/lineChart');
+    router.push('/summary');
   }
   else {
     resetMustPop.value = true;
@@ -84,7 +84,7 @@ function onForceSubmmit() {
   computeMensuality();
   computeCredit_init();
   setStartFormFilled(true);
-  router.push('/lineChart');
+  router.push('/summary');
 }
 
 </script>

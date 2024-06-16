@@ -39,7 +39,7 @@
           <q-btn class="q-ma-md glossy" size="xl" color="blue-grey-8" :label=transStr(stringsIDs.str_btn_del) @click="deleteEvents"
             :disable="simu.events.length == 0" />
 
-          <eventForm v-if="addeventactiveNew == true" @event-done="[addeventactiveNew = false, movetocharts()]"
+          <eventForm v-if="addeventactiveNew == true" @event-done="[addeventactiveNew = false, movetoSummary()]"
             @event-abort="addeventactiveNew = false"></eventForm>
         </div>
       </div>
@@ -68,8 +68,8 @@ const handleSwipeExt=function ({ evt, touch, mouse, direction, duration, distanc
   router.push(targetPage(direction,router.currentRoute.value.fullPath));
 }
 
-const movetocharts = function () {
-  router.push('/lineChart');
+const movetoSummary = function () {
+  router.push('/summary');
 };
 
 const deleteEvents=function(){

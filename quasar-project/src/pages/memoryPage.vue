@@ -150,7 +150,7 @@ const restoreData = function () {
     simu.value = (listSave.value)[index].simu;
     bank.value = (listSave.value)[index].bank;
     startFormFilled.value = (listSave.value)[index].startFormFilled;
-    router.push('/lineChart');
+    router.push('/summary');
   }
 }
 const deleteData = function (selected_id) {
