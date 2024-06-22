@@ -42,7 +42,7 @@ import { computeMensuality, computeCredit_init } from '../utils/credit_utility.j
 import { bank, setStartFormFilled, simu ,startFormFilled} from 'stores/store';
 import { targetPage } from '../utils/swipe_utils.js'
 import { transStr, stringsIDs, transSt, sentancesIDs, is_sio_special_name,transMonthName } from '../stores/languages.ts'
-
+import {mustAlertChart} from '../stores/store'
 const router = useRouter();
 
 var displayStartForm = ref(false);
@@ -61,6 +61,7 @@ function onSubmit() {
     computeMensuality();
     computeCredit_init();
     setStartFormFilled(true);
+    mustAlertChart.value=true;
     router.push('/summary');
   }
   else {
@@ -84,6 +85,7 @@ function onForceSubmmit() {
   computeMensuality();
   computeCredit_init();
   setStartFormFilled(true);
+  mustAlertChart.value=true;
   router.push('/summary');
 }
 

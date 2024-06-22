@@ -430,7 +430,7 @@ const validateMod = function () {
     (event_.value.type !=DEFAULT_EVENT_TYPE) &&
     modVal.value != DEFAULT_MODVAL
   ) {
-    event_.value.mensDiff = Number(modVal.value.split('(')[1].split('mois')[0]);
+    event_.value.mensDiff = Number(modVal.value.split('(')[1].split(transStr(stringsIDs.str_unit_m))[0]);
     event_.value.new_mens = Number(modVal.value.split(getCurrencySymbol())[0])
     canAddMod.value=true;
   }

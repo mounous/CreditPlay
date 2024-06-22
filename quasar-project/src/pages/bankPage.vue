@@ -1,7 +1,7 @@
 <template>
-  <accountForm v-if="displayAccountForm==true"  @account-added="displayAccountForm=false" @account-aborted="displayAccountForm=false"></accountForm>
-  <periodicSavingsForm v-if="displayPSForm==true" @ps-added="displayPSForm=false" @ps-aborted="displayPSForm=false"></periodicSavingsForm>
-  <singleIOFrom v-if="displaySIOForm==true" @sio-added="displaySIOForm=false" @sio-aborted="displaySIOForm=false"></singleIOFrom>
+  <accountForm v-if="displayAccountForm==true"  @account-added="[displayAccountForm=false,mustAlertChart=true]" @account-aborted="displayAccountForm=false"></accountForm>
+  <periodicSavingsForm v-if="displayPSForm==true" @ps-added="[displayPSForm=false,mustAlertChart=true]" @ps-aborted="displayPSForm=false"></periodicSavingsForm>
+  <singleIOFrom v-if="displaySIOForm==true" @sio-added="[displaySIOForm=false,mustAlertChart=true]" @sio-aborted="displaySIOForm=false"></singleIOFrom>
   <q-page>
   <div class="full-height column justify-arround content-center" style="display: flex; width: 100%; height: 100%;" v-touch-swipe.mouse.left.right="handleSwipeExt">
     <q-card class="bg-grey-9 my-card q-mt-md" style="display: flex;width: 100%;align-items:flex-start;justify-content: center;align-content: center">
@@ -28,7 +28,7 @@
                 <th style="font-size: larger">{{ account.title }}</th>
                 <th style="font-size: larger">{{ formatnumber(account.amount.toString())+' '+getCurrencySymbol() }}</th>
                 <th style="font-size: larger">{{ account.rate }}</th>
-                <th ><q-btn dense size="s" icon="delete_forever" @click="removeAccount(account)"></q-btn></th>
+                <th ><q-btn dense size="s" icon="delete_forever" @click="[removeAccount(account),mustAlertChart=true]"></q-btn></th>
               </tr>
             </tbody>
           </q-markup-table>
@@ -66,7 +66,7 @@
                 <th  style="font-size: larger">{{ account.title }}</th>
                 <th  style="font-size: larger">{{ transoptSaveP(saving.type) }}</th>
                 <th  style="font-size: larger">{{ saving.startMonth + '/' + saving.startYear + ' - '+(saving.endMonth != 0 && saving.endYear != 0 ? saving.endMonth + '/' + saving.endYear : '?/?')}}</th>
-                <th><q-btn dense size="s" icon="delete_forever" @click="removeSavingP(saving,account)"></q-btn></th>
+                <th><q-btn dense size="s" icon="delete_forever" @click="[removeSavingP(saving,account),mustAlertChart=true]"></q-btn></th>
               </tr>
             </tbody>
           </q-markup-table>
@@ -104,7 +104,7 @@
                 <th v-if="io.type==BANK_SIO_TYPE_IN" style="font-size: larger"  class="text-green">{{'+ '+formatnumber(io.amount.toString())+' '+getCurrencySymbol() }}</th>
                 <th style="font-size: larger">{{ account.title }}</th>
                 <th style="font-size: larger">{{ io.month + '/' + io.year }}</th>
-                <th><q-btn dense size="s" icon="delete_forever" @click="removeSingleIO(io,account)"></q-btn></th>
+                <th><q-btn dense size="s" icon="delete_forever" @click="[removeSingleIO(io,account),mustAlertChart=true]"></q-btn></th>
               </tr>
             </tbody>
           </q-markup-table>
@@ -179,6 +179,7 @@ import {targetPage} from '../utils/swipe_utils.js'
 import {transStr,stringsIDs,transoptSaveP,transSt,sentancesIDs,transSIOspecial} from '../stores/languages.ts'
 import { formatnumber } from 'src/utils/string_utils';
 import { getCurrencySymbol } from 'src/stores/currencies';
+import {mustAlertChart} from '../stores/store'
 const $q = useQuasar();
 
 const router = useRouter();

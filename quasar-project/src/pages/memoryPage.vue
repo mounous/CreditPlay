@@ -60,7 +60,7 @@ import { bank, simu, startFormFilled } from 'src/stores/store';
 import { useRouter } from 'vue-router';
 import { targetPage } from '../utils/swipe_utils.js'
 import { transStr, stringsIDs } from 'src/stores/languages';
-
+import {mustAlertChart} from '../stores/store'
 const DEFAULT_ID = -1;
 const DEFAULT_NAME = '';
 var mustPopName = ref(false);
@@ -150,6 +150,7 @@ const restoreData = function () {
     simu.value = (listSave.value)[index].simu;
     bank.value = (listSave.value)[index].bank;
     startFormFilled.value = (listSave.value)[index].startFormFilled;
+    mustAlertChart.value=true;
     router.push('/summary');
   }
 }

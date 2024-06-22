@@ -8,7 +8,9 @@
         <q-route-tab name="start" :label=transStr(stringsIDs.str_tab_credit) nocaps icon="feed" to="/" />
         <q-route-tab name="events" :label=transStr(stringsIDs.str_tab_ops) icon="toc" to="/events" :disable="initFormDone==false"/>
         <q-route-tab name="summary" :label=transStr(stringsIDs.str_tab_sum) icon="money" to="/summary" :disable="initFormDone==false"/>
-        <q-route-tab name="chart" :label=transStr(stringsIDs.str_tab_chart) icon="bar_chart" to="/lineChart" :disable="initFormDone==false&&bankDone==false" />
+        <q-route-tab name="chart" :label=transStr(stringsIDs.str_tab_chart) icon="bar_chart" to="/lineChart" :disable="initFormDone==false&&bankDone==false">
+          <q-badge v-if="initFormDone==true && mustAlertChart==true" color="blue" floating>!</q-badge>
+        </q-route-tab>
         <q-route-tab name="save" :label=transStr(stringsIDs.str_tab_savings) icon="account_balance" to="/bank"/>
         <q-route-tab name="memory" :label=transStr(stringsIDs.str_tab_mem) icon="import_export" to="/memory"/>
         <q-route-tab name="help" :label=transStr(stringsIDs.str_tab_help) icon="help" to="/help"/>
@@ -55,7 +57,7 @@
 
 import { onBeforeMount, ref, watch } from 'vue';
 import languagePicker from 'src/components/languagePicker.vue';
-
+import {mustAlertChart} from '../stores/store'
 import { simu,bank,startFormFilled } from 'stores/store';
 import { LocalStorage } from 'quasar';
 import { useRouter } from 'vue-router';
@@ -131,7 +133,7 @@ const restoreLastSaving=function()
     startFormFilled.value = lastSave[0].startFormFilled;
     // in case events and simu have been saved in a different language, recompute the whole simu
     reapplyLanguageToData();
-    router.push('/lineChart');
+    router.push('/summary');
   }
 }
 </script>

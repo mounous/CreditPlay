@@ -372,7 +372,7 @@ const provideModOptions=(evt_type_in,evt_year_in,evt_month_in)=>{
     {
       for(let i=1;i<mensualities_to_end-3;i++)//mensualities_to_end-3 to prevent mimicking a rebuy with a mod
       {
-        toreturn.push((Math.round(computeMensuality_noSave_Months(mensualities_to_end-i,up2date_rate,ret.capital_left)*100)/100).toString() +getCurrencySymbol()+' (-'+i.toString()+' mois)');
+        toreturn.push((Math.round(computeMensuality_noSave_Months(mensualities_to_end-i,up2date_rate,ret.capital_left)*100)/100).toString() +getCurrencySymbol()+' (-'+i.toString()+' '+transStr(stringsIDs.str_unit_m)+')');
       }
       if(mensualities_to_end==1)
       {
@@ -383,7 +383,7 @@ const provideModOptions=(evt_type_in,evt_year_in,evt_month_in)=>{
     {
       for(let i=1;i<simu.value.credit.duration_m;i++)//max twince the duration
       {
-        toreturn.push((Math.round(computeMensuality_noSave_Months(mensualities_to_end+i,up2date_rate,ret.capital_left)*100)/100).toString() +getCurrencySymbol()+' (+'+i.toString()+' mois)');
+        toreturn.push((Math.round(computeMensuality_noSave_Months(mensualities_to_end+i,up2date_rate,ret.capital_left)*100)/100).toString() +getCurrencySymbol()+' (+'+i.toString()+' '+transStr(stringsIDs.str_unit_m)+')');
       }
     }
     return toreturn;

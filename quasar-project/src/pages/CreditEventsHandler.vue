@@ -58,6 +58,7 @@ import{transStr,stringsIDs,is_sio_special_name} from '../stores/languages'
 import {EVT_META_TYPE_MOD, EVT_META_TYPE_REBUY, EVT_TYPE_MOD_MENS_UP, EVT_TYPE_MOD_MENS_DOWN, EVT_TYPE_REBUY_CREDIT, EVT_TYPE_REBUY_SAVINGS} from '../utils/credit_utility'
 import {getCurrencySymbol} from '../stores/currencies'
 import eventForm from 'src/components/eventForm.vue';
+import {mustAlertChart} from '../stores/store'
 const router = useRouter();
 const $q = useQuasar();
 var refresh=ref(0);
@@ -69,6 +70,7 @@ const handleSwipeExt=function ({ evt, touch, mouse, direction, duration, distanc
 }
 
 const movetoSummary = function () {
+  mustAlertChart.value=true;
   router.push('/summary');
 };
 
@@ -98,6 +100,7 @@ const deleteEvents=function(){
       refresh.value++;
       //if an event has been deleted, the last event has been deleted. if the credit was rebougth with savings, it was the last event
       simu.value.credit.has_been_rebougth=false;
+      mustAlertChart.value=true;
     }
   }
 }
