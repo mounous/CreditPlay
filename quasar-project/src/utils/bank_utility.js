@@ -132,7 +132,7 @@ const isSingleIOConcerned=function(currentY,currentM,accID,sioID)
 
 }
 const DEFAULT_SAVINGS_EARLIER_MONTH=12;
-const DEFAULT_SAVINGS_EARLIER_YEAR=1290;
+const DEFAULT_SAVINGS_EARLIER_YEAR=3000;
 const getSavingsEarlier=function()
 {
   var savingsEarlierY=DEFAULT_SAVINGS_EARLIER_YEAR;

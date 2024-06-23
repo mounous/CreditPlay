@@ -100,14 +100,19 @@ const getEvents=function(full=true){
     {
       var bank_compute_start_y=Number(simu.value.credit.startingDate.split('/')[2]);
       var bank_compute_start_m=Number(simu.value.credit.startingDate.split('/')[1]);
-      var Number_of_years_to_compute=getLatestMensuality().l_y-bank_compute_start_y;
-      computeDisplaySavings(bank_compute_start_y,bank_compute_start_m,Number_of_years_to_compute);
-      getBanking();
+      var Number_of_years_to_compute=getLatestMensuality().l_y-getSavingsEarlier()[1];
+      computeDisplaySavings(getSavingsEarlier()[1],getSavingsEarlier()[0],Number_of_years_to_compute);
+      getBanking(bank_compute_start_y,bank_compute_start_m,Number_of_years_to_compute);
     }
   }
   //otherwise, the user will be aked in popup on how many years the savings have to be displayed
 }
-const getBanking=function(){
+const getBanking=function(bank_compute_start_y,bank_compute_start_m,Number_of_years_computed){
+  //assume : the banking is already computed
+  while(bank.value.monthly_sum[0][0]!=simu.value.credit.amort[0][0] && 0!=bank.value.monthly_sum.length)
+  {
+    bank.value.monthly_sum.shift();
+  }
   if(bank.value.monthly_sum.length!=0)
   {
     var exctractedSavings=[];

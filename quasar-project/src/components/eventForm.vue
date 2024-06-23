@@ -130,7 +130,8 @@
           </div>
           <div class="q-ma-md"  style="display:flex; width: 95%;">
                 <q-slider class="q-ma-md" v-model="penalties_no_unit" :min="0" :max="event_.rebuyPenaltiesType == '%'?5:simu.credit.amount/30"
-                :step="event_.rebuyPenaltiesType == '%'?0.01:10" @change="myPenalties.focus()"/>
+                :step="event_.rebuyPenaltiesType == '%'?0.01:10" @change="myPenalties.focus()"
+                @update:model-value="event_.rebuyPenaltiesType== getCurrencySymbol() ? event_.rebuyPenalties_abs= Number(penalties_no_unit): event_.rebuyPenalties=Number(penalties_no_unit)"/>
           </div>
           <div class="row q-mt-md" style="display: flex;justify-content: space-evenly;align-items: center;justify-content: center;">
             <q-btn class="q-ma-xs" color="blue-grey-8" :label=transStr(stringsIDs.str_prev) size="xl"
