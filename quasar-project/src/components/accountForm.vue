@@ -37,14 +37,12 @@
           </div>
           <div class="row" style="display: flex;">
             <div style="flex:1"></div>
-            <div style="flex:4">
+            <div style="display: flex; flex-direction: column; flex:4;align-items: center;">
             <q-input ref="myAmount" class="q-ma-md" style="font-size: x-large;" v-model="_account.amount"
               type="number" lazy-rules :rules="[(val) => (val >= 0.0) || transStr(stringsIDs.str_debts_not_handled)]"
               bg-color="blue-grey-8" outlined
               @keyup.enter="amount_nxt.click()" :suffix="getCurrencySymbol()"></q-input>
-            </div>
-            <div style="display:flex;width: 95%;">
-                <q-slider class="q-ma-md" v-model="_account.amount" :min="0" :max="30000" :step="1000" @change="myAmount.focus()"/>
+              <q-slider class="q-ma-md" v-model="_account.amount" :min="0" :max="30000" :step="1000" @change="myAmount.focus()"/>
             </div>
             <div style="flex:1"></div>
         </div>
@@ -65,12 +63,10 @@
           </div>
           <div class="row" style="display: flex;">
             <div style="flex:1"></div>
-            <div style="flex:4">
+            <div style="display: flex; flex-direction: column; flex:4;align-items: center;">
             <q-input ref="myProfit" class="q-ma-md"   style="font-size: x-large;" clearable v-model="_account.rate"
               type="number" bg-color="blue-grey-8" outlined @keyup.enter="profit_nxt.click()" suffix="%"></q-input>
-            </div>
-            <div style="display:flex;width: 95%;">
-                <q-slider class="q-ma-md" v-model="_account.rate" :min="0.0" :max="4.0" :step="0.1" @change="myProfit.focus()"/>
+              <q-slider class="q-ma-md" v-model="_account.rate" :min="0.0" :max="4.0" :step="0.1" @change="myProfit.focus()"/>
             </div>
             <div style="flex:1"></div>
         </div>

@@ -98,11 +98,12 @@ const getEvents=function(full=true){
   {
     if(nbYearDisplaySavings.value==0)//there was no popup to ask for the display of saving duration
     {
-      var bank_compute_start_y=Number(simu.value.credit.startingDate.split('/')[2]);
-      var bank_compute_start_m=Number(simu.value.credit.startingDate.split('/')[1]);
-      var Number_of_years_to_compute=getLatestMensuality().l_y-getSavingsEarlier()[1];
-      computeDisplaySavings(getSavingsEarlier()[1],getSavingsEarlier()[0],Number_of_years_to_compute);
-      getBanking(bank_compute_start_y,bank_compute_start_m,Number_of_years_to_compute);
+      var credit_init_y=Number(simu.value.credit.startingDate.split('/')[2]);
+      var credit_init_m=Number(simu.value.credit.startingDate.split('/')[1]);
+      var min_y=Math.min(credit_init_y,getSavingsEarlier()[1]) ;
+      var Number_of_years_to_compute=getLatestMensuality().l_y-min_y;
+      computeDisplaySavings(min_y,getSavingsEarlier()[0],Number_of_years_to_compute);
+      getBanking(min_y,credit_init_m,Number_of_years_to_compute);
     }
   }
   //otherwise, the user will be aked in popup on how many years the savings have to be displayed

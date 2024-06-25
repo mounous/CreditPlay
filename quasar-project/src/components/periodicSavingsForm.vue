@@ -33,16 +33,15 @@
           </div>
           <div class="row" style="display: flex;">
             <div style="flex:1"></div>
-            <div style="flex:4">
+            <div style="display : flex ; flex:4;flex-direction: column;align-items: center;">
             <q-input ref="myAmount" class="q-mx-xs" style="font-size: x-large;" v-model="_savingP.amount"
               type="number" lazy-rules :rules="[(val) => (val >= 0.0) || 'Les retraits ne sont pas gérées']"
               bg-color="blue-grey-8" outlined clearable @keyup.enter="amount_nxt.click()"></q-input>
-            </div>
-            <div style="display:flex;width: 95%;">
-                <q-slider class="q-ma-md" v-model="_savingP.amount" :min="0.0"
+              <q-slider class="q-ma-md" v-model="_savingP.amount" :min="0.0"
                 :max="typeSavings==transoptSaveP(BANK_SAVE_TYPE_MONTHLY) ? 1000:10000"
                 :step="typeSavings==transoptSaveP(BANK_SAVE_TYPE_MONTHLY) ? 10:100" @change="myAmount.focus()"/>
             </div>
+
             <div style="flex:1"></div>
         </div>
         <div class="col">

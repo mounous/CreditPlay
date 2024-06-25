@@ -59,14 +59,12 @@
           </div>
         <div class="row q-mb-md" style="display: flex;">
           <div style="flex:1"></div>
-          <div style="flex:2">
+          <div style="display:flex; flex:2;flex-direction: column;align-items: center;">
           <q-input ref="myAmount" class="q-mb-md" clearable style="font-size: x-large;"  size="10" maxlength="10"
             v-model="_single_io.amount" type="number" lazy-rules bg-color="blue-grey-8" outlined @keyup.enter="amount_nxt.click()" :suffix="getCurrencySymbol()"></q-input>
+            <q-slider class="q-ma-md" v-model="_single_io.amount" :min="0.0" :max="50000" :step="100" @change="myAmount.focus()"/>
             </div>
             <div style="flex:1"></div>
-            <div style="display:flex;width: 95%;">
-                <q-slider class="q-ma-md" v-model="_single_io.amount" :min="0.0" :max="50000" :step="100" @change="myAmount.focus()"/>
-            </div>
       </div>
       <div class="col">
       <q-btn  class="q-ma-xs" :label=transStr(stringsIDs.str_prev) size="xl" color="blue-grey-8" @click="currentSlide = 'sioName'"></q-btn>
