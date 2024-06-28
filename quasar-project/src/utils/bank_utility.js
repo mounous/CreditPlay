@@ -311,7 +311,6 @@ const provideRebuyOptions=function(evt_type,penalties,penalties_abs,penalties_ty
     {
       while(computed[i][1]<returnBaseData(Number(computed[i][0].split('-')[1]),getMonthNbr(computed[i][0].split('-')[0])).capital_left*(1+penalties/100) && i!=computed.length)
       {
-        console.log(i);
         i++;
       }
     }
@@ -319,7 +318,6 @@ const provideRebuyOptions=function(evt_type,penalties,penalties_abs,penalties_ty
     {
       while(computed[i][1]<returnBaseData(Number(computed[i][0].split('-')[1]),getMonthNbr(computed[i][0].split('-')[0])).capital_left+penalties_abs && i!=computed.length)
       {
-        console.log(i);
         i++;
       }
     }

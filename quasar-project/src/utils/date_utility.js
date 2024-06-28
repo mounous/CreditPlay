@@ -30,14 +30,12 @@ const compareDates=function (y_1,m_1,y_2,m_2)
 const get_nb_mens_diff=(start_y,start_m,cur_y,cur_m)=>{
   if(start_y>cur_y)
   {
-    console.log('start_y>cur_y');
     return 0;
   }
   if(start_y==cur_y)
   {
     if(start_m>cur_m)
     {
-      console.log('start_y==cur_y and start_m>cur_m');
       return 0;
     }
     return cur_m-start_m;
@@ -77,12 +75,6 @@ const addOneMonthToStringDate=function(date)
     addOneMonth(month,year);
     return (month.value.toString().padStart(2,'0')+'/'+year.value.toString());
   }
-  else
-  {
-    console.log('------------------UNHANDLED DATE FORMAT ADD------------------');
-  }
-
-
 }
 const subOneMonth=function (month,Year)
 {
@@ -110,10 +102,6 @@ const subOneMonthToStringDate=function(date)
     month.value=date.split('/')[0];
     subOneMonth(month,year);
     return (month.value.toString().padStart(2,'0')+'/'+year.value.toString());
-  }
-  else
-  {
-    console.log('------------------UNHANDLED DATE FORMAT SUB------------------');
   }
 }
 

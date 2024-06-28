@@ -57,7 +57,6 @@ const computeAmort=(starting_year,starting_month,amount,nb_mens,mens,rate_rebuy=
       Math.round(capital_to_pay * 100) / 100,
       Math.round(interests_paid * 100) / 100,
     ]);
-    console.log(amort_monthly[amort_monthly.length-1]);
     mensuality_count++;
     curentMonth++;
     if (curentMonth % 13 == 0) {
@@ -72,7 +71,6 @@ const computeAmort=(starting_year,starting_month,amount,nb_mens,mens,rate_rebuy=
       0,
       Math.round(interests_paid * 100) / 100,
     ]);
-    console.log(amort_monthly[amort_monthly.length-1]);
   return [amort_monthly,interests_paid];
 }
 
