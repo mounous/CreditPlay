@@ -18,17 +18,8 @@
             {{ transStr(stringsIDs.str_simulate_credit) }}
           </div>
           <div style="display: flex;justify-items:center;justify-content:center;align-items: center;align-content: center;">
-            <q-video src="https://www.youtube.com/embed/e2sg0ZxO55g?si=Bjd9LRIQCRgNFT8v" />
-          </div>
-        </div>
-      </q-card>
-      <q-card class="bg-primary q-mb-md" style="width: 100%;">
-        <div style="display: flex;flex-direction:column; justify-items:center;justify-content:center;align-items: center;align-content: center;">
-          <div style="display: flex;justify-items:center;justify-content:center;align-items: center;align-content: center;font-size: x-large;">
-            {{ transStr(stringsIDs.str_simulate_credit) }}
-          </div>
-          <div style="display: flex;justify-items:center;justify-content:center;align-items: center;align-content: center;">
-            <q-video src="https://www.youtube.com/embed/k3_tw44QsZQ?rel=0" />
+            <q-video v-if="getLangId()==FRENCH_ID" src="https://www.youtube.com/embed/sixo83vrOF8" />
+            <q-video v-if="getLangId()==ENGLISH_ID" src="https://www.youtube.com/embed/yFX_QoSTmC0?si=Ph-hl7ZKy09QN4mW"/>
           </div>
         </div>
       </q-card>
@@ -38,7 +29,8 @@
             {{ transStr(stringsIDs.str_modulate_credit) }}
           </div>
           <div style="display: flex;justify-items:center;justify-content:center;align-items: center;align-content: center;">
-            <q-video src="https://www.youtube.com/embed/k3_tw44QsZQ?rel=0" />
+            <q-video  v-if="getLangId()==FRENCH_ID" src="https://www.youtube.com/embed/FwObaGbUlSs?si=dU0xatI78_kkjNNa" />
+            <q-video  v-if="getLangId()==ENGLISH_ID" src="https://www.youtube.com/embed/EIoL0ZnZjFY?si=gpBlRTapczyg97Gu" />
           </div>
         </div>
       </q-card>
@@ -48,7 +40,8 @@
             {{ transStr(stringsIDs.str_reloan_credit) }}
           </div>
           <div style="display: flex;justify-items:center;justify-content:center;align-items: center;align-content: center;">
-            <q-video src="https://www.youtube.com/embed/k3_tw44QsZQ?rel=0" />
+            <q-video  v-if="getLangId()==FRENCH_ID"  src="https://www.youtube.com/embed/DtbNvEapgKU?si=PMxZfforMl1jjTES" />
+            <q-video  v-if="getLangId()==ENGLISH_ID" src="https://youtube.com/embed/VcbevJl37M8?si=1GKY8L4mY44FRFdE" />
           </div>
         </div>
       </q-card>
@@ -58,7 +51,8 @@
             {{ transStr(stringsIDs.str_savings_help) }}
           </div>
           <div style="display: flex;justify-items:center;justify-content:center;align-items: center;align-content: center;">
-            <q-video src="https://www.youtube.com/embed/k3_tw44QsZQ?rel=0" />
+            <q-video  v-if="getLangId()==FRENCH_ID" src="https://www.youtube.com/embed/CsJbUS5z_XU?si=9bPWDA1TeqLkdQ1n" />
+            <q-video  v-if="getLangId()==ENGLISH_ID" src="https://www.youtube.com/embed/CfWYyYQlg4g?si=kmWkliEMQzvepdY9" />
           </div>
         </div>
       </q-card>
@@ -68,7 +62,8 @@
             {{ transStr(stringsIDs.str_rebuy_savings_help) }}
           </div>
           <div style="display: flex;justify-items:center;justify-content:center;align-items: center;align-content: center;">
-            <q-video src="https://www.youtube.com/embed/k3_tw44QsZQ?rel=0" />
+            <q-video  v-if="getLangId()==FRENCH_ID"  src="https://www.youtube.com/embed/BQwLXegnkTs?si=8TSc_CfHg-LyHAt9" />
+            <q-video  v-if="getLangId()==ENGLISH_ID" src="https://www.youtube.com/embed/x1PNnoaFNVM?si=ORMybfS7mPNxuh5o" />
           </div>
         </div>
       </q-card>
@@ -90,7 +85,7 @@ import { useRouter } from 'vue-router';
 import {targetPage} from '../utils/swipe_utils.js'
 import languagePicker from 'src/components/languagePicker.vue';
 import currencyPicker from 'src/components/currencyPicker.vue';
-import { transStr,stringsIDs,rerenderMainlayout } from 'src/stores/languages';
+import { transStr,stringsIDs,rerenderMainlayout,FRENCH_ID,ENGLISH_ID,getLangId } from 'src/stores/languages';
 import { ref } from 'vue';
 var reRender=ref(1);
 var mustPopLanguage=ref(false);

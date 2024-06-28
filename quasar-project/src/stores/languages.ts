@@ -6,6 +6,8 @@ import {BANK_SAVE_TYPE_MONTHLY,BANK_SAVE_TYPE_YEARLY,BANK_SIO_TYPE_IN,BANK_SIO_T
 import {  EVT_TYPE_MOD_MENS_UP, EVT_TYPE_MOD_MENS_DOWN, EVT_TYPE_REBUY_CREDIT, EVT_TYPE_REBUY_SAVINGS} from '../utils/credit_utility'
 export const supportedLanguages=ref(['Français','English']);
 export const rerenderMainlayout=ref(0);
+export const FRENCH_ID =0;
+export const ENGLISH_ID =1;
 //------------------------------------------------------------------------//
 //                      labels                                            //
 //------------------------------------------------------------------------//
@@ -346,7 +348,7 @@ const translatedStrs=ref(
   ['Comment racheter votre crédit avec votre éoargne','How to rebuy your credit with savings'],
 ]);
 
-const getLangId=function()
+export const getLangId=function()
 {
   return (LocalStorage.has('currentLanguage') ? (LocalStorage.getItem('currentLanguage')=='Français' ? 0 : 1) : 0);//french as default
 }
