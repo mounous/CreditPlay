@@ -332,9 +332,9 @@ const returnBaseData=(evt_year_in_fmt,evt_month_in_fmt)=>{
       nb_mens_to_pay--;
     }
     var index=get_nb_mens_diff(simu.value.credit.y,simu.value.credit.m,evt_year_in_fmt,evt_month_in_fmt);
-    if(index<=simu.value.credit.amort.length)
+    if(index>0 && index<=simu.value.credit.amort.length)
     {
-      return {end_year:origin_end_year,end_month:origin_end_month,capital_left:simu.value.credit.amort[index][1]};
+      return {end_year:origin_end_year,end_month:origin_end_month,capital_left:simu.value.credit.amort[index-1][1]};
     }
     else
     {
@@ -346,8 +346,6 @@ const provideModOptions=(evt_type_in,evt_year_in,evt_month_in)=>{
   var toreturn =[];
   var finalMonth=ref(evt_month_in);
   var finalYear=ref(evt_year_in);
-  //get the capital at date -1 month
-  subOneMonth(finalMonth,finalYear);
   var ret=returnBaseData(finalYear.value,finalMonth.value);
   var up2date_rate=simu.value.credit.rate;
   var mensualities_to_end=0;

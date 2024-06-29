@@ -218,7 +218,7 @@ const translatedStrs=ref(
   ['Epargne periodique non trouvé','Periodic saving not found'],
   ['Epargne exceptionnelle non trouvé','Exceptional income/outcome not found'],
   //crediteventsHandler
-  ['Date de modulation :','Modulation date :'],
+  ['Date de modulation (la modulation sera effective sur la mensualité du mois choisi) :','Modulation date (modulation effective on selected month) :'],
   ['Capital restant du à la date de l\'évènement : ','Capital left to pay at event date :'],
   ['Renseignez le type de modulation ainsi que la mensualité souhaitée','Select modulation type and desired mensuality'],
   ['choisir une mensualité','choose mensuality'],
@@ -441,7 +441,6 @@ export const sio_opt=ref(
 );
 export const transoptSIO=function(index:number)
 {
-  console.log(index);
   return sio_opt.value[index][getLangId()];
 }
 export const getOptSIOFromStr=function(input:string)
