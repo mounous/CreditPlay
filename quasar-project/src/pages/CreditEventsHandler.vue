@@ -49,7 +49,7 @@
 
 <script setup>
 import {   useQuasar } from 'quasar';
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { bank, simu } from 'stores/store';
 import {hasBeenRebougthSavings} from '../utils/credit_utility'
@@ -59,6 +59,7 @@ import {EVT_META_TYPE_MOD, EVT_META_TYPE_REBUY, EVT_TYPE_MOD_MENS_UP, EVT_TYPE_M
 import {getCurrencySymbol} from '../stores/currencies'
 import eventForm from 'src/components/eventForm.vue';
 import {mustAlertChart} from '../stores/store'
+
 const router = useRouter();
 const $q = useQuasar();
 var refresh=ref(0);
@@ -134,6 +135,21 @@ const propagateSelection=function (event_in){
   if(hasToNotify && !event_in.selected)  {   $q.notify({    color: 'green-4',    textColor: 'black',       message: transStr(stringsIDs.str_info_unselect_too),  });  }
   refresh.value++;
 }
+
+import {
+  AdMob,
+} from '@capacitor-community/admob';
+import{interstitialOptions} from '../stores/fireB'
+const ads_show=async()=>{
+  //const interstitialOptions = {
+  //adId: 'ca-app-pub-7825247187857323/2803363241',//My real ad id
+  //  adId:'ca-app-pub-3940256099942544/1033173712'//Testing Id
+  //};
+await AdMob.prepareInterstitial(interstitialOptions.value.adId);
+await AdMob.showInterstitial().catch(e => console.log(e));
+
+}
+onMounted(ads_show);
 </script>
 <style lang="scss">
 .verticalFlex {
