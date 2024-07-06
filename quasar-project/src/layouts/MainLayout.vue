@@ -88,10 +88,10 @@ const setbankdone=function()
 watch(startFormFilled,setInitDone);
 watch(bank.value,setbankdone);
 if (simu.value.credit.amount==0) {
-  simu.value.credit.amount= 176000;
+  simu.value.credit.amount= 150000;
 }
 if (simu.value.credit.rate==0) {
-  simu.value.credit.rate= 3.25;
+  simu.value.credit.rate= 2.5;
 }
 if ( simu.value.credit.duration_m==0) {
   simu.value.credit.duration_m=240;
