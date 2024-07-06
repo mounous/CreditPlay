@@ -176,6 +176,7 @@ var disableRateSlider=ref(false);
 var duration_units = ref(transStr(stringsIDs.str_unit_y));
 var duration_no_unit = ref('0');
 
+
 const parseCreditDate = function () {
   simu.value.credit.y = Number(simu.value.credit.startingDate.split('/')[2]);
   simu.value.credit.m = Number(simu.value.credit.startingDate.split('/')[1]);

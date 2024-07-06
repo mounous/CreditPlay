@@ -2,7 +2,7 @@
   <startForm v-if="displayStartForm == true" @credit-aborted="displayStartForm = false"
     @credit-done="[displayStartForm = false, onSubmit()]"></startForm>
   <q-page style="display: flex;flex-direction: column; height:100%;width: 100%;align-items:center; justify-content: center;" v-touch-swipe.mouse.left.right="handleSwipeExt">
-    <q-dialog v-model="resetMustPop" cover transition-show="scale" transition-hide="scale">
+    <q-dialog v-model="resetMustPop" cover transition-show="scale" transition-hide="scale" persistent>
       <q-card>
         <div class="col flex flex center justify-around">
           <div class="q-ma-md">
@@ -10,7 +10,7 @@
           </div>
           <div class="row nowrap">
             <q-btn :label=transStr(stringsIDs.str_cancel) @click="resetMustPop = false"></q-btn>
-            <q-btn :label=transStr(stringsIDs.str_simulation) @click="onForceSubmmit"></q-btn>
+            <q-btn :label=transStr(stringsIDs.str_simulation) @click="[eraseCredit(),displayStartForm=true]"></q-btn>
           </div>
         </div>
       </q-card>
@@ -27,7 +27,7 @@
         </q-card>
       </div>
       <div >
-        <q-btn class="q-ma-xl" size=xl color="blue-grey-8" :label="startFormFilled==false ? transStr(stringsIDs.str_credit_fill) : transStr(stringsIDs.str_credit_fill_again)" @click="displayStartForm = true"> </q-btn>
+        <q-btn class="q-ma-xl" size=xl color="blue-grey-8" :label="startFormFilled==false ? transStr(stringsIDs.str_credit_fill) : transStr(stringsIDs.str_credit_fill_again)" @click="startFormFilled==false ?displayStartForm = true :resetMustPop=true"> </q-btn>
       </div>
     </div>
   </q-page>
@@ -56,21 +56,27 @@ const handleSwipeExt = function ({ evt, touch, mouse, direction, duration, dista
 
 
 
-function onSubmit() {
-  if (simu.value.events.length == 0) {
-    computeMensuality();
-    computeCredit_init();
-    setStartFormFilled(true);
-    mustAlertChart.value=true;
-    router.push('/summary');
-  }
-  else {
-    resetMustPop.value = true;
-  }
-};
-
-function onForceSubmmit() {
+const onSubmit=function() {
   resetMustPop.value = false;
+  computeMensuality();
+  computeCredit_init();
+  setStartFormFilled(true);
+  mustAlertChart.value=true;
+  router.push('/summary');
+  };
+
+const eraseCredit=function() {
+  resetMustPop.value = false;
+  simu.value.credit.amort=[];
+  simu.value.credit.amount=0;
+  simu.value.credit.duration_m=0;
+  simu.value.credit.m=0;
+  simu.value.credit.mensuality=0.0;
+  simu.value.credit.rate=0.0;
+  simu.value.credit.startingDate='';
+  simu.value.credit.total_cost=0.0;
+  simu.value.credit.y=0;
+  setStartFormFilled(false);
   simu.value.events = [];
   simu.value.credit.has_been_rebougth = false;
   //remove rebuy with credit single io if any existing
@@ -82,11 +88,6 @@ function onForceSubmmit() {
       }
     }
   }
-  computeMensuality();
-  computeCredit_init();
-  setStartFormFilled(true);
-  mustAlertChart.value=true;
-  router.push('/summary');
 }
 
 </script>
