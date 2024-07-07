@@ -429,7 +429,7 @@ var event_ = ref({
 //------------------------------------//
 //    date handling                   //
 //------------------------------------//
-import { subOneMonthToStringDate, addOneMonthToStringDate, formatDate } from '../utils/date_utility'
+import { subTwoMonthToStringDate, addOneMonthToStringDate, formatDate } from '../utils/date_utility'
 //------------------------------------//
 //      DOM handling                  //
 //------------------------------------//
@@ -447,9 +447,9 @@ import { formatnumber } from '../utils/string_utils'
 //************************* */
 // Modulation date handling //
 //************************* */
-var mod_max_date = ref(subOneMonthToStringDate(getLastMensuality().l_y.toString() + '/' + getLastMensuality().l_m.toString().padStart(2, '0')));
+var mod_max_date = ref(subTwoMonthToStringDate(getLastMensuality().l_y.toString() + '/' + getLastMensuality().l_m.toString().padStart(2, '0')));
 var mod_min_date = ref(addOneMonthToStringDate(getEarliestNewEventDate().l_y.toString() + '/' + getEarliestNewEventDate().l_m.toString().padStart(2, '0')));
-var reloanMax = ref(subOneMonthToStringDate(getLastMensuality().l_y.toString() + '/' + getLastMensuality().l_m.toString().padStart(2, '0')));
+var reloanMax = ref(subTwoMonthToStringDate(getLastMensuality().l_y.toString() + '/' + getLastMensuality().l_m.toString().padStart(2, '0')));
 var reloanMin = ref(addOneMonthToStringDate(getEarliestNewEventDate().l_y.toString() + '/' + getEarliestNewEventDate().l_m.toString().padStart(2, '0')));
 var date_mod = ref(mod_min_date.value);
 var date_modunformated = ref(date_mod.value);

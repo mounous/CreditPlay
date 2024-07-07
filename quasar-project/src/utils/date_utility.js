@@ -105,10 +105,31 @@ const subOneMonthToStringDate=function(date)
   }
 }
 
+const subTwoMonthToStringDate=function(date)
+{
+  var year=ref(0);
+  var month=ref(0);
+  if(date.split('/')[0].length==4)//format YYYY/MM
+  {
+    year.value=date.split('/')[0];
+    month.value=date.split('/')[1];
+    subOneMonth(month,year);
+    subOneMonth(month,year);
+    return (year.value.toString()+'/'+month.value.toString().padStart(2,'0'));
+  }
+  else if(date.split('/')[0].length==2)
+  {
+    year.value=date.split('/')[1];
+    month.value=date.split('/')[0];
+    subOneMonth(month,year);
+    subOneMonth(month,year);
+    return (month.value.toString().padStart(2,'0')+'/'+year.value.toString());
+  }
+}
 const formatDate=function(unformated)
 {
   //unformated is set as YYYY/MM/DD return DD/MM/YYYY
 
   return unformated.split('/')[2]+'/'+unformated.split('/')[1]+'/'+unformated.split('/')[0];
 }
-export { get_nb_mens_diff,subOneMonthToStringDate,addOneMonthToStringDate,compareDates,formatDate,subOneMonth};
+export { get_nb_mens_diff,subOneMonthToStringDate,subTwoMonthToStringDate,addOneMonthToStringDate,compareDates,formatDate,subOneMonth};

@@ -1,5 +1,5 @@
 
-import { bank, simu } from 'src/stores/store';
+import { bank, simu, startFormFilled } from 'src/stores/store';
 import { returnBaseData,EVT_TYPE_REBUY_SAVINGS, getLatestMensuality  } from './credit_utility';
 import { formatnumber } from './string_utils';
 import { compareDates, get_nb_mens_diff } from 'src/utils/date_utility';
@@ -137,6 +137,7 @@ const getSavingsEarlier=function()
 {
   var savingsEarlierY=DEFAULT_SAVINGS_EARLIER_YEAR;
   var savingsEarlierM=DEFAULT_SAVINGS_EARLIER_MONTH;
+  //search for a potentially periodic saving or single io date (can be earlier than credit starting date)
   for(var i=0;i<bank.value.accounts.length;i++)
   {
     for(var ps=0;ps<bank.value.accounts[i].periodic_savings.length;ps++)
@@ -162,9 +163,31 @@ const getSavingsEarlier=function()
       }
     }
   }
+  //if not found, that is we only have some accounts but no operations, the savings earlier will be:
+  //  - today if no credit filled
+  //  - first credit mens if credit filled
   if(savingsEarlierY==DEFAULT_SAVINGS_EARLIER_YEAR && savingsEarlierM==DEFAULT_SAVINGS_EARLIER_MONTH)
   {
-    return[new Date().getMonth()+1,new Date().getFullYear()];
+    if(startFormFilled.value==true)
+    {
+      return[simu.value.credit.m,simu.value.credit.y];
+    }
+    else
+    {
+      return[new Date().getMonth()+1,new Date().getFullYear()];
+    }
+
+  }
+  //if a date was found, we still have to compare it to credit starting y and m because it credit starting y and m are earlier, this must be returned
+  else
+  {
+    if(startFormFilled.value==true)
+    {
+      if(compareDates(simu.value.credit.y,simu.value.credit.m,savingsEarlierY,savingsEarlierM)<0)
+      {
+        return[simu.value.credit.m,simu.value.credit.y];
+      }
+    }
   }
   return [savingsEarlierM,savingsEarlierY];
 }
@@ -298,7 +321,8 @@ const compute_savings=function(startY,startM,durationM,save=false)
 const provideRebuyOptions=function(evt_type,penalties,penalties_abs,penalties_type){
   var options_rebuy_savings=[];
   var forDisplay_post_select_opt=[];
-  var i=0;
+  var i=0;//initialize the var to 1 in order to avoid simulating the rebuy before first mensuality paid
+  var j=0;//to align savings on first credit mensuality if necessary
   if(evt_type==EVT_TYPE_REBUY_SAVINGS)//Rachat avec épargne
   {
     if(!hasSavings())
@@ -307,39 +331,60 @@ const provideRebuyOptions=function(evt_type,penalties,penalties_abs,penalties_ty
     }
     var nb_mens_compute=get_nb_mens_diff(Number(simu.value.credit.startingDate.split('/')[2]),Number(simu.value.credit.startingDate.split('/')[1]),getLatestMensuality().l_y,getLatestMensuality().l_m);
     var computed=compute_savings(getSavingsEarlier()[1],getSavingsEarlier()[0],nb_mens_compute);
+    //in case a periodic saving or single io was set before credit start, we have to start comparing savings and credit when dates match
+    // to do so, we have to scroll to an offset in computed that is aligned on first credit mensuality date
+    while(computed[j][0]!=simu.value.credit.amort[0][0] && j<computed.length)
+    {
+      j++;
+    }
+    if(j==computed.length)
+    {
+      options_rebuy_savings.push('impossible');
+      forDisplay_post_select_opt.push({eco_left:'0 ',value_paid:'0'});
+      return [options_rebuy_savings,forDisplay_post_select_opt];
+    }
+    i++;//initialize the var to 1 in order to avoid simulating the rebuy before first mensuality paid
     if(penalties_type=='%')
     {
-      while(computed[i][1]<returnBaseData(Number(computed[i][0].split('-')[1]),getMonthNbr(computed[i][0].split('-')[0])).capital_left*(1+penalties/100) && i!=computed.length)
+      while(computed[j+i-1][1]<returnBaseData(Number(computed[j+i][0].split('-')[1]),getMonthNbr(computed[j+i][0].split('-')[0])).capital_left*(1+penalties/100) && i+j-1!=computed.length)
       {
         i++;
       }
     }
     else
     {
-      while(computed[i][1]<returnBaseData(Number(computed[i][0].split('-')[1]),getMonthNbr(computed[i][0].split('-')[0])).capital_left+penalties_abs && i!=computed.length)
+      while(computed[j+i-1][1]<returnBaseData(Number(computed[j+i][0].split('-')[1]),getMonthNbr(computed[j+i][0].split('-')[0])).capital_left+penalties_abs && i+j-1!=computed.length)
       {
         i++;
       }
     }
-    i++;
-    if(i>=computed.length)
+    //handle error
+    if(i+j-1==computed.length)
+    {
+      options_rebuy_savings.push('impossible');
+      forDisplay_post_select_opt.push({eco_left:'0 ',value_paid:'0'});
+      return [options_rebuy_savings,forDisplay_post_select_opt];
+    }
+    //at this point, credit[i+j] and savings[i] are aligned
+    i++;//ad one year to have a margin
+    if(i+j-1>=computed.length)
     {
       return [transStr(stringsIDs.str_unsufficient_savings)];
     }
-    while(i<computed.length &&
-      returnBaseData(Number(computed[i][0].split('-')[1]),getMonthNbr(computed[i][0].split('-')[0])).capital_left!=0)
+    while(i+j<computed.length &&
+      returnBaseData(Number(computed[i+j][0].split('-')[1]),getMonthNbr(computed[i+j][0].split('-')[0])).capital_left!=0)
     {
       var to_pay=0;
       if(penalties_type=='%')
       {
-        to_pay=returnBaseData(Number(computed[i][0].split('-')[1]),getMonthNbr(computed[i][0].split('-')[0])).capital_left*(1+penalties/100);
+        to_pay=returnBaseData(Number(computed[i+j][0].split('-')[1]),getMonthNbr(computed[i+j][0].split('-')[0])).capital_left*(1+penalties/100);
       }
       else
       {
-        to_pay=returnBaseData(Number(computed[i][0].split('-')[1]),getMonthNbr(computed[i][0].split('-')[0])).capital_left+penalties_abs;
+        to_pay=returnBaseData(Number(computed[i+j][0].split('-')[1]),getMonthNbr(computed[i+j][0].split('-')[0])).capital_left+penalties_abs;
       }
-      options_rebuy_savings.push(computed[i][0].split('-').join(' '));
-      forDisplay_post_select_opt.push({eco_left:formatnumber(String(Math.round(100*(computed[i][1]-to_pay))/100))+' ',value_paid:formatnumber(String(Math.round(100*to_pay)/100)+' '+getCurrencySymbol())});
+      options_rebuy_savings.push(computed[i+j-1][0].split('-').join(' '));
+      forDisplay_post_select_opt.push({eco_left:formatnumber(String(Math.round(100*(computed[i+j-1][1]-to_pay))/100))+' ',value_paid:formatnumber(String(Math.round(100*to_pay)/100)+' '+getCurrencySymbol())});
       i++;
     }
     return [options_rebuy_savings,forDisplay_post_select_opt];

@@ -314,7 +314,7 @@ const returnBaseData=(evt_year_in_fmt,evt_month_in_fmt)=>{
       e_y++;
       e_m=1;
     }
-    return {end_year:e_y,end_month:e_m,capital_left:event_.amortEvt[index][1]};
+    return {end_year:e_y,end_month:e_m,capital_left:event_.amortEvt[index-1][1]};
   }
   else
   {
@@ -366,11 +366,11 @@ const provideModOptions=(evt_type_in,evt_year_in,evt_month_in)=>{
   {
     if(evt_type_in==EVT_TYPE_MOD_MENS_UP)//duree - mens +
     {
-      for(let i=1;i<mensualities_to_end-3;i++)//mensualities_to_end-3 to prevent mimicking a rebuy with a mod
+      for(let i=1;i<=mensualities_to_end-2;i++)//minimum authorized : turn 3 mensualities in 2 with mod
       {
         toreturn.push((Math.round(computeMensuality_noSave_Months(mensualities_to_end-i,up2date_rate,ret.capital_left)*100)/100).toString() +getCurrencySymbol()+' (-'+i.toString()+' '+transStr(stringsIDs.str_unit_m)+')');
       }
-      if(mensualities_to_end==1)
+      if(mensualities_to_end<=2)
       {
         toreturn.push(transStr(stringsIDs.str_mod_impossible));
       }
