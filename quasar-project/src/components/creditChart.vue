@@ -94,7 +94,7 @@ const getEvents=function(full=true){
     }
   }
   //if a credit has already been computed, then display potential savings on the interval [credit start...Credit longest duration]
-  if( startFormFilled.value==true && hasSavings())//if some banking data exist, compute banking from credit start to the latest mensuality, potentially after a modulation
+  if( startFormFilled.value==true && hasSavings() && full==true)//if some banking data exist, compute banking from credit start to the latest mensuality, potentially after a modulation
   {
     if(nbYearDisplaySavings.value==0)//there was no popup to ask for the display of saving duration
     {

@@ -205,9 +205,9 @@
           <div class="row q-mt-md"
             style="display: flex;justify-content: space-evenly;align-items: center;justify-content: center;">
             <q-btn class="q-ma-xs" color="blue-grey-8" :label=transStr(stringsIDs.str_prev) size="xl"
-              @click="[currentSlide = 'rebuyType', event_.type = DEFAULT_EVENT_TYPE, event_type_str = DEFAULT_EVENT_TYPE_STR]"></q-btn>
-            <q-btn class="q-ma-xs" color="blue-grey-8" :label=transStr(stringsIDs.str_next) size="xl"
-              @click="RebuyPicked()" :disable="event_.type == DEFAULT_EVENT_TYPE ? true : false"></q-btn>
+              @click="[currentSlide = 'rebuyType', event_.type = DEFAULT_EVENT_TYPE, event_type_str = DEFAULT_EVENT_TYPE_STR,rachatVal = DEFAULT_RACHAT_VAL_VALUE]"></q-btn>
+            <q-btn class="q-ma-xs" color="blue-grey-8" :label=transStr(stringsIDs.str_next) size="xl" :disable="rachatVal == DEFAULT_RACHAT_VAL_VALUE"
+              @click="RebuyPicked()" ></q-btn>
           </div>
         </div>
       </div>
