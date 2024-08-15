@@ -2,9 +2,9 @@
   <q-page v-touch-swipe.mouse.left.right="handleSwipeExt" style="display:flex;">
     <div class="column justify-arround content-center" style=" flex-direction: column;width:100%">
 
-      <div class="column" style="height:80%;width: 100%;" :key="refresh">
+      <div class="column" style="max-height:80%; min-height: 60%;width: 100%;" :key="refresh">
         <q-scroll-area style="height:100%;">
-        <q-list class=" q-ma-md bg-primary" separator bordered>
+        <q-list class=" q-ma-md bg-primary" separator bordered :key="simu.events.length">
           <q-item v-for="event in simu.events" :key="event.title" clickable
             @click="[event.selected = !event.selected, refresh++, propagateSelection(event)]" v-ripple>
             <q-item-section avatar>
@@ -29,16 +29,22 @@
             </q-item-section>
           </q-item>
         </q-list>
+        <div class="q-ma-md">
+          <p v-if="show_tuto" style="color:white;font-size:20px;text-align: center;" @click="[tutoPhase++,scrollTuto_delayed()]">{{feedTextTutoOps(tutoPhase)}}</p>
+          <div ref="phamtomDivToScrollTo"></div>
+        </div>
       </q-scroll-area>
       </div>
       <div class="column content-center justify-center" style="height: 20%;">
         <div style="display: flex;flex-direction: row;align-items: center;align-content: center;justify-content: center;justify-items: center;">
-          <q-btn class="q-ma-md glossy" size="xl" color="blue-grey-8" :label=transStr(stringsIDs.str_btn_add)
-            @click="addeventactiveNew = true" :disable="hasBeenRebougthSavings()" />
-
-          <q-btn class="q-ma-md glossy" size="xl" color="blue-grey-8" :label=transStr(stringsIDs.str_btn_del) @click="deleteEvents"
-            :disable="simu.events.length == 0" />
-
+            <div class="q-ma-md" style="display: flex;flex-direction: column;align-items: center;">
+              <q-btn class="glossy" size="xl" color="blue-grey-8" :label=transStr(stringsIDs.str_btn_add)
+                @click="addeventactiveNew = true" :disable="hasBeenRebougthSavings() || show_tuto==true" />
+            </div>
+            <div class="q-ma-md" style="display: flex;flex-direction: column;align-items: center;">
+              <q-btn class="glossy" size="xl" color="blue-grey-8" :label=transStr(stringsIDs.str_btn_del) @click="deleteEvents"
+              :disable="simu.events.length == 0" />
+          </div>
           <eventForm v-if="addeventactiveNew == true" @event-done="[addeventactiveNew = false, movetoSummary()]"
             @event-abort="addeventactiveNew = false"></eventForm>
         </div>
@@ -49,24 +55,59 @@
 
 <script setup>
 import {   useQuasar } from 'quasar';
-import { onMounted, ref } from 'vue';
+import { onBeforeMount, onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { bank, simu } from 'stores/store';
-import {hasBeenRebougthSavings} from '../utils/credit_utility'
+import { hasBeenRebougthSavings} from '../utils/credit_utility'
 import {targetPage} from '../utils/swipe_utils.js'
 import{transStr,stringsIDs,is_sio_special_name} from '../stores/languages'
 import {EVT_META_TYPE_MOD, EVT_META_TYPE_REBUY, EVT_TYPE_MOD_MENS_UP, EVT_TYPE_MOD_MENS_DOWN, EVT_TYPE_REBUY_CREDIT, EVT_TYPE_REBUY_SAVINGS} from '../utils/credit_utility'
 import {getCurrencySymbol} from '../stores/currencies'
 import eventForm from 'src/components/eventForm.vue';
 import {mustAlertChart} from '../stores/store'
-
+import { show_tuto,tutoPhase } from 'stores/store';
+import {injectCreditInTuto,feedTextTutoOps} from '../utils/tutorail_utils'
+import  {scroll} from 'quasar'
+import { nextTick } from 'vue';
+var phamtomDivToScrollTo=ref();
+const { getScrollTarget, setVerticalScrollPosition } = scroll
 const router = useRouter();
 const $q = useQuasar();
 var refresh=ref(0);
-var addeventactive = ref(false);
+const setupTutoOps=function()
+{
+  if(show_tuto.value==true)
+  {
+    tutoPhase.value=0;
+    injectCreditInTuto();
+  }
+}
+onBeforeMount(setupTutoOps);
+
+const scrollTuto=function()
+{
+  const target = getScrollTarget(phamtomDivToScrollTo.value);
+  const offset = phamtomDivToScrollTo.value.offsetTop
+  const duration = 1000
+  setVerticalScrollPosition(target, offset, duration)
+}
+const scrollTuto_delayed=function()
+{
+  nextTick(scrollTuto);
+}
+
 var addeventactiveNew=ref(false);
 const handleSwipeExt=function ({ evt, touch, mouse, direction, duration, distance })
 {
+  if(show_tuto.value==true)
+  {
+     if(direction=='right')
+    {
+      bank={};
+      simu.value.events=[];
+    }
+    tutoPhase.value=0;
+  }
   router.push(targetPage(direction,router.currentRoute.value.fullPath));
 }
 
@@ -102,6 +143,13 @@ const deleteEvents=function(){
       //if an event has been deleted, the last event has been deleted. if the credit was rebougth with savings, it was the last event
       simu.value.credit.has_been_rebougth=false;
       mustAlertChart.value=true;
+    }
+  }
+  if(show_tuto)
+  {
+    if(simu.value.events.length==0)
+    {
+      tutoPhase.value++;
     }
   }
 }
@@ -140,16 +188,23 @@ import {
   AdMob,
 } from '@capacitor-community/admob';
 import{interstitialOptions} from '../stores/fireB'
+
 const ads_show=async()=>{
   //const interstitialOptions = {
   //adId: 'ca-app-pub-7825247187857323/2803363241',//My real ad id
   //  adId:'ca-app-pub-3940256099942544/1033173712'//Testing Id
   //};
+  if(show_tuto.value==true)
+  {
+    return;
+  }
 await AdMob.prepareInterstitial(interstitialOptions.value.adId);
 await AdMob.showInterstitial().catch(e => console.log(e));
 
 }
 onMounted(ads_show);
+
+
 </script>
 <style lang="scss">
 .verticalFlex {

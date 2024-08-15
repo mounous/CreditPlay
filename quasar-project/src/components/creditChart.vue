@@ -1,5 +1,8 @@
 <template>
-  <q-page v-touch-hold.mouse="handleHold" :key="mustPop">
+  <q-page v-touch-hold.mouse="handleHold" v-touch-swipe.mouse.left.right="handleSwipeExt" :key="mustPop">
+    <q-card v-if="tutoPhase==2||tutoPhase==3 ||tutoPhase==4" style="background-color: black;">
+      <th ref="myspan" class="q-ma-md" style="color: white;font-size:25px;text-align: center;">{{transStr(stringsIDs.str_tuto_chart_3+tutoPhase-2)}}</th>
+    </q-card>
     <VueApexCharts
       v-if="mustPop==false"
       type="line"
@@ -20,22 +23,37 @@
     </q-dialog>
   </q-page>
 
+  <q-dialog v-if="show_tuto==true && tutoPhase==0" v-model="MustPopTutorial"   cover transition-show="scale" transition-hide="scale" maximized full-width  auto-close  v-on:before-hide="[tutoPhase=1,forceRender(),MustPopTutorial=true]"
+    style="background-color: black;"   >
+      <th class="q-ma-md" style="color: white;font-size:20px;">{{transStr(stringsIDs.str_tuto_chart_1)}}</th>
+  </q-dialog>
+  <q-dialog v-if="show_tuto==true && tutoPhase==1" v-model="MustPopTutorial"   cover transition-show="scale" transition-hide="scale" maximized full-width  auto-close  v-on:before-hide="launchTutoAnimation()"
+    style="background-color: black;"   >
+      <th class="q-ma-md" style="color: white;font-size:20px;">{{transStr(stringsIDs.str_tuto_chart_2)}}</th>
+  </q-dialog>
+
 </template>
 
 <script setup>
 
 import VueApexCharts from 'vue3-apexcharts'
-import { onBeforeMount,ref, nextTick } from 'vue';
+import { onBeforeMount,ref, nextTick, onBeforeUnmount} from 'vue';
 import {getChartXAxis,getLatestMensuality} from '../utils/credit_utility'
 import { GetColor,TYPE_CAPITAL,TYPE_INTERESTS,TYPE_SAVINGS } from 'src/utils/chart_utility';
 import { simu,bank, startFormFilled } from 'stores/store';
 import {getSavingsEarlier,computeDisplaySavings,hasSavings} from '../utils/bank_utility'
-import { transSt,sentancesIDs,stringsIDs,transStr } from 'src/stores/languages';
+import { transSt,sentancesIDs,stringsIDs,transStr, transMonthName } from 'src/stores/languages';
 import { useQuasar } from 'quasar';
-
+import { show_tuto,tutoPhase } from 'stores/store';
+import { useRouter } from 'vue-router';
+import {targetPage} from '../utils/swipe_utils.js'
+const router=useRouter();
+var MustPopTutorial=ref(false);
+var MustAnimate=ref(true);
 var $q=useQuasar();
 var mustPop = ref(false)
-var DataDisplayFull=ref(false);
+var carrouselPhase=ref(0);
+var myspan=ref();
 const forceRender=async()=>{
   mustPop.value=true;
   await nextTick();
@@ -46,20 +64,53 @@ const handleHold=function(){
   //switch display mode only if more than one event is set, otherwize no effect
   if(simu.value.events.length>1)
   {
-    switchDataDisplay();
-    forceRender();
+    MustAnimate.value=!MustAnimate.value;
   }
+  displayHelp();
+  if(show_tuto.value==true && tutoPhase.value>=2)
+  {
+    tutoPhase.value++;
+  }
+}
+
+var Id_destroy=ref();
+
+const display_init_credit=function()
+{
+  chartOptions.colors=[];
+  series = [ {  name: transStr(stringsIDs.str_cap_left), data: getAmount(), }, {name: transStr(stringsIDs.str_interests_paid), data: getIntests(), }];
+  chartOptions.colors.push('#e2001a');
+  chartOptions.colors.push('#e2001a');
 }
 
 const switchDataDisplay=function()
 {
-  chartOptions.colors=[];
-  series = [ {  name: transStr(stringsIDs.str_cap_left), data: getAmount(), }, {name: transStr(stringsIDs.str_interests_paid), data: getIntests(), }];
-  chartOptions.colors.push(GetColor(TYPE_CAPITAL,0,true));
-  chartOptions.colors.push(GetColor(TYPE_INTERESTS,0,true));
-  getEvents(DataDisplayFull.value);
-  DataDisplayFull.value=!DataDisplayFull.value;
+  if(MustAnimate.value==false)
+  {
+    return;
+  }
+  if(carrouselPhase.value==simu.value.events.length+2)//if we displayed all events and savings,reset
+  {
+    carrouselPhase.value=0;
+    chartOptions.annotations.xaxis=[];
+    chartOptions.annotations.yaxis=[];
+    series.splice(2,series.length-2);
+    chartOptions.colors.splice(2,chartOptions.colors.length-2);//remove savings
+  }
+  else if(carrouselPhase.value!=0 && carrouselPhase.value!=simu.value.events.length+1)//if not displayed all events , remove the event just displayed (2series)
+  {
+    series.splice(2,series.length-2);
+    chartOptions.colors.splice(2,chartOptions.colors.length-2);
+    getSingleEvent(carrouselPhase.value-1);
+  }
+  else if(carrouselPhase.value==simu.value.events.length+1)//when we displayed last event, do not remove, add savings
+  {
+    getAdjustedBanking(carrouselPhase.value-2);
+  }
+  forceRender();
+  carrouselPhase.value+=1;
 }
+
 const getSingleEvent=function(index)
 {
   if(index <simu.value.events.length )
@@ -73,42 +124,37 @@ const getSingleEvent=function(index)
     }
     series.push({name:simu.value.events[index].title,data:extractData_capital});
     series.push({name:transStr(stringsIDs.str_interests_parenth)+simu.value.events[index].title+')',data:extractData_interests});
-    chartOptions.colors.push(GetColor(TYPE_CAPITAL,index,false));
-    chartOptions.colors.push(GetColor(TYPE_INTERESTS,index,false));
+    chartOptions.colors.push('#147280');
+    chartOptions.colors.push('#085a67');
+    chartOptions.annotations.xaxis.push({x:transMonthName(simu.value.events[index].month)+'-'+simu.value.events[index].year.toString(),
+                                         strokeDashArray: 0,
+                                         borderColor: '#775DD0',
+                                         label: {
+                                           borderColor: '#775DD0',
+                                           style: {
+                                             color: '#fff',
+                                             background: '#775DD0',
+                                           },
+                                           text: simu.value.events[index].title,}});
   }
 }
-const getEvents=function(full=true){
-  //if some events were entered, then process them
-  if(simu.value.events.length!=0)
-  {
-    if(full)
-    {
-      for(var i=0;i<simu.value.events.length;i++)
-      {
-        getSingleEvent(i);
-      }
-    }
-    else
-    {
-      getSingleEvent(simu.value.events.length-1);
-    }
-  }
+const getAdjustedBanking=function(specific_event=-1){
   //if a credit has already been computed, then display potential savings on the interval [credit start...Credit longest duration]
-  if( startFormFilled.value==true && hasSavings() && full==true)//if some banking data exist, compute banking from credit start to the latest mensuality, potentially after a modulation
+  if( startFormFilled.value==true && hasSavings())//if some banking data exist, compute banking from credit start to the latest mensuality, potentially after a modulation
   {
     if(nbYearDisplaySavings.value==0)//there was no popup to ask for the display of saving duration
     {
       var credit_init_y=Number(simu.value.credit.startingDate.split('/')[2]);
       var credit_init_m=Number(simu.value.credit.startingDate.split('/')[1]);
       var min_y=Math.min(credit_init_y,getSavingsEarlier()[1]) ;
-      var Number_of_years_to_compute=getLatestMensuality().l_y-min_y;
+      var Number_of_years_to_compute=getLatestMensuality(specific_event).l_y-min_y;
       computeDisplaySavings(min_y,getSavingsEarlier()[0],Number_of_years_to_compute);
       getBanking(min_y,credit_init_m,Number_of_years_to_compute);
     }
   }
   //otherwise, the user will be aked in popup on how many years the savings have to be displayed
 }
-const getBanking=function(bank_compute_start_y,bank_compute_start_m,Number_of_years_computed){
+const getBanking=function(){
   //assume : the banking is already computed
   while(bank.value.monthly_sum[0][0]!=simu.value.credit.amort[0][0] && 0!=bank.value.monthly_sum.length)
   {
@@ -125,7 +171,39 @@ const getBanking=function(bank_compute_start_y,bank_compute_start_m,Number_of_ye
     chartOptions.colors.push(GetColor(TYPE_SAVINGS,0,false));
   }
 }
-onBeforeMount(getEvents);
+
+
+const setupChart=function()
+{
+  if(show_tuto.value==true)
+  {
+    tutoPhase.value=0;
+    MustPopTutorial.value=true;
+    MustAnimate.value=false;
+  }
+  if(getPopObligation()==false)//there is more than just banking to display : do not pop user and proceed computations
+  {
+    if(show_tuto.value==false)
+    {
+      displayHelp();//immediately warn user
+    }
+    display_init_credit();//in all cases, display initial credit and banking if any
+    if(simu.value.events.length>0)//there are some events to display, the periodic function must be started tuto or not (code inhibited in case tuto is active)
+    {
+      Id_destroy.value=setInterval(switchDataDisplay,2500);
+    }
+  }
+}
+
+onBeforeMount(setupChart);
+const launchTutoAnimation=function()
+{
+  tutoPhase.value=2;
+  MustPopTutorial.value=false;
+  MustAnimate.value=true;
+  forceRender();
+}
+
 
 const getTime = function () {
   var xAxisUp2Date = [];
@@ -261,7 +339,9 @@ var chartOptions = {
               fontWeight: 350,
           },
     },
-  }
+  },
+  annotations:{yaxis:[],xaxis:[]},
+  legend:{show:false}
 };
 //https://apexcharts.com/docs/annotations/
 //https://apexcharts.com/docs/annotations/
@@ -298,19 +378,42 @@ const getPopObligation = function () {
   if (hasSavings() && (startFormFilled.value != true)) {
     mustPop.value = true;
     graphMinDate.value=getSavingsEarlier()[1].toString()+'/'+getSavingsEarlier()[0].toString();
+    return true;
   }
   else {
     mustPop.value = false;
+    return false;
   }
 }
-onBeforeMount(getPopObligation);
+
 const displayHelp=function(){
-  if(simu.value.events.length>1)
+  if(show_tuto.value==true)
   {
-    $q.notify({    color: 'green-4',    textColor: 'black',position:'top', message: transStr(stringsIDs.str_graph_indication), actions: [
-      { icon: 'close', color: 'white', round: true }
-    ] });
+    return;
+  }
+  if(simu.value.events.length>0)
+  {
+    if(MustAnimate.value==true)
+    {
+      $q.notify({    color: 'green-4',    textColor: 'black',position:'top', message: transStr(stringsIDs.str_graph_indication), actions: [
+      { icon: 'close', color: 'white', round: true }      ] });
+    }
+    else
+    {
+      $q.notify({    color: 'green-4',    textColor: 'black',position:'top', message: transStr(stringsIDs.str_graph_indication_2), actions: [
+      { icon: 'close', color: 'white', round: true }      ] });
+    }
   }
 }
-onBeforeMount(displayHelp);
+const destroy_periodic=function(){
+  clearInterval(Id_destroy);
+}
+onBeforeUnmount(destroy_periodic);
+
+const handleSwipeExt=function ({ evt, touch, mouse, direction, duration, distance })
+{
+  router.push(targetPage(direction,router.currentRoute.value.fullPath));
+}
+
+
 </script>

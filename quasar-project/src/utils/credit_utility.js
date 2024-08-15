@@ -455,7 +455,7 @@ const getLastMensuality=function(){
   return {l_y:latest_year,l_m:latest_month};
 }
 
-const getLatestMensuality=function(){
+const getLatestMensuality=function(specific_event=-1){
   //by default, compute the 'no-event' end year
   var latest_year=simu.value.credit.y;
   var latest_month=simu.value.credit.m;
@@ -473,17 +473,33 @@ const getLatestMensuality=function(){
   //if some events exist, the latest mensuality is the latest mensuality of all events
   if(simu.value.events.length!=0)
   {
-    for(var i=0;i< simu.value.events.length;i++)
+    if(specific_event==-1)
     {
-      if(!(simu.value.events[i].metaType==EVT_META_TYPE_REBUY && simu.value.events[i].type==EVT_TYPE_REBUY_SAVINGS))//not a rebuy with savings
-      {
-        var index =simu.value.events[i].amortEvt.length-1;
-        if(compareDates(Number(simu.value.events[i].amortEvt[index][0].split('-')[1]),getMonthNbr(simu.value.events[i].amortEvt[index][0].split('-')[0]),latest_year,latest_month)>0)
+      for(var i=0;i< simu.value.events.length;i++)
+        {
+          if(!(simu.value.events[i].metaType==EVT_META_TYPE_REBUY && simu.value.events[i].type==EVT_TYPE_REBUY_SAVINGS))//not a rebuy with savings
           {
-            latest_year=Number(simu.value.events[i].amortEvt[index][0].split('-')[1]);
-            latest_month=getMonthNbr(simu.value.events[i].amortEvt[index][0].split('-')[0]);
+            var index =simu.value.events[i].amortEvt.length-1;
+            if(compareDates(Number(simu.value.events[i].amortEvt[index][0].split('-')[1]),getMonthNbr(simu.value.events[i].amortEvt[index][0].split('-')[0]),latest_year,latest_month)>0)
+              {
+                latest_year=Number(simu.value.events[i].amortEvt[index][0].split('-')[1]);
+                latest_month=getMonthNbr(simu.value.events[i].amortEvt[index][0].split('-')[0]);
+              }
           }
-      }
+        }
+    }
+    //if the comparaison with a specific event is required, just check this specific event
+    else
+    {
+      if(!(simu.value.events[specific_event].metaType==EVT_META_TYPE_REBUY && simu.value.events[specific_event].type==EVT_TYPE_REBUY_SAVINGS))//not a rebuy with savings
+       {
+         var index =simu.value.events[specific_event].amortEvt.length-1;
+         if(compareDates(Number(simu.value.events[specific_event].amortEvt[index][0].split('-')[1]),getMonthNbr(simu.value.events[specific_event].amortEvt[index][0].split('-')[0]),latest_year,latest_month)>0)
+           {
+             latest_year=Number(simu.value.events[specific_event].amortEvt[index][0].split('-')[1]);
+             latest_month=getMonthNbr(simu.value.events[specific_event].amortEvt[index][0].split('-')[0]);
+           }
+       }
     }
   }
   return {l_y:latest_year,l_m:latest_month};

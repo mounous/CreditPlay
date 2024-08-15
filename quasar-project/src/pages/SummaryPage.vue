@@ -1,5 +1,6 @@
 <template>
-  <q-page  v-touch-swipe.mouse.left.right="handleSwipeExt">
+  <q-page  v-touch-swipe.mouse.left.right="handleSwipeExt" @click="nextTutoPhase()">
+
     <div class="full-height column justify-arround content-center" style="display:flex; width: 100%; height: 100%;">
       <div class="col q-ma-xs">
         <q-timeline  class="q-ma-xs text-white">
@@ -14,14 +15,20 @@
         <div v-if="item.text7!=''">{{ item.text7 }}</div>
       </q-timeline-entry>
     </q-timeline>
+      <span v-if="show_tuto==true" style="color: white;font-size:18px;" ref="mySpan">{{ spantxt }}</span>
   </div>
   </div>
+
+  <q-dialog v-model="MustPopTutorial"   cover transition-show="scale" transition-hide="scale" maximized full-width auto-close v-on:before-hide="[tutoPhase=1,nextTutoPhase(),MustPopTutorial=false]"
+  style="background-color: black;"   >
+      <th class="q-ma-md" style="color: white;font-size:25px;">{{transStr(stringsIDs.str_tuto_Sum)}}</th>
+  </q-dialog>
   </q-page>
 </template>
 
 <script setup>
 import {ref,onBeforeMount } from 'vue'
-import { simu } from 'stores/store';
+import { simu,bank } from 'stores/store';
 import {formatnumber} from '../utils/string_utils'
 import { useRouter } from 'vue-router';
 import {targetPage} from '../utils/swipe_utils.js'
@@ -29,13 +36,51 @@ import { returnBaseData,EVT_TYPE_REBUY_SAVINGS,  EVT_META_TYPE_REBUY } from 'src
 import { transStr,stringsIDs } from 'src/stores/languages';
 import {getCurrencySymbol} from '../stores/currencies'
 import { subOneMonth } from 'src/utils/date_utility';
+import { show_tuto,tutoPhase } from 'stores/store';
+import { feedSpanSummary } from 'src/utils/tutorail_utils';
+import  {scroll} from 'quasar'
+import {apply_events_chain} from '../utils/credit_utility'
+import { computeDisplaySavings } from 'src/utils/bank_utility';
+import {populateBankTuto, populateEventsTuto} from '../utils/tutorail_utils'
+const { getScrollTarget, setVerticalScrollPosition } = scroll
+var MustPopTutorial=ref(show_tuto.value==true?true:false);
+var mySpan=ref();
+var spantxt=ref('');
 const router = useRouter();
 var summaries=ref([]);
+const nextTutoPhase=function()
+{
+  if(show_tuto.value==false)
+  {
+    return;
+  }
+  spantxt.value=feedSpanSummary();
+  beforemount();
+  tutoPhase.value++;
+  const target = getScrollTarget(mySpan.value);
+  const offset = mySpan.value.offsetTop
+  const duration = 1000
+  setVerticalScrollPosition(target, offset, duration)
+  //myscroll.value.setScrollPercentage('vertical',1.0,200) ;
+}
 const handleSwipeExt=function ({ evt, touch, mouse, direction, duration, distance })
 {
   router.push(targetPage(direction,router.currentRoute.value.fullPath));
 }
+
+const initTuto=function()
+{
+  simu.value.events=[];
+  bank.value.accounts=[];
+  populateBankTuto();
+  computeDisplaySavings(simu.value.credit.y,simu.value.credit.m,simu.value.credit.duration_m/12);
+  populateEventsTuto();
+  apply_events_chain();
+}
+
+
 const beforemount=function() {
+  summaries.value=[];
   var capital_rebuy_s_end_month=ref(0);
   var capital_rebuy_s_end_year=ref(0);
   var amort_init=simu.value.credit.amort;
@@ -54,10 +99,14 @@ const beforemount=function() {
   var _text7='';
   var delta_abs=0;
   var delta_rel=0;
+  if(show_tuto.value==true && tutoPhase.value==0)
+  {
+    initTuto();
+  }
   summaries.value.push({title :  transStr(stringsIDs.str_init_loan),subtitle:_date_to_display,id:_id,text1:_text1,text2:_text2,text3:_text3,text4:_text4,text4_color:_text4_color});
   if(simu.value.events.length!=0)
   {
-    for(var i=0;i<simu.value.events.length;i++)
+    for(var i=0;i<simu.value.events.length ;i++)
     {
       _text5='';
       _text4='';
@@ -111,10 +160,13 @@ const beforemount=function() {
           _text7=transStr(stringsIDs.str_new_rate)+simu.value.events[i].reloanRate+' %';
         }
       }
-
       _date_to_display=simu.value.events[i].month.toString()+'/'+simu.value.events[i].year.toString();
       summaries.value.push({title :  simu.value.events[i].title,subtitle:_date_to_display,id:_id,text1:_text1,text2:_text2,text3:_text3,text4:_text4,text4_color:_text4_color,text5:_text5,text5_color:_text5_color,text6:_text6,text7:_text7});
     }
+  }
+  if(show_tuto.value==true)
+  {
+    summaries.value.splice(tutoPhase.value+1,summaries.value.length-tutoPhase.value-1);
   }
 }
 onBeforeMount(beforemount);

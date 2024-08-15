@@ -24,7 +24,7 @@
       </q-page-container>
     </q-layout>
 
-    <div class="col">
+    <div class="col" v-if="MustPopTutorial==false && show_tuto==false" :key="rerenderMainlayout">
       <q-dialog v-model="mustPopRestore" cover transition-show="scale" transition-hide="scale" :key="rerenderMainlayout">
         <q-card>
           <div class="col flex flex center justify-around">
@@ -50,6 +50,23 @@
         <CurrencyPicker @currency-picked="[mustPopCurrency=false]"></CurrencyPicker>
       </q-dialog>
     </div>
+
+
+    <div v-if="MustPopTutorial==true" >
+      <q-dialog v-model="MustPopTutorial" cover transition-show="scale" transition-hide="scale" persistent maximized full-width
+      style="background-color: black;">
+      <div style="display: flex;flex-direction: column;" class="q-ma-md">
+        <div style="flex: 2;"></div>
+        <div style="flex: 4;">
+          <th class="q-ma-md" style="color: white;font-size:25px;">{{transStr(stringsIDs.str_tuto_welcome)}}</th>
+        </div>
+        <div style="display:flex ; flex: 3;flex-direction: column; align-items: center;align-content: center;justify-content: center;" class="q-ma-md">
+          <q-btn class="q-ma-md" size="large" :label="transStr(stringsIDs.str_tuto_play)" color='blue-grey-8' @click="[LocalStorage.set('show_tuto',true),MustPopTutorial=false,show_tuto=true,rerenderMainlayout++,prepareTutoData()]"></q-btn>
+          <q-btn class="q-ma-md" size="large" :label="transStr(stringsIDs.str_tuto_giveUp)" color='blue-grey-8' @click="[LocalStorage.set('show_tuto',false),MustPopTutorial=false,show_tuto=false,rerenderMainlayout++]"></q-btn>
+        </div>
+      </div>
+      </q-dialog>
+    </div>
 </template>
 
 <script setup lang="ts">
@@ -57,14 +74,15 @@
 
 import { onBeforeMount, ref, watch } from 'vue';
 import languagePicker from 'src/components/languagePicker.vue';
-import {mustAlertChart} from '../stores/store'
+import {mustAlertChart,show_tuto} from '../stores/store'
 import { simu,bank,startFormFilled } from 'stores/store';
 import { LocalStorage } from 'quasar';
 import { useRouter } from 'vue-router';
 import { stringsIDs, transStr ,rerenderMainlayout} from 'src/stores/languages';
 import { reapplyLanguageToData} from 'src/utils/credit_utility';
 import CurrencyPicker from 'src/components/currencyPicker.vue';
-
+import {prepareTutoData} from '../utils/tutorail_utils'
+var MustPopTutorial = ref(LocalStorage.has('MustPopTutorial') ? LocalStorage.getItem('MustPopTutorial') : true);
 var mustPopRestore=ref(false);
 var mustPopCurrency=ref(LocalStorage.has('currentCurrency')?false:true);
 var mustPopLanguage=ref(LocalStorage.has('currentLanguage')?false:true);
@@ -141,7 +159,7 @@ const restoreLastSaving=function()
 <style lang="scss">
 .bg-image {
   //background: linear-gradient(#1D1D1D, #6b6445);
-  background: #1D1D1D;
+  background: #000000;
   //background: #6b6445 ;
 }
 .footer-bg{

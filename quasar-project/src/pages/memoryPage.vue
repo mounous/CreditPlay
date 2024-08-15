@@ -1,12 +1,12 @@
 <template>
-  <q-page v-touch-swipe.mouse.left.right="handleSwipeExt" style="display: flex; ">
+  <q-page v-touch-swipe.mouse.left.right="handleSwipeExt" style="display: flex; " @click="HandleClick()" :key="tutoPhase">
 
     <div
       style="flex-direction: column;width: 100%;">
       <div class="col q-mt-md" style="height: 60%;">
 
-        <q-scroll-area style="height:100%;">
-          <q-list class="bg-primary q-ma-md" separator bordered>
+        <q-scroll-area style="height:100%;"  ref="scrollAreaRef" :key="tutoPhase">
+          <q-list class="bg-primary q-ma-md" separator bordered @click.stop>
             <q-item v-for="item in listSave" :key="item.id" clickable
               @click="selected_id == item.id ? selected_id = DEFAULT_ID : selected_id = item.id" v-ripple
               :active="selected_id == item.id" active-class="bg-blue-grey-8 text-black">
@@ -19,21 +19,32 @@
               </q-item-section>
             </q-item>
           </q-list>
+          <div  v-if="show_tuto==true" class="q-ma-md">
+            <th  v-if="show_tuto==true && tutoPhase==0" class="q-ma-md" style="color: white;font-size:17px;">{{transStr(stringsIDs.str_tuto_mem_1)}}</th>
+            <th  v-if="show_tuto==true && tutoPhase==1" class="q-ma-md" style="color: white;font-size:17px;">{{transStr(stringsIDs.str_tuto_mem_2)}}</th>
+            <th  v-if="show_tuto==true && tutoPhase==2" class="q-ma-md" style="color: white;font-size:17px;">{{transStr(stringsIDs.str_tuto_mem_3)}}</th>
+            <th  v-if="show_tuto==true && tutoPhase==3" class="q-ma-md" style="color: white;font-size:17px;">{{transStr(stringsIDs.str_tuto_mem_4)}}</th>
+            <th  v-if="show_tuto==true && tutoPhase==4" class="q-ma-md" style="color: white;font-size:17px;">{{transStr(stringsIDs.str_tuto_mem_5)}}</th>
+            <th  v-if="show_tuto==true && tutoPhase==5" class="q-ma-md" style="color: white;font-size:17px;">{{transStr(stringsIDs.str_tuto_mem_6)}}</th>
+            <th  v-if="show_tuto==true && tutoPhase==6" class="q-ma-md" style="color: white;font-size:17px;">{{transStr(stringsIDs.str_tuto_mem_7)}}</th>
+          </div>
+
         </q-scroll-area>
       </div>
+
       <div class="col q-ma-md" style="height: 40%;">
         <div class="column justify-center items-center content-center">
           <div>
             <q-btn class="q-ma-xs" size='large' :label=transStr(stringsIDs.str_btn_restore) color="blue-grey-8" @click="restoreData"
-              :disable="selected_id == DEFAULT_ID"></q-btn>
+              :disable="selected_id == DEFAULT_ID || show_tuto" @click.stop></q-btn>
           </div>
           <div>
             <q-btn class="q-ma-md" size='large' style="font-size: medium;" :label=transStr(stringsIDs.str_btn_save_current) color="blue-grey-8"
-              @click="mustPopName = true"></q-btn>
+              @click="mustPopName = true" @click.stop :disable="show_tuto==true && tutoPhase!=2"></q-btn>
           </div>
           <div>
             <q-btn class="q-ma-xs" size='large' :label=transStr(stringsIDs.str_btn_delete_all) color="blue-grey-8"
-              @click="deleteAllData"></q-btn>
+              @click="deleteAllData" @click.stop :disable="tutoPhase!=5 && show_tuto==true"></q-btn>
           </div>
         </div>
       </div>
@@ -44,7 +55,7 @@
           {{ transStr(stringsIDs.str_pop_simu_save_name) }}
         </div>
         <q-input class="q-ma-md" v-model="currentName" @keyup.enter="saveCurrentData"></q-input>
-        <q-btn class="q-ma-md" :label=transStr(stringsIDs.str_pop_simu_default_name) @click="saveCurrentData"></q-btn>
+        <q-btn class="q-ma-md" :label=transStr(stringsIDs.str_pop_simu_default_name) @click="saveCurrentData" :disable="show_tuto==true"></q-btn>
         <q-btn class="q-ma-md" :label=transStr(stringsIDs.str_pop_simu_custom_name) @click="saveCurrentData"
           :disable="isNameAlreadyInUse(currentName)"></q-btn>
       </q-card>
@@ -53,14 +64,16 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import { LocalStorage } from 'quasar';
-import { onBeforeMount } from 'vue';
-import { bank, simu, startFormFilled } from 'src/stores/store';
+import { onBeforeMount,nextTick } from 'vue';
+import { bank, show_tuto, simu, startFormFilled, tutoPhase } from 'src/stores/store';
 import { useRouter } from 'vue-router';
 import { targetPage } from '../utils/swipe_utils.js'
 import { transStr, stringsIDs } from 'src/stores/languages';
 import {mustAlertChart} from '../stores/store'
+
+var scrollAreaRef=ref();
 const DEFAULT_ID = -1;
 const DEFAULT_NAME = '';
 var mustPopName = ref(false);
@@ -70,6 +83,32 @@ var currentName = ref(DEFAULT_NAME);
 const router = useRouter();
 const handleSwipeExt = function ({ evt, touch, mouse, direction, duration, distance }) {
   router.push(targetPage(direction, router.currentRoute.value.fullPath));
+}
+
+const scrollDownTuto=function()
+{
+  var tst=scrollAreaRef.value.getScrollPercentage();
+  if(tst!=1.0)
+  {
+    scrollAreaRef.value.setScrollPercentage('vertical',1.0,1500);
+  }
+}
+const HandleClick=function()
+{
+  if(show_tuto.value==false)
+  {
+    return ;
+  }
+  if(tutoPhase.value==1)
+  {
+    var date = new Date();
+    listSave.value.push({ simu: {}, bank: {}, id: 1, name: 'Simulation 1', startFormFilled: true,date : date.toLocaleDateString()+' ('+date.getHours().toString()+':'+date.getMinutes().toString()+':'+date.getSeconds().toString()+')' });
+    listSave.value.push({ simu: {}, bank: {}, id: 2, name: 'Simulation 2', startFormFilled: true,date : date.toLocaleDateString()+' ('+date.getHours().toString()+':'+date.getMinutes().toString()+':'+date.getSeconds().toString()+')' });
+    listSave.value.push({ simu: {}, bank: {}, id: 3, name: 'Simulation 3', startFormFilled: true,date : date.toLocaleDateString()+' ('+date.getHours().toString()+':'+date.getMinutes().toString()+':'+date.getSeconds().toString()+')' });
+    listSave.value.push({ simu: {}, bank: {}, id: 4, name: 'Simulation 4', startFormFilled: true,date : date.toLocaleDateString()+' ('+date.getHours().toString()+':'+date.getMinutes().toString()+':'+date.getSeconds().toString()+')' });
+  }
+  tutoPhase.value++;
+  nextTick(scrollDownTuto);
 }
 const saveCurrentData = function () {
   var date = new Date();
@@ -91,7 +130,18 @@ const saveCurrentData = function () {
     nameSim = currentName.value;
   }
   listSave.value.push({ simu: simu.value, bank: bank.value, id: generateuniqueID(), name: nameSim, startFormFilled: startFormFilled.value,date : date.toLocaleDateString()+' ('+date.getHours().toString()+':'+date.getMinutes().toString()+':'+date.getSeconds().toString()+')' });
-  LocalStorage.set('listSave', listSave.value);
+  if(show_tuto.value==false)
+  {
+    LocalStorage.set('listSave', listSave.value);
+  }
+  else
+  {
+    if(tutoPhase.value==2)
+    {
+      tutoPhase.value++;
+      nextTick(scrollDownTuto);
+    }
+  }
   currentName.value = DEFAULT_NAME;
 }
 
@@ -137,8 +187,16 @@ const getSimuIndexInStorage = function (id_in) {
   return index;
 }
 const getStorage = function () {
-  if (LocalStorage.has('listSave')) {
-    listSave.value = LocalStorage.getItem('listSave');
+  if(show_tuto.value==true)
+  {
+    tutoPhase.value=0;
+    listSave.value==[];
+  }
+  else
+  {
+    if (LocalStorage.has('listSave')) {
+      listSave.value = LocalStorage.getItem('listSave');
+    }
   }
 }
 const restoreData = function () {
@@ -151,7 +209,10 @@ const restoreData = function () {
     bank.value = (listSave.value)[index].bank;
     startFormFilled.value = (listSave.value)[index].startFormFilled;
     mustAlertChart.value=true;
-    router.push('/summary');
+    if(show_tuto.value==false)
+    {
+      router.push('/summary');
+    }
   }
 }
 const deleteData = function (selected_id) {
@@ -162,7 +223,15 @@ const deleteData = function (selected_id) {
   else {
     if (listSave.value.length > 1) {
       listSave.value.splice(index, 1);
-      LocalStorage.set('listSave', listSave.value);
+      if(show_tuto.value==false)
+      {
+        LocalStorage.set('listSave', listSave.value);
+      }
+      else
+      {
+        tutoPhase.value++;
+        scrollDownTuto();
+      }
     }
     else {
       deleteAllData();
@@ -171,9 +240,21 @@ const deleteData = function (selected_id) {
 }
 const deleteAllData = function () {
   listSave.value = [];
-  LocalStorage.set('listSave', listSave.value);
+  if(show_tuto.value==false)
+  {
+    LocalStorage.set('listSave', listSave.value);
+  }
+  else
+  {
+    tutoPhase.value++;
+  }
 }
 onBeforeMount(getStorage);
+const scrollInit=function ()
+{
+  scrollAreaRef.value.setScrollPercentage('vertical',1.0,1500);
+}
+onMounted(scrollInit);
 </script>
 
 <style lang="scss"></style>

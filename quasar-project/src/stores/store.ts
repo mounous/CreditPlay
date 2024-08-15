@@ -24,3 +24,11 @@ export const bank=ref({
   accounts:[],
   monthly_sum:[],
 });
+
+
+
+export const show_tuto=ref(false);
+export const tutoPhase=ref(0);
+export const simu_before_tuto=ref();
+export const bank_before_tuto=ref();
+export const startformfilled_before_tuto=ref();

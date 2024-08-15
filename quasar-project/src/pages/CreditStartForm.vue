@@ -1,6 +1,6 @@
 <template>
   <startForm v-if="displayStartForm == true" @credit-aborted="displayStartForm = false"
-    @credit-done="[displayStartForm = false, onSubmit()]"></startForm>
+    @credit-done="[displayStartForm = false, onSubmit()]" :disable="show_tuto"></startForm>
   <q-page style="display: flex;flex-direction: column; height:100%;width: 100%;align-items:center; justify-content: center;" v-touch-swipe.mouse.left.right="handleSwipeExt">
     <q-dialog v-model="resetMustPop" cover transition-show="scale" transition-hide="scale" persistent>
       <q-card>
@@ -16,8 +16,8 @@
       </q-card>
     </q-dialog>
     <div style="display: flex;flex-direction: column;align-items: center;align-content: center;justify-content: center;justify-items: center;">
-      <div v-if="startFormFilled==true">
-        <q-card class="bg-blue-grey-8">
+      <div v-if="startFormFilled==true && show_tuto==false">
+        <q-card class="q-ma-md bg-blue-grey-8">
           <div style="display: flex;flex-direction: column;flex-direction: column;align-items: center;align-content: center;justify-content: center;justify-items: center;">
             <div class="q-mt-md q-ml-md q-mr-md" style="font-size: x-large;"> {{ simu.credit.amount.toString()+' '+getCurrencySymbol()  }} </div>
             <div class="q-mt-md q-ml-md q-mr-md" style="font-size: x-large;"> {{ simu.credit.rate.toString()+ ' %' }} </div>
@@ -26,8 +26,10 @@
           </div>
         </q-card>
       </div>
-      <div >
-        <q-btn class="q-ma-xl" size=xl color="blue-grey-8" :label="startFormFilled==false ? transStr(stringsIDs.str_credit_fill) : transStr(stringsIDs.str_credit_fill_again)" @click="startFormFilled==false ?displayStartForm = true :resetMustPop=true"> </q-btn>
+      <div style="display: flex;flex-direction: column;align-items: center;" class="q-mt-xs q-mr-md q-ml-md">
+        <p v-if="show_tuto" style="color:white;font-size: 25px;text-align: center;">{{transStr(stringsIDs.str_tuto_credit)}}</p>
+        <span v-if="show_tuto" style='color: white; font-size:100px;'>&#8595;</span>
+        <q-btn :disable="show_tuto"  size=xl color="blue-grey-8" :label="startFormFilled==false ? transStr(stringsIDs.str_credit_fill) : transStr(stringsIDs.str_credit_fill_again)" @click="startFormFilled==false ?displayStartForm = true :resetMustPop=true"> </q-btn>
       </div>
     </div>
   </q-page>
@@ -43,6 +45,7 @@ import { bank, setStartFormFilled, simu ,startFormFilled} from 'stores/store';
 import { targetPage } from '../utils/swipe_utils.js'
 import { transStr, stringsIDs, transSt, sentancesIDs, is_sio_special_name,transMonthName } from '../stores/languages.ts'
 import {mustAlertChart} from '../stores/store'
+import { show_tuto } from 'stores/store';
 const router = useRouter();
 
 var displayStartForm = ref(false);

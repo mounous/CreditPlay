@@ -2,9 +2,9 @@
   <accountForm v-if="displayAccountForm==true"  @account-added="[displayAccountForm=false,mustAlertChart=true]" @account-aborted="displayAccountForm=false"></accountForm>
   <periodicSavingsForm v-if="displayPSForm==true" @ps-added="[displayPSForm=false,mustAlertChart=true]" @ps-aborted="displayPSForm=false"></periodicSavingsForm>
   <singleIOFrom v-if="displaySIOForm==true" @sio-added="[displaySIOForm=false,mustAlertChart=true]" @sio-aborted="displaySIOForm=false"></singleIOFrom>
-  <q-page>
+  <q-page  @click="[tutoPhase<5 ?tutoPhase++:tutoPhase=5,ScrollDown()]">
   <div class="full-height column justify-arround content-center" style="display: flex; width: 100%; height: 100%;" v-touch-swipe.mouse.left.right="handleSwipeExt">
-    <q-card class="bg-grey-9 my-card q-mt-md" style="display: flex;width: 100%;align-items:flex-start;justify-content: center;align-content: center">
+    <q-card  v-if="(show_tuto==true && tutoPhase>=3)||show_tuto==false" class="bg-grey-9 my-card q-mt-md" style="display: flex;width: 100%;align-items:flex-start;justify-content: center;align-content: center">
       <div style="display: flex;flex-direction: column;width: 100%;">
         <div style="display: flex;flex-direction: row;align-items: center;justify-content: center;align-content: center;width: 100%;">
           <p class="myTitle">{{transStr(stringsIDs.str_title_accounts)}}</p>
@@ -37,7 +37,8 @@
       </div >
     </q-card>
 
-    <q-card class="bg-grey-9 my-card q-mt-md" style="display: flex;width: 100%;align-items:flex-start;justify-content: center;align-content: center">
+
+    <q-card v-if="(show_tuto==true && tutoPhase>=4)||show_tuto==false" class="bg-grey-9 my-card q-mt-md" style="display: flex;width: 100%;align-items:flex-start;justify-content: center;align-content: center">
       <div style="display: flex;flex-direction: column;width: 100%;">
         <div style="display: flex;flex-direction: row;align-items: center;justify-content: center;align-content: center;width: 100%;">
           <p class="myTitle">{{transStr(stringsIDs.str_save_capability)}}</p>
@@ -75,7 +76,7 @@
       </div >
     </q-card>
 
-    <q-card class="bg-grey-9 my-card q-mt-md" style="display: flex;width: 100%;align-items:flex-start;justify-content: center;align-content: center">
+    <q-card v-if="(show_tuto==true && tutoPhase>=5)||show_tuto==false" class="bg-grey-9 my-card q-mt-md" style="display: flex;width: 100%;align-items:flex-start;justify-content: center;align-content: center">
 
       <div style="display: flex;flex-direction: column;width: 100%;">
         <div style="display: flex;flex-direction: row;align-items: center;justify-content: center;align-content: center;width: 100%;">
@@ -112,6 +113,12 @@
         </div>
       </div >
     </q-card>
+    <div  v-if="show_tuto==true" ref="MyTutoSentance">
+      <th  v-if="show_tuto==true && tutoPhase==5" class="q-ma-md" style="color: white;font-size:20px;">{{transStr(stringsIDs.str_tuto_bank_6)}}</th>
+      <th  v-if="show_tuto==true && tutoPhase==4" class="q-ma-md" style="color: white;font-size:20px;">{{transStr(stringsIDs.str_tuto_bank_5)}}</th>
+      <th  v-if="show_tuto==true && tutoPhase==3" class="q-ma-md" style="color: white;font-size:20px;">{{transStr(stringsIDs.str_tuto_bank_4)}}</th>
+    </div>
+
   </div>
 
 
@@ -163,12 +170,24 @@
       </q-dialog>
     </div>
   </q-page>
+  <q-dialog v-if="show_tuto==true && tutoPhase==0" v-model="MustPopTutorial"   cover transition-show="scale" transition-hide="scale" maximized full-width  auto-close  v-on:before-hide="[tutoPhase=1,MustPopTutorial=true]"
+    style="background-color: black;"   >
+      <th class="q-ma-md" style="color: white;font-size:20px;">{{transStr(stringsIDs.str_tuto_bank_1)}}</th>
+  </q-dialog>
+  <q-dialog v-if="show_tuto==true && tutoPhase==1" v-model="MustPopTutorial"   cover transition-show="scale" transition-hide="scale" maximized full-width  auto-close  v-on:before-hide="[tutoPhase=2,MustPopTutorial=true]"
+    style="background-color: black;"   >
+      <th class="q-ma-md" style="color: white;font-size:20px;">{{transStr(stringsIDs.str_tuto_bank_2)}}</th>
+  </q-dialog>
+  <q-dialog v-if="show_tuto==true && tutoPhase==2" v-model="MustPopTutorial"   cover transition-show="scale" transition-hide="scale" maximized full-width  auto-close  v-on:before-hide="[tutoPhase=3,MustPopTutorial=true]"
+    style="background-color: black;"   >
+      <th class="q-ma-md" style="color: white;font-size:20px;">{{transStr(stringsIDs.str_tuto_bank_3)}}</th>
+  </q-dialog>
 </template>
 
 <script setup>
-import { bank, simu } from 'stores/store';
-import { onMounted, ref,nextTick } from 'vue'
-import { useQuasar } from 'quasar';
+import { bank, simu, tutoPhase,show_tuto } from 'stores/store';
+import { onMounted, ref,nextTick, onBeforeMount } from 'vue'
+import { useQuasar,scroll } from 'quasar';
 import { useRouter } from 'vue-router';
 import {BANK_SEARCH_ERROR,getAccId,getSavinPID,getSIOID,isAccountInvolvedInRebuyWithSavings, deleteRebuySavingsEventAndAssociatedInOut,BANK_SIO_TYPE_IN,BANK_SIO_TYPE_OUT} from '../utils/bank_utility'
 import { compareDates } from 'src/utils/date_utility';
@@ -180,8 +199,24 @@ import {transStr,stringsIDs,transoptSaveP,transSt,sentancesIDs,transSIOspecial} 
 import { formatnumber } from 'src/utils/string_utils';
 import { getCurrencySymbol } from 'src/stores/currencies';
 import {mustAlertChart} from '../stores/store'
-const $q = useQuasar();
+const { getScrollTarget, setVerticalScrollPosition } = scroll
+var MustPopTutorial=ref(show_tuto.value==true?true:false);
 
+
+var MyTutoSentance=ref();
+
+const ScrollDown=function(){
+  if(show_tuto.value==false)
+  {
+    return ;
+  }
+  const target =getScrollTarget(MyTutoSentance.value);
+  const offset=MyTutoSentance.value.offsetTop;
+  const duration = 1000;
+  setVerticalScrollPosition(target, offset, duration)
+}
+const $q = useQuasar();
+var MustPopTutorial=ref(false);
 const router = useRouter();
 
 var displayAccountForm=ref(false);
@@ -203,17 +238,23 @@ var scrollAreaAccRef = ref();
 
 const scrollAreas=async()=>
 {
+  if(show_tuto.value==false)
+  {
+    scrollAreaAccRef.value.setScrollPercentage('horizontal',1.0,0);
+    scrollAreaIORef.value.setScrollPercentage('horizontal',1.0,0);
+    scrollAreaPSRef.value.setScrollPercentage('horizontal',1.0,0);
+    await nextTick();
 
-  scrollAreaAccRef.value.setScrollPercentage('horizontal',1.0,0);
-  scrollAreaIORef.value.setScrollPercentage('horizontal',1.0,0);
-  scrollAreaPSRef.value.setScrollPercentage('horizontal',1.0,0);
-  await nextTick();
-
-  setTimeout(function() {
-    scrollAreaAccRef.value.setScrollPercentage('horizontal',0.0,600);
-    scrollAreaIORef.value.setScrollPercentage('horizontal',0.0,600);
-    scrollAreaPSRef.value.setScrollPercentage('horizontal',0.0,600);},
-    900);
+    setTimeout(function() {
+      scrollAreaAccRef.value.setScrollPercentage('horizontal',0.0,600);
+      scrollAreaIORef.value.setScrollPercentage('horizontal',0.0,600);
+      scrollAreaPSRef.value.setScrollPercentage('horizontal',0.0,600);},
+      900);
+  }
+  else
+  {
+    tutoPhase.value=0;
+  }
 }
 onMounted(scrollAreas);
 
@@ -325,6 +366,15 @@ const removeSingleIO = function (SIO,account,force=false) {
   }
 }
 
+const setupTuto=function()
+{
+  if(show_tuto.value==true)
+  {
+    tutoPhase.value=0;
+    MustPopTutorial.value=true;
+  }
+}
+onBeforeMount(setupTuto);
 </script>
 
 
