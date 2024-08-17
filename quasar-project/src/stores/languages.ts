@@ -216,6 +216,25 @@ export enum stringsIDs {
   str_tuto_helpP_2=180,
   str_tuto_helpP_3=181,
   str_tuto=182,
+  str_tuto_process_1=183,
+  str_tuto_process_2=184,
+  str_tuto_process_3=185,
+  str_tuto_process_4=186,
+  str_tuto_process_5=187,
+  str_tuto_process_6=188,
+  str_tuto_process_7=189,
+  str_tuto_process_8=190,
+  str_tuto_process_9=191,
+  str_tuto_process_10=192,
+  str_tuto_process_11=193,
+  str_tuto_process_12=194,
+  str_tuto_process_13=195,
+  str_tuto_process_14=196,
+  str_tuto_process_15=197,
+  str_tuto_process_16=198,
+  str_tuto_process_17=199,
+  str_tuto_process_18=200,
+  str_tuto_process_19=201,
 };
 
 const translatedStrs=ref(
@@ -386,8 +405,8 @@ const translatedStrs=ref(
   ['Comment renseigner l\'épargne','How to set your savings'],
   ['Comment racheter votre crédit avec votre éoargne','How to rebuy your credit with savings'],
   //TUTORIAL
-  ['Bienvenue dans la supercalculette Credit Play ! Vous allez pouvoir simuler votre crédit et vos économies, mais surtout voir comment optimiser le coût de votre crédit',
-   'Welcome to the super finance calculator Credit Play. You will soon be able to simulate your credit, your savings, or both, and see how to optimize you credit cost'],
+  ['Bienvenue dans la supercalculette Credit Play !',
+   'Welcome to the super finance calculator Credit Play !'],
    ['Lancer le tuto','Launch toturial'],
    ['Je suis déjà un expert','No need. I am an expert'],
    ['Bienvenue dans l\'onglet Crédit. Vous pouvez commencer à simuler votre crédit en cliquant sur ce bouton. Après avoir renseigné les paramètres, vous serez dirigé vers l\'onglet résumé où vous pourrez voir les données de votre crédit. swiper à droite pour en découvrir plus !',
@@ -456,7 +475,7 @@ const translatedStrs=ref(
     ['Ajoutez vos entrées et sorties exceptionelles ici. Pour rappel, si vous rachetez votre crédit avec vos économies, une dépense exceptionnelle est renseignée sur tous les comptes impactés (celui avec le taux le plus faible est vidé en priorité). Swipez à droite pour en découvrir plus !',
      'Add here your exceptional incomes/outcomes. Reminder : if you rebuy your credit with your savings, an expetional outcome will automatically appear on every account impacted by the rebuy of your credit. (the less profitable account is emptyed first). Swipe right to discover more !'],
 
-    ['Bienvenue dans l\onglet mémoire ! Vous pouvez ici gérer vos simulations sauvegardées. Sauvegarder vos simulation vous permet de les restaurer et/ou de les modifier entre deux utilisations de l\application. Touchez l\'écran pour en savoir plus !',
+    ['Bienvenue dans l\'onglet mémoire ! Vous pouvez ici gérer vos simulations sauvegardées. Sauvegarder vos simulation vous permet de les restaurer et/ou de les modifier entre deux utilisations de l\application. Touchez l\'écran pour en savoir plus !',
      'Welcome to the memory tab ! You can manage saved simulations here. Save your simulations allows you to restore and/or modify them between two application usage. Tap screen to learn more !' ],
 
     ['Votre sauvegarde de simulation contient votre crédit initial, vos opérations (rachats, modulations) et vos données bancaires. Vous pouvez nommer votre sauvegarde pour la retrouver ultérieurement. Le nombre de sauvegardes est illimité. Touchez l\'écran pour en savoir plus !',
@@ -492,6 +511,53 @@ const translatedStrs=ref(
      'It is time for me to say goodbye and for you to start your exciting journey to optimize your money ! This is the end of this tutorial, I hope it helped !'],
 
     ['tutoriel', 'tutorial' ],
+
+    //tuto process
+
+
+    ['Bienvenue dans la supercalculette Credit Play !',
+     'Welcome to the super finance calculator Credit Play !'],
+
+    ['Encore un simulateur de crédit classique ?','Another loan simulator ?'],
+
+    ['Pas exactement !','Not exactly !'],
+
+    ['La valeur ajoutée de Credit Play est d\'offrir (en plus de la simulation de crédit) des simulations de modulations de crédit (augmentation ou diminution de la mensualité), de rachat de votre crédit à un taux différent ou avec votre épargne, ainsi qu\'un simulateur d\'épargne !',
+     'The added value of this app is the ability to simulate loan modulations (mensuality increase/decrease), loan rebuy at different rate (or with your savings), and savings simulation !'],
+
+    ['Saviez vous qu\'avec un taux élevé, augmenter vos mensualités peut vous faire gagner plusieurs dizaines de milliers d\'euros en intérêts ? Saviez-vous que les diminuer peut vous en faire perdre tout autant ?',
+     'Did you know that with a high credit rate, increase your mensualities can make you save tens of thousands on your credit cost ? Did you know that you can loose the same amount when decreasing the mensuality amount ? '],
+
+    ['Savez-vous qu\'avec des taux élevés, racheter votre crédit avec votre épargne peut également vous faire économiser des millers d\'euros en interêts, malgré les pénalités contractuelles ?',
+     'did you know that with a high loan rate, rebuy your loan with your savings can make you save thousands, despite contractual penalties ?'
+     ],
+
+    ['Credit Play vous permetra de simuler l\'impact de toutes ces opérations ...','Credit Play provides the ability to simulate all these operations...'],
+
+    ['Et plus encore ! Vous pourrez combiner un nombre illimité d\'opérations (modulations de mensualités, rachat à meilleur taux, rachat avec épargne) !',
+     'And even better ! You\'ll be able to combine an unlimited number of operations (mensuality increase/decrease, rebuy at different rate, rebuy with savings) !'],
+
+    ['Pour apprendre à utiliser Credit Play, lancer le tuto ! (Vous pourrez le lancer à volonté depuis le menu d\'aide).','To learn how to get profit from Credit PLay, launch tutorial ! (you can launch it at any time in the help tab).'],
+      //10 v
+    ['Pour une utilisation optimale de Credit Play, suivez ces étapes : ','For a better use of Credit Play, perform the following steps :'],
+
+    ['Simulez votre crédit','Simulate your loan'],
+
+    ['Taux, campital emprunté, durée'],
+
+    ['Rensignez votre capacité d\'épargne [Facultatif]','Set up you saving capacity [Optionnal]'],
+
+    ['Créez des comptes, ajoutez des épargnes, planifiez des entrées/sorties', 'Create accounts, add periodic savings, plan incomes/outcomes'],
+
+    ['Simulez des opérations','Simulate operations'],
+
+    ['Modulations, rachat à meilleur taux, rachat avec épargne', 'Modulations, rebuy with better rate, rebuy with savings'],
+
+    ['Sauvegardez vos scénarios', 'Save your simulations'],
+
+    ['Comparez les scénarios','Compare your simulations'],
+
+    ['Trouvez le compromis mensualité/épargne qui vous correspond','Find out the mensuality/savings tradeoff that fits you best !']
 ]);
 
 export const getLangId=function()

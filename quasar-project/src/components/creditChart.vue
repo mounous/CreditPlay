@@ -406,7 +406,7 @@ const displayHelp=function(){
   }
 }
 const destroy_periodic=function(){
-  clearInterval(Id_destroy);
+  clearInterval(Id_destroy.value);
 }
 onBeforeUnmount(destroy_periodic);
 

@@ -54,8 +54,12 @@ const nextTutoPhase=function()
   {
     return;
   }
+  if(tutoPhase.value==5)
+  {
+    return;
+  }
   spantxt.value=feedSpanSummary();
-  beforemount();
+  setDisplay();
   tutoPhase.value++;
   const target = getScrollTarget(mySpan.value);
   const offset = mySpan.value.offsetTop
@@ -67,19 +71,24 @@ const handleSwipeExt=function ({ evt, touch, mouse, direction, duration, distanc
 {
   router.push(targetPage(direction,router.currentRoute.value.fullPath));
 }
-
+var firstInit=ref(true);
 const initTuto=function()
 {
+  if(firstInit.value==false)
+  {
+    return;
+  }
   simu.value.events=[];
   bank.value.accounts=[];
   populateBankTuto();
   computeDisplaySavings(simu.value.credit.y,simu.value.credit.m,simu.value.credit.duration_m/12);
   populateEventsTuto();
   apply_events_chain();
+  firstInit.value=false;
 }
 
 
-const beforemount=function() {
+const setDisplay=function() {
   summaries.value=[];
   var capital_rebuy_s_end_month=ref(0);
   var capital_rebuy_s_end_year=ref(0);
@@ -99,7 +108,7 @@ const beforemount=function() {
   var _text7='';
   var delta_abs=0;
   var delta_rel=0;
-  if(show_tuto.value==true && tutoPhase.value==0)
+  if(show_tuto.value==true)
   {
     initTuto();
   }
@@ -169,7 +178,7 @@ const beforemount=function() {
     summaries.value.splice(tutoPhase.value+1,summaries.value.length-tutoPhase.value-1);
   }
 }
-onBeforeMount(beforemount);
+onBeforeMount(setDisplay);
 
 </script>
 
