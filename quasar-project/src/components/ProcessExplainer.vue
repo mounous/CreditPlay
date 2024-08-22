@@ -8,7 +8,7 @@
       <q-step :name="4"  :title=transStr(stringsIDs.str_tuto_process_17)                                                         icon="import_export"              active-icon="feed" :done="step>4" > </q-step>
       <q-step :name="5"  :title=transStr(stringsIDs.str_tuto_process_18) :caption=transStr(stringsIDs.str_tuto_process_19)       icon="bar_chart"        active-icon="feed" :done="step>5" >  </q-step>
     </q-stepper>
-    <q-btn @click="emit('process-finished')" label="FINISS" style="background-color: purple;"></q-btn>
+    <q-btn @click="emit('process-finished')" label="OK" color="blue-grey-8"></q-btn>
   </div>
 </template>
 

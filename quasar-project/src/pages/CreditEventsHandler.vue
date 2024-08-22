@@ -103,7 +103,7 @@ const handleSwipeExt=function ({ evt, touch, mouse, direction, duration, distanc
   {
      if(direction=='right')
     {
-      bank={};
+      bank.value={};
       simu.value.events=[];
     }
     tutoPhase.value=0;

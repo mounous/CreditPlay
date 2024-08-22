@@ -40,16 +40,7 @@
       </q-dialog>
     </div>
 
-    <div class="col" :key="rerenderMainlayout">
-      <q-dialog v-model="mustPopLanguage" cover transition-show="scale" transition-hide="scale">
-        <languagePicker @language-picked="[mustPopLanguage=false,rerenderMainlayout++]"></languagePicker>
-      </q-dialog>
-    </div>
-    <div class="col">
-      <q-dialog v-model="mustPopCurrency" cover transition-show="scale" transition-hide="scale">
-        <CurrencyPicker @currency-picked="[mustPopCurrency=false]"></CurrencyPicker>
-      </q-dialog>
-    </div>
+
 
 
     <div v-if="MustPopTutorial==true || MustPopTutorial2==true" >
@@ -62,6 +53,17 @@
       <q-dialog v-model="MustPopTutorial2" cover transition-show="scale" transition-hide="scale" persistent maximized full-width
       style="background-color: black;">
       <ProcessExplainer @process-finished="MustPopTutorial2=false"></ProcessExplainer>
+      </q-dialog>
+    </div>
+
+    <div class="col" :key="rerenderMainlayout">
+      <q-dialog v-model="mustPopLanguage" cover transition-show="scale" transition-hide="scale">
+        <languagePicker @language-picked="[mustPopLanguage=false,rerenderMainlayout++]"></languagePicker>
+      </q-dialog>
+    </div>
+    <div class="col">
+      <q-dialog v-model="mustPopCurrency" cover transition-show="scale" transition-hide="scale">
+        <CurrencyPicker @currency-picked="[mustPopCurrency=false]"></CurrencyPicker>
       </q-dialog>
     </div>
 </template>

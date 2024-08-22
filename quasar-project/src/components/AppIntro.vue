@@ -1,5 +1,5 @@
 <template>
-    <div class="q-pa-md" @click="automatic_scroll=!automatic_scroll">
+    <div class="q-pa-md" @click="automatic_scroll=false">
       <q-carousel style="display: flex;height: 100%;" v-model="slide"  vertical  transition-prev="slide-down"  transition-next="slide-up"  swipeable  animated   control-color="white"
         navigation-icon="radio_button_unchecked"    padding  arrows  class="bg-black text-white shadow-1 rounded-borders" >
         <q-carousel-slide v-for="i in slides" :key=Number(i) :name=i class="column no-wrap flex-center">
@@ -38,10 +38,6 @@ const roll =function()
       }
       currentSlide.value++;
       slide.value=currentSlide.value.toString();
-    }
-    else
-    {
-      currentSlide.value=Number(slide.value);
     }
   }
   else

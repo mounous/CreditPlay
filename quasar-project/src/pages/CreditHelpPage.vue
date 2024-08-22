@@ -167,15 +167,17 @@ const handleCLick=function()
   {
     return;
   }
-  tutoPhase.value++;
-  reRender.value++;
-  nextTick(scrollDown)
-  if(tutoPhase.value==3)
+  if(tutoPhase.value==2)
   {
     show_tuto.value=false;
     restoreTutoData();
     router.push('/');
-    //todo restore
+  }
+  else
+  {
+    tutoPhase.value++;
+    reRender.value++;
+    nextTick(scrollDown);
   }
 }
 </script>

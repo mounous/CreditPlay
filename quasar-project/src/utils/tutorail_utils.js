@@ -17,6 +17,8 @@ const restoreTutoData=function()
 {
   startFormFilled.value=startformfilled_before_tuto.value;
   bank.value=bank_before_tuto.value;
+  simu.value.credit={}
+  simu.value.events=[];
   simu.value=simu_before_tuto.value;
 }
 const injectCreditInTuto=function()

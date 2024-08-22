@@ -1,8 +1,9 @@
 <template>
-  <q-page v-touch-hold.mouse="handleHold" v-touch-swipe.mouse.left.right="handleSwipeExt" :key="mustPop">
-    <q-card v-if="tutoPhase==2||tutoPhase==3 ||tutoPhase==4" style="background-color: black;">
+  <q-page  @click="handleClick"  v-touch-swipe.mouse.left.right="handleSwipeExt" :key="mustPop">
+    <q-card v-if="show_tuto==true &&(tutoPhase==2||tutoPhase==3 ||tutoPhase==4)" style="background-color: black;">
       <th ref="myspan" class="q-ma-md" style="color: white;font-size:25px;text-align: center;">{{transStr(stringsIDs.str_tuto_chart_3+tutoPhase-2)}}</th>
     </q-card>
+
     <VueApexCharts
       v-if="mustPop==false"
       type="line"
@@ -12,6 +13,7 @@
       :series="series"
       :key="mustPop"
     ></VueApexCharts>
+
     <q-dialog v-model="mustPop" persistent>
       <q-card>
         <div class="q-ma-xl col flex flex-center">
@@ -54,19 +56,20 @@ var $q=useQuasar();
 var mustPop = ref(false)
 var carrouselPhase=ref(0);
 var myspan=ref();
+var tickCount=ref(0);
 const forceRender=async()=>{
   mustPop.value=true;
   await nextTick();
   mustPop.value=false;
   await nextTick();
 }
-const handleHold=function(){
-  //switch display mode only if more than one event is set, otherwize no effect
+const handleClick=function(){
+
   if(simu.value.events.length>1)
   {
     MustAnimate.value=!MustAnimate.value;
+    displayHelp();
   }
-  displayHelp();
   if(show_tuto.value==true && tutoPhase.value>=2)
   {
     tutoPhase.value++;
@@ -85,6 +88,12 @@ const display_init_credit=function()
 
 const switchDataDisplay=function()
 {
+  if(tickCount.value<=150)//every 1.5s switch the display
+  {
+    tickCount.value+=10;
+    return;
+  }
+  tickCount.value=0;
   if(MustAnimate.value==false)
   {
     return;
@@ -190,7 +199,7 @@ const setupChart=function()
     display_init_credit();//in all cases, display initial credit and banking if any
     if(simu.value.events.length>0)//there are some events to display, the periodic function must be started tuto or not (code inhibited in case tuto is active)
     {
-      Id_destroy.value=setInterval(switchDataDisplay,2500);
+      Id_destroy.value=setInterval(switchDataDisplay,100);
     }
   }
 }
@@ -412,6 +421,7 @@ onBeforeUnmount(destroy_periodic);
 
 const handleSwipeExt=function ({ evt, touch, mouse, direction, duration, distance })
 {
+  destroy_periodic();
   router.push(targetPage(direction,router.currentRoute.value.fullPath));
 }
 

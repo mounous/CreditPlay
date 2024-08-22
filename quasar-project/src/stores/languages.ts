@@ -418,11 +418,11 @@ const translatedStrs=ref(
    ['Vous ne pourrez ajouter des évènements que si votre crédit a été renseigné (onglet précédent). Notez que le rachat de votre crédit avec de l\'épargne sera la dernière opération car vous aurez remboursé la totalité du crédit. Pour ajouter une opération cliquer sur \'AJOUTER\'. Cliquez sur le texte pour en savoir plus !',
     'This tab will be available once you\'ll have simulated your credit (previous tab). Note that after having simulated a rebuy of your credit with savings, you are no longer allowed to add some operations on your credit because it will no longer exist. To add an operation, click \'ADD\'.  Click on this text to learn more !'
    ],
-   ['Les opérations seront appliquées successivement sur votre crédit. Si vous supprimez l\'avant-dernière opération, vous supprimerez également la dernière, car son résultat dépend de l\'avant-dernière. Pour supprimer une opération, sélectionnez-la et cliquez sur \'SUPPRIMER\'. Cliquez sur le texte pour essayer !',
-    'operation are applyed one after the other on your credit, If you delete an operation, it will also delete all the following ones, which computation is based on the previous one. To delete an operation, select it in the list and click \'DELETE\'. Click on this text to try it !'
+   ['Les opérations seront appliquées successivement sur votre crédit. Si vous supprimez une opération, vous supprimerez également toutes les suivantes, car leur résultat dépend de l\'opération supprimée. Pour supprimer une opération, sélectionnez-la et cliquez sur \'SUPPRIMER\'. Cliquez sur le texte pour essayer !',
+    'Operations are applyed one after the other on your credit. If you delete an operation, it will also delete all the following ones, which computation is based on the operation you deleted. To delete an operation, select it in the list and click \'DELETE\'. Click on this text to try it !'
    ],
-   ['Supprimez des opérations. Swipez à droite quand vous avez réussi !',
-    'Delete operations, swipe right when finished !'
+   ['Supprimez toutes les opérations. Swipez à droite quand vous avez réussi !',
+    'Delete all operations, swipe right when finished !'
    ],
    ['Bravo ! Swipez à droite','Well done ! Swipe right !'],
    ['Bienvenue dans l\'onglet résumé qui synthétise le résultat de vos opérations de crédit. Vous pourrez voir ici combien d\'argent vous avez économisé ou perdu en modulant ou rachetant votre prêt. Le résultat de chaque opération sera comparé à votre crédit initial et à l\'opération précédente, si vous avez enchaîné les opérations (modulations, rachats...). Touchez l\'écran pour en savoir plus.',
@@ -449,11 +449,11 @@ const translatedStrs=ref(
     ['Appui long sur l\'écran pour relancer l\'annimation',
       'Hold touch to relaunch animation'
     ],
-    ['Attendez la fin de l\'animation (vous verrez les économies apparaître en vert) et maintenez une pression longue sur le graphe',
+    ['Attendez la fin de l\'animation (vous verrez les économies apparaître en vert) et touchez l\'écran',
      'Wait untill the end of animation (when savings are displayed in green) and hold a long touch on chart.'],
 
-    ['Relancez maintenant l\'annimation en maintenant une longue pression sur le graphique.',
-     'Relaunch annimation holding a long touch on chart.'],
+    ['Relancez maintenant l\'annimation en effectuant une pression sur le graphique.',
+     'Relaunch annimation touch chart.'],
 
     ['Bravo ! Vous pouvez swiper vers la droite pour en découvrir plus !',
      'Well done ! Swipe right to discover more !'],
@@ -467,10 +467,10 @@ const translatedStrs=ref(
     ['Vous pouvez aussi ajouter des entrées/sorties exceptionelles ici afin de prévoir des achats/ventes qui sortent de vos dépenses ordinaires (exemple : achat d\'une voiture). Vous noterez que si vous rachetez votre crédit avec votre épargne (onglet \'opérations\'), une dépense exceptionnelle sera automatiquement renseignée sur tous les comptes impactés par le rachat (les comptes à plus faible rentabilité sont utilisés en priorité). Touchez ce texte pour en décourvrir plus !',
      'You can also add some exceptional incomes/outcomes here in order to plan some unusual expenses or incomes, for instance, buy a car. Note that if you rebuy your credit with your savings, some exceptional outcomes will automatically be added here on all accounts impacted by the rebuy operation (the less profitable accounts are used first by default). Tap this text to discover more !'],
 
-    ['Ajoutez les comptes ici. Vous pouvez voir leur montant à la création ainsi que leur rentabilité. Pour rappel, créer un compte est indispensable avant de passer aux étapes suivantes','Add accounts here. Amount at creation and profitability are displayed. Reminder : create an account is mandatory for next steps.'],
+    ['Ajoutez les comptes ici. Vous pouvez voir leur montant à la création ainsi que leur rentabilité. Pour rappel, créer un compte est indispensable avant de passer aux étapes suivantes. Touchez l\'écran pour en savoir plus.','Add accounts here. Amount at creation and profitability are displayed. Reminder : create an account is mandatory for next steps. Tap screen to discover more.'],
 
-    ['Ajoutez votre capacité d\'épargne ici. Sur un même compte, vous pouvez ajouter plusieurs lignes d\'épargne qui commencent et finissent à des dates différentes. Pour rappel : une épargne sans date de fin est considérée infinie à partir de la date de création',
-     'Add your savings capacity here. On a given account, several periodic savings (that start and finish -if they do- at different dates). Reminder : if you do not set up the end date for a periodic saving it is considered infinite from start date'],
+    ['Ajoutez votre capacité d\'épargne ici. Sur un même compte, vous pouvez ajouter plusieurs lignes d\'épargne qui commencent et finissent à des dates différentes. Pour rappel : une épargne sans date de fin est considérée infinie à partir de la date de création. Touchez ici pour en découvrir plus.',
+     'Add your savings capacity here. On a given account, several periodic savings (that start and finish -if they do- at different dates). Reminder : if you do not set up the end date for a periodic saving it is considered infinite from start date. Tap here to discover more.'],
 
     ['Ajoutez vos entrées et sorties exceptionelles ici. Pour rappel, si vous rachetez votre crédit avec vos économies, une dépense exceptionnelle est renseignée sur tous les comptes impactés (celui avec le taux le plus faible est vidé en priorité). Swipez à droite pour en découvrir plus !',
      'Add here your exceptional incomes/outcomes. Reminder : if you rebuy your credit with your savings, an expetional outcome will automatically appear on every account impacted by the rebuy of your credit. (the less profitable account is emptyed first). Swipe right to discover more !'],
@@ -507,8 +507,8 @@ const translatedStrs=ref(
     ['Toutes les fonctionnalités qui n\'ont pas été détaillées dans le tuto (comment simuler ou moduler un crédit, par exemple) sont présentées ci-dessous sous forme de vidéos. Prenez le temps de les regarder en cas de doute ! Tapez ici pour en découvrir plus',
      'All procedures that haven\'t been explained in this tutorial (how to simulate or modulate a credit, for instance) are detailed here in short videos. tap screen to discover more !' ],
 
-    ['Il est temps pour moi to vous dire au revoir et pour vous de commencer votre enthousiasmante aventure d\'optimisation de vos finances. C\'est la fin de ce tutoriel, j\'espère qu\'il vous aura aidé !',
-     'It is time for me to say goodbye and for you to start your exciting journey to optimize your money ! This is the end of this tutorial, I hope it helped !'],
+    ['Il est temps pour moi de vous dire au revoir et pour vous de commencer votre enthousiasmante aventure d\'optimisation de vos finances. C\'est la fin de ce tutoriel, tapez ici pour sortir.',
+     'It is time for me to say goodbye and for you to start your exciting journey to optimize your money ! This is the end of this tutorial, tap here to exit'],
 
     ['tutoriel', 'tutorial' ],
 
