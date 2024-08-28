@@ -337,7 +337,7 @@ const translatedStrs=ref(
   ['interets (','interests ('],
   ['économies','savings'],
   ['Capital, interêts et économies','Capital, interests, and savings'],
-  ['Pour stopper l\'annimation, pressez longtemps sur le graphe','To stop animation, hold a long touch on graph'],
+  ['Pour stopper l\'annimation, tapez sur le graphe','To stop animation, tap on graph'],
   //periodic savings form
   ['Choisir le type d\'opération','select saving periodicity'],
   ['Saisir le montant de l\'opération','Choose periodic saving amount'],
@@ -446,14 +446,14 @@ const translatedStrs=ref(
     ['Si vous avez des économies de renseignées dans l\'onglet dédié (nous le verrons plus tard), vous verrez leur évolution au cours du temps ici. Il apparaîtront à la fin de l\'annimation. Les économies sont toujours affichées en vert. Taper sur l\'écran pour en savoir plus.',
      'If you set up your savings in the dedicated tab (we\'ll discover it later), you can see the evolution of the amount here. It will be displayed at the end of the animation. Savings are always displayed in green color. Tap screen to discover more ! '],
 
-    ['Appui long sur l\'écran pour relancer l\'annimation',
-      'Hold touch to relaunch animation'
+    ['Touchez le graphe pour relancer l\'annimation',
+      'Tap screen to relaunch animation'
     ],
-    ['Attendez la fin de l\'animation (vous verrez les économies apparaître en vert) et touchez l\'écran',
-     'Wait untill the end of animation (when savings are displayed in green) and hold a long touch on chart.'],
+    ['Attendez la fin de l\'animation (les économies apparaîtront en vert) et touchez l\'écran pour la stopper',
+     'Wait untill the end of animation (savings will be displayed in green) and tap chart to stop it.'],
 
-    ['Relancez maintenant l\'annimation en effectuant une pression sur le graphique.',
-     'Relaunch annimation touch chart.'],
+    ['Relancez  l\'annimation en effectuant une pression sur le graphique.',
+     'Tap chart to relaunch annimation.'],
 
     ['Bravo ! Vous pouvez swiper vers la droite pour en découvrir plus !',
      'Well done ! Swipe right to discover more !'],

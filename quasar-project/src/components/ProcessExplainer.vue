@@ -30,7 +30,7 @@ const roll =function()
 
 const startup=function()
 {
-  Id_destroy.value=setInterval(roll,2500);
+  Id_destroy.value=setInterval(roll,1500);
 }
 onBeforeMount(startup);
 const destroy=function()

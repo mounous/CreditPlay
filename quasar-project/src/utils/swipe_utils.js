@@ -1,8 +1,12 @@
 
-import {startFormFilled} from '../stores/store'
+import {show_tuto, startFormFilled} from '../stores/store'
 import { hasSavings } from './bank_utility';
 const targetPage=function(direction,currentRoute)
 {
+  if(show_tuto.value==true && direction!='left')
+  {
+    return currentRoute;
+  }
   if(direction=='left')
   {
     if(currentRoute=='/')

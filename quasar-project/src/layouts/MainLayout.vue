@@ -5,15 +5,15 @@
         v-model="tab"
         class="footer-bg text-white shadow-2 gutter"
       >
-        <q-route-tab name="start" :label=transStr(stringsIDs.str_tab_credit) nocaps icon="feed" to="/" />
-        <q-route-tab name="events" :label=transStr(stringsIDs.str_tab_ops) icon="toc" to="/events" :disable="initFormDone==false"/>
-        <q-route-tab name="summary" :label=transStr(stringsIDs.str_tab_sum) icon="money" to="/summary" :disable="initFormDone==false"/>
-        <q-route-tab name="chart" :label=transStr(stringsIDs.str_tab_chart) icon="bar_chart" to="/lineChart" :disable="initFormDone==false&&bankDone==false">
+        <q-route-tab name="start" :label=transStr(stringsIDs.str_tab_credit) nocaps icon="feed" to="/" :disable="show_tuto==true"/>
+        <q-route-tab name="events" :label=transStr(stringsIDs.str_tab_ops) icon="toc" to="/events" :disable="initFormDone==false || show_tuto==true"/>
+        <q-route-tab name="summary" :label=transStr(stringsIDs.str_tab_sum) icon="money" to="/summary" :disable="initFormDone==false ||  show_tuto==true"/>
+        <q-route-tab name="chart" :label=transStr(stringsIDs.str_tab_chart) icon="bar_chart" to="/lineChart" :disable="(initFormDone==false&&bankDone==false) || show_tuto==true">
           <q-badge v-if="initFormDone==true && mustAlertChart==true" color="blue" floating>!</q-badge>
         </q-route-tab>
-        <q-route-tab name="save" :label=transStr(stringsIDs.str_tab_savings) icon="account_balance" to="/bank"/>
-        <q-route-tab name="memory" :label=transStr(stringsIDs.str_tab_mem) icon="import_export" to="/memory"/>
-        <q-route-tab name="help" :label=transStr(stringsIDs.str_tab_help) icon="help" to="/help"/>
+        <q-route-tab name="save" :label=transStr(stringsIDs.str_tab_savings) icon="account_balance" to="/bank" :disable="show_tuto==true"/>
+        <q-route-tab name="memory" :label=transStr(stringsIDs.str_tab_mem) icon="import_export" to="/memory" :disable="show_tuto==true"/>
+        <q-route-tab name="help" :label=transStr(stringsIDs.str_tab_help) icon="help" to="/help" :disable="show_tuto==true"/>
 
       </q-tabs>
       </q-footer>

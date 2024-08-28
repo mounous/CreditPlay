@@ -65,7 +65,7 @@ const forceRender=async()=>{
 }
 const handleClick=function(){
 
-  if(simu.value.events.length>1)
+  if(simu.value.events.length>=1)
   {
     MustAnimate.value=!MustAnimate.value;
     displayHelp();
@@ -88,7 +88,7 @@ const display_init_credit=function()
 
 const switchDataDisplay=function()
 {
-  if(tickCount.value<=150)//every 1.5s switch the display
+  if(tickCount.value<=50)//every 0.5s switch the display
   {
     tickCount.value+=10;
     return;
