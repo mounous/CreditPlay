@@ -43,17 +43,12 @@
 
 
 
-    <div v-if="MustPopTutorial==true || MustPopTutorial2==true" >
+    <div v-if="MustPopTutorial==true">
       <q-dialog v-model="MustPopTutorial" cover transition-show="scale" transition-hide="scale" persistent maximized full-width
                 style="background-color: black;">
-        <AppIntro v-if="MustPopTutorial==true"
-                  @show-tuto="[MustPopTutorial2=true,LocalStorage.set('show_tuto',true),MustPopTutorial=false,show_tuto=true,rerenderMainlayout++,prepareTutoData()]"
-                  @skip-tuto="[LocalStorage.set('show_tuto',false),MustPopTutorial=false,show_tuto=false,rerenderMainlayout++]"></AppIntro>
-        </q-dialog>
-      <q-dialog v-model="MustPopTutorial2" cover transition-show="scale" transition-hide="scale" persistent maximized full-width
-      style="background-color: black;">
-      <ProcessExplainer @process-finished="MustPopTutorial2=false"></ProcessExplainer>
+        <AppIntro v-if="MustPopTutorial==true" @tuto-intro-finished="[MustPopTutorial=false,rerenderMainlayout++]"></AppIntro>
       </q-dialog>
+
     </div>
 
     <div class="col" :key="rerenderMainlayout">
@@ -81,10 +76,10 @@ import { stringsIDs, transStr ,rerenderMainlayout} from 'src/stores/languages';
 import { reapplyLanguageToData} from 'src/utils/credit_utility';
 import CurrencyPicker from 'src/components/currencyPicker.vue';
 import {prepareTutoData} from '../utils/tutorail_utils'
-import ProcessExplainer from '../components/ProcessExplainer.vue'
+
 import AppIntro from 'src/components/AppIntro.vue';
 var MustPopTutorial = ref(LocalStorage.has('MustPopTutorial') ? LocalStorage.getItem('MustPopTutorial') : true);
-var MustPopTutorial2 =ref(false);
+
 var mustPopRestore=ref(false);
 var mustPopCurrency=ref(LocalStorage.has('currentCurrency')?false:true);
 var mustPopLanguage=ref(LocalStorage.has('currentLanguage')?false:true);

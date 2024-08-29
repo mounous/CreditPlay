@@ -8,13 +8,12 @@
       <q-step :name="4"  :title=transStr(stringsIDs.str_tuto_process_17)                                                         icon="import_export"              active-icon="feed" :done="step>4" > </q-step>
       <q-step :name="5"  :title=transStr(stringsIDs.str_tuto_process_18) :caption=transStr(stringsIDs.str_tuto_process_19)       icon="bar_chart"        active-icon="feed" :done="step>5" >  </q-step>
     </q-stepper>
-    <q-btn @click="emit('process-finished')" label="OK" color="blue-grey-8"></q-btn>
   </div>
 </template>
 
 <script setup>
-import { ref,nextTick, onBeforeMount, onBeforeUnmount } from 'vue'
-import { defineEmits} from 'vue';
+import { ref, onBeforeMount, onBeforeUnmount } from 'vue'
+
 import { stringsIDs,transStr } from 'src/stores/languages';
 var Id_destroy=ref();
 const emit=defineEmits(['process-finished']);

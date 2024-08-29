@@ -235,6 +235,12 @@ export enum stringsIDs {
   str_tuto_process_17=199,
   str_tuto_process_18=200,
   str_tuto_process_19=201,
+  str_cap_simulate_credit=202,
+  str_cap_modulate_credit=203,
+  str_cap_rebuy=204,
+  str_cap_savings_simu=205,
+  str_cap_coffee=206,
+  str_tuto_icon=207,
 };
 
 const translatedStrs=ref(
@@ -522,8 +528,8 @@ const translatedStrs=ref(
 
     ['Pas exactement !','Not exactly !'],
 
-    ['La valeur ajoutée de Credit Play est d\'offrir (en plus de la simulation de crédit) des simulations de modulations de crédit (augmentation ou diminution de la mensualité), de rachat de votre crédit à un taux différent ou avec votre épargne, ainsi qu\'un simulateur d\'épargne !',
-     'The added value of this app is the ability to simulate loan modulations (mensuality increase/decrease), loan rebuy at different rate (or with your savings), and savings simulation !'],
+    ['Voici tout ce que vous pouvez faire avec Credit Play :',
+     'Credit Play provides :'],
 
     ['Saviez vous qu\'avec un taux élevé, augmenter vos mensualités peut vous faire gagner plusieurs dizaines de milliers d\'euros en intérêts ? Saviez-vous que les diminuer peut vous en faire perdre tout autant ?',
      'Did you know that with a high credit rate, increase your mensualities can make you save tens of thousands on your credit cost ? Did you know that you can loose the same amount when decreasing the mensuality amount ? '],
@@ -557,7 +563,15 @@ const translatedStrs=ref(
 
     ['Comparez les scénarios','Compare your simulations'],
 
-    ['Trouvez le compromis mensualité/épargne qui vous correspond','Find out the mensuality/savings tradeoff that fits you best !']
+    ['Trouvez le compromis mensualité/épargne qui vous correspond','Find out the mensuality/savings tradeoff that fits you best !'],
+
+    ['Simuler votre credit','Loan simulation'],
+    ['Moduler votre credit (augmentation ou diminution de mensualité)','Loan modulation (mensuality increase or decrease)'],
+    ['Rachat de votre crédit (avec un taux différent ou votre épargne)','Loan rebuy (different rate or with savings)'],
+    ['Simuler votre épargne','Savings simulation'],
+    ['Faire le café','Make coffee'],
+
+    ['Dans tous les onglets de l\'application, vous pourrez obtenir de l\'aide en cliquant sur cet icône :','In all app tabs, if you need help click this icon : '],
 ]);
 
 export const getLangId=function()
