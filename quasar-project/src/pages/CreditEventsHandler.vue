@@ -1,10 +1,10 @@
 <template>
-  <q-page v-touch-swipe.mouse.left.right="handleSwipeExt" style="display:flex;">
+  <q-page v-touch-swipe.mouse.left.right="handleSwipeExt" style="display:flex;" :key="refresh">
     <div class="column justify-arround content-center" style=" flex-direction: column;width:100%">
-
-      <div class="column" style="max-height:80%; min-height: 60%;width: 100%;" :key="refresh">
+      <q-icon name="help" size="large" color="white" class="q-ma-md" v-if="show_tuto==false" @click="saveState()"></q-icon>
+      <div class="column" style="max-height:80%; min-height: 70%;width: 100%;" :key="refresh">
         <q-scroll-area style="height:100%;">
-        <q-list class=" q-ma-md bg-primary" separator bordered :key="simu.events.length">
+        <q-list v-if="simu.events.length>0" class=" q-ma-md bg-primary" separator bordered :key="simu.events.length">
           <q-item v-for="event in simu.events" :key="event.title" clickable
             @click="[event.selected = !event.selected, refresh++, propagateSelection(event)]" v-ripple>
             <q-item-section avatar>
@@ -29,8 +29,12 @@
             </q-item-section>
           </q-item>
         </q-list>
-        <div class="q-ma-md">
-          <p v-if="show_tuto" style="color:white;font-size:20px;text-align: center;" @click="[tutoPhase++,scrollTuto_delayed()]">{{feedTextTutoOps(tutoPhase)}}</p>
+        <div class="col q-ma-md">
+          <p v-if="show_tuto==true" style="color:white;font-size:20px;text-align: center;" >{{feedTextTutoOps(tutoPhase)}}</p>
+
+          <OpsCapabilities v-if="show_tuto==true&&tutoPhase==0" ></OpsCapabilities>
+          <q-btn v-if="show_tuto==true &&tutoPhase<3" class="q-ma-md" label=">>" rounded color="blue-grey-8" @click="handleCLick()"></q-btn>
+          <q-btn v-if="show_tuto==true &&tutoPhase>=3" class="q-ma-md" :label=transStr(stringsIDs.str_close) rounded color="blue-grey-8" @click="restoreState"></q-btn>
           <div ref="phamtomDivToScrollTo"></div>
         </div>
       </q-scroll-area>
@@ -54,8 +58,10 @@
 </template>
 
 <script setup>
+import OpsCapabilities from 'src/components/OpsCapabilities.vue';
+
 import {   useQuasar } from 'quasar';
-import { onBeforeMount, onMounted, ref } from 'vue';
+import {  onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { bank, simu } from 'stores/store';
 import { hasBeenRebougthSavings} from '../utils/credit_utility'
@@ -66,23 +72,43 @@ import {getCurrencySymbol} from '../stores/currencies'
 import eventForm from 'src/components/eventForm.vue';
 import {mustAlertChart} from '../stores/store'
 import { show_tuto,tutoPhase } from 'stores/store';
-import {injectCreditInTuto,feedTextTutoOps} from '../utils/tutorail_utils'
+import {feedTextTutoOps} from '../utils/tutorail_utils'
 import  {scroll} from 'quasar'
 import { nextTick } from 'vue';
+import {saveTutoData,restoreTutoData,populateEventsTuto} from '../utils/tutorail_utils'
 var phamtomDivToScrollTo=ref();
+var refresh=ref(0);
 const { getScrollTarget, setVerticalScrollPosition } = scroll
 const router = useRouter();
 const $q = useQuasar();
 var refresh=ref(0);
-const setupTutoOps=function()
+const handleCLick=function()
 {
-  if(show_tuto.value==true)
+  tutoPhase.value++;
+  if(tutoPhase.value==3)
   {
-    tutoPhase.value=0;
-    injectCreditInTuto();
+    populateEventsTuto();
+    refresh.value++;
+    scrollTuto_delayed();
   }
+  scrollTuto_delayed();
 }
-onBeforeMount(setupTutoOps);
+const saveState=function()
+{
+  show_tuto.value=true;
+  tutoPhase.value=0;
+  saveTutoData();
+  simu.value.events=[];
+}
+
+
+const restoreState=function()
+{
+  show_tuto.value=false;
+  restoreTutoData();
+  refresh.value++;
+}
+
 
 const scrollTuto=function()
 {
@@ -149,7 +175,7 @@ const deleteEvents=function(){
   {
     if(simu.value.events.length==0)
     {
-      tutoPhase.value++;
+      restoreState();
     }
   }
 }

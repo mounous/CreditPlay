@@ -1,4 +1,5 @@
 <template>
+  <q-icon name="help" size="large" color="white" class="q-ma-xl" v-if="show_tuto==false" @click="show_tuto=true"></q-icon>
   <startForm v-if="displayStartForm == true" @credit-aborted="displayStartForm = false"
     @credit-done="[displayStartForm = false, onSubmit()]" :disable="show_tuto"></startForm>
   <q-page style="display: flex;flex-direction: column; height:100%;width: 100%;align-items:center; justify-content: center;" v-touch-swipe.mouse.left.right="handleSwipeExt">
@@ -27,8 +28,10 @@
         </q-card>
       </div>
       <div style="display: flex;flex-direction: column;align-items: center;" class="q-mt-xs q-mr-md q-ml-md">
-        <p v-if="show_tuto" style="color:white;font-size: 25px;text-align: center;">{{transStr(stringsIDs.str_tuto_credit)}}</p>
-        <span v-if="show_tuto" style='color: white; font-size:100px;'>&#8595;</span>
+        <p v-if="show_tuto" style="color:white;font-size: 20px;text-align: center;">{{transStr(stringsIDs.str_tuto_credit)}}</p>
+        <videoPlayer v-if="show_tuto"  :name="stringsIDs.str_simulate_credit"></videoPlayer>
+        <q-btn v-if="show_tuto" class="q-ma-md" :label=transStr(stringsIDs.str_close) rounded color="blue-grey-8" @click="show_tuto=false"></q-btn>
+        <span v-if="show_tuto"  style='color: white; font-size:50px;'>&#8595;</span>
         <q-btn :disable="show_tuto"  size=xl color="blue-grey-8" :label="startFormFilled==false ? transStr(stringsIDs.str_credit_fill) : transStr(stringsIDs.str_credit_fill_again)" @click="startFormFilled==false ?displayStartForm = true :resetMustPop=true"> </q-btn>
       </div>
     </div>
@@ -46,6 +49,7 @@ import { targetPage } from '../utils/swipe_utils.js'
 import { transStr, stringsIDs, transSt, sentancesIDs, is_sio_special_name,transMonthName } from '../stores/languages.ts'
 import {mustAlertChart} from '../stores/store'
 import { show_tuto } from 'stores/store';
+import videoPlayer from 'src/components/videoPlayer.vue'
 const router = useRouter();
 
 var displayStartForm = ref(false);

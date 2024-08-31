@@ -75,7 +75,7 @@ import { useRouter } from 'vue-router';
 import { stringsIDs, transStr ,rerenderMainlayout} from 'src/stores/languages';
 import { reapplyLanguageToData} from 'src/utils/credit_utility';
 import CurrencyPicker from 'src/components/currencyPicker.vue';
-import {prepareTutoData} from '../utils/tutorail_utils'
+
 
 import AppIntro from 'src/components/AppIntro.vue';
 var MustPopTutorial = ref(LocalStorage.has('MustPopTutorial') ? LocalStorage.getItem('MustPopTutorial') : true);

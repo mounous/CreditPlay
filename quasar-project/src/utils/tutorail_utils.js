@@ -6,20 +6,18 @@ import {computeMensuality, EVT_META_TYPE_REBUY,computeCredit_init} from '../util
 
 import { getCurrencySymbol } from 'src/stores/currencies';
 
-const prepareTutoData=function()
+const saveTutoData=function()
 {
-  startformfilled_before_tuto.value=startFormFilled.value;
+  startformfilled_before_tuto.value=startFormFilled.value==true?true:false;
   startFormFilled.value=true;
-  bank_before_tuto.value=bank.value;
-  simu_before_tuto.value=simu.value;
+  bank_before_tuto.value={...bank.value};
+  simu_before_tuto.value={...simu.value};
 }
 const restoreTutoData=function()
 {
-  startFormFilled.value=startformfilled_before_tuto.value;
-  bank.value=bank_before_tuto.value;
-  simu.value.credit={}
-  simu.value.events=[];
-  simu.value=simu_before_tuto.value;
+  startFormFilled.value=startformfilled_before_tuto.value==true?true:false;
+  bank.value={...bank_before_tuto.value};
+  simu.value={...simu_before_tuto.value};
 }
 const injectCreditInTuto=function()
 {
@@ -116,4 +114,4 @@ const feedSpanSummary=function(){
       return '';
   }
 }
-export {prepareTutoData,feedTextTutoOps,populateEventsTuto,injectCreditInTuto,populateBankTuto,feedSpanSummary,restoreTutoData};
+export {saveTutoData,feedTextTutoOps,populateEventsTuto,injectCreditInTuto,populateBankTuto,feedSpanSummary,restoreTutoData};

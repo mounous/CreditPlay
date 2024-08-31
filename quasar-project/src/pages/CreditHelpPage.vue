@@ -110,10 +110,8 @@ import currencyPicker from 'src/components/currencyPicker.vue';
 import { transStr,stringsIDs,rerenderMainlayout,FRENCH_ID,ENGLISH_ID,getLangId } from 'src/stores/languages';
 import { onBeforeMount, ref } from 'vue';
 import { show_tuto,tutoPhase } from 'src/stores/store';
-import  {scroll} from 'quasar'
-import { nextTick } from 'vue';
-const { getScrollTarget, setVerticalScrollPosition } = scroll
-import {restoreTutoData} from '../utils/tutorail_utils.js'
+
+
 var reRender=ref(1);
 var mustPopLanguage=ref(false);
 var mustPopCurrency=ref(false);
@@ -143,41 +141,5 @@ const launchTuto=function()
     router.push('/');
   }
 }
-const scrollDown=function()
-{
-  if(tutoPhase==1)
-  {
-    const target = getScrollTarget(phamtomDivToScrollTo.value);
-    const offset = phamtomDivToScrollTo.value.offsetTop
-    const duration = 1000
-    setVerticalScrollPosition(target, offset, duration)
-  }
-  else if(tutoPhase.value==2)
-  {
-    const target = getScrollTarget(phamtomDivToScrollTo2.value);
-    const offset = phamtomDivToScrollTo2.value.offsetTop
-    const duration = 1000
-    setVerticalScrollPosition(target, offset, duration)
-  }
 
-}
-const handleCLick=function()
-{
-  if(show_tuto.value==false)
-  {
-    return;
-  }
-  if(tutoPhase.value==2)
-  {
-    show_tuto.value=false;
-    restoreTutoData();
-    router.push('/');
-  }
-  else
-  {
-    tutoPhase.value++;
-    reRender.value++;
-    nextTick(scrollDown);
-  }
-}
 </script>

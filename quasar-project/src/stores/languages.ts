@@ -241,6 +241,9 @@ export enum stringsIDs {
   str_cap_savings_simu=205,
   str_cap_coffee=206,
   str_tuto_icon=207,
+  str_tuto_video=208,
+  str_ops_cap_reloan=209,
+  str_ops_cap_rebuy=210,
 };
 
 const translatedStrs=ref(
@@ -415,22 +418,22 @@ const translatedStrs=ref(
    'Welcome to the super finance calculator Credit Play !'],
    ['Lancer le tuto','Launch toturial'],
    ['Je suis déjà un expert','No need. I am an expert'],
-   ['Bienvenue dans l\'onglet Crédit. Vous pouvez commencer à simuler votre crédit en cliquant sur ce bouton. Après avoir renseigné les paramètres, vous serez dirigé vers l\'onglet résumé où vous pourrez voir les données de votre crédit. swiper à droite pour en découvrir plus !',
-    'Welcome to loan tab ! You can start simulating your credit by clicking this button. You will have to fill the credit parameters. Once you\'ll be done, you will land on the summary tab, where your credit data will appear. Swipe right to discover more !'
+   ['Vous pouvez à simuler votre crédit en cliquant sur ce bouton. Après avoir renseigné la somme empruntée, le  taux, et la durée, vous serez dirigé vers l\'onglet résumé où vous pourrez voir les données de votre crédit. Cela débloquera les onglets opérations et graphique.',
+    'You can start simulating your credit by clicking this button. After having set your credit amount, duration, and rate, you will land on the summary tab, where your credit data will appear. This will also unlock the operation and chart tabs'
    ],
-   ['Bienvenue dans l\'onglet operations, le coeur de l\'application ! Vous pouvez simuler successivement des modulations (augmentation et diminution de mensualité), un rachat de votre crédit à meilleur taux, ou un rachat avec votre épargne. Vous pouvez enchainer un nombre illimité d\'opérations ! Cliquez sur le texte pour en savoir plus !',
-    'Welcome to operations tab ! This is the core of the app ! You can simulate credit modulations, (mensuality increase or decrease), a rebuy of your credit with different rate, or a rebuy of your credit with savings. You can chain as many operations as you want ! Click on this text to learn more !'
+   ['L\'onglet operations est le coeur de l\'application ! Vous pouvez simuler successivement :',
+    'Welcome to operations tab ! This is the core of the app ! You can simulate a sequence of: '
    ],
-   ['Vous ne pourrez ajouter des évènements que si votre crédit a été renseigné (onglet précédent). Notez que le rachat de votre crédit avec de l\'épargne sera la dernière opération car vous aurez remboursé la totalité du crédit. Pour ajouter une opération cliquer sur \'AJOUTER\'. Cliquez sur le texte pour en savoir plus !',
-    'This tab will be available once you\'ll have simulated your credit (previous tab). Note that after having simulated a rebuy of your credit with savings, you are no longer allowed to add some operations on your credit because it will no longer exist. To add an operation, click \'ADD\'.  Click on this text to learn more !'
+   ['Vous ne pourrez ajouter des évènements que si votre crédit a été renseigné (onglet précédent). Notez que le rachat de votre crédit avec de l\'épargne sera la dernière opération car vous aurez remboursé la totalité du crédit. Pour ajouter une opération cliquer sur \'AJOUTER\'.',
+    'This tab will be available once you\'ll have simulated your credit (previous tab). Note that after having simulated a rebuy of your credit with savings, you are no longer allowed to add some operations on your credit because it will no longer exist. To add an operation, click \'ADD\'.'
    ],
-   ['Les opérations seront appliquées successivement sur votre crédit. Si vous supprimez une opération, vous supprimerez également toutes les suivantes, car leur résultat dépend de l\'opération supprimée. Pour supprimer une opération, sélectionnez-la et cliquez sur \'SUPPRIMER\'. Cliquez sur le texte pour essayer !',
-    'Operations are applyed one after the other on your credit. If you delete an operation, it will also delete all the following ones, which computation is based on the operation you deleted. To delete an operation, select it in the list and click \'DELETE\'. Click on this text to try it !'
+   ['Les opérations seront appliquées successivement sur votre crédit. Si vous supprimez une opération, vous supprimerez également toutes les suivantes, car leur résultat dépend de l\'opération supprimée. Pour supprimer une opération, sélectionnez-la et cliquez sur \'SUPPRIMER\'.',
+    'Operations are applyed one after the other on your credit. If you delete an operation, it will also delete all the following ones, which computation is based on the operation you deleted. To delete an operation, select it in the list and click \'DELETE\'.'
    ],
-   ['Supprimez toutes les opérations. Swipez à droite quand vous avez réussi !',
-    'Delete all operations, swipe right when finished !'
+   ['Voici un faux jeu d\'opérations pour le tuto. Supprimez toutes les opérations.',
+    'Here is a set of fake operations for the tuto. Delete all operations, '
    ],
-   ['Bravo ! Swipez à droite','Well done ! Swipe right !'],
+   [' ', ''],//unused
    ['Bienvenue dans l\'onglet résumé qui synthétise le résultat de vos opérations de crédit. Vous pourrez voir ici combien d\'argent vous avez économisé ou perdu en modulant ou rachetant votre prêt. Le résultat de chaque opération sera comparé à votre crédit initial et à l\'opération précédente, si vous avez enchaîné les opérations (modulations, rachats...). Touchez l\'écran pour en savoir plus.',
     'Welcome to the summary tab. The results of all you operations are displayed as a timeline, where you can see how much money you saved or lost at each credit operation (mensuality increase, decrease, or credit rebuy at different rate). Each operation result is compared to your initial loan and to the result of the previous operation. Tap screen to discover more.'],
 
@@ -572,6 +575,11 @@ const translatedStrs=ref(
     ['Faire le café','Make coffee'],
 
     ['Dans tous les onglets de l\'application, vous pourrez obtenir de l\'aide en cliquant sur cet icône :','In all app tabs, if you need help click this icon : '],
+
+    ['Voir la vidéo','Watch video'],
+
+    ['Rachat du crédit à un nouveau taux','Loan rebuy at better rate'],
+    ['Rachat du crédit avec épargne','Loan rebuy with savings'],
 ]);
 
 export const getLangId=function()

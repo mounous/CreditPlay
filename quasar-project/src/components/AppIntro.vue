@@ -6,11 +6,12 @@
           <div class="col q-mt-md text-center"  v-if="i<stringsIDs.str_tuto_process_9-stringsIDs.str_tuto">
             <th class="q-ma-md" style="color: white;font-size:25px;">{{transStr(stringsIDs.str_tuto+Number(i))}}</th>
           </div>
-          <div class="col q-mt-md text-center"  v-if="i==10">
+          <div class="q-ma-md text-center" style="display: flex;flex-direction: column;align-items: center;" v-if="i==10">
             <th class="q-ma-md" style="color: white;font-size:25px;">{{transStr(stringsIDs.str_tuto_icon)}}</th>
+            <q-icon name="help" size="xl" class="q-ma-xl"></q-icon>
             <q-btn @click="emit('tuto-intro-finished')" label="OK" color="blue-grey-8"></q-btn>
           </div>
-          <AppCapabilities v-if="i==stringsIDs.str_tuto_process_4-stringsIDs.str_tuto"></AppCapabilities>
+          <AppCapabilities v-if="i==stringsIDs.str_tuto_process_4-stringsIDs.str_tuto" ></AppCapabilities>
           <ProcessExplainer  v-if="i==stringsIDs.str_tuto_process_9-stringsIDs.str_tuto" ></ProcessExplainer>
         </q-carousel-slide>
       </q-carousel>
