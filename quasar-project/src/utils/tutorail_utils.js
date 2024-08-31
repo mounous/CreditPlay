@@ -1,7 +1,7 @@
 import { bank, simu } from 'src/stores/store';
 import { transStr,stringsIDs, transevtmetaType,transMonthName } from 'src/stores/languages';
 import { startFormFilled,tutoPhase,startformfilled_before_tuto,simu_before_tuto,bank_before_tuto } from 'src/stores/store';
-import {ref} from 'vue'
+
 import {computeMensuality, EVT_META_TYPE_REBUY,computeCredit_init} from '../utils/credit_utility'
 
 import { getCurrencySymbol } from 'src/stores/currencies';
@@ -10,14 +10,42 @@ const saveTutoData=function()
 {
   startformfilled_before_tuto.value=startFormFilled.value==true?true:false;
   startFormFilled.value=true;
-  bank_before_tuto.value={...bank.value};
-  simu_before_tuto.value={...simu.value};
+  bank_before_tuto.value={ accounts:[], monthly_sum:[] };
+  for(var i=0;i<bank.value.accounts.length;i++)
+  {
+    bank_before_tuto.value.accounts.push({title:bank.value.accounts[i].title,rate:bank.value.accounts[i].rate,amount:bank.value.accounts[i].amount,computedOverTime:bank.value.accounts[i].computedOverTime,single_in_out:[],periodic_savings:[]});
+    for(var sio=0;sio<bank.value.accounts[i].single_in_out.length;sio++)
+    {
+      bank_before_tuto.value.accounts[i].single_in_out.push(bank.value.accounts[i].single_in_out[sio]);
+    }
+    for(var ps=0;ps<bank.value.accounts[i].periodic_savings.length;ps++)
+    {
+      bank_before_tuto.value.accounts[i].periodic_savings.push(bank.value.accounts[i].periodic_savings[ps]);
+    }
+  }
+  bank_before_tuto.value.monthly_sum=bank.value.monthly_sum;
+  simu_before_tuto.value.credit={...simu.value.credit};
+  simu_before_tuto.value.events=simu.value.events;
 }
 const restoreTutoData=function()
 {
   startFormFilled.value=startformfilled_before_tuto.value==true?true:false;
-  bank.value={...bank_before_tuto.value};
-  simu.value={...simu_before_tuto.value};
+  bank.value={ accounts:[], monthly_sum:[] };
+  for(var i=0;i<bank_before_tuto.value.accounts.length;i++)
+  {
+    bank.value.accounts.push({title:bank_before_tuto.value.accounts[i].title,rate:bank_before_tuto.value.accounts[i].rate,amount:bank_before_tuto.value.accounts[i].amount,computedOverTime:bank_before_tuto.value.accounts[i].computedOverTime,single_in_out:[],periodic_savings:[]});
+    for(var sio=0;sio<bank_before_tuto.value.accounts[i].single_in_out.length;sio++)
+    {
+      bank.value.accounts[i].single_in_out.push(bank_before_tuto.value.accounts[i].single_in_out[sio]);
+    }
+    for(var ps=0;ps<bank_before_tuto.value.accounts[i].periodic_savings.length;ps++)
+    {
+      bank.value.accounts[i].periodic_savings.push(bank_before_tuto.value.accounts[i].periodic_savings[ps]);
+    }
+  }
+  bank.value.monthly_sum=bank_before_tuto.value.monthly_sum;
+  simu.value.credit={...simu_before_tuto.value.credit};
+  simu.value.events=simu_before_tuto.value.events;
 }
 const injectCreditInTuto=function()
 {

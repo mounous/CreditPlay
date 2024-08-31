@@ -1,6 +1,8 @@
 <template>
-  <q-page  v-touch-swipe.mouse.left.right="handleSwipeExt" @click="nextTutoPhase()">
-
+  <q-page  v-touch-swipe.mouse.left.right="handleSwipeExt" >
+    <q-page-sticky position="top-right" :offset="[18, 18]">
+      <q-icon name="help" size="x-large" color="white" class="q-ma-md" v-if="show_tuto==false" @click="initTuto()"></q-icon>
+    </q-page-sticky>
     <div class="full-height column justify-arround content-center" style="display:flex; width: 100%; height: 100%;">
       <div class="col q-ma-xs">
         <q-timeline  class="q-ma-xs text-white">
@@ -15,7 +17,11 @@
         <div v-if="item.text7!=''">{{ item.text7 }}</div>
       </q-timeline-entry>
     </q-timeline>
-      <span v-if="show_tuto==true" style="color: white;font-size:18px;" ref="mySpan">{{ spantxt }}</span>
+      <div class="q-ma-md" style="display: flex;flex-direction: column;align-items: center;align-content: center; justify-content: center;">
+        <span v-if="show_tuto==true" style="color: white;font-size:18px;" ref="mySpan">{{ spantxt }}</span>
+        <q-btn v-if="show_tuto==true&&tutoPhase<5" class="q-ma-md" label=">>" rounded color="blue-grey-8" @click="nextTutoPhase()"></q-btn>
+        <q-btn v-if="show_tuto==true &&tutoPhase==5" class="q-ma-md" :label=transStr(stringsIDs.str_close) rounded color="blue-grey-8" @click="restoreState"></q-btn>
+      </div>
   </div>
   </div>
 
@@ -28,22 +34,21 @@
 
 <script setup>
 import {ref,onBeforeMount } from 'vue'
-import { simu,bank } from 'stores/store';
+import { simu,bank,simu_before_tuto,bank_before_tuto } from 'stores/store';
 import {formatnumber} from '../utils/string_utils'
 import { useRouter } from 'vue-router';
 import {targetPage} from '../utils/swipe_utils.js'
-import { returnBaseData,EVT_TYPE_REBUY_SAVINGS,  EVT_META_TYPE_REBUY } from 'src/utils/credit_utility';
+import { returnBaseData,EVT_TYPE_REBUY_SAVINGS,  EVT_META_TYPE_REBUY, computeCredit_init,apply_events_chain,computeMensuality } from 'src/utils/credit_utility';
 import { transStr,stringsIDs } from 'src/stores/languages';
 import {getCurrencySymbol} from '../stores/currencies'
 import { subOneMonth } from 'src/utils/date_utility';
 import { show_tuto,tutoPhase } from 'stores/store';
 import { feedSpanSummary } from 'src/utils/tutorail_utils';
 import  {scroll} from 'quasar'
-import {apply_events_chain} from '../utils/credit_utility'
 import { computeDisplaySavings } from 'src/utils/bank_utility';
-import {populateBankTuto, populateEventsTuto} from '../utils/tutorail_utils'
+import {populateBankTuto, populateEventsTuto,saveTutoData,restoreTutoData,injectCreditInTuto} from '../utils/tutorail_utils'
 const { getScrollTarget, setVerticalScrollPosition } = scroll
-var MustPopTutorial=ref(show_tuto.value==true?true:false);
+var MustPopTutorial=ref(false);
 var mySpan=ref();
 var spantxt=ref('');
 const router = useRouter();
@@ -71,20 +76,19 @@ const handleSwipeExt=function ({ evt, touch, mouse, direction, duration, distanc
 {
   router.push(targetPage(direction,router.currentRoute.value.fullPath));
 }
-var firstInit=ref(true);
+
 const initTuto=function()
 {
-  if(firstInit.value==false)
-  {
-    return;
-  }
+  show_tuto.value=true;
+  MustPopTutorial.value=true;
+  saveState();
   simu.value.events=[];
   bank.value.accounts=[];
+  injectCreditInTuto();
   populateBankTuto();
   computeDisplaySavings(simu.value.credit.y,simu.value.credit.m,simu.value.credit.duration_m/12);
   populateEventsTuto();
   apply_events_chain();
-  firstInit.value=false;
 }
 
 
@@ -108,10 +112,6 @@ const setDisplay=function() {
   var _text7='';
   var delta_abs=0;
   var delta_rel=0;
-  if(show_tuto.value==true)
-  {
-    initTuto();
-  }
   summaries.value.push({title :  transStr(stringsIDs.str_init_loan),subtitle:_date_to_display,id:_id,text1:_text1,text2:_text2,text3:_text3,text4:_text4,text4_color:_text4_color});
   if(simu.value.events.length!=0)
   {
@@ -180,6 +180,24 @@ const setDisplay=function() {
 }
 onBeforeMount(setDisplay);
 
+
+const saveState=function()
+{
+  show_tuto.value=true;
+  tutoPhase.value=0;
+  saveTutoData();
+  simu.value.events=[];
+}
+
+
+const restoreState=function()
+{
+  show_tuto.value=false;
+  restoreTutoData();
+  computeMensuality();
+  computeCredit_init();
+  setDisplay();
+}
 </script>
 
 <style lang="scss">

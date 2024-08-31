@@ -127,12 +127,7 @@ const handleSwipeExt=function ({ evt, touch, mouse, direction, duration, distanc
 {
   if(show_tuto.value==true)
   {
-     if(direction=='right')
-    {
-      bank.value={};
-      simu.value.events=[];
-    }
-    tutoPhase.value=0;
+    return;
   }
   router.push(targetPage(direction,router.currentRoute.value.fullPath));
 }

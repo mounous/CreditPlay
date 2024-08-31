@@ -46,7 +46,7 @@
     <div v-if="MustPopTutorial==true">
       <q-dialog v-model="MustPopTutorial" cover transition-show="scale" transition-hide="scale" persistent maximized full-width
                 style="background-color: black;">
-        <AppIntro v-if="MustPopTutorial==true" @tuto-intro-finished="[MustPopTutorial=false,rerenderMainlayout++]"></AppIntro>
+        <AppIntro v-if="MustPopTutorial==true" @tuto-intro-finished="[MustPopTutorial=false,rerenderMainlayout++,LocalStorage.set('MustPopTutorial',false)]"></AppIntro>
       </q-dialog>
 
     </div>
