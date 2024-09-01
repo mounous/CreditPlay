@@ -3,7 +3,7 @@
     <q-page-sticky position="top-right" :offset="[0, 0]" style="z-index:3">
       <div style="display: flex;flex-direction: row;">
         <q-btn icon="play_arrow" size="large" color="green" style="background-color:grey;" v-if="simu.events.length>0&&is_playing==false" class="q-ml-xl" @click="relaunchAnimation"></q-btn>
-        <q-icon name="help" size="x-large" color="white" class="q-ma-md" v-if="show_tuto==false" @click="initTuto()"></q-icon>
+        <q-icon name="help" size="x-large" color="white" class="q-mt-md q-mb-md q-ml-xl q-mr-xl" v-if="show_tuto==false" @click="initTuto()"></q-icon>
     </div>
     </q-page-sticky>
 
