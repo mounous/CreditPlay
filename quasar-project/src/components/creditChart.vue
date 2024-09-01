@@ -1,9 +1,9 @@
 <template>
   <q-page  @click="handleClick"  v-touch-swipe.mouse.left.right="handleSwipeExt" :key="mustPop">
-    <q-page-sticky position="top-right" :offset="[18, 18]" style="z-index:3">
-      <div style="display: flex;flex-direction: column;align-items: flex-end;">
+    <q-page-sticky position="top-right" :offset="[0, 0]" style="z-index:3">
+      <div style="display: flex;flex-direction: row;">
+        <q-btn icon="play_arrow" size="large" color="green" style="background-color:grey;" v-if="simu.events.length>0&&is_playing==false" class="q-ml-xl" @click="relaunchAnimation"></q-btn>
         <q-icon name="help" size="x-large" color="white" class="q-ma-md" v-if="show_tuto==false" @click="initTuto()"></q-icon>
-        <q-btn icon="play_arrow" size="large" color="green" style="background-color:grey;" v-if="simu.events.length>0&&is_playing==false" class="q-ma-md" @click="relaunchAnimation"></q-btn>
     </div>
     </q-page-sticky>
 
@@ -56,6 +56,7 @@ var mustPop = ref(false)
 var carrouselPhase=ref(0);
 var myspan=ref();
 var tickCount=ref(0);
+var leftAnno=ref(false);
 const forceRender=async()=>{
   mustPop.value=true;
   await nextTick();
@@ -83,10 +84,12 @@ const initTuto=function()
 
 const relaunchAnimation=function()
 {
+  leftAnno.value=false;
   carrouselPhase.value=0;
   tickCount.value=0;
   chartOptions.annotations.xaxis=[];
   chartOptions.annotations.yaxis=[];
+  chartOptions.annotations.points=[];
   series.splice(2,series.length-2);
   chartOptions.colors.splice(2,chartOptions.colors.length-2);//remove savings
   Id_destroy.value=setInterval(switchDataDisplay,100);
@@ -136,6 +139,7 @@ const switchDataDisplay=function()
 
 const getSingleEvent=function(index)
 {
+  var evt_y=-1;
   if(index <simu.value.events.length )
   {
     var extractData_capital=[];
@@ -144,6 +148,14 @@ const getSingleEvent=function(index)
     {
       extractData_capital.push(Math.round(simu.value.events[index].amortEvt[j][1]*100)/100);
       extractData_interests.push(Math.round(simu.value.events[index].amortEvt[j][2]*100)/100);
+      if(simu.value.events[index].amortEvt[j][0]==transMonthName(simu.value.events[index].month)+'-'+simu.value.events[index].year.toString())
+      {
+        evt_y=extractData_capital[extractData_capital.length-1];//store the capital to set a point on graph
+        if(evt_y==0)//case of a rebuy,
+        {
+          evt_y=extractData_capital[extractData_capital.length-2];
+        }
+      }
     }
     series.push({name:simu.value.events[index].title,data:extractData_capital});
     series.push({name:transStr(stringsIDs.str_interests_parenth)+simu.value.events[index].title+')',data:extractData_interests});
@@ -158,7 +170,11 @@ const getSingleEvent=function(index)
                                              color: '#fff',
                                              background: '#775DD0',
                                            },
-                                           text: simu.value.events[index].title,}});
+                                           text: '',}});
+    chartOptions.annotations.points.push({x: transMonthName(simu.value.events[index].month)+'-'+simu.value.events[index].year.toString(),
+                                          y: evt_y,  marker: {size: 6,  fillColor: '#fff',strokeColor: 'purple',radius: 1, cssClass: 'apexcharts-custom-class'},
+                                          label: { borderColor: 'black', offsetY: 16, offsetX:leftAnno.value==false ? 45:-45, style: {color: '#fff',background: 'black', },text: simu.value.events[index].title,} } );
+    leftAnno.value=!leftAnno.value;
   }
 }
 const getAdjustedBanking=function(specific_event=-1){
@@ -342,7 +358,7 @@ var chartOptions = {
           },
     },
   },
-  annotations:{yaxis:[],xaxis:[]},
+  annotations:{yaxis:[],xaxis:[],points:[]},
   legend:{show:false}
 };
 //https://apexcharts.com/docs/annotations/
