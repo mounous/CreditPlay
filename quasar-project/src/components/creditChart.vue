@@ -2,16 +2,22 @@
   <q-page  @click="handleClick"  v-touch-swipe.mouse.left.right="handleSwipeExt" :key="mustPop">
     <q-page-sticky position="top-right" :offset="[0, 0]" style="z-index:3">
       <div style="display: flex;flex-direction: row;">
-        <q-btn icon="play_arrow" size="large" color="green" style="background-color:grey;" v-if="simu.events.length>0&&is_playing==false" class="q-ml-xl" @click="relaunchAnimation"></q-btn>
-        <q-icon name="help" size="x-large" color="white" class="q-mt-md q-mb-md q-ml-xl q-mr-xl" v-if="show_tuto==false" @click="initTuto()"></q-icon>
+        <q-card v-if="show_tuto==true &&(tutoPhase==2)" style="background-color: black;">
+          <th v-if="is_playing==true" style="color: white;font-size:15px;text-align: center;">{{transStr(stringsIDs.str_tuto_chart_3)}}</th>
+          <th v-if="is_playing==false" style="color: white;font-size:15px;text-align: center;">{{transStr(stringsIDs.str_tuto_chart_4)}}</th>
+        </q-card>
+        <q-btn icon="play_arrow" size="large" color="green" style="background-color:grey;" v-if="simu.events.length>0&&is_playing==false"  @click="relaunchAnimation"></q-btn>
+
+
+
+        <q-btn v-if="show_tuto==true &&(tutoPhase==2)" color="blue-grey-8" :label=transStr(stringsIDs.str_tuto_chart_5) @click="[show_tuto=false,tutoPhase=0,restoreState()]"></q-btn>
+        <q-icon name="help" size="x-large" color="white" class="q-mt-md q-mb-md q-ml-xl q-mr-xl" v-if="show_tuto==false" @click="[MustPopTutorial=true,show_tuto=true,tutoPhase=0,destroy_periodic()]"></q-icon>
     </div>
     </q-page-sticky>
 
 
 
-    <q-card v-if="show_tuto==true &&(tutoPhase==2||tutoPhase==3 ||tutoPhase==4)" style="background-color: black;">
-      <th ref="myspan" class="q-ma-md" style="color: white;font-size:25px;text-align: center;">{{transStr(stringsIDs.str_tuto_chart_3+tutoPhase-2)}}</th>
-    </q-card>
+
 
     <VueApexCharts
       v-if="mustPop==false"
@@ -28,11 +34,43 @@
 
   <q-dialog v-if="show_tuto==true && tutoPhase==0" v-model="MustPopTutorial"   cover transition-show="scale" transition-hide="scale" maximized full-width  auto-close  v-on:before-hide="[tutoPhase=1,forceRender(),MustPopTutorial=true]"
     style="background-color: black;"   >
-      <th class="q-ma-md" style="color: white;font-size:20px;">{{transStr(stringsIDs.str_tuto_chart_1)}}</th>
+    <div style="display: flex;flex-direction: column;align-items: center;justify-items: center;justify-content: center;">
+      <div style="display: flex;flex: 1;">
+        <th class="q-ma-md" style="color: white;font-size:17px;">{{transStr(stringsIDs.str_tuto_chart_1)}}</th>
+      </div>
+      <div style="display: flex;flex: 4;">
+        <q-list>
+          <q-item v-for="elmnt in listDisplayTuto" :key="elmnt.id">
+            <q-item-section avatar>
+              <q-icon v-if="elmnt.id!=stringsIDs.str_tuto_chart_cpmlnt_4" :color=elmnt.color name="radio_button_checked" />
+              <q-icon v-if="elmnt.id==stringsIDs.str_tuto_chart_cpmlnt_4" :color=elmnt.color name="horizontal_rule" />
+            </q-item-section>
+            <q-item-section>
+              <th  class="q-ma-xs" style="color: white;font-size:15px;">{{transStr(elmnt.id)}}</th>
+            </q-item-section>
+          </q-item>
+        </q-list>
+      </div>
+      <div style="display: flex;flex: 1;">
+        <th class="q-ma-md" style="color: white;font-size:17px;">{{transStr(stringsIDs.str_tuto_chart_cpmlnt_5)}}</th>
+      </div>
+    </div>
   </q-dialog>
-  <q-dialog v-if="show_tuto==true && tutoPhase==1" v-model="MustPopTutorial"   cover transition-show="scale" transition-hide="scale" maximized full-width  auto-close v-on:before-hide="[show_tuto=false]"
+  <q-dialog v-if="show_tuto==true && tutoPhase==1" v-model="MustPopTutorial"   cover transition-show="scale" transition-hide="scale" maximized full-width  auto-close v-on:before-hide="[tutoPhase=2,initTutoData()]"
     style="background-color: black;"   >
-      <th class="q-ma-md" style="color: white;font-size:20px;">{{transStr(stringsIDs.str_tuto_chart_2)}}</th>
+    <div style="display: flex;flex-direction: column;">
+      <div style="display: flex;flex: 1;"></div>
+      <div style="display: flex;flex: 1;">
+      <th class="q-ma-xs" style="color: white;font-size:15px;">{{transStr(stringsIDs.str_tuto_chart_cpmlnt_6)}}</th>
+      </div>
+      <div style="display: flex;flex: 1;align-items: center;justify-content: center;">
+      <q-btn icon="play_arrow" size="large" color="green" style="background-color:grey;" class="q-ma-xs"></q-btn>
+      </div>
+      <div style="display: flex;flex: 1;">
+      <th class="q-ma-xs" style="color: white;font-size:15px;">{{transStr(stringsIDs.str_tuto_chart_cpmlnt_7)}}</th>
+      </div>
+      <div style="display: flex;flex: 1;"></div>
+    </div>
   </q-dialog>
 
 </template>
@@ -41,7 +79,7 @@
 
 import VueApexCharts from 'vue3-apexcharts'
 import { onBeforeMount,ref, nextTick, onBeforeUnmount} from 'vue';
-import {getChartXAxis,getLatestMensuality} from '../utils/credit_utility'
+import {apply_events_chain, computeMensuality, getChartXAxis,getLatestMensuality,computeCredit_init} from '../utils/credit_utility'
 import { GetColor,TYPE_CAPITAL,TYPE_INTERESTS,TYPE_SAVINGS } from 'src/utils/chart_utility';
 import { simu,bank, startFormFilled } from 'stores/store';
 import {getSavingsEarlier,computeDisplaySavings,hasSavings} from '../utils/bank_utility'
@@ -49,6 +87,12 @@ import { stringsIDs,transStr, transMonthName } from 'src/stores/languages';
 import { show_tuto,tutoPhase } from 'stores/store';
 import { useRouter } from 'vue-router';
 import {targetPage} from '../utils/swipe_utils.js'
+import {saveTutoData,populateBankTuto ,restoreTutoData,populateEventsTuto,injectCreditInTuto} from '../utils/tutorail_utils'
+var listDisplayTuto=ref([ {color:'red',id:stringsIDs.str_tuto_chart_cpmlnt_1},
+                          {color:'grey',id:stringsIDs.str_tuto_chart_cpmlnt_2},
+                          {color:'green',id:stringsIDs.str_tuto_chart_cpmlnt_3},
+                          {color:'purple',id:stringsIDs.str_tuto_chart_cpmlnt_4}] );
+
 var is_playing=ref(false);
 const router=useRouter();
 var MustPopTutorial=ref(false);
@@ -63,22 +107,45 @@ const forceRender=async()=>{
   mustPop.value=false;
   await nextTick();
 }
-
-const initTuto=function()
+const clearChart=function()
 {
-  show_tuto.value=true;
-  MustPopTutorial.value=true;
   destroy_periodic();
-  saveState();
+  series=[];
+  chartOptions.annotations.points=[];
+  chartOptions.annotations.xaxis=[];
+  chartOptions.annotations.yaxis=[];
+}
+const initChart=function(recompute_events=true)
+{
+  computeDisplaySavings(simu.value.credit.y,simu.value.credit.m,simu.value.credit.duration_m/12);
+  if(recompute_events)
+  {
+    apply_events_chain();
+  }
+  chartOptions.xaxis.categories= getTime();
+  display_init_credit();
+  forceRender();
+  relaunchAnimation();
+}
+const restoreState=function()
+{
+  show_tuto.value=false;
+  clearChart();
+  restoreTutoData();
+  computeMensuality();
+  computeCredit_init();
+  initChart(false);
+}
+const initTutoData=function()
+{
+  clearChart(),
+  saveTutoData();
   simu.value.events=[];
   bank.value.accounts=[];
   injectCreditInTuto();
   populateBankTuto();
-  computeDisplaySavings(simu.value.credit.y,simu.value.credit.m,simu.value.credit.duration_m/12);
   populateEventsTuto();
-  apply_events_chain();
-  display_init_credit();
-  forceRender();
+  initChart();
 }
 
 
@@ -380,16 +447,8 @@ const sendSavingComputationOrder=function()
   //chartOptions.xaxis.categories=getBankTime();
   mustPop.value=false;
 }
-const getoptionSavingGraphDisplayY=function()
-{
-  var toreturn=[];
-  for(var i=0;i<100;i++)
-  {
-    toreturn.push(i.toString());
-  }
-  return toreturn;
-}
-var optionYears=ref(getoptionSavingGraphDisplayY());
+
+
 
 
 const getPopObligation = function () {
@@ -406,6 +465,7 @@ const getPopObligation = function () {
 
 
 const destroy_periodic=function(){
+  is_playing.value=false;
   clearInterval(Id_destroy.value);
 }
 onBeforeUnmount(destroy_periodic);

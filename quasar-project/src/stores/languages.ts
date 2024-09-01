@@ -244,6 +244,13 @@ export enum stringsIDs {
   str_tuto_video=208,
   str_ops_cap_reloan=209,
   str_ops_cap_rebuy=210,
+  str_tuto_chart_cpmlnt_1=211,
+  str_tuto_chart_cpmlnt_2=212,
+  str_tuto_chart_cpmlnt_3=213,
+  str_tuto_chart_cpmlnt_4=214,
+  str_tuto_chart_cpmlnt_5=215,
+  str_tuto_chart_cpmlnt_6=216,
+  str_tuto_chart_cpmlnt_7=217,
 };
 
 const translatedStrs=ref(
@@ -277,7 +284,7 @@ const translatedStrs=ref(
   ['Compte','Account'],
   ['Type','Type'],
   ['à partir de','from'],
-  ['jusqu\'à','untill'],
+  ['jusqu\'à','until'],
   ['Entrées/Sorties exceptionnelles','Exceptional Incomes/Outcomes'],
   ['Date','Date'],
   ['confirmer','Confirm'],
@@ -434,8 +441,8 @@ const translatedStrs=ref(
     'Here is a set of fake operations for the tuto. Delete all operations, '
    ],
    [' ', ''],//unused
-   ['Bienvenue dans l\'onglet résumé qui synthétise le résultat de vos opérations de crédit. Vous pourrez voir ici combien d\'argent vous avez économisé ou perdu en modulant ou rachetant votre prêt. Le résultat de chaque opération sera comparé à votre crédit initial et à l\'opération précédente, si vous avez enchaîné les opérations (modulations, rachats...). Touchez l\'écran pour en savoir plus.',
-    'Welcome to the summary tab. The results of all you operations are displayed as a timeline, where you can see how much money you saved or lost at each credit operation (mensuality increase, decrease, or credit rebuy at different rate). Each operation result is compared to your initial loan and to the result of the previous operation. Tap screen to discover more.'],
+   ['L\'onglet résumé synthétise le résultat de vos opérations de crédit. Vous pourrez voir ici combien d\'argent vous avez économisé ou perdu en modulant ou rachetant votre prêt. Le résultat de chaque opération sera comparé à votre crédit initial et à l\'opération précédente, si vous avez enchaîné les opérations (modulations, rachats...). Touchez l\'écran pour en savoir plus.',
+    'In the summary tab, the results of all you operations are displayed as a timeline. You can see how much money you saved or lost at each credit operation (mensuality increase, decrease, or credit rebuy at different rate). Each operation result is compared to your initial loan and to the result of the previous operation. Tap screen to discover more.'],
 
    ['La modulation 1 vous a fait gagner 11 938,45 d\'intérêts par rapport au coût du crédit initial. Touchez l\'écran pour continuer',
     'First modulation made you save 11938.45 compared to the initial credit cost. Tap screen' ],
@@ -449,8 +456,8 @@ const translatedStrs=ref(
    ['Le second rachat (combiné au premier ainsi qu\'au deux modulations) vous a fait gagner 30 631,83 d\'intérêts par rapport au coût du crédit initial et 3817,82 par rapport au coût du crédit avec les deux modulations et le premier rachat.',
     'Second rebuy (combined to the two modulations and the first rebuy) made you save 30 631.83 compared to the initial credit cost and 3817.82 compared to first rebuy combined with the two modulations.'],
 
-   ['Bienvenue dans l\'onglet Graphique ! Si vous avez renseigné un crédit, vous retrouverez ici l\'évolution graphique du capital remboursé ainsi que des interêts payés. Le crédit initial apparaîtra en rouge (capital et interêts). Si vous avez renseigné des opérations (modulations, rachat), le résultat de chacune d\'entre elles vous sera montré sous forme d\'animation. Pour stopper l\'annimation, maintenez une pression longue sur le graphique. Touchez l\'écran pour en savoir plus.',
-    'Welcome to the chart page ! If you have simulated a credit, you will find here a chart showing the capital refunded and the interests paid over time. The initial credit will be displayed in red (capital refunded and interests paid). If you made some operations (modulations, rebuys), you will see the result of each operation in an animation. To stop animation, hold a long pressure on screen . Tap screen to learn more ! '],
+   ['Vous trouverez ici :',
+    'You will find here:'],
 
     ['Si vous avez des économies de renseignées dans l\'onglet dédié (nous le verrons plus tard), vous verrez leur évolution au cours du temps ici. Il apparaîtront à la fin de l\'annimation. Les économies sont toujours affichées en vert. Taper sur l\'écran pour en savoir plus.',
      'If you set up your savings in the dedicated tab (we\'ll discover it later), you can see the evolution of the amount here. It will be displayed at the end of the animation. Savings are always displayed in green color. Tap screen to discover more ! '],
@@ -458,14 +465,14 @@ const translatedStrs=ref(
     ['Touchez le graphe pour relancer l\'annimation',
       'Tap screen to relaunch animation'
     ],
-    ['Attendez la fin de l\'animation (les économies apparaîtront en vert) et touchez l\'écran pour la stopper',
-     'Wait untill the end of animation (savings will be displayed in green) and tap chart to stop it.'],
+    ['Attendez la fin de l\'animation.',
+     'Wait until the end of animation.'],
 
-    ['Relancez  l\'annimation en effectuant une pression sur le graphique.',
-     'Tap chart to relaunch annimation.'],
+    ['Relancez-l\'annimation si nécessaire',
+     'Relaunch annimation if you need'],
 
-    ['Bravo ! Vous pouvez swiper vers la droite pour en découvrir plus !',
-     'Well done ! Swipe right to discover more !'],
+    ['fermez le tuto',
+     'close tutorial'],
 
     ['Bienvenue dans l\'onglet épargne ! Vous pouvez ici renseigner le montant de votre épargne actuelle, vos capacités d\'épargne mensuelle et annuelle, ainsi que des entrées/sorties d\'argent exceptionelles. La première étape est d\'ajouter un compte (même sans argent dessus) car votre capacité d\'épargne ainsi que les entrées/sorties exceptionnelles sont rattachées à un compte. Touchez l\'écran pour en savoir plus.',
      'Welcome to the bank tab ! This is were you can set up you current banking situation and add some monthly and yearly savings capacity. You can also plan some exceptional incomes/outcomes. The first step is to set up at least one account because saving capacity and exceptionnal income/outcomes depend on an account. Tap screen to learn more !'],
@@ -580,6 +587,20 @@ const translatedStrs=ref(
 
     ['Rachat du crédit à un nouveau taux','Loan rebuy at better rate'],
     ['Rachat du crédit avec épargne','Loan rebuy with savings'],
+
+    ['Le capital et les intêrets de votre crédit initial toujours affichés en rouge',
+     'Capital and interests of your initial loan always displayed in red'],
+    ['Le capital et les interêts du résultat des opérations toujours affiché en gris',
+     'Capital and interests of the result of operations always displayed grey'],
+    ['Vos économies toujours affiché en vert',
+     'Your savings always displayed in green'],
+    ['Des indicateurs visuels pour repérer vos opérations',
+     'Visual indicators to spot your operations'],
+     ['Touchez l\'écran pour voir la suite','Tap screen to learn more !'],
+
+    ['Les opérations seront successivement affichées sous forme d\'annimation. Une fois l\'annimation terminée, vous pourrez la relancer en cliquant sur ce bouton, masqué pendant l\'annimation:',
+     'Operations will be displayed as an animation. Once the annimation finished, you can replay it  by clicking this button, masked during animation:'],
+    ['Essayons ensemble avec un jeu de données spécial tuto. Touchez l\'écran pour commencer','Let\'s try it together with a fake simulation. Tap screen to start'],
 ]);
 
 export const getLangId=function()
