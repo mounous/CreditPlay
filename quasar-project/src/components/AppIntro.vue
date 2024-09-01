@@ -7,7 +7,7 @@
             <th class="q-ma-md" style="color: white;font-size:25px;">{{transStr(stringsIDs.str_tuto+Number(i))}}</th>
           </div>
           <div class="q-ma-md text-center" style="display: flex;flex-direction: column;align-items: center;" v-if="i==10">
-            <th class="q-ma-md" style="color: white;font-size:25px;">{{transStr(stringsIDs.str_tuto_icon)}}</th>
+            <th class="q-mt-md q-ml-md q-mr-md q-mb-xs" style="color: white;font-size:25px;">{{transStr(stringsIDs.str_tuto_icon)}}</th>
             <q-icon name="help" size="xl" class="q-ma-xl"></q-icon>
             <q-btn @click="emit('tuto-intro-finished')" label="OK" color="blue-grey-8"></q-btn>
           </div>

@@ -1,6 +1,6 @@
 <template>
   <q-page  v-touch-swipe.mouse.left.right="handleSwipeExt" >
-    <q-page-sticky position="top-right" :offset="[18, 18]">
+    <q-page-sticky position="top-right" :offset="[18, 18]" style="z-index:3">
       <q-icon name="help" size="x-large" color="white" class="q-ma-md" v-if="show_tuto==false" @click="initTuto()"></q-icon>
     </q-page-sticky>
     <div class="full-height column justify-arround content-center" style="display:flex; width: 100%; height: 100%;">

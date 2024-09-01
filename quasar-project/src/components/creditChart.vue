@@ -1,5 +1,14 @@
 <template>
   <q-page  @click="handleClick"  v-touch-swipe.mouse.left.right="handleSwipeExt" :key="mustPop">
+    <q-page-sticky position="top-right" :offset="[18, 18]" style="z-index:3">
+      <div style="display: flex;flex-direction: column;align-items: flex-end;">
+        <q-icon name="help" size="x-large" color="white" class="q-ma-md" v-if="show_tuto==false" @click="initTuto()"></q-icon>
+        <q-btn icon="play_arrow" size="large" color="green" style="background-color:grey;" v-if="simu.events.length>0&&is_playing==false" class="q-ma-md" @click="relaunchAnimation"></q-btn>
+    </div>
+    </q-page-sticky>
+
+
+
     <q-card v-if="show_tuto==true &&(tutoPhase==2||tutoPhase==3 ||tutoPhase==4)" style="background-color: black;">
       <th ref="myspan" class="q-ma-md" style="color: white;font-size:25px;text-align: center;">{{transStr(stringsIDs.str_tuto_chart_3+tutoPhase-2)}}</th>
     </q-card>
@@ -14,22 +23,14 @@
       :key="mustPop"
     ></VueApexCharts>
 
-    <q-dialog v-model="mustPop" persistent>
-      <q-card>
-        <div class="q-ma-xl col flex flex-center">
-           {{transSt(sentancesIDs.s_info_savings_only_p1)+ graphMinDate+transSt(sentancesIDs.s_info_savings_only_p2) }}
-          <q-select v-model="nbYearDisplaySavings" dense bg-color="blue-grey-8" :options="optionYears"
-            @update:model-value="sendSavingComputationOrder"></q-select>
-        </div>
-      </q-card>
-    </q-dialog>
+
   </q-page>
 
   <q-dialog v-if="show_tuto==true && tutoPhase==0" v-model="MustPopTutorial"   cover transition-show="scale" transition-hide="scale" maximized full-width  auto-close  v-on:before-hide="[tutoPhase=1,forceRender(),MustPopTutorial=true]"
     style="background-color: black;"   >
       <th class="q-ma-md" style="color: white;font-size:20px;">{{transStr(stringsIDs.str_tuto_chart_1)}}</th>
   </q-dialog>
-  <q-dialog v-if="show_tuto==true && tutoPhase==1" v-model="MustPopTutorial"   cover transition-show="scale" transition-hide="scale" maximized full-width  auto-close  v-on:before-hide="launchTutoAnimation()"
+  <q-dialog v-if="show_tuto==true && tutoPhase==1" v-model="MustPopTutorial"   cover transition-show="scale" transition-hide="scale" maximized full-width  auto-close v-on:before-hide="[show_tuto=false]"
     style="background-color: black;"   >
       <th class="q-ma-md" style="color: white;font-size:20px;">{{transStr(stringsIDs.str_tuto_chart_2)}}</th>
   </q-dialog>
@@ -44,15 +45,13 @@ import {getChartXAxis,getLatestMensuality} from '../utils/credit_utility'
 import { GetColor,TYPE_CAPITAL,TYPE_INTERESTS,TYPE_SAVINGS } from 'src/utils/chart_utility';
 import { simu,bank, startFormFilled } from 'stores/store';
 import {getSavingsEarlier,computeDisplaySavings,hasSavings} from '../utils/bank_utility'
-import { transSt,sentancesIDs,stringsIDs,transStr, transMonthName } from 'src/stores/languages';
-import { useQuasar } from 'quasar';
+import { stringsIDs,transStr, transMonthName } from 'src/stores/languages';
 import { show_tuto,tutoPhase } from 'stores/store';
 import { useRouter } from 'vue-router';
 import {targetPage} from '../utils/swipe_utils.js'
+var is_playing=ref(false);
 const router=useRouter();
 var MustPopTutorial=ref(false);
-var MustAnimate=ref(true);
-var $q=useQuasar();
 var mustPop = ref(false)
 var carrouselPhase=ref(0);
 var myspan=ref();
@@ -63,17 +62,35 @@ const forceRender=async()=>{
   mustPop.value=false;
   await nextTick();
 }
-const handleClick=function(){
 
-  if(simu.value.events.length>=1)
-  {
-    MustAnimate.value=!MustAnimate.value;
-    displayHelp();
-  }
-  if(show_tuto.value==true && tutoPhase.value>=2)
-  {
-    tutoPhase.value++;
-  }
+const initTuto=function()
+{
+  show_tuto.value=true;
+  MustPopTutorial.value=true;
+  destroy_periodic();
+  saveState();
+  simu.value.events=[];
+  bank.value.accounts=[];
+  injectCreditInTuto();
+  populateBankTuto();
+  computeDisplaySavings(simu.value.credit.y,simu.value.credit.m,simu.value.credit.duration_m/12);
+  populateEventsTuto();
+  apply_events_chain();
+  display_init_credit();
+  forceRender();
+}
+
+
+const relaunchAnimation=function()
+{
+  carrouselPhase.value=0;
+  tickCount.value=0;
+  chartOptions.annotations.xaxis=[];
+  chartOptions.annotations.yaxis=[];
+  series.splice(2,series.length-2);
+  chartOptions.colors.splice(2,chartOptions.colors.length-2);//remove savings
+  Id_destroy.value=setInterval(switchDataDisplay,100);
+  is_playing.value=true;
 }
 
 var Id_destroy=ref();
@@ -88,25 +105,17 @@ const display_init_credit=function()
 
 const switchDataDisplay=function()
 {
+  if(simu.value.events.length<1)
+  {
+    return;
+  }
   if(tickCount.value<=50)//every 0.5s switch the display
   {
     tickCount.value+=10;
     return;
   }
   tickCount.value=0;
-  if(MustAnimate.value==false)
-  {
-    return;
-  }
-  if(carrouselPhase.value==simu.value.events.length+2)//if we displayed all events and savings,reset
-  {
-    carrouselPhase.value=0;
-    chartOptions.annotations.xaxis=[];
-    chartOptions.annotations.yaxis=[];
-    series.splice(2,series.length-2);
-    chartOptions.colors.splice(2,chartOptions.colors.length-2);//remove savings
-  }
-  else if(carrouselPhase.value!=0 && carrouselPhase.value!=simu.value.events.length+1)//if not displayed all events , remove the event just displayed (2series)
+  if(carrouselPhase.value!=0 && carrouselPhase.value!=simu.value.events.length+1)//if not displayed all events , remove the event just displayed (2series)
   {
     series.splice(2,series.length-2);
     chartOptions.colors.splice(2,chartOptions.colors.length-2);
@@ -114,7 +123,12 @@ const switchDataDisplay=function()
   }
   else if(carrouselPhase.value==simu.value.events.length+1)//when we displayed last event, do not remove, add savings
   {
-    getAdjustedBanking(carrouselPhase.value-2);
+    if(hasSavings())
+    {
+      getAdjustedBanking(carrouselPhase.value-2);
+    }
+    clearInterval(Id_destroy.value);
+    is_playing.value=false;
   }
   forceRender();
   carrouselPhase.value+=1;
@@ -184,34 +198,19 @@ const getBanking=function(){
 
 const setupChart=function()
 {
-  if(show_tuto.value==true)
-  {
-    tutoPhase.value=0;
-    MustPopTutorial.value=true;
-    MustAnimate.value=false;
-  }
   if(getPopObligation()==false)//there is more than just banking to display : do not pop user and proceed computations
   {
-    if(show_tuto.value==false)
-    {
-      displayHelp();//immediately warn user
-    }
     display_init_credit();//in all cases, display initial credit and banking if any
     if(simu.value.events.length>0)//there are some events to display, the periodic function must be started tuto or not (code inhibited in case tuto is active)
     {
+      is_playing.value=true;
       Id_destroy.value=setInterval(switchDataDisplay,100);
     }
   }
 }
 
 onBeforeMount(setupChart);
-const launchTutoAnimation=function()
-{
-  tutoPhase.value=2;
-  MustPopTutorial.value=false;
-  MustAnimate.value=true;
-  forceRender();
-}
+
 
 
 const getTime = function () {
@@ -276,8 +275,9 @@ var chartOptions = {
     width: '100%',
     type: 'line',
     zoom: {
-      enabled: true,
+      enabled: false,
     },
+    toolbar:{show:false},
     animations: {
         enabled: false,
         easing: 'easeinout',
@@ -298,13 +298,6 @@ var chartOptions = {
   },
   stroke: {
     curve: 'straight',
-  },
-  title: {
-    style:{
-      color:'#b4c8d6',
-    },
-    text: transStr(stringsIDs.str_graph_title),
-    align: 'center',
   },
 
   xaxis: {
@@ -395,25 +388,7 @@ const getPopObligation = function () {
   }
 }
 
-const displayHelp=function(){
-  if(show_tuto.value==true)
-  {
-    return;
-  }
-  if(simu.value.events.length>0)
-  {
-    if(MustAnimate.value==true)
-    {
-      $q.notify({    color: 'green-4',    textColor: 'black',position:'top', message: transStr(stringsIDs.str_graph_indication), actions: [
-      { icon: 'close', color: 'white', round: true }      ] });
-    }
-    else
-    {
-      $q.notify({    color: 'green-4',    textColor: 'black',position:'top', message: transStr(stringsIDs.str_graph_indication_2), actions: [
-      { icon: 'close', color: 'white', round: true }      ] });
-    }
-  }
-}
+
 const destroy_periodic=function(){
   clearInterval(Id_destroy.value);
 }
