@@ -251,6 +251,19 @@ export enum stringsIDs {
   str_tuto_chart_cpmlnt_5=215,
   str_tuto_chart_cpmlnt_6=216,
   str_tuto_chart_cpmlnt_7=217,
+  str_tuto_save_cap_1=218,
+  str_tuto_save_cap_2=219,
+  str_tuto_save_cap_3=220,
+  str_tuto_save_en_intro=221,
+  str_tuto_save_en_1=222,
+  str_tuto_save_en_2=223,
+  str_tuto_save_proc_intro=224,
+  str_tuto_save_proc_1=225,
+  str_tuto_save_proc_2=226,
+  str_tuto_save_proc_3=227,
+  str_tuto_save_proc_4=228,
+  str_tuto_save_proc_5=229,
+  str_tuto_save_proc_6=230,
 };
 
 const translatedStrs=ref(
@@ -474,8 +487,8 @@ const translatedStrs=ref(
     ['fermez le tuto',
      'close tutorial'],
 
-    ['Bienvenue dans l\'onglet épargne ! Vous pouvez ici renseigner le montant de votre épargne actuelle, vos capacités d\'épargne mensuelle et annuelle, ainsi que des entrées/sorties d\'argent exceptionelles. La première étape est d\'ajouter un compte (même sans argent dessus) car votre capacité d\'épargne ainsi que les entrées/sorties exceptionnelles sont rattachées à un compte. Touchez l\'écran pour en savoir plus.',
-     'Welcome to the bank tab ! This is were you can set up you current banking situation and add some monthly and yearly savings capacity. You can also plan some exceptional incomes/outcomes. The first step is to set up at least one account because saving capacity and exceptionnal income/outcomes depend on an account. Tap screen to learn more !'],
+    ['Vous pouvez ici renseigner : ',
+     'This is were you can set up :'],
 
      ['Une fois que vous aurez créé un ou plusieurs comptes, vous pourrez ajouter des épargnes mensuelles ou annuelles vers ce compte. Vous pouvez mettre une date de fin à ces épargnes, par exemple pour en modifier le montant en en ajoutant une nouvelle qui commencera à la date de fin de la précédente, avec un nouveau montant. Si aucune date de fin n\'est renseignée, l\'épargne est considérée infinie à partir de la date de départ. Touchez l\'écran pour en savoir plus.',
       'Once you will have created one or more accounts, you will be able to add monthly or yearly savings capacities. You can set up an end date to these savings capacity, in order to, for instance, modify the amount save by creating a new saving capacity that starts when the previous one ends, with a different amount saved. If no end date is set up, the periodic saving is considered infinite from strating date. Tap screen to learn more !'],
@@ -601,6 +614,44 @@ const translatedStrs=ref(
     ['Les opérations seront successivement affichées sous forme d\'annimation. Une fois l\'annimation terminée, vous pourrez la relancer en cliquant sur ce bouton, masqué pendant l\'annimation:',
      'Operations will be displayed as an animation. Once the annimation finished, you can replay it  by clicking this button, masked during animation:'],
     ['Essayons ensemble avec un jeu de données spécial tuto. Touchez l\'écran pour commencer','Let\'s try it together with a fake simulation. Tap screen to start'],
+
+    ['Epargne actuelle',
+     'Current banking accounts amounts'],
+
+     ['Capacités d\'épargne mensuelle/annuelle',
+      'Monthly/yearly savings capacity.'],
+
+     ['Entrées/sorties d\'argent exceptionelles.',
+      'Exceptional incomes/outcomes.'],
+
+     ['Cela permet :',
+      'It enables : '],
+
+    ['Rachat de votre crédit avec épargne',
+     'Loan rebuy with your savings'],
+
+    ['La projection dans l\'onglet graphique',
+     'Savings forecast in the chart tab'
+    ],
+
+    ['Voici comment procéder :',
+     'Here is the process :'],
+
+     ['Renseignez au moins un compte','Set up at least one account'],
+
+     ['Il peut être vide et avoir une rentabilité nulle','It can be empty and have no profitability'],
+
+     ['[Optionel] Saisissez vos capacités d\'épargne mensuelle et/ou annuelle',
+      '[Optional] Set up your monthly and/or yearly saving capacity'],
+
+     ['Il est possible d\'en ajouter plusieurs sur un même compte.',
+      'Many entries are possible on a given account'],
+
+     ['[Optionel] Renseignez vos entrées/sorties exceptionnelles','[Optional] Set up exceptional incomes/outcomes'],
+
+     ['Exemple : planifiez l\'achat/vente de votre véhicule','Example : plan your next car purchase/sale']
+
+
 ]);
 
 export const getLangId=function()

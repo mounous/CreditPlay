@@ -16,7 +16,7 @@ import { ref, onBeforeMount, onBeforeUnmount } from 'vue'
 
 import { stringsIDs,transStr } from 'src/stores/languages';
 var Id_destroy=ref();
-const emit=defineEmits(['process-finished']);
+
 
 const roll =function()
 {

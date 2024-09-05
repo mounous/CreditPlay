@@ -2,7 +2,10 @@
   <accountForm v-if="displayAccountForm==true"  @account-added="[displayAccountForm=false,mustAlertChart=true]" @account-aborted="displayAccountForm=false"></accountForm>
   <periodicSavingsForm v-if="displayPSForm==true" @ps-added="[displayPSForm=false,mustAlertChart=true]" @ps-aborted="displayPSForm=false"></periodicSavingsForm>
   <singleIOFrom v-if="displaySIOForm==true" @sio-added="[displaySIOForm=false,mustAlertChart=true]" @sio-aborted="displaySIOForm=false"></singleIOFrom>
-  <q-page  @click="[tutoPhase<5 ?tutoPhase++:tutoPhase=5,ScrollDown()]">
+  <q-page  @click="[tutoPhase==0 ?tutoPhase=0:tutoPhase<5 ?tutoPhase++: tutoPhase=5,ScrollDown()]">
+    <q-page-sticky position="top-right" :offset="[0, 0]" style="z-index:3">
+      <q-icon name="help" size="x-large" color="white" class="q-mt-md q-mr-md" v-if="show_tuto==false" @click="[MustPopTutorial=true,show_tuto=true,tutoPhase=0]"></q-icon>
+   </q-page-sticky>
   <div class="full-height column justify-arround content-center" style="display: flex; width: 100%; height: 100%;" v-touch-swipe.mouse.left.right="handleSwipeExt">
     <q-card  v-if="(show_tuto==true && tutoPhase>=3)||show_tuto==false" class="bg-grey-9 my-card q-mt-md" style="display: flex;width: 100%;align-items:flex-start;justify-content: center;align-content: center">
       <div style="display: flex;flex-direction: column;width: 100%;">
@@ -113,12 +116,14 @@
         </div>
       </div >
     </q-card>
-    <div  v-if="show_tuto==true" ref="MyTutoSentance">
+    <div  v-if="show_tuto==true" style="display: flex;flex-direction: column;align-items: center;align-content: center;justify-content: center;justify-items: center;">
       <th  v-if="show_tuto==true && tutoPhase==5" class="q-ma-md" style="color: white;font-size:20px;">{{transStr(stringsIDs.str_tuto_bank_6)}}</th>
       <th  v-if="show_tuto==true && tutoPhase==4" class="q-ma-md" style="color: white;font-size:20px;">{{transStr(stringsIDs.str_tuto_bank_5)}}</th>
       <th  v-if="show_tuto==true && tutoPhase==3" class="q-ma-md" style="color: white;font-size:20px;">{{transStr(stringsIDs.str_tuto_bank_4)}}</th>
+      <videoPlayer v-if="show_tuto==true &&(tutoPhase==5)" class="q-ma-md" color="blue-grey-8" :name="stringsIDs.str_savings_help"></videoPlayer>
+      <q-btn v-if="show_tuto==true &&(tutoPhase==5)" class="q-ma-md" color="blue-grey-8" :label=transStr(stringsIDs.str_tuto_chart_5) @click="[show_tuto=false,tutoPhase=0]"></q-btn>
     </div>
-
+    <div  v-if="show_tuto==true" ref="MyTutoSentance" ></div>
   </div>
 
 
@@ -172,15 +177,12 @@
   </q-page>
   <q-dialog v-if="show_tuto==true && tutoPhase==0" v-model="MustPopTutorial"   cover transition-show="scale" transition-hide="scale" maximized full-width  auto-close  v-on:before-hide="[tutoPhase=1,MustPopTutorial=true]"
     style="background-color: black;"   >
-      <th class="q-ma-md" style="color: white;font-size:20px;">{{transStr(stringsIDs.str_tuto_bank_1)}}</th>
+    <BankPurpose></BankPurpose>
   </q-dialog>
-  <q-dialog v-if="show_tuto==true && tutoPhase==1" v-model="MustPopTutorial"   cover transition-show="scale" transition-hide="scale" maximized full-width  auto-close  v-on:before-hide="[tutoPhase=2,MustPopTutorial=true]"
+
+  <q-dialog v-if="show_tuto==true && tutoPhase==1" v-model="MustPopTutorial"   cover transition-show="scale" transition-hide="scale" maximized full-width  auto-close  v-on:before-hide="[tutoPhase=3,MustPopTutorial=true]"
     style="background-color: black;"   >
-      <th class="q-ma-md" style="color: white;font-size:20px;">{{transStr(stringsIDs.str_tuto_bank_2)}}</th>
-  </q-dialog>
-  <q-dialog v-if="show_tuto==true && tutoPhase==2" v-model="MustPopTutorial"   cover transition-show="scale" transition-hide="scale" maximized full-width  auto-close  v-on:before-hide="[tutoPhase=3,MustPopTutorial=true]"
-    style="background-color: black;"   >
-      <th class="q-ma-md" style="color: white;font-size:20px;">{{transStr(stringsIDs.str_tuto_bank_3)}}</th>
+    <BankExplainer></BankExplainer>
   </q-dialog>
 </template>
 
@@ -199,6 +201,9 @@ import {transStr,stringsIDs,transoptSaveP,transSt,sentancesIDs,transSIOspecial} 
 import { formatnumber } from 'src/utils/string_utils';
 import { getCurrencySymbol } from 'src/stores/currencies';
 import {mustAlertChart} from '../stores/store'
+import videoPlayer from '../components/videoPlayer.vue';
+import BankExplainer from 'src/components/BankExplainer.vue';
+import BankPurpose from 'src/components/BankPurpose.vue';
 const { getScrollTarget, setVerticalScrollPosition } = scroll
 var MustPopTutorial=ref(show_tuto.value==true?true:false);
 
