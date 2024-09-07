@@ -8,9 +8,9 @@ export const simu=ref({
   credit:{
     has_been_rebougth:false,
     mensuality:0,
-    amount:0,
+    amount:150000,
     duration_m:0,
-    rate:0,
+    rate:3.0,
     startingDate:'',
     amort:[],
     total_cost:0,

@@ -125,22 +125,22 @@
             <p>{{ transStr(stringsIDs.str_indic_penalties) }}</p>
           </div>
           <div class="row" style="display: flex;align-content: center;">
-            <div style="flex:1"></div>
+
             <div style="flex:4;align-items: center;align-content: center;">
               <q-input ref="myPenalties" class="q-ma-md" style="font-size: x-large;" v-model="penalties_no_unit"
-                type="number" lazy-rules
+                type="number" lazy-rules :suffix="event_.rebuyPenaltiesType == getCurrencySymbol() ?getCurrencySymbol():'%'"
                 @update:model-value="event_.rebuyPenaltiesType == getCurrencySymbol() ? event_.rebuyPenalties_abs = Number(penalties_no_unit) : event_.rebuyPenalties = Number(penalties_no_unit)"
                 :rules="[(val) => (val >= 0.0) || transStr(stringsIDs.str_penalties_rule)]" bg-color="blue-grey-8"
                 outlined clearable @keyup.enter="penatlies_nxt.click()"></q-input>
             </div>
             <div style="flex: 2;align-items: center;align-content: center;;">
               <q-btn-toggle style="font-size: xx-large;" class="q-ma-md" name="durationUnits"
-                v-model="event_.rebuyPenaltiesType" unelevated size="20px" glossy color=black :options="[
+                v-model="event_.rebuyPenaltiesType" unelevated size="20px" glossy color="blue-grey-20" toggle-color="blue-grey-4" :options="[
                   { label: getCurrencySymbol(), value: getCurrencySymbol() },
                   { label: '%', value: '%' }
                 ]" @update:model-value="[penalties_no_unit = 0, event_.rebuyPenalties = 0, event_.rebuyPenalties_abs = 0]" />
             </div>
-            <div style="flex:1"></div>
+
           </div>
         </div>
         <div class="q-ma-md" style="display:flex; width: 95%;">

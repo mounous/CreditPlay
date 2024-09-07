@@ -172,7 +172,7 @@ var mustPopaddSIO=ref(false);
 const $q=useQuasar();
 var mySioForm = ref();
 var currentSlide = ref('sioType');
-const _single_io =ref({account:'',title: '', type:BANK_SIO_TYPE_IN, amount:0,year:0,month:0,date:''});
+const _single_io =ref({account:'',title: '', type:BANK_SIO_TYPE_IN, amount:1000,year:0,month:0,date:''});
 const emit = defineEmits(['sio-added','sio-aborted']);
 const addElementToSingleIO=function(force=false){
   var Y=Number(_single_io.value.date.split('/')[2]);

@@ -97,7 +97,7 @@ var myProfit=ref();
 var profit_nxt=ref();
 var myAccountForm = ref();
 var currentSlide = ref('acountName');
-const _account = ref({ title: '', amount: 0.0, rate: 0.0 });
+const _account = ref({ title: '', amount: 100.0, rate: 3.0 });
 const emit = defineEmits(['account-added', 'account-aborted']);
 const addElementToAccounts = function () {
   if (_account.value.amount < 0) {
