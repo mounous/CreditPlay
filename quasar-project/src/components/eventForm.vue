@@ -89,6 +89,12 @@
               </div>
               <div style="flex:1"></div>
             </div>
+            <div v-if="event_.type!=DEFAULT_MODVAL && event_.type!=DEFAULT_EVENT_TYPE" style="display: flex;flex-direction: row; align-items: center;align-content: center;" class="q-mb-md">
+              <q-icon v-if="event_.type==EVT_TYPE_MOD_MENS_DOWN" color="orange" name="warning" class="q-mr-md"> </q-icon>
+              <th v-if="event_.type==EVT_TYPE_MOD_MENS_DOWN" style="font-size: medium;" > {{ transStr(stringsIDs.str_mod_down_consequence) }}</th>
+              <q-icon v-if="event_.type==EVT_TYPE_MOD_MENS_UP" color="green" name="check"  class="q-mr-md"> </q-icon>
+              <th v-if="event_.type==EVT_TYPE_MOD_MENS_UP" style="font-size: medium;" > {{ transStr(stringsIDs.str_mod_up_consequence) }}</th>
+              </div>
             <div class="row" style="display: flex;">
               <div style="flex:1"></div>
               <div style="flex:4">
@@ -394,7 +400,7 @@ import { apply_events_chain, build_event_name } from '../utils/credit_utility.js
 import { provideRebuyOptions } from '../utils/bank_utility'
 import { simu } from 'stores/store';
 import {
-  getLastMensuality, getEarliestNewEventDate, EVT_TYPE_REBUY_SAVINGS, EVT_META_TYPE_MOD, EVT_META_TYPE_REBUY,
+  getLastMensuality, getEarliestNewEventDate, EVT_TYPE_REBUY_SAVINGS, EVT_META_TYPE_MOD, EVT_META_TYPE_REBUY,EVT_TYPE_MOD_MENS_DOWN,EVT_TYPE_MOD_MENS_UP,
   provideModOptions, returnBaseData, EVT_TYPE_REBUY_CREDIT
 } from '../utils/credit_utility'
 const default_month_str = transStr(stringsIDs.str_sel_month);

@@ -268,6 +268,8 @@ export enum stringsIDs {
   str_tuto_mem_content_2=232,
   str_tuto_mem_content_3=233,
   str_tuto_mem_content_4=234,
+  str_mod_down_consequence=235,
+  str_mod_up_consequence=236,
 };
 
 const translatedStrs=ref(
@@ -659,6 +661,10 @@ const translatedStrs=ref(
     ['Opérations (modulations, rachats)','Operations (modulations, rebuys)'],
     ['Epargne','Savings'],
     ['Le nombre de sauvegardes est illimité.','You can save unlimited number of simulations'],
+
+    ['Augmentation du coût total du crédit','Loan total cost will increase'],
+
+    ['Diminution le coût total du crédit','Loan total cost will decrease'],
 ]);
 
 export const getLangId=function()
