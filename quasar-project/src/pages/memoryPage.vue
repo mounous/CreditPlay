@@ -1,12 +1,14 @@
 <template>
-  <q-page v-touch-swipe.mouse.left.right="handleSwipeExt" style="display: flex; " @click="HandleClick()" :key="tutoPhase">
-
+  <q-page v-touch-swipe.mouse.left.right="handleSwipeExt" style="display: flex; " :key="tutoPhase">
+    <q-page-sticky position="top-right" :offset="[0, 0]" style="z-index:3">
+      <q-icon name="help" size="x-large" color="white" class="q-mt-md q-mr-md" v-if="show_tuto==false" @click="[show_tuto=true,tutoPhase=0]"></q-icon>
+   </q-page-sticky>
     <div
       style="flex-direction: column;width: 100%;">
       <div class="col q-mt-md" style="height: 60%;">
 
         <q-scroll-area style="height:100%;"  ref="scrollAreaRef" :key="tutoPhase">
-          <q-list class="bg-primary q-ma-md" separator bordered @click.stop>
+          <q-list v-if="listSave.length!=0" class="bg-primary q-ma-md" separator bordered @click.stop>
             <q-item v-for="item in listSave" :key="item.id" clickable
               @click="selected_id == item.id ? selected_id = DEFAULT_ID : selected_id = item.id" v-ripple
               :active="selected_id == item.id" active-class="bg-blue-grey-8 text-black">
@@ -19,14 +21,15 @@
               </q-item-section>
             </q-item>
           </q-list>
-          <div  v-if="show_tuto==true" class="q-ma-md">
+          <div  v-if="show_tuto==true" class="q-ma-md" style="display: flex;flex-direction: column;align-items: center;align-content: center;">
             <th  v-if="show_tuto==true && tutoPhase==0" class="q-ma-md" style="color: white;font-size:17px;">{{transStr(stringsIDs.str_tuto_mem_1)}}</th>
-            <th  v-if="show_tuto==true && tutoPhase==1" class="q-ma-md" style="color: white;font-size:17px;">{{transStr(stringsIDs.str_tuto_mem_2)}}</th>
+            <SaveContent v-if="show_tuto==true && tutoPhase==1"></SaveContent>
             <th  v-if="show_tuto==true && tutoPhase==2" class="q-ma-md" style="color: white;font-size:17px;">{{transStr(stringsIDs.str_tuto_mem_3)}}</th>
             <th  v-if="show_tuto==true && tutoPhase==3" class="q-ma-md" style="color: white;font-size:17px;">{{transStr(stringsIDs.str_tuto_mem_4)}}</th>
             <th  v-if="show_tuto==true && tutoPhase==4" class="q-ma-md" style="color: white;font-size:17px;">{{transStr(stringsIDs.str_tuto_mem_5)}}</th>
             <th  v-if="show_tuto==true && tutoPhase==5" class="q-ma-md" style="color: white;font-size:17px;">{{transStr(stringsIDs.str_tuto_mem_6)}}</th>
             <th  v-if="show_tuto==true && tutoPhase==6" class="q-ma-md" style="color: white;font-size:17px;">{{transStr(stringsIDs.str_tuto_mem_7)}}</th>
+            <q-btn v-if="show_tuto==true && tutoPhase!=2 && tutoPhase!=4  && tutoPhase!=5" class="q-ma-md" label=">>" rounded color="blue-grey-8" @click="HandleClick()"></q-btn>
           </div>
 
         </q-scroll-area>
@@ -57,7 +60,7 @@
         <q-input class="q-ma-md" v-model="currentName" @keyup.enter="saveCurrentData"></q-input>
         <q-btn class="q-ma-md" :label=transStr(stringsIDs.str_pop_simu_default_name) @click="saveCurrentData" :disable="show_tuto==true"></q-btn>
         <q-btn class="q-ma-md" :label=transStr(stringsIDs.str_pop_simu_custom_name) @click="saveCurrentData"
-          :disable="isNameAlreadyInUse(currentName)"></q-btn>
+          :disable="isNameAlreadyInUse(currentName) || (show_tuto==true && currentName=='')"></q-btn>
       </q-card>
     </q-dialog>
   </q-page>
@@ -72,6 +75,7 @@ import { useRouter } from 'vue-router';
 import { targetPage } from '../utils/swipe_utils.js'
 import { transStr, stringsIDs } from 'src/stores/languages';
 import {mustAlertChart} from '../stores/store'
+import SaveContent from 'src/components/SaveContent.vue';
 
 var scrollAreaRef=ref();
 const DEFAULT_ID = -1;
@@ -108,7 +112,21 @@ const HandleClick=function()
     listSave.value.push({ simu: {}, bank: {}, id: 4, name: 'Simulation 4', startFormFilled: true,date : date.toLocaleDateString()+' ('+date.getHours().toString()+':'+date.getMinutes().toString()+':'+date.getSeconds().toString()+')' });
   }
   tutoPhase.value++;
+  if(tutoPhase.value==7)
+  {
+    show_tuto.value=false;
+    tutoPhase.value=0;
+    if (LocalStorage.has('listSave'))
+    {
+      listSave.value = LocalStorage.getItem('listSave');
+    }
+    else
+    {
+      listSave.value=[];
+    }
+  }
   nextTick(scrollDownTuto);
+
 }
 const saveCurrentData = function () {
   var date = new Date();
@@ -121,8 +139,6 @@ const saveCurrentData = function () {
   }
   //generate unique name
   var nameSim = '';
-
-
   if (currentName.value == DEFAULT_NAME) {
     nameSim = 'Simulation ' + (getHighestIndex() + 1).toString();
   }
@@ -230,7 +246,7 @@ const deleteData = function (selected_id) {
       else
       {
         tutoPhase.value++;
-        scrollDownTuto();
+        nextTick(scrollDownTuto);
       }
     }
     else {

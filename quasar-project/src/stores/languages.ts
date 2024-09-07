@@ -264,6 +264,10 @@ export enum stringsIDs {
   str_tuto_save_proc_4=228,
   str_tuto_save_proc_5=229,
   str_tuto_save_proc_6=230,
+  str_tuto_mem_content_1=231,
+  str_tuto_mem_content_2=232,
+  str_tuto_mem_content_3=233,
+  str_tuto_mem_content_4=234,
 };
 
 const translatedStrs=ref(
@@ -501,20 +505,20 @@ const translatedStrs=ref(
     ['Ajoutez votre capacité d\'épargne ici. Sur un même compte, vous pouvez ajouter plusieurs lignes d\'épargne qui commencent et finissent à des dates différentes. Pour rappel : une épargne sans date de fin est considérée infinie à partir de la date de création. Touchez ici pour en découvrir plus.',
      'Add your savings capacity here. On a given account, several periodic savings (that start and finish -if they do- at different dates). Reminder : if you do not set up the end date for a periodic saving it is considered infinite from start date. Tap here to discover more.'],
 
-    ['Ajoutez vos entrées et sorties exceptionelles ici. Pour rappel, si vous rachetez votre crédit avec vos économies, une dépense exceptionnelle est renseignée sur tous les comptes impactés (celui avec le taux le plus faible est vidé en priorité). Swipez à droite pour en découvrir plus !',
-     'Add here your exceptional incomes/outcomes. Reminder : if you rebuy your credit with your savings, an expetional outcome will automatically appear on every account impacted by the rebuy of your credit. (the less profitable account is emptyed first). Swipe right to discover more !'],
+    ['Ajoutez vos entrées/sorties exceptionelles ici. Si vous rachetez votre crédit avec vos économies, une dépense exceptionnelle est renseignée sur tous les comptes impactés (celui avec le taux le plus faible est vidé en priorité).',
+     'Add here your exceptional incomes/outcomes. Reminder : if you rebuy your credit with your savings, an expetional outcome will automatically appear on every account impacted by the rebuy of your credit. (the less profitable account is emptyed first).'],
 
-    ['Bienvenue dans l\'onglet mémoire ! Vous pouvez ici gérer vos simulations sauvegardées. Sauvegarder vos simulation vous permet de les restaurer et/ou de les modifier entre deux utilisations de l\application. Touchez l\'écran pour en savoir plus !',
-     'Welcome to the memory tab ! You can manage saved simulations here. Save your simulations allows you to restore and/or modify them between two application usage. Tap screen to learn more !' ],
+    ['Vous pouvez ici gérer vos simulations sauvegardées. Sauvegarder vos simulations vous permet de les restaurer et/ou de les modifier entre deux utilisations de l\'application.',
+     'You can manage saved simulations here. Save your simulations allows you to restore and/or modify them between two application usage.' ],
 
-    ['Votre sauvegarde de simulation contient votre crédit initial, vos opérations (rachats, modulations) et vos données bancaires. Vous pouvez nommer votre sauvegarde pour la retrouver ultérieurement. Le nombre de sauvegardes est illimité. Touchez l\'écran pour en savoir plus !',
-     'When you save a simulation, your initial credit, your operations (rebuys, modulations) and your bank data are saved. You can name your saved simulation in order to find it easily afterwards. The number of saved simulations is unlimited. Tap screen to discover more !' ],
+    ['Votre sauvegarde de simulation contient :',
+     'Your saved simulation contains :' ],
 
     ['Voici un ensemble de simulations sauvegardées. Sauvegardez notre exemple avec le nom de votre choix. Pour ce faire cliquez sur "Savergarder la simulation en cours" puis renseignez un nom, enfin, sélectionnez "Ajoutez un nom".',
      'Here is a set of saved simulations. Save the current simulation with a the name of your choice. To do so, click "Save current simulation", then set a name and click "Custom name".' ],
 
-    ['Note : si vous aviez choisi "Nom par défaut" la simulation aurait été sauvegardée sous le nom "Simulation x", avec x un nombre. cliquez sur le texte pour en savoir plus !',
-     'Note : if you had chosen "Default name", simulation would have been saved as "Simulation x", with x being a number. Tap this text to discover more !' ],
+    ['Note : si vous aviez choisi "Nom par défaut" la simulation aurait été sauvegardée sous le nom "Simulation x", avec x un nombre.',
+     'Note : if you had chosen "Default name", simulation would have been saved as "Simulation x", with x being a number.' ],
 
     ['Maintenant, supprimez la simulation que vous venez de sauvegarder. Pour ce faire, cliquez sur l\'icône corbeille de la simulation.',
      'Now, delete the simulation you just saved. To do so, click on trash icon of the simulation you just saved.'  ],
@@ -522,8 +526,8 @@ const translatedStrs=ref(
     ['Maintenant, supprimez toutes les sauvegardes de simulation . Pour ce faire, cliquez sur " Tout supprimer".',
      'Now, delete all saved simulations, to do so, press "Delete All".' ],
 
-    ['Bravo ! Vous pouvez restaurer une simulation sauvegardée en la sélectionnant et en cliquant sur "restaurer", ce qui vous amènera automatiquement sur l\'onglet "résumé". Comme vous connaissez déjà cet onglet, cette fonctionnalité est désactivée pout le tuto. Swipez vers la droite pour découvrir le dernier onglet !',
-     'Well done ! You can restore a saved simulation by selecting it and clicking "restore". This will automatically move to the summary tab. As we already know it, this feature is disabled in tuto mode. swipe right to discover last tab !'
+    ['Bravo ! Vous pouvez restaurer une simulation sauvegardée en la sélectionnant et en cliquant sur "restaurer", ce qui vous amènera automatiquement sur l\'onglet "résumé". Comme vous connaissez déjà cet onglet, cette fonctionnalité est désactivée pout le tuto.',
+     'Well done ! You can restore a saved simulation by selecting it and clicking "restore". This will automatically move to the summary tab. As we already know it, this feature is disabled in tuto mode.'
     ],
 
     ['Lancer le tuto',
@@ -630,7 +634,7 @@ const translatedStrs=ref(
     ['Rachat de votre crédit avec épargne',
      'Loan rebuy with your savings'],
 
-    ['La projection dans l\'onglet graphique',
+    ['Projection épargne dans le graphe',
      'Savings forecast in the chart tab'
     ],
 
@@ -649,9 +653,12 @@ const translatedStrs=ref(
 
      ['[Optionel] Renseignez vos entrées/sorties exceptionnelles','[Optional] Set up exceptional incomes/outcomes'],
 
-     ['Exemple : planifiez l\'achat/vente de votre véhicule','Example : plan your next car purchase/sale']
+     ['Exemple : planifiez l\'achat/vente de votre véhicule','Example : plan your next car purchase/sale'],
 
-
+    ['Credit initial','Initial loan'],
+    ['Opérations (modulations, rachats)','Operations (modulations, rebuys)'],
+    ['Epargne','Savings'],
+    ['Le nombre de sauvegardes est illimité.','You can save unlimited number of simulations'],
 ]);
 
 export const getLangId=function()
