@@ -20,17 +20,19 @@
           <q-markup-table class="my-table bg-grey-8" separator="cell" flat bordered @touchstart.stop>
             <thead>
               <tr>
-                <th span="1" style="width: 40%;font-weight: bold;font-size: larger;">{{transStr(stringsIDs.str_head_name)}}</th>
+                <th span="1" style="width: 30%;font-weight: bold;font-size: larger;">{{transStr(stringsIDs.str_head_name)}}</th>
                 <th span="1" style="width: 30%;font-weight: bold;font-size: larger;">{{transStr(stringsIDs.str_head_amount)}}</th>
                 <th span="1" style="width: 20%;font-weight: bold;font-size: larger;">{{transStr(stringsIDs.str_head_profit)}}</th>
+                <th span="1" style="width: 10%;font-weight: bold;font-size: larger;">{{transStr(stringsIDs.str_bank_display_creation)}}</th>
                 <th span="1" style="width: 10%"> </th>
               </tr>
             </thead>
             <tbody>
                 <tr style="font-size: larger" v-for="account in bank.accounts" :key="account.id">
                 <th style="font-size: larger">{{ account.title }}</th>
-                <th style="font-size: larger">{{ formatnumber(account.amount.toString())+' '+getCurrencySymbol() }}</th>
+                <th style="font-size: larger">{{ formatnumber(account.amount.toString())+' '+getCurrencySymbol()}}</th>
                 <th style="font-size: larger">{{ account.rate }}</th>
+                <th style="font-size: larger">{{ account.open_m+'/'+account.open_y}}</th>
                 <th ><q-btn dense size="s" icon="delete_forever" @click="[removeAccount(account),mustAlertChart=true]"></q-btn></th>
               </tr>
             </tbody>

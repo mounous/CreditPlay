@@ -137,55 +137,15 @@ const getSavingsEarlier=function()
 {
   var savingsEarlierY=DEFAULT_SAVINGS_EARLIER_YEAR;
   var savingsEarlierM=DEFAULT_SAVINGS_EARLIER_MONTH;
-  //search for a potentially periodic saving or single io date (can be earlier than credit starting date)
+  //search for earlier account creation
   for(var i=0;i<bank.value.accounts.length;i++)
   {
-    for(var ps=0;ps<bank.value.accounts[i].periodic_savings.length;ps++)
+    if(bank.value.accounts[i].open_y<=savingsEarlierY)
     {
-      if(bank.value.accounts[i].periodic_savings[ps].startYear<=savingsEarlierY)
+      savingsEarlierY=bank.value.accounts[i].open_y;
+      if(bank.value.accounts[i].open_m<=savingsEarlierM)
       {
-        savingsEarlierY=bank.value.accounts[i].periodic_savings[ps].startYear;
-        if(bank.value.accounts[i].periodic_savings[ps].startMonth<=savingsEarlierM)
-        {
-          savingsEarlierM=bank.value.accounts[i].periodic_savings[ps].startMonth;
-        }
-      }
-    }
-    for(var io=0;io<bank.value.accounts[i].single_in_out.length;io++)
-    {
-      if(bank.value.accounts[i].single_in_out[io].startYear<=savingsEarlierY)
-      {
-        savingsEarlierY=bank.value.accounts[i].single_in_out[io].startYear;
-        if(bank.value.accounts[i].single_in_out[io].startMonth<=savingsEarlierM)
-        {
-          savingsEarlierM=bank.value.accounts[i].single_in_out[io].startMonth;
-        }
-      }
-    }
-  }
-  //if not found, that is we only have some accounts but no operations, the savings earlier will be:
-  //  - today if no credit filled
-  //  - first credit mens if credit filled
-  if(savingsEarlierY==DEFAULT_SAVINGS_EARLIER_YEAR && savingsEarlierM==DEFAULT_SAVINGS_EARLIER_MONTH)
-  {
-    if(startFormFilled.value==true)
-    {
-      return[simu.value.credit.m,simu.value.credit.y];
-    }
-    else
-    {
-      return[new Date().getMonth()+1,new Date().getFullYear()];
-    }
-
-  }
-  //if a date was found, we still have to compare it to credit starting y and m because it credit starting y and m are earlier, this must be returned
-  else
-  {
-    if(startFormFilled.value==true)
-    {
-      if(compareDates(simu.value.credit.y,simu.value.credit.m,savingsEarlierY,savingsEarlierM)<0)
-      {
-        return[simu.value.credit.m,simu.value.credit.y];
+        savingsEarlierM=bank.value.accounts[i].open_m;
       }
     }
   }
@@ -254,17 +214,22 @@ const compute_savings=function(startY,startM,durationM,save=false)
     if(currentM==1)
     {
       for(var k=0;k<bank.value.accounts.length;k++)
-      {//if the rate is not null for a given account, compute interests
-        if(Number(bank.value.accounts[k].rate/100)!=0)
+      {
+        //do not consider accounts not created at current date
+        if(compareDates(bank.value.accounts[k].open_y,bank.value.accounts[k].open_m,currentY,currentM)<=0)
         {
-          //if there have been some money on the account, mean it
-          if(fictive_avg_month_spent[k]!=0)
+          //if the rate is not null for a given account, compute interests
+          if(Number(bank.value.accounts[k].rate/100)!=0)
           {
-            fictive_average[k]/=fictive_avg_month_spent[k];
+            //if there have been some money on the account, mean it
+            if(fictive_avg_month_spent[k]!=0)
+            {
+              fictive_average[k]/=fictive_avg_month_spent[k];
+            }
+            fictive_accounts[k]+=fictive_average[k]*Number(bank.value.accounts[k].rate/100);
+            fictive_average[k]=0;
+            fictive_avg_month_spent[k]=0;
           }
-          fictive_accounts[k]+=fictive_average[k]*Number(bank.value.accounts[k].rate/100);
-          fictive_average[k]=0;
-          fictive_avg_month_spent[k]=0;
         }
       }
     }
@@ -330,10 +295,11 @@ const provideRebuyOptions=function(evt_type,penalties,penalties_abs,penalties_ty
       return [transStr(stringsIDs.str_savings_empty)];
     }
     var nb_mens_compute=get_nb_mens_diff(Number(simu.value.credit.startingDate.split('/')[2]),Number(simu.value.credit.startingDate.split('/')[1]),getLatestMensuality().l_y,getLatestMensuality().l_m);
-    var computed=compute_savings(getSavingsEarlier()[1],getSavingsEarlier()[0],nb_mens_compute);
+    //var computed=compute_savings(getSavingsEarlier()[1],getSavingsEarlier()[0],nb_mens_compute);
+    var computed=compute_savings(Number(simu.value.credit.startingDate.split('/')[2]),Number(simu.value.credit.startingDate.split('/')[1]),nb_mens_compute);
     //in case a periodic saving or single io was set before credit start, we have to start comparing savings and credit when dates match
     // to do so, we have to scroll to an offset in computed that is aligned on first credit mensuality date
-    while(computed[j][0]!=simu.value.credit.amort[0][0] && j<computed.length)
+    while(j<computed.length &&  computed[j][0]!=simu.value.credit.amort[0][0] )
     {
       j++;
     }
