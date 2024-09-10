@@ -1,12 +1,12 @@
 <template>
-  <q-page  @click="handleClick"  v-touch-swipe.mouse.left.right="handleSwipeExt" :key="mustPop">
+  <q-page   v-touch-swipe.mouse.left.right="handleSwipeExt" >
     <q-page-sticky position="top-right" :offset="[0, 0]" style="z-index:3">
       <div style="display: flex;flex-direction: row;">
         <q-card v-if="show_tuto==true &&(tutoPhase==2)" style="background-color: black;">
           <th v-if="is_playing==true" style="color: white;font-size:15px;text-align: center;">{{transStr(stringsIDs.str_tuto_chart_3)}}</th>
           <th v-if="is_playing==false" style="color: white;font-size:15px;text-align: center;">{{transStr(stringsIDs.str_tuto_chart_4)}}</th>
         </q-card>
-        <q-btn icon="play_arrow" size="large" color="green" style="background-color:grey;" v-if="simu.events.length>0&&is_playing==false"  @click="relaunchAnimation"></q-btn>
+        <q-btn icon="play_arrow" size="large" color="green" style="background-color:grey;" v-if="(simu.events.length>0 || ((display_capital==true||display_interests==true) && display_savings==true))&&is_playing==false"  @click="relaunchAnimation"></q-btn>
 
 
 
@@ -32,6 +32,30 @@
 
   </q-page>
 
+  <q-dialog style="background-color: black;" fullscreen v-model="mustPop"  cover transition-show="scale" transition-hide="scale" maximized >
+    <div style="display: flex;flex-direction: column;align-items: center;align-content: center;justify-content: center;justify-items: center;">
+      <th  style=" color: white;font-size: 17px;text-align: center;">{{ transStr(stringsIDs.str_chart_choice) }}</th>
+      <q-list >
+        <q-item v-if="startFormFilled == true">
+          <q-item-section avatar> <q-checkbox v-model="display_capital" color="green" keep-color> </q-checkbox> </q-item-section>
+          <q-item-section>  <th  style=" color: white;font-size: 15px;text-align: left;">{{  transStr(stringsIDs.str_chart_display_capital) }}</th></q-item-section>
+        </q-item>
+        <q-item v-if="startFormFilled == true">
+          <q-item-section avatar> <q-checkbox v-model="display_interests" color="green" keep-color> </q-checkbox> </q-item-section>
+          <q-item-section> <th  style=" color: white;font-size: 15px;text-align: left;">{{ transStr(stringsIDs.str_chart_display_interests) }}</th></q-item-section>
+        </q-item>
+        <q-item v-if="hasSavings()">
+          <q-item-section avatar> <q-checkbox v-model="display_savings" color="green" keep-color> </q-checkbox> </q-item-section>
+          <q-item-section> <th  style=" color: white;font-size: 15px;text-align: left;">{{ transStr(stringsIDs.str_chart_display_savings) }}</th></q-item-section>
+          <q-item-section v-if="display_capital==false && display_interests==false && display_savings==true"> <th  class="q-mr-md q-ml-md" style=" color: white;font-size: 15px;text-align: left;">{{ transStr(stringsIDs.str_chart_display_for) }}</th></q-item-section>
+          <q-item-section v-if="display_capital==false && display_interests==false && display_savings==true">  <q-select  v-model="nbYearDisplaySavings" style="background-color: cadetblue;" :options="optionYears"></q-select></q-item-section>
+          <q-item-section v-if="display_capital==false && display_interests==false && display_savings==true"> <th  class="q-mr-md q-ml-md" style=" color: white;font-size: 15px;text-align: left;">{{ transStr(stringsIDs.str_chart_display_year) }}</th></q-item-section>
+        </q-item>
+      </q-list>
+      <q-btn label="OK" @click="[mustPop=false,setupChart()]" :disable="display_capital==false && display_interests==false && display_savings==false || (display_savings==true && nbYearDisplaySavings==0 && (display_capital==false && display_interests==false)) || (display_savings==false && nbYearDisplaySavings!=0 && (display_capital==false && display_interests==false)) " color="blue-grey-8"></q-btn>
+    </div>
+    </q-dialog>
+
   <q-dialog v-if="show_tuto==true && tutoPhase==0" v-model="MustPopTutorial"   cover transition-show="scale" transition-hide="scale" maximized full-width  auto-close  v-on:before-hide="[tutoPhase=1,forceRender(),MustPopTutorial=true]"
     style="background-color: black;"   >
     <div style="display: flex;flex-direction: column;align-items: center;justify-items: center;justify-content: center;">
@@ -46,7 +70,7 @@
               <q-icon v-if="elmnt.id==stringsIDs.str_tuto_chart_cpmlnt_4" :color=elmnt.color name="horizontal_rule" />
             </q-item-section>
             <q-item-section>
-              <th  class="q-ma-xs" style="color: white;font-size:15px;">{{transStr(elmnt.id)}}</th>
+              <th  class="q-ma-xs" style="text-align:left; color: white;font-size:15px;">{{transStr(elmnt.id)}}</th>
             </q-item-section>
           </q-item>
         </q-list>
@@ -78,7 +102,7 @@
 <script setup>
 
 import VueApexCharts from 'vue3-apexcharts'
-import { onBeforeMount,ref, nextTick, onBeforeUnmount} from 'vue';
+import { ref, nextTick, onBeforeUnmount, onMounted} from 'vue';
 import {apply_events_chain, computeMensuality, getChartXAxis,getLatestMensuality,computeCredit_init} from '../utils/credit_utility'
 import { GetColor,TYPE_CAPITAL,TYPE_INTERESTS,TYPE_SAVINGS } from 'src/utils/chart_utility';
 import { simu,bank, startFormFilled } from 'stores/store';
@@ -96,11 +120,18 @@ var listDisplayTuto=ref([ {color:'red',id:stringsIDs.str_tuto_chart_cpmlnt_1},
 var is_playing=ref(false);
 const router=useRouter();
 var MustPopTutorial=ref(false);
-var mustPop = ref(false)
+var mustPop = ref(false);
 var carrouselPhase=ref(0);
-var myspan=ref();
+var display_capital=ref(false);
+var display_interests=ref(false);
+var display_savings=ref(false);
 var tickCount=ref(0);
 var leftAnno=ref(false);
+const popselector=function()
+{
+  mustPop.value=true;
+}
+onMounted(popselector);
 const forceRender=async()=>{
   mustPop.value=true;
   await nextTick();
@@ -157,8 +188,17 @@ const relaunchAnimation=function()
   chartOptions.annotations.xaxis=[];
   chartOptions.annotations.yaxis=[];
   chartOptions.annotations.points=[];
-  series.splice(2,series.length-2);
-  chartOptions.colors.splice(2,chartOptions.colors.length-2);//remove savings
+  if(display_capital.value!=display_interests.value)
+  {
+    series.splice(1,series.length-1);
+    chartOptions.colors.splice(1,chartOptions.colors.length-1);//remove savings
+  }
+  else
+  {
+    series.splice(2,series.length-2);
+    chartOptions.colors.splice(2,chartOptions.colors.length-2);//remove savings
+  }
+
   Id_destroy.value=setInterval(switchDataDisplay,100);
   is_playing.value=true;
 }
@@ -168,14 +208,23 @@ var Id_destroy=ref();
 const display_init_credit=function()
 {
   chartOptions.colors=[];
-  series = [ {  name: transStr(stringsIDs.str_cap_left), data: getAmount(), }, {name: transStr(stringsIDs.str_interests_paid), data: getIntests(), }];
-  chartOptions.colors.push('#e2001a');
-  chartOptions.colors.push('#e2001a');
+  series = [];
+  if(display_capital.value==true)
+  {
+    series.push( {  name: transStr(stringsIDs.str_cap_left), data: getAmount(), });
+    chartOptions.colors.push('#e2001a');
+  }
+  if(display_interests.value==true)
+  {
+    series.push( {name: transStr(stringsIDs.str_interests_paid), data: getIntests(), });
+    chartOptions.colors.push('#e2001a');
+  }
+  carrouselPhase.value=1;
 }
 
 const switchDataDisplay=function()
 {
-  if(simu.value.events.length<1)
+  if(simu.value.events.length<1 && display_savings.value==false)
   {
     return;
   }
@@ -185,20 +234,27 @@ const switchDataDisplay=function()
     return;
   }
   tickCount.value=0;
-  if(carrouselPhase.value!=0 && carrouselPhase.value!=simu.value.events.length+1)//if not displayed all events , remove the event just displayed (2series)
+  if(display_capital.value==true||display_interests.value==true)
   {
-    series.splice(2,series.length-2);
-    chartOptions.colors.splice(2,chartOptions.colors.length-2);
-    getSingleEvent(carrouselPhase.value-1);
+    if(carrouselPhase.value!=0 && carrouselPhase.value!=simu.value.events.length+1)//if not displayed all events , remove the event just displayed (2series)
+    {
+      var nbBaseSeriesDiplay=display_capital.value==display_interests.value ? 2:1;
+      series.splice(nbBaseSeriesDiplay,series.length-nbBaseSeriesDiplay);
+      chartOptions.colors.splice(nbBaseSeriesDiplay,chartOptions.colors.length-nbBaseSeriesDiplay);
+      getSingleEvent(carrouselPhase.value-1);
+      if(display_savings.value==false && carrouselPhase.value==simu.value.events.length)
+      {
+        destroy_periodic();
+      }
+    }
   }
-  else if(carrouselPhase.value==simu.value.events.length+1)//when we displayed last event, do not remove, add savings
+  if(carrouselPhase.value==simu.value.events.length+1)//when we displayed last event, do not remove, add savings
   {
-    if(hasSavings())
+    if(display_savings.value==true)
     {
       getAdjustedBanking(carrouselPhase.value-2);
     }
-    clearInterval(Id_destroy.value);
-    is_playing.value=false;
+    destroy_periodic();
   }
   forceRender();
   carrouselPhase.value+=1;
@@ -213,9 +269,15 @@ const getSingleEvent=function(index)
     var extractData_interests=[];
     for(var j=0;j<simu.value.events[index].amortEvt.length;j++)
     {
-      extractData_capital.push(Math.round(simu.value.events[index].amortEvt[j][1]*100)/100);
-      extractData_interests.push(Math.round(simu.value.events[index].amortEvt[j][2]*100)/100);
-      if(simu.value.events[index].amortEvt[j][0]==transMonthName(simu.value.events[index].month)+'-'+simu.value.events[index].year.toString())
+      if(display_capital.value==true)
+      {
+        extractData_capital.push(Math.round(simu.value.events[index].amortEvt[j][1]*100)/100);
+      }
+      if(display_interests.value==true)
+      {
+        extractData_interests.push(Math.round(simu.value.events[index].amortEvt[j][2]*100)/100);
+      }
+      if(display_capital.value==true &&simu.value.events[index].amortEvt[j][0]==transMonthName(simu.value.events[index].month)+'-'+simu.value.events[index].year.toString())
       {
         evt_y=extractData_capital[extractData_capital.length-1];//store the capital to set a point on graph
         if(evt_y==0)//case of a rebuy,
@@ -223,11 +285,25 @@ const getSingleEvent=function(index)
           evt_y=extractData_capital[extractData_capital.length-2];
         }
       }
+      if(display_capital.value==false &&display_interests.value==true &&simu.value.events[index].amortEvt[j][0]==transMonthName(simu.value.events[index].month)+'-'+simu.value.events[index].year.toString())
+      {
+        evt_y=extractData_interests[extractData_interests.length-1];//store the interests to set a point on graph
+        if(evt_y==0)//case of a rebuy,
+        {
+          evt_y=extractData_interests[extractData_interests.length-2];
+        }
+      }
     }
-    series.push({name:simu.value.events[index].title,data:extractData_capital});
-    series.push({name:transStr(stringsIDs.str_interests_parenth)+simu.value.events[index].title+')',data:extractData_interests});
-    chartOptions.colors.push('#147280');
-    chartOptions.colors.push('#085a67');
+    if(display_capital.value==true)
+    {
+      series.push({name:simu.value.events[index].title,data:extractData_capital});
+      chartOptions.colors.push('#147280');
+    }
+    if(display_interests.value==true)
+    {
+      series.push({name:transStr(stringsIDs.str_interests_parenth)+simu.value.events[index].title+')',data:extractData_interests});
+      chartOptions.colors.push('#085a67');
+    }
     chartOptions.annotations.xaxis.push({x:transMonthName(simu.value.events[index].month)+'-'+simu.value.events[index].year.toString(),
                                          strokeDashArray: 0,
                                          borderColor: '#775DD0',
@@ -246,9 +322,9 @@ const getSingleEvent=function(index)
 }
 const getAdjustedBanking=function(specific_event=-1){
   //if a credit has already been computed, then display potential savings on the interval [credit start...Credit longest duration]
-  if( startFormFilled.value==true && hasSavings())//if some banking data exist, compute banking from credit start to the latest mensuality, potentially after a modulation
+  if( display_savings.value==true && hasSavings())//if some banking data exist, compute banking from credit start to the latest mensuality, potentially after a modulation
   {
-    if(nbYearDisplaySavings.value==0)//there was no popup to ask for the display of saving duration
+    if(display_capital.value==true||display_interests.value==true)
     {
       var credit_init_y=Number(simu.value.credit.startingDate.split('/')[2]);
       var credit_init_m=Number(simu.value.credit.startingDate.split('/')[1]);
@@ -257,14 +333,24 @@ const getAdjustedBanking=function(specific_event=-1){
       computeDisplaySavings(min_y,getSavingsEarlier()[0],Number_of_years_to_compute);
       getBanking(min_y,credit_init_m,Number_of_years_to_compute);
     }
+    else
+    {
+      var earlierY=getSavingsEarlier()[1];
+      var earlierM=getSavingsEarlier()[0];
+      computeDisplaySavings(earlierY,earlierM,Number(nbYearDisplaySavings.value));
+      getBanking();
+      chartOptions.xaxis.categories=getBankTime();
+    }
   }
-  //otherwise, the user will be aked in popup on how many years the savings have to be displayed
 }
 const getBanking=function(){
   //assume : the banking is already computed
-  while(bank.value.monthly_sum[0][0]!=simu.value.credit.amort[0][0] && 0!=bank.value.monthly_sum.length)
+  if(display_capital.value==true || display_interests.value==true)
   {
-    bank.value.monthly_sum.shift();
+    while(bank.value.monthly_sum[0][0]!=simu.value.credit.amort[0][0] && 0!=bank.value.monthly_sum.length)
+    {
+      bank.value.monthly_sum.shift();
+    }
   }
   if(bank.value.monthly_sum.length!=0)
   {
@@ -281,18 +367,25 @@ const getBanking=function(){
 
 const setupChart=function()
 {
-  if(getPopObligation()==false)//there is more than just banking to display : do not pop user and proceed computations
+  if(display_savings.value==true && display_capital.value==false && display_interests.value==false)
   {
+    displaySavingsOnly();
+  }
+  else
+  {
+    carrouselPhase.value=0;
     display_init_credit();//in all cases, display initial credit and banking if any
-    if(simu.value.events.length>0)//there are some events to display, the periodic function must be started tuto or not (code inhibited in case tuto is active)
+    if(simu.value.events.length>0 || display_savings.value==true)//there are some events to display, the periodic function must be started tuto or not (code inhibited in case tuto is active)
     {
+
       is_playing.value=true;
       Id_destroy.value=setInterval(switchDataDisplay,100);
     }
   }
+
 }
 
-onBeforeMount(setupChart);
+
 
 
 
@@ -428,14 +521,11 @@ var chartOptions = {
   annotations:{yaxis:[],xaxis:[],points:[]},
   legend:{show:false}
 };
-//https://apexcharts.com/docs/annotations/
-//https://apexcharts.com/docs/annotations/
-//https://apexcharts.com/docs/annotations/
-//https://apexcharts.com/docs/annotations/
+
 var onlydisplaySavings=ref(false);
 var nbYearDisplaySavings=ref('0');
 var graphMinDate = ref('1900/01');
-const sendSavingComputationOrder=function()
+const displaySavingsOnly=function()
 {
   series=[];
   onlydisplaySavings.value=true;
@@ -444,24 +534,11 @@ const sendSavingComputationOrder=function()
   computeDisplaySavings(earlierY,earlierM,Number(nbYearDisplaySavings.value));
   getBanking();
   chartOptions.xaxis.categories=getBankTime();
-  //chartOptions.xaxis.categories=getBankTime();
-  mustPop.value=false;
 }
 
 
 
 
-const getPopObligation = function () {
-  if (hasSavings() && (startFormFilled.value != true)) {
-    mustPop.value = true;
-    graphMinDate.value=getSavingsEarlier()[1].toString()+'/'+getSavingsEarlier()[0].toString();
-    return true;
-  }
-  else {
-    mustPop.value = false;
-    return false;
-  }
-}
 
 
 const destroy_periodic=function(){
@@ -476,5 +553,14 @@ const handleSwipeExt=function ({ evt, touch, mouse, direction, duration, distanc
   router.push(targetPage(direction,router.currentRoute.value.fullPath));
 }
 
-
+const getoptionSavingGraphDisplayY=function()
+{
+  var toreturn=[];
+  for(var i=0;i<100;i++)
+  {
+    toreturn.push(i.toString());
+  }
+  return toreturn;
+}
+var optionYears=ref(getoptionSavingGraphDisplayY());
 </script>
