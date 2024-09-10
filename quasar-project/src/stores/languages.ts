@@ -270,6 +270,13 @@ export enum stringsIDs {
   str_tuto_mem_content_4=234,
   str_mod_down_consequence=235,
   str_mod_up_consequence=236,
+  str_chart_choice=237,
+  str_chart_display_capital=238,
+  str_chart_display_interests=239,
+  str_chart_display_savings=240,
+  str_chart_display_for=241,
+  str_chart_display_year=242,
+  str_bank_display_creation=243,
 };
 
 const translatedStrs=ref(
@@ -665,6 +672,20 @@ const translatedStrs=ref(
     ['Augmentation du coût total du crédit','Loan total cost will increase'],
 
     ['Diminution le coût total du crédit','Loan total cost will decrease'],
+
+    ['Que souhaitez-vous afficher ? ','Choose displayed data :'],
+
+    ['Capital','Capital'],
+
+    ['Interêts','Interests'],
+
+    ['Epargne','Savings'],
+
+    ['sur','for'],
+
+    ['années','years'],
+
+    ['créé ', 'created ']
 ]);
 
 export const getLangId=function()

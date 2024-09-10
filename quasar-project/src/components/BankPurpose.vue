@@ -7,15 +7,15 @@
          <q-list dense>
            <q-item>
              <q-item-section avatar>  <q-icon color="green" name="check" /> </q-item-section>
-             <q-item-section> <th  class="q-ma-xs" style="color: white;font-size:15px;">{{transStr(stringsIDs.str_tuto_save_cap_1)}}</th> </q-item-section>
+             <q-item-section> <th  class="q-ma-xs" style="text-align:left; color: white;font-size:15px;">{{transStr(stringsIDs.str_tuto_save_cap_1)}}</th> </q-item-section>
            </q-item>
            <q-item>
              <q-item-section avatar>  <q-icon color="green" name="check" /> </q-item-section>
-             <q-item-section> <th  class="q-ma-xs" style="color: white;font-size:15px;">{{transStr(stringsIDs.str_tuto_save_cap_2)}}</th> </q-item-section>
+             <q-item-section> <th  class="q-ma-xs" style="text-align:left;color: white;font-size:15px;">{{transStr(stringsIDs.str_tuto_save_cap_2)}}</th> </q-item-section>
            </q-item>
            <q-item>
              <q-item-section avatar>  <q-icon color="green" name="check" /> </q-item-section>
-             <q-item-section> <th  class="q-ma-xs" style="color: white;font-size:15px;">{{transStr(stringsIDs.str_tuto_save_cap_3)}}</th> </q-item-section>
+             <q-item-section> <th  class="q-ma-xs" style="text-align:left;color: white;font-size:15px;">{{transStr(stringsIDs.str_tuto_save_cap_3)}}</th> </q-item-section>
            </q-item>
          </q-list>
         </div>
@@ -27,11 +27,11 @@
          <q-list dense >
            <q-item>
              <q-item-section avatar>  <q-icon color="green" name="check" /> </q-item-section>
-             <q-item-section> <th  class="q-ma-xs" style="color: white;font-size:15px;">{{transStr(stringsIDs.str_tuto_save_en_1)}}</th> </q-item-section>
+             <q-item-section> <th  class="q-ma-xs" style="text-align:left;color: white;font-size:15px;">{{transStr(stringsIDs.str_tuto_save_en_1)}}</th> </q-item-section>
            </q-item>
            <q-item>
              <q-item-section avatar>  <q-icon color="green" name="check" /> </q-item-section>
-             <q-item-section> <th  class="q-ma-xs" style="color: white;font-size:15px;">{{transStr(stringsIDs.str_tuto_save_en_2)}}</th> </q-item-section>
+             <q-item-section> <th  class="q-ma-xs" style="text-align:left;color: white;font-size:15px;">{{transStr(stringsIDs.str_tuto_save_en_2)}}</th> </q-item-section>
            </q-item>
          </q-list>
         </div>

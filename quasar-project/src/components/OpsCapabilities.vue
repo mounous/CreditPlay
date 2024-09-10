@@ -4,7 +4,7 @@
       <q-item v-for="i in capabilities" :key="i" clickable v-ripple>
 
         <q-item-section>
-          <div style="font-size: medium;color: white;">{{transStr(i.id)}}</div>
+          <div style="text-align:left;font-size: medium;color: white;">{{transStr(i.id)}}</div>
         </q-item-section>
         <q-item-section>
           <videoPlayer :name=i.vid_id></videoPlayer>
