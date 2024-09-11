@@ -26,7 +26,7 @@
       width=100%
       :options="chartOptions"
       :series="series"
-      :key="mustPop"
+
     ></VueApexCharts>
 
 
