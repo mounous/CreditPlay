@@ -1,5 +1,5 @@
 <template>
-  <q-page   v-touch-swipe.mouse.left.right="handleSwipeExt" >
+  <q-page   v-touch-swipe.mouse.left.right="handleSwipeExt" :key="mustPop">
     <q-page-sticky position="top-right" :offset="[0, 0]" style="z-index:3">
       <div style="display: flex;flex-direction: row;">
         <q-card v-if="show_tuto==true &&(tutoPhase==2)" style="background-color: black;">
