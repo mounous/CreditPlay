@@ -1,5 +1,5 @@
 <template>
-  <q-page   v-touch-swipe.mouse.left.right="handleSwipeExt" :key="mustPop">
+  <q-page   v-touch-swipe.mouse.left.right="handleSwipeExt" >
     <q-page-sticky position="top-right" :offset="[0, 0]" style="z-index:3">
       <div style="display: flex;flex-direction: row;">
         <q-card v-if="show_tuto==true &&(tutoPhase==2)" style="background-color: black;">
@@ -26,34 +26,47 @@
       width=100%
       :options="chartOptions"
       :series="series"
-
+      :key="mustPop"
     ></VueApexCharts>
 
 
   </q-page>
 
   <q-dialog style="background-color: black;" fullscreen v-model="mustPop"  cover transition-show="scale" transition-hide="scale" maximized >
-    <div style="display: flex;flex-direction: column;align-items: center;align-content: center;justify-content: center;justify-items: center;">
-      <th  style=" color: white;font-size: 17px;text-align: center;">{{ transStr(stringsIDs.str_chart_choice) }}</th>
-      <q-list >
-        <q-item v-if="startFormFilled == true">
-          <q-item-section avatar> <q-checkbox v-model="display_capital" color="green" keep-color> </q-checkbox> </q-item-section>
-          <q-item-section>  <th  style=" color: white;font-size: 15px;text-align: left;">{{  transStr(stringsIDs.str_chart_display_capital) }}</th></q-item-section>
-        </q-item>
-        <q-item v-if="startFormFilled == true">
-          <q-item-section avatar> <q-checkbox v-model="display_interests" color="green" keep-color> </q-checkbox> </q-item-section>
-          <q-item-section> <th  style=" color: white;font-size: 15px;text-align: left;">{{ transStr(stringsIDs.str_chart_display_interests) }}</th></q-item-section>
-        </q-item>
-        <q-item v-if="hasSavings()">
-          <q-item-section avatar> <q-checkbox v-model="display_savings" color="green" keep-color> </q-checkbox> </q-item-section>
-          <q-item-section> <th  style=" color: white;font-size: 15px;text-align: left;">{{ transStr(stringsIDs.str_chart_display_savings) }}</th></q-item-section>
-          <q-item-section v-if="display_capital==false && display_interests==false && display_savings==true"> <th  class="q-mr-md q-ml-md" style=" color: white;font-size: 15px;text-align: left;">{{ transStr(stringsIDs.str_chart_display_for) }}</th></q-item-section>
-          <q-item-section v-if="display_capital==false && display_interests==false && display_savings==true">  <q-select  v-model="nbYearDisplaySavings" style="background-color: cadetblue;" :options="optionYears"></q-select></q-item-section>
-          <q-item-section v-if="display_capital==false && display_interests==false && display_savings==true"> <th  class="q-mr-md q-ml-md" style=" color: white;font-size: 15px;text-align: left;">{{ transStr(stringsIDs.str_chart_display_year) }}</th></q-item-section>
-        </q-item>
-      </q-list>
-      <q-btn label="OK" @click="[mustPop=false,setupChart()]" :disable="display_capital==false && display_interests==false && display_savings==false || (display_savings==true && nbYearDisplaySavings==0 && (display_capital==false && display_interests==false)) || (display_savings==false && nbYearDisplaySavings!=0 && (display_capital==false && display_interests==false)) " color="blue-grey-8"></q-btn>
+    <div style="flex-direction: column;">
+    <div style="display: flex;flex-direction: row;justify-content: right;justify-items: right; height: 7%;">
+        <q-btn color="blue-grey-8" label="X" @click="moveToPrevious()"></q-btn>
     </div>
+
+    <div style="display: flex;flex-direction: column;align-items: center;align-content: center;justify-content: center;justify-items: center;height: 93%;">
+
+      <div style="display: flex;flex-direction: column;align-items: center;align-content: center;justify-content: center;justify-items: center;">
+        <th  style=" color: white;font-size: 17px;text-align: center;">{{ transStr(stringsIDs.str_chart_choice) }}</th>
+        <q-list bordered>
+          <q-item v-if="hasSavings() && startFormFilled==true">
+            <q-item-section avatar> <q-checkbox v-model="display_all" color="green" keep-color @update:model-value="display_all==true ? [display_capital=true,display_interests=true,display_savings=true]: null"> </q-checkbox> </q-item-section>
+            <q-item-section @click="[display_all=!display_all,display_all==true ? [display_capital=true,display_interests=true,display_savings=true]: null]">  <th   style=" color: white;font-size: 15px;text-align: left;">{{  transStr(stringsIDs.str_all) }}</th></q-item-section>
+          </q-item>
+          <q-item  v-if="startFormFilled == true" >
+            <q-item-section avatar> <q-checkbox v-model="display_capital" color="green" keep-color> </q-checkbox> </q-item-section>
+            <q-item-section @click="display_capital=!display_capital">  <th   style=" color: white;font-size: 15px;text-align: left;">{{  transStr(stringsIDs.str_chart_display_capital) }}</th></q-item-section>
+          </q-item>
+          <q-item v-if="startFormFilled == true">
+            <q-item-section avatar> <q-checkbox v-model="display_interests" color="green" keep-color> </q-checkbox> </q-item-section>
+            <q-item-section> <th @click="display_interests=!display_interests" style=" color: white;font-size: 15px;text-align: left;">{{ transStr(stringsIDs.str_chart_display_interests) }}</th></q-item-section>
+          </q-item>
+          <q-item v-if="hasSavings()">
+            <q-item-section avatar> <q-checkbox v-model="display_savings" color="green" keep-color> </q-checkbox> </q-item-section>
+            <q-item-section> <th @click="display_savings=!display_savings" style=" color: white;font-size: 15px;text-align: left;">{{ transStr(stringsIDs.str_chart_display_savings) }}</th></q-item-section>
+            <q-item-section v-if="display_capital==false && display_interests==false && display_savings==true"> <th  class="q-mr-md q-ml-md" style=" color: white;font-size: 15px;text-align: left;">{{ transStr(stringsIDs.str_chart_display_for) }}</th></q-item-section>
+            <q-item-section v-if="display_capital==false && display_interests==false && display_savings==true">  <q-select  v-model="nbYearDisplaySavings" style="background-color: cadetblue;" :options="optionYears"></q-select></q-item-section>
+            <q-item-section v-if="display_capital==false && display_interests==false && display_savings==true"> <th  class="q-mr-md q-ml-md" style=" color: white;font-size: 15px;text-align: left;">{{ transStr(stringsIDs.str_chart_display_year) }}</th></q-item-section>
+          </q-item>
+        </q-list>
+        <q-btn label="OK" @click="[mustPop=false,setupChart()]" :disable="display_capital==false && display_interests==false && display_savings==false || (display_savings==true && nbYearDisplaySavings==0 && (display_capital==false && display_interests==false)) || (display_savings==false && nbYearDisplaySavings!=0 && (display_capital==false && display_interests==false)) " color="blue-grey-8"></q-btn>
+      </div>
+    </div>
+  </div>
     </q-dialog>
 
   <q-dialog v-if="show_tuto==true && tutoPhase==0" v-model="MustPopTutorial"   cover transition-show="scale" transition-hide="scale" maximized full-width  auto-close  v-on:before-hide="[tutoPhase=1,forceRender(),MustPopTutorial=true]"
@@ -125,6 +138,10 @@ var carrouselPhase=ref(0);
 var display_capital=ref(false);
 var display_interests=ref(false);
 var display_savings=ref(false);
+var display_all=ref(false)
+var display_capital_save=ref(false);
+var display_interests_save=ref(false);
+var display_savings_save=ref(false);
 var tickCount=ref(0);
 var leftAnno=ref(false);
 const popselector=function()
@@ -160,6 +177,9 @@ const initChart=function(recompute_events=true)
 }
 const restoreState=function()
 {
+  display_capital.value= display_capital_save.value;
+  display_interests.value=display_interests_save.value;
+  display_savings.value=display_savings_save.value;
   show_tuto.value=false;
   clearChart();
   restoreTutoData();
@@ -169,6 +189,12 @@ const restoreState=function()
 }
 const initTutoData=function()
 {
+  display_capital_save.value=display_capital.value;
+  display_interests_save.value=display_interests.value;
+  display_savings_save.value=display_savings.value;
+  display_capital.value=true;
+  display_interests.value=true;
+  display_savings.value=true;
   clearChart(),
   saveTutoData();
   simu.value.events=[];
@@ -547,6 +573,10 @@ const destroy_periodic=function(){
 }
 onBeforeUnmount(destroy_periodic);
 
+const moveToPrevious=function()
+{
+  router.back();
+}
 const handleSwipeExt=function ({ evt, touch, mouse, direction, duration, distance })
 {
   destroy_periodic();

@@ -277,6 +277,7 @@ export enum stringsIDs {
   str_chart_display_for=241,
   str_chart_display_year=242,
   str_bank_display_creation=243,
+  str_all=244,
 };
 
 const translatedStrs=ref(
@@ -685,7 +686,9 @@ const translatedStrs=ref(
 
     ['années','years'],
 
-    ['créé ', 'created ']
+    ['créé ', 'created '],
+
+    ['Tout','All'],
 ]);
 
 export const getLangId=function()
