@@ -49,13 +49,18 @@ const restoreTutoData=function()
 }
 const injectCreditInTuto=function()
 {
-  simu.value.credit.amount=150000;
-  simu.value.credit.duration_m=240;
-  simu.value.credit.has_been_rebougth=false;
-  simu.value.credit.rate=3.25;
-  simu.value.credit.startingDate='11/08/2023';
-  simu.value.credit.y=2023;
-  simu.value.credit.m=8;
+  simu.value.credit= {
+    has_been_rebougth: false,
+    mensuality: 998.26,
+    amount: 176000,
+    duration_m: 240,
+    rate: 3.25,
+    startingDate: '16/08/2023',
+    amort: [],
+    total_cost: 63582.4,
+    y: 2023,
+    m: 8,
+  },
   computeMensuality();
   computeCredit_init();
 }
@@ -84,43 +89,35 @@ const feedTextTutoOps=function()
 
 }
 const populateBankTuto=function(){
-  bank.value={
+  bank.value=  {
     accounts: [
       {
-        title: 'MostProfit',        amount: 50000,        rate: '3',        single_in_out: [],
-        periodic_savings: [{amount: 320,account: 'MostProfit',type: 0, startMonth: 8,startYear: 2024,endMonth: 0,endYear: 0, },],
-        computedOverTime: [],
-      },
-      {
-        title: 'middleProfit',       amount: 14000,        rate: 1.6,
-        single_in_out: [{account: 'middleProfit',title: 'Sell car', type: 0, amount: 9100,date: '24/08/2028', month: 8, year: 2028,},],
-        periodic_savings: [{amount: 4500,account: 'middleProfit',type: 1,startMonth: 8,startYear: 2024, endMonth: 0,endYear: 0,}, ],
-        computedOverTime: [ ],
-      },
-      {
-        title: 'NoProfit',amount: 5000, rate: 0,single_in_out: [], periodic_savings: [ ],computedOverTime: [ ], }, ],  };
+        title: 'Livret A',amount: 100, rate: 3, single_in_out: [ ], periodic_savings: [{ amount: 190,
+        account: 'Livret A', type: 0, startMonth: 9, startYear: 2024, endMonth: 0, endYear: 0, } ], computedOverTime: [  ],
+        open_m: 8, open_y: 2024
+      }
+    ]
+  }
 }
 const populateEventsTuto=function()
 {
-  simu.value.events.push({    title: 'Modulation 1',    metaType: 0,    type: 1,    year_str: '2026',    month_str: transMonthName(11),    year: 2026,
-  month: 11,    id: 1,    selected: false,    new_mens: 1112.38,    mensDiff: -58,    modVal: '',    amortEvt: [],    rebuyVal: '',    reLoanDate: '',
-  reloanRate: 0,    rebuyPenaltiesType: '%',    rebuyPenalties: 0,    rebuyPenalties_abs: 0,    reloanDuration_m: 0,    savingsLeft: 0,    });
-
-  simu.value.events.push({      title: 'Modulation 2',      metaType: 0,      type: 0,      year_str: '2027',      month_str: transMonthName(8),      year: 2027,
-    month: 8,      id: 1,      selected: false,      new_mens: 1003.24,      mensDiff: 18,      modVal: '',      amortEvt: [],      rebuyVal: '',
-    reLoanDate: '',      reloanRate: 0,      rebuyPenaltiesType: '%',      rebuyPenalties: 0,      rebuyPenalties_abs: 0,      reloanDuration_m: 0,      savingsLeft: 0,
-  });
-
-
-  simu.value.events.push({    title: transevtmetaType(EVT_META_TYPE_REBUY)+' 1',    metaType: 1,    type: 1,    year_str: '2028',    month_str: transMonthName(10),
-    year: 2028,    month: 10,    id: 1,    selected: false,    new_mens: -1,    mensDiff: 0,    modVal: '',    amortEvt: [],    rebuyVal: '',    reLoanDate: '11/10/2028',
-    reloanRate: 1.25,    rebuyPenaltiesType: getCurrencySymbol(),    rebuyPenalties: 0,    rebuyPenalties_abs: 1500,    reloanDuration_m: 76,    savingsLeft: 0,
-  });
-  simu.value.events.push({
-    title: transevtmetaType(EVT_META_TYPE_REBUY)+' 2',    metaType: 1,    type: 0,    year_str: '2029',    month_str: transMonthName(5),    year: 2029,    month: 5,
-    id: 1,    selected: false,    new_mens: -1,    mensDiff: 0,    modVal: '',    amortEvt: [],    rebuyVal: '',    reLoanDate: '',    reloanRate: 0,
-    rebuyPenaltiesType: getCurrencySymbol(),    rebuyPenalties: 0,    rebuyPenalties_abs: 1500,    reloanDuration_m: 0,    savingsLeft: '25873.02',
-  });
+ simu.value.events=[
+    {
+      title: 'modulation 1', metaType: 0,  type: 1, year_str: '2024',  month_str: 'Octobre', year: 2024, month: 10, id: 1, selected: false,
+      new_mens: 1262.14, mensDiff: -60,  modVal: '', amortEvt: [], rebuyVal: '', reLoanDate: '', reloanRate: 0, rebuyPenaltiesType: '%',
+      rebuyPenalties: 0, rebuyPenalties_abs: 0, reloanDuration_m: 0, savingsLeft: 0
+    },
+    {
+      title: 'Rachat 1', metaType: 1, type: 1, year_str: '2028', month_str: 'Novembre', year: 2028, month: 11, id: 1, selected: false,
+      new_mens: 1344.65, mensDiff: 0, modVal: '', amortEvt: [], rebuyVal: '', reLoanDate: '16/11/2028', reloanRate: 2.45, rebuyPenaltiesType: '%',
+      rebuyPenalties: 3, rebuyPenalties_abs: 0, reloanDuration_m: 108, savingsLeft: 0,
+    },
+    {
+      title: 'Rachat 2', metaType: 1, type: 0, year_str: '2036', month_str: 'Janvier', year: 2036, month: 1, id: 1, selected: false,
+      new_mens: -1, mensDiff: 0, modVal: '', amortEvt: [], rebuyVal: '', reLoanDate: '', reloanRate: 0, rebuyPenaltiesType: '%',
+      rebuyPenalties: 2.86, rebuyPenalties_abs: 0, reloanDuration_m: 0, savingsLeft: '2 660.79',
+    },
+  ];
 }
 
 const feedSpanSummary=function(){
