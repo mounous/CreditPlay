@@ -196,6 +196,17 @@ const compute_savings=function(startY,startM,durationM,save=false)
   var fictive_accounts=[];
   var fictive_average=[];//sum acount value each mont
   var fictive_avg_month_spent=[];//divide fictive_average by fictive_avg_month_spent in january to get ammount of interests
+  //in case savings started before specified year and month, the savings amounts have to be computed before it.
+  var duration_total_m=durationM;
+  var compute_start_m=getSavingsEarlier()[0];
+  var compute_start_y=getSavingsEarlier()[1];
+  if(compareDates(compute_start_y,compute_start_m,startY,startM)<0)//if some savings exist before the begining of the computation window ordered
+  {
+    currentY=compute_start_y;
+    currentM=compute_start_m;
+    duration_total_m=durationM+get_nb_mens_diff(compute_start_y,compute_start_m,startY,startM);
+  }
+
   //------------------------------//
   // prepare for fictive accounts //
   //----------------------------- //
@@ -206,7 +217,7 @@ const compute_savings=function(startY,startM,durationM,save=false)
     fictive_average.push(fictive_accounts[acc]*(startM));
     fictive_avg_month_spent.push(startM);
   }
-  for(var i=0;i<durationM;i++)
+  for(var i=0;i<duration_total_m;i++)
   {
     //------------------------//
     //get interests in january//
@@ -265,12 +276,16 @@ const compute_savings=function(startY,startM,durationM,save=false)
       fictive_avg_month_spent[acc]++;
       total_savings+=fictive_accounts[acc];
     }
-    result.push([(transMonthName(currentM)+'-'+currentY.toString()),total_savings]);
-    if(save)
+    //save if and only if we are in the requested time window
+    if(compareDates(currentY,currentM,startY,startM)>=0)
     {
-      for(var accID=0;accID<bank.value.accounts.length;accID++)
+      result.push([(transMonthName(currentM)+'-'+currentY.toString()),total_savings]);
+      if(save)
       {
-        bank.value.accounts[accID].computedOverTime.push({date:transMonthName(currentM)+'-'+currentY.toString(),amount:fictive_accounts[accID]})
+        for(var accID=0;accID<bank.value.accounts.length;accID++)
+        {
+          bank.value.accounts[accID].computedOverTime.push({date:transMonthName(currentM)+'-'+currentY.toString(),amount:fictive_accounts[accID]})
+        }
       }
     }
     total_savings=0;

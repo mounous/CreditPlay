@@ -278,6 +278,7 @@ export enum stringsIDs {
   str_chart_display_year=242,
   str_bank_display_creation=243,
   str_all=244,
+  str_tuto_chart_settings=245,
 };
 
 const translatedStrs=ref(
@@ -689,6 +690,8 @@ const translatedStrs=ref(
     ['créé ', 'created '],
 
     ['Tout','All'],
+
+    ['Vous pouvez choisir les données à afficher en cliquant sur cet icône :','Click this icon to choose displayed data :'],
 ]);
 
 export const getLangId=function()

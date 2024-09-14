@@ -6,12 +6,11 @@
           <th v-if="is_playing==true" style="color: white;font-size:15px;text-align: center;">{{transStr(stringsIDs.str_tuto_chart_3)}}</th>
           <th v-if="is_playing==false" style="color: white;font-size:15px;text-align: center;">{{transStr(stringsIDs.str_tuto_chart_4)}}</th>
         </q-card>
-        <q-btn icon="play_arrow" size="large" color="green" style="background-color:grey;" v-if="(simu.events.length>0 || ((display_capital==true||display_interests==true) && display_savings==true))&&is_playing==false"  @click="relaunchAnimation"></q-btn>
-
-
+        <q-btn icon="play_arrow"  size="large" color="black" class="q-mr-md"  v-if="(simu.events.length>0 || ((display_capital==true||display_interests==true) && display_savings==true))&&is_playing==false"  @click="relaunchAnimation"></q-btn>
+        <q-btn icon="settings" fab size="large" color="black"  v-if="is_playing==false"  @click="mustPop=true"></q-btn>
 
         <q-btn v-if="show_tuto==true &&(tutoPhase==2)" color="blue-grey-8" :label=transStr(stringsIDs.str_tuto_chart_5) @click="[show_tuto=false,tutoPhase=0,restoreState()]"></q-btn>
-        <q-icon name="help" size="x-large" color="white" class="q-mt-md q-mb-md q-ml-xl q-mr-xl" v-if="show_tuto==false" @click="[MustPopTutorial=true,show_tuto=true,tutoPhase=0,destroy_periodic()]"></q-icon>
+        <q-icon name="help" size="x-large" color="white" class="q-mt-md q-mb-md q-ml-md q-mr-xl" v-if="show_tuto==false" @click="[MustPopTutorial=true,show_tuto=true,tutoPhase=0,destroy_periodic()]"></q-icon>
     </div>
     </q-page-sticky>
 
@@ -35,7 +34,7 @@
   <q-dialog style="background-color: black;" fullscreen v-model="mustPop"  cover transition-show="scale" transition-hide="scale" maximized >
     <div style="flex-direction: column;">
     <div style="display: flex;flex-direction: row;justify-content: right;justify-items: right; height: 7%;">
-        <q-btn color="blue-grey-8" label="X" @click="moveToPrevious()"></q-btn>
+        <q-btn v-if="show_tuto==false" color="blue-grey-8" label="X" @click="moveToPrevious()" ></q-btn>
     </div>
 
     <div style="display: flex;flex-direction: column;align-items: center;align-content: center;justify-content: center;justify-items: center;height: 93%;">
@@ -44,19 +43,19 @@
         <th  style=" color: white;font-size: 17px;text-align: center;">{{ transStr(stringsIDs.str_chart_choice) }}</th>
         <q-list bordered>
           <q-item v-if="hasSavings() && startFormFilled==true">
-            <q-item-section avatar> <q-checkbox v-model="display_all" color="green" keep-color @update:model-value="display_all==true ? [display_capital=true,display_interests=true,display_savings=true]: null"> </q-checkbox> </q-item-section>
-            <q-item-section @click="[display_all=!display_all,display_all==true ? [display_capital=true,display_interests=true,display_savings=true]: null]">  <th   style=" color: white;font-size: 15px;text-align: left;">{{  transStr(stringsIDs.str_all) }}</th></q-item-section>
+            <q-item-section avatar> <q-checkbox v-model="display_all" color="green" keep-color @update:model-value="display_all==true ? [display_capital=true,display_interests=true,display_savings=true]: [display_capital=false,display_interests=false,display_savings=false]"> </q-checkbox> </q-item-section>
+            <q-item-section @click="[display_all=!display_all,display_all==true ? [display_capital=true,display_interests=true,display_savings=true]: [display_capital=false,display_interests=false,display_savings=false]]">  <th   style=" color: white;font-size: 15px;text-align: left;">{{  transStr(stringsIDs.str_all) }}</th></q-item-section>
           </q-item>
           <q-item  v-if="startFormFilled == true" >
-            <q-item-section avatar> <q-checkbox v-model="display_capital" color="green" keep-color> </q-checkbox> </q-item-section>
-            <q-item-section @click="display_capital=!display_capital">  <th   style=" color: white;font-size: 15px;text-align: left;">{{  transStr(stringsIDs.str_chart_display_capital) }}</th></q-item-section>
+            <q-item-section avatar> <q-checkbox v-model="display_capital" color="green" keep-color @update:model-value="display_capital==false?display_all=false:null"> </q-checkbox> </q-item-section>
+            <q-item-section @click="[display_capital=!display_capital,display_capital==false?display_all=false:null]">  <th   style=" color: white;font-size: 15px;text-align: left;">{{  transStr(stringsIDs.str_chart_display_capital) }}</th></q-item-section>
           </q-item>
           <q-item v-if="startFormFilled == true">
-            <q-item-section avatar> <q-checkbox v-model="display_interests" color="green" keep-color> </q-checkbox> </q-item-section>
+            <q-item-section avatar> <q-checkbox v-model="display_interests" color="green" keep-color @update:model-value="display_interests==false?display_all=false:null"> </q-checkbox> </q-item-section>
             <q-item-section> <th @click="display_interests=!display_interests" style=" color: white;font-size: 15px;text-align: left;">{{ transStr(stringsIDs.str_chart_display_interests) }}</th></q-item-section>
           </q-item>
           <q-item v-if="hasSavings()">
-            <q-item-section avatar> <q-checkbox v-model="display_savings" color="green" keep-color> </q-checkbox> </q-item-section>
+            <q-item-section avatar> <q-checkbox v-model="display_savings" color="green" keep-color @update:model-value="display_savings==false?display_all=false:null"> </q-checkbox> </q-item-section>
             <q-item-section> <th @click="display_savings=!display_savings" style=" color: white;font-size: 15px;text-align: left;">{{ transStr(stringsIDs.str_chart_display_savings) }}</th></q-item-section>
             <q-item-section v-if="display_capital==false && display_interests==false && display_savings==true"> <th  class="q-mr-md q-ml-md" style=" color: white;font-size: 15px;text-align: left;">{{ transStr(stringsIDs.str_chart_display_for) }}</th></q-item-section>
             <q-item-section v-if="display_capital==false && display_interests==false && display_savings==true">  <q-select  v-model="nbYearDisplaySavings" style="background-color: cadetblue;" :options="optionYears"></q-select></q-item-section>
@@ -98,10 +97,16 @@
     <div style="display: flex;flex-direction: column;">
       <div style="display: flex;flex: 1;"></div>
       <div style="display: flex;flex: 1;">
-      <th class="q-ma-xs" style="color: white;font-size:15px;">{{transStr(stringsIDs.str_tuto_chart_cpmlnt_6)}}</th>
+        <th class="q-ma-xs" style="color: white;font-size:15px;">{{transStr(stringsIDs.str_tuto_chart_cpmlnt_6)}}</th>
       </div>
       <div style="display: flex;flex: 1;align-items: center;justify-content: center;">
-      <q-btn icon="play_arrow" size="large" color="green" style="background-color:grey;" class="q-ma-xs"></q-btn>
+        <q-btn icon="play_arrow" size="large" color="black" style="background-color:grey;" class="q-ma-xs"></q-btn>
+      </div>
+      <div style="display: flex;flex: 1;">
+        <th class="q-ma-xs" style="color: white;font-size:15px;">{{transStr(stringsIDs.str_tuto_chart_settings)}}</th>
+      </div>
+      <div style="display: flex;flex: 1;align-items: center;justify-content: center;">
+        <q-btn icon="settings" size="large" color="black" style="background-color:grey;" class="q-ma-xs"></q-btn>
       </div>
       <div style="display: flex;flex: 1;">
       <th class="q-ma-xs" style="color: white;font-size:15px;">{{transStr(stringsIDs.str_tuto_chart_cpmlnt_7)}}</th>
@@ -354,10 +359,10 @@ const getAdjustedBanking=function(specific_event=-1){
     {
       var credit_init_y=Number(simu.value.credit.startingDate.split('/')[2]);
       var credit_init_m=Number(simu.value.credit.startingDate.split('/')[1]);
-      var min_y=Math.min(credit_init_y,getSavingsEarlier()[1]) ;
-      var Number_of_years_to_compute=getLatestMensuality(specific_event).l_y-min_y;
-      computeDisplaySavings(min_y,getSavingsEarlier()[0],Number_of_years_to_compute);
-      getBanking(min_y,credit_init_m,Number_of_years_to_compute);
+      //var min_y=Math.min(credit_init_y,getSavingsEarlier()[1]) ;
+      var Number_of_years_to_compute=getLatestMensuality(specific_event).l_y-credit_init_y;
+      computeDisplaySavings(credit_init_y,credit_init_m,Number_of_years_to_compute);
+      getBanking(credit_init_y,credit_init_m,Number_of_years_to_compute);
     }
     else
     {
@@ -393,6 +398,9 @@ const getBanking=function(){
 
 const setupChart=function()
 {
+  chartOptions.annotations.points=[];
+  chartOptions.annotations.xaxis=[];
+  chartOptions.annotations.yaxis=[];
   if(display_savings.value==true && display_capital.value==false && display_interests.value==false)
   {
     displaySavingsOnly();
