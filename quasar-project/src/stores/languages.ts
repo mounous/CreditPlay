@@ -604,7 +604,7 @@ const translatedStrs=ref(
     ['Trouvez le compromis mensualité/épargne qui vous correspond','Find out the mensuality/savings tradeoff that fits you best !'],
 
     ['Simuler votre credit','Loan simulation'],
-    ['Moduler votre credit (augmentation ou diminution de mensualité)','Loan modulation (mensuality increase or decrease)'],
+    ['Modulation de credit (augmentation ou diminution de mensualité)','Loan modulation (mensuality increase or decrease)'],
     ['Rachat de votre crédit (avec un taux différent ou votre épargne)','Loan rebuy (different rate or with savings)'],
     ['Simuler votre épargne','Savings simulation'],
     ['Faire le café','Make coffee'],
