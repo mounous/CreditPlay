@@ -123,7 +123,7 @@
       <th  v-if="show_tuto==true && tutoPhase==4" class="q-ma-md" style="color: white;font-size:20px;">{{transStr(stringsIDs.str_tuto_bank_5)}}</th>
       <th  v-if="show_tuto==true && tutoPhase==3" class="q-ma-md" style="color: white;font-size:20px;">{{transStr(stringsIDs.str_tuto_bank_4)}}</th>
       <videoPlayer v-if="show_tuto==true &&(tutoPhase==5)" class="q-ma-md" color="blue-grey-8" :name="stringsIDs.str_savings_help"></videoPlayer>
-      <q-btn v-if="show_tuto==true &&(tutoPhase==5)" class="q-ma-md" color="blue-grey-8" :label=transStr(stringsIDs.str_tuto_chart_5) @click="[show_tuto=false,tutoPhase=0]"></q-btn>
+      <q-btn v-if="show_tuto==true &&(tutoPhase==5)" class="q-ma-md" color="blue-grey-8" :label=transStr(stringsIDs.str_tuto_close_tuto) @click="[show_tuto=false,tutoPhase=0]"></q-btn>
     </div>
     <div  v-if="show_tuto==true" ref="MyTutoSentance" ></div>
   </div>

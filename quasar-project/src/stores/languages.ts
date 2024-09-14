@@ -197,7 +197,7 @@ export enum stringsIDs {
   str_graph_indication_2=161,
   str_tuto_chart_3=162,
   str_tuto_chart_4=163,
-  str_tuto_chart_5=164,
+  str_tuto_close_tuto=164,
   str_tuto_bank_1=165,
   str_tuto_bank_2=166,
   str_tuto_bank_3=167,
@@ -450,248 +450,249 @@ const translatedStrs=ref(
   ['Comment racheter votre crédit avec votre éoargne','How to rebuy your credit with savings'],
   //TUTORIAL
   ['Bienvenue dans la supercalculette Credit Play !',
+  'Welcome to the super finance calculator Credit Play !'],
+  ['Lancer le tuto','Launch toturial'],
+  ['Je suis déjà un expert','No need. I am an expert'],
+  ['Vous pouvez à simuler votre crédit en cliquant sur ce bouton. Après avoir renseigné la somme empruntée, le  taux, et la durée, vous serez dirigé vers l\'onglet résumé où vous pourrez voir les données de votre crédit. Cela débloquera les onglets "opérations" et "graphique".',
+   'You can start simulating your credit by clicking this button. After having set your credit amount, duration, and rate, you will land on the summary tab, where your credit data will appear. This will also unlock the "operations" and "chart" tabs'
+  ],
+  ['L\'onglet "operations" est le coeur de l\'application ! Vous pouvez simuler successivement :',
+   'Operations tab  is the core of the app ! You can simulate a sequence of: '
+  ],
+  ['Vous ne pourrez ajouter des évènements que si votre crédit a été renseigné (onglet "crédit"). Notez que le rachat de votre crédit avec de l\'épargne sera la dernière opération car vous aurez remboursé la totalité du crédit. Pour ajouter une opération cliquer sur \'AJOUTER\'.',
+   'This tab will be available once you\'ll have simulated your credit ("loan" tab). Note that after having simulated a rebuy of your credit with savings, you are no longer allowed to add some operations on your credit as it will no longer exist. To add an operation, click \'ADD\'.'
+  ],
+  ['Les opérations seront appliquées successivement sur votre crédit. Si vous supprimez une opération, vous supprimerez également toutes les suivantes, car leur résultat dépend de l\'opération supprimée. Pour supprimer une opération, sélectionnez-la et cliquez sur \'SUPPRIMER\'.',
+   'Operations are applyed one after the other on your loan. If you delete an operation, it will also delete all the following ones, which computation is based on the operation you deleted. To delete an operation, select it in the list and click \'DELETE\'.'
+  ],
+  ['Voici un faux jeu d\'opérations pour le tuto. Supprimez toutes les opérations.',
+   'Here is a set of fake operations for the tuto. Delete all operations, '
+  ],
+  [' ', ''],//unused
+  ['L\'onglet résumé synthétise le résultat de vos opérations de crédit. Vous pourrez voir ici combien d\'argent vous avez économisé ou perdu en modulant ou rachetant votre prêt. Le résultat de chaque opération sera comparé à votre crédit initial et à l\'opération précédente, si vous avez enchaîné les opérations (modulations, rachats...). Touchez l\'écran pour en savoir plus.',
+   'In the summary tab, the results of all you operations are displayed as a timeline. You can see how much money you saved or lost at each credit operation (mensuality increase, decrease, or credit rebuy at different rate). Each operation result is compared to your initial loan and to the result of the previous operation. Tap screen to discover more.'],
+
+  ['La modulation 1 vous a fait gagner 16 091.52 d\'intérêts par rapport au coût du crédit initial.',
+   'First modulation made you save 16 091.52 compared to the initial loan cost.' ],
+
+  ['Le premier rachat (combiné à la modulation) vous a fait gagner 22 332.15 d\'intérêts par rapport au coût du crédit initial et 6 240.63 par rapport au coût du crédit avec la modulation.',
+   'First rebuy (combined to the modulation) made you save 22 332.15 compared to the initial loan cost and 6 240.63 compared to loan cost with the modulation.' ],
+
+
+  ['Le second rachat (combiné au premier ainsi qu\'à la modulation) vous a fait gagner 22 956.28 d\'intérêts par rapport au coût du crédit initial et 624.13 par rapport au coût du crédit avec la modulation et le premier rachat.',
+   'Second rebuy (combined to the modulation and the first rebuy) made you save 22 956.28 compared to the initial loan cost and 624.13 compared to first rebuy combined the modulations.'],
+
+  ['',
+   '' ],
+
+  ['Vous trouverez ici :',
+   'You will find here:'],
+
+  ['Si vous avez renseigné vos économies dans l\'onglet dédié (nous le verrons plus tard), vous verrez leur évolution au cours du temps ici. Elles apparaîtront à la fin de l\'animation. Les économies sont toujours affichées en vert. Taper sur l\'écran pour en savoir plus.',
+   'If you set up your savings in the dedicated tab (we\'ll discover it later), you can see the evolution of the amount here. It will be displayed at the end of the animation. Savings are always displayed in green color. Tap screen to discover more ! '],
+
+  ['Touchez le graphe pour relancer l\'animation',
+    'Tap screen to relaunch animation'
+  ],
+  ['Attendez la fin de l\'animation.',
+   'Wait until the end of animation.'],
+
+  ['Relancez-l\'animation si nécessaire',
+   'Relaunch animation if you need'],
+
+  ['Fermez le tuto',
+   'Close tutorial'],
+
+  ['Vous pouvez ici renseigner : ',
+   'This is were you can set up :'],
+
+   ['Une fois que vous aurez créé un ou plusieurs comptes, vous pourrez ajouter des épargnes mensuelles ou annuelles vers ce(s) compte(s). Vous pouvez mettre une date de fin à ces épargnes, par exemple pour en modifier le montant en en ajoutant une nouvelle qui commencera à la date de fin de la précédente, avec un nouveau montant. Si aucune date de fin n\'est renseignée, l\'épargne est considérée infinie à partir de la date de départ. Touchez l\'écran pour en savoir plus.',
+    'Once you will have created one or more accounts, you will be able to add monthly or yearly savings capacities. You can set up an end date to these savings capacity, in order to, for instance, modify the amount saved by creating a new saving capacity that starts when the previous one ends, with a different amount saved. If no end date is set up, the periodic saving is considered infinite from strating date. Tap screen to learn more !'],
+
+  ['Vous pouvez aussi ajouter des entrées/sorties exceptionelles ici afin de prévoir des achats/ventes qui sortent de vos dépenses ordinaires (exemple : achat d\'une voiture). Vous noterez que si vous rachetez votre crédit avec votre épargne (onglet \'opérations\'), une dépense exceptionnelle sera automatiquement renseignée sur tous les comptes impactés par le rachat (les comptes à plus faible rentabilité sont utilisés en priorité). Touchez ce texte pour en décourvrir plus !',
+   'You can also add some exceptional incomes/outcomes here in order to plan some unusual expenses or incomes, for instance, buy a car. Note that if you rebuy your credit with your savings, some exceptional outcomes will automatically be added here on all accounts impacted by the rebuy operation (the less profitable accounts are used first by default). Tap this text to discover more !'],
+
+  ['Ajoutez les comptes ici. Vous pouvez voir leur montant à la création ainsi que leur rentabilité. Pour rappel, créer un compte est indispensable avant de passer aux étapes suivantes. Touchez l\'écran pour en savoir plus.','Add accounts here. Amount at creation and profitability are displayed. Reminder : create an account is mandatory for next steps. Tap screen to discover more.'],
+
+  ['Ajoutez votre capacité d\'épargne ici. Sur un même compte, vous pouvez ajouter plusieurs lignes d\'épargne qui commencent et finissent à des dates différentes. Pour rappel : une épargne sans date de fin est considérée infinie à partir de la date de création. Touchez ici pour en découvrir plus.',
+   'Add your savings capacity here. On a given account, you can set up several periodic savings (that start and finish -if they do- at different dates). Reminder : if you do not set up the end date for a periodic saving it is considered infinite from start date. Tap here to discover more.'],
+
+  ['Ajoutez vos entrées/sorties exceptionelles ici. Si vous rachetez votre crédit avec vos économies, une dépense exceptionnelle est renseignée sur tous les comptes impactés (celui avec le taux le plus faible est vidé en priorité).',
+   'Add here your exceptional incomes/outcomes. Reminder : if you rebuy your credit with your savings, an expetional outcome will automatically appear on every account impacted by the rebuy of your credit. (the less profitable account is emptyed first).'],
+
+  ['Vous pouvez ici gérer vos simulations sauvegardées. Sauvegarder vos simulations vous permet de les restaurer et/ou de les modifier entre deux utilisations de l\'application.',
+   'You can manage saved simulations here. Save your simulations allows you to restore and/or modify them between two application usage.' ],
+
+  ['Votre sauvegarde de simulation contient :',
+   'Your saved simulation contains :' ],
+
+  ['Voici un ensemble de simulations sauvegardées. Sauvegardez notre exemple avec le nom de votre choix. Pour ce faire cliquez sur "Savergarder la simulation en cours" puis renseignez un nom, enfin, sélectionnez "Ajoutez un nom".',
+   'Here is a set of saved simulations. Save the current simulation with a the name of your choice. To do so, click "Save current simulation", then set a name and click "Custom name".' ],
+
+  ['Note : si vous aviez choisi "Nom par défaut" la simulation aurait été sauvegardée sous le nom "Simulation x", avec x un nombre.',
+   'Note : if you had chosen "Default name", simulation would have been saved as "Simulation x", with x a number.' ],
+
+  ['Maintenant, supprimez la simulation que vous venez de sauvegarder. Pour ce faire, cliquez sur l\'icône corbeille de la simulation.',
+   'Now, delete the simulation you just saved. To do so, click on trash icon of the simulation you just saved.'  ],
+
+  ['Maintenant, supprimez toutes les sauvegardes de simulation . Pour ce faire, cliquez sur " Tout supprimer".',
+   'Now, delete all saved simulations, to do so, press "Delete All".' ],
+
+  ['Bravo ! Vous pouvez restaurer une simulation sauvegardée en la sélectionnant et en cliquant sur "restaurer", ce qui vous déplaçera automatiquement sur l\'onglet "résumé". Comme vous connaissez déjà cet onglet, cette fonctionnalité est désactivée pout le tuto.',
+   'Well done ! You can restore a saved simulation by selecting it and clicking "restore". This will automatically move to the summary tab. As we already know it, this feature is disabled in tuto mode.'
+  ],
+
+  ['Lancer le tuto',
+   'Launch tutorial' ],
+
+  ['Vous pouvez ici paramétrer la langue et la monnaie de votre choix, mais aussi relancer ce tuto si nécessaire, grâce aux trois boutons dédiés ci-dessus. Tapez ici pour en découvrir plus !',
+   'You can set the language and currency of the app here, and relaunch this tuto if necessary. Tap this text to learn more !'
+  ],
+
+  ['Toutes les fonctionnalités qui n\'ont pas été détaillées dans le tuto (comment simuler ou moduler un crédit, par exemple) sont présentées ci-dessous sous forme de vidéos. Prenez le temps de les regarder en cas de doute ! Tapez ici pour en découvrir plus',
+   'All procedures that haven\'t been explained in this tutorial (how to simulate or modulate a credit, for instance) are detailed here in short videos. tap screen to discover more !' ],
+
+  ['Il est temps pour moi de vous dire au revoir et pour vous de commencer votre enthousiasmante aventure d\'optimisation de vos finances. C\'est la fin de ce tutoriel, tapez ici pour sortir.',
+   'It is time for me to say goodbye and for you to start your exciting journey to optimize your money ! This is the end of this tutorial, tap here to exit'],
+
+  ['tutoriel', 'tutorial' ],
+
+  //tuto process
+
+
+  ['Bienvenue dans la supercalculette Credit Play !',
    'Welcome to the super finance calculator Credit Play !'],
-   ['Lancer le tuto','Launch toturial'],
-   ['Je suis déjà un expert','No need. I am an expert'],
-   ['Vous pouvez à simuler votre crédit en cliquant sur ce bouton. Après avoir renseigné la somme empruntée, le  taux, et la durée, vous serez dirigé vers l\'onglet résumé où vous pourrez voir les données de votre crédit. Cela débloquera les onglets "opérations" et "graphique".',
-    'You can start simulating your credit by clicking this button. After having set your credit amount, duration, and rate, you will land on the summary tab, where your credit data will appear. This will also unlock the "operations" and "chart" tabs'
+
+  ['Encore un simulateur de crédit classique ?','Another loan simulator ?'],
+
+  ['Pas exactement !','Not exactly !'],
+
+  ['Voici tout ce que vous pouvez faire avec Credit Play :',
+   'Credit Play provides :'],
+
+  ['Saviez vous qu\'avec un taux élevé, augmenter vos mensualités peut vous faire gagner plusieurs dizaines de milliers d\'euros en intérêts ? Saviez-vous que les diminuer peut vous en faire perdre tout autant ?',
+   'Did you know that with a high credit rate, increase your mensualities can make you save tens of thousands on your credit cost ? Did you know that you can loose the same amount when decreasing the mensuality amount ? '],
+
+  ['Savez-vous qu\'avec des taux élevés, racheter votre crédit avec votre épargne peut également vous faire économiser des millers d\'euros en interêts, malgré les pénalités contractuelles ?',
+   'Did you know that with a high loan rate, rebuy your loan with your savings can make you save thousands, despite contractual penalties ?'
    ],
-   ['L\'onglet "operations" est le coeur de l\'application ! Vous pouvez simuler successivement :',
-    'Operations tab  is the core of the app ! You can simulate a sequence of: '
-   ],
-   ['Vous ne pourrez ajouter des évènements que si votre crédit a été renseigné (onglet "crédit"). Notez que le rachat de votre crédit avec de l\'épargne sera la dernière opération car vous aurez remboursé la totalité du crédit. Pour ajouter une opération cliquer sur \'AJOUTER\'.',
-    'This tab will be available once you\'ll have simulated your credit ("loan" tab). Note that after having simulated a rebuy of your credit with savings, you are no longer allowed to add some operations on your credit as it will no longer exist. To add an operation, click \'ADD\'.'
-   ],
-   ['Les opérations seront appliquées successivement sur votre crédit. Si vous supprimez une opération, vous supprimerez également toutes les suivantes, car leur résultat dépend de l\'opération supprimée. Pour supprimer une opération, sélectionnez-la et cliquez sur \'SUPPRIMER\'.',
-    'Operations are applyed one after the other on your loan. If you delete an operation, it will also delete all the following ones, which computation is based on the operation you deleted. To delete an operation, select it in the list and click \'DELETE\'.'
-   ],
-   ['Voici un faux jeu d\'opérations pour le tuto. Supprimez toutes les opérations.',
-    'Here is a set of fake operations for the tuto. Delete all operations, '
-   ],
-   [' ', ''],//unused
-   ['L\'onglet résumé synthétise le résultat de vos opérations de crédit. Vous pourrez voir ici combien d\'argent vous avez économisé ou perdu en modulant ou rachetant votre prêt. Le résultat de chaque opération sera comparé à votre crédit initial et à l\'opération précédente, si vous avez enchaîné les opérations (modulations, rachats...). Touchez l\'écran pour en savoir plus.',
-    'In the summary tab, the results of all you operations are displayed as a timeline. You can see how much money you saved or lost at each credit operation (mensuality increase, decrease, or credit rebuy at different rate). Each operation result is compared to your initial loan and to the result of the previous operation. Tap screen to discover more.'],
 
-   ['La modulation 1 vous a fait gagner 11 938,45 d\'intérêts par rapport au coût du crédit initial.',
-    'First modulation made you save 11938.45 compared to the initial credit cost.' ],
+  ['Credit Play vous permetra de simuler l\'impact de toutes ces opérations ...','Credit Play provides the ability to simulate all these operations...'],
 
-   ['La modulation 2 (combinée à la première) vous a fait gagner 8 504,89 d\'intérêts par rapport au coût du crédit initial mais perdre 3 433,56 par rapport au coût du crédit avec la modulation 1. Touchez l\'écran pour continuer',
-    'Second modulation (combined to the first) made you save 8504.89 compared to the initial credit cost but lose 3433.56 compared to credit cost with only modulation 1. Tap screen' ],
+  ['Et plus encore ! Vous pourrez combiner un nombre illimité d\'opérations (modulations de mensualités, rachat à meilleur taux, rachat avec épargne) !',
+   'And even better ! You\'ll be able to combine an unlimited number of operations (mensuality increase/decrease, rebuy at different rate, rebuy with savings) !'],
 
-   ['Le premier rachat (combiné aux deux modulations) vous a fait gagner 26 814,01 d\'intérêts par rapport au coût du crédit initial et 18 309,12 par rapport au coût du crédit avec les deux modulations combinées. Touchez l\'écran pour continuer',
-    'First rebuy (combined to the two modulations) made you save 26814.01 compared to the initial credit cost and 18309 compared to credit cost with the combination of the two modulations. Tap screen' ],
+  ['Pour apprendre à utiliser Credit Play, lancer le tuto ! (Vous pourrez le lancer à volonté depuis le menu d\'aide).','To learn how to get profit from Credit PLay, launch tutorial ! (you can launch it at any time in the help tab).'],
+    //10 v
+  ['Pour une utilisation optimale de Credit Play, suivez ces étapes : ','For a better use of Credit Play, perform the following steps :'],
 
-   ['Le second rachat (combiné au premier ainsi qu\'au deux modulations) vous a fait gagner 30 631,83 d\'intérêts par rapport au coût du crédit initial et 3817,82 par rapport au coût du crédit avec les deux modulations et le premier rachat.',
-    'Second rebuy (combined to the two modulations and the first rebuy) made you save 30 631.83 compared to the initial credit cost and 3817.82 compared to first rebuy combined with the two modulations.'],
+  ['Simulez votre crédit','Simulate your loan'],
 
-   ['Vous trouverez ici :',
-    'You will find here:'],
+  ['Taux, campital emprunté, durée'],
 
-    ['Si vous avez renseigné vos économies dans l\'onglet dédié (nous le verrons plus tard), vous verrez leur évolution au cours du temps ici. Elles apparaîtront à la fin de l\'animation. Les économies sont toujours affichées en vert. Taper sur l\'écran pour en savoir plus.',
-     'If you set up your savings in the dedicated tab (we\'ll discover it later), you can see the evolution of the amount here. It will be displayed at the end of the animation. Savings are always displayed in green color. Tap screen to discover more ! '],
+  ['Rensignez votre capacité d\'épargne [Facultatif]','Set up you saving capacity [Optionnal]'],
 
-    ['Touchez le graphe pour relancer l\'animation',
-      'Tap screen to relaunch animation'
-    ],
-    ['Attendez la fin de l\'animation.',
-     'Wait until the end of animation.'],
+  ['Créez des comptes, ajoutez des épargnes, planifiez des entrées/sorties', 'Create accounts, add periodic savings, plan incomes/outcomes'],
 
-    ['Relancez-l\'animation si nécessaire',
-     'Relaunch animation if you need'],
+  ['Simulez des opérations','Simulate operations'],
 
-    ['Fermez le tuto',
-     'Close tutorial'],
+  ['Modulations, rachat à meilleur taux, rachat avec épargne', 'Modulations, rebuy with better rate, rebuy with savings'],
 
-    ['Vous pouvez ici renseigner : ',
-     'This is were you can set up :'],
+  ['Sauvegardez vos scénarios', 'Save your simulations'],
 
-     ['Une fois que vous aurez créé un ou plusieurs comptes, vous pourrez ajouter des épargnes mensuelles ou annuelles vers ce(s) compte(s). Vous pouvez mettre une date de fin à ces épargnes, par exemple pour en modifier le montant en en ajoutant une nouvelle qui commencera à la date de fin de la précédente, avec un nouveau montant. Si aucune date de fin n\'est renseignée, l\'épargne est considérée infinie à partir de la date de départ. Touchez l\'écran pour en savoir plus.',
-      'Once you will have created one or more accounts, you will be able to add monthly or yearly savings capacities. You can set up an end date to these savings capacity, in order to, for instance, modify the amount saved by creating a new saving capacity that starts when the previous one ends, with a different amount saved. If no end date is set up, the periodic saving is considered infinite from strating date. Tap screen to learn more !'],
+  ['Comparez les scénarios','Compare your simulations'],
 
-    ['Vous pouvez aussi ajouter des entrées/sorties exceptionelles ici afin de prévoir des achats/ventes qui sortent de vos dépenses ordinaires (exemple : achat d\'une voiture). Vous noterez que si vous rachetez votre crédit avec votre épargne (onglet \'opérations\'), une dépense exceptionnelle sera automatiquement renseignée sur tous les comptes impactés par le rachat (les comptes à plus faible rentabilité sont utilisés en priorité). Touchez ce texte pour en décourvrir plus !',
-     'You can also add some exceptional incomes/outcomes here in order to plan some unusual expenses or incomes, for instance, buy a car. Note that if you rebuy your credit with your savings, some exceptional outcomes will automatically be added here on all accounts impacted by the rebuy operation (the less profitable accounts are used first by default). Tap this text to discover more !'],
+  ['Trouvez le compromis mensualité/épargne qui vous correspond','Find out the mensuality/savings tradeoff that fits you best !'],
 
-    ['Ajoutez les comptes ici. Vous pouvez voir leur montant à la création ainsi que leur rentabilité. Pour rappel, créer un compte est indispensable avant de passer aux étapes suivantes. Touchez l\'écran pour en savoir plus.','Add accounts here. Amount at creation and profitability are displayed. Reminder : create an account is mandatory for next steps. Tap screen to discover more.'],
+  ['Simuler votre credit','Loan simulation'],
+  ['Modulation de credit (augmentation ou diminution de mensualité)','Loan modulation (mensuality increase or decrease)'],
+  ['Rachat de votre crédit (avec un taux différent ou votre épargne)','Loan rebuy (different rate or with savings)'],
+  ['Simuler votre épargne','Savings simulation'],
+  ['Faire le café','Make coffee'],
 
-    ['Ajoutez votre capacité d\'épargne ici. Sur un même compte, vous pouvez ajouter plusieurs lignes d\'épargne qui commencent et finissent à des dates différentes. Pour rappel : une épargne sans date de fin est considérée infinie à partir de la date de création. Touchez ici pour en découvrir plus.',
-     'Add your savings capacity here. On a given account, you can set up several periodic savings (that start and finish -if they do- at different dates). Reminder : if you do not set up the end date for a periodic saving it is considered infinite from start date. Tap here to discover more.'],
+  ['Dans tous les onglets de l\'application, vous pourrez obtenir de l\'aide en cliquant sur cet icône :','In all app tabs, if you need help click this icon : '],
 
-    ['Ajoutez vos entrées/sorties exceptionelles ici. Si vous rachetez votre crédit avec vos économies, une dépense exceptionnelle est renseignée sur tous les comptes impactés (celui avec le taux le plus faible est vidé en priorité).',
-     'Add here your exceptional incomes/outcomes. Reminder : if you rebuy your credit with your savings, an expetional outcome will automatically appear on every account impacted by the rebuy of your credit. (the less profitable account is emptyed first).'],
+  ['Voir la vidéo','Watch video'],
 
-    ['Vous pouvez ici gérer vos simulations sauvegardées. Sauvegarder vos simulations vous permet de les restaurer et/ou de les modifier entre deux utilisations de l\'application.',
-     'You can manage saved simulations here. Save your simulations allows you to restore and/or modify them between two application usage.' ],
+  ['Rachat du crédit à un nouveau taux','Loan rebuy at better rate'],
+  ['Rachat du crédit avec épargne','Loan rebuy with savings'],
 
-    ['Votre sauvegarde de simulation contient :',
-     'Your saved simulation contains :' ],
+  ['Le capital et les intêrets de votre crédit initial toujours affichés en rouge',
+   'Capital and interests of your initial loan always displayed in red'],
+  ['Le capital et les interêts du résultat des opérations toujours affiché en gris',
+   'Capital and interests of the result of operations always displayed grey'],
+  ['Vos économies toujours affiché en vert',
+   'Your savings always displayed in green'],
+  ['Des indicateurs visuels pour repérer vos opérations',
+   'Visual indicators to spot your operations'],
+   ['Touchez l\'écran pour voir la suite','Tap screen to learn more !'],
 
-    ['Voici un ensemble de simulations sauvegardées. Sauvegardez notre exemple avec le nom de votre choix. Pour ce faire cliquez sur "Savergarder la simulation en cours" puis renseignez un nom, enfin, sélectionnez "Ajoutez un nom".',
-     'Here is a set of saved simulations. Save the current simulation with a the name of your choice. To do so, click "Save current simulation", then set a name and click "Custom name".' ],
+  ['Les opérations seront successivement affichées sous forme d\'animation. Une fois l\'animation terminée, vous pourrez la relancer en cliquant sur ce bouton, masqué pendant l\'animation:',
+   'Operations will be displayed as an animation. Once the animation finished, you can replay it  by clicking this button, masked during animation:'],
+  ['Essayons ensemble avec un jeu de données spécial tuto. Touchez l\'écran pour commencer','Let\'s try it together with a fake simulation. Tap screen to start'],
 
-    ['Note : si vous aviez choisi "Nom par défaut" la simulation aurait été sauvegardée sous le nom "Simulation x", avec x un nombre.',
-     'Note : if you had chosen "Default name", simulation would have been saved as "Simulation x", with x a number.' ],
+  ['Epargne actuelle',
+   'Current banking accounts amounts'],
 
-    ['Maintenant, supprimez la simulation que vous venez de sauvegarder. Pour ce faire, cliquez sur l\'icône corbeille de la simulation.',
-     'Now, delete the simulation you just saved. To do so, click on trash icon of the simulation you just saved.'  ],
+   ['Capacités d\'épargne mensuelle/annuelle',
+    'Monthly/yearly savings capacity.'],
 
-    ['Maintenant, supprimez toutes les sauvegardes de simulation . Pour ce faire, cliquez sur " Tout supprimer".',
-     'Now, delete all saved simulations, to do so, press "Delete All".' ],
+   ['Entrées/sorties d\'argent exceptionelles.',
+    'Exceptional incomes/outcomes.'],
 
-    ['Bravo ! Vous pouvez restaurer une simulation sauvegardée en la sélectionnant et en cliquant sur "restaurer", ce qui vous déplaçera automatiquement sur l\'onglet "résumé". Comme vous connaissez déjà cet onglet, cette fonctionnalité est désactivée pout le tuto.',
-     'Well done ! You can restore a saved simulation by selecting it and clicking "restore". This will automatically move to the summary tab. As we already know it, this feature is disabled in tuto mode.'
-    ],
+   ['Cela permet :',
+    'It enables : '],
 
-    ['Lancer le tuto',
-     'Launch tutorial' ],
+  ['Rachat de votre crédit avec épargne',
+   'Loan rebuy with your savings'],
 
-    ['Vous pouvez ici paramétrer la langue et la monnaie de votre choix, mais aussi relancer ce tuto si nécessaire, grâce aux trois boutons dédiés ci-dessus. Tapez ici pour en découvrir plus !',
-     'You can set the language and currency of the app here, and relaunch this tuto if necessary. Tap this text to learn more !'
-    ],
+  ['Projection épargne dans le graphe',
+   'Savings forecast in the chart tab'
+  ],
 
-    ['Toutes les fonctionnalités qui n\'ont pas été détaillées dans le tuto (comment simuler ou moduler un crédit, par exemple) sont présentées ci-dessous sous forme de vidéos. Prenez le temps de les regarder en cas de doute ! Tapez ici pour en découvrir plus',
-     'All procedures that haven\'t been explained in this tutorial (how to simulate or modulate a credit, for instance) are detailed here in short videos. tap screen to discover more !' ],
+  ['Voici comment procéder :',
+   'Here is the process :'],
 
-    ['Il est temps pour moi de vous dire au revoir et pour vous de commencer votre enthousiasmante aventure d\'optimisation de vos finances. C\'est la fin de ce tutoriel, tapez ici pour sortir.',
-     'It is time for me to say goodbye and for you to start your exciting journey to optimize your money ! This is the end of this tutorial, tap here to exit'],
+   ['Renseignez au moins un compte','Set up at least one account'],
 
-    ['tutoriel', 'tutorial' ],
+   ['Il peut être vide et avoir une rentabilité nulle','It can be empty and have no profitability'],
 
-    //tuto process
+   ['[Optionel] Saisissez vos capacités d\'épargne mensuelle et/ou annuelle',
+    '[Optional] Set up your monthly and/or yearly saving capacity'],
 
+   ['Il est possible d\'en ajouter plusieurs sur un même compte.',
+    'Many entries are possible on a given account'],
 
-    ['Bienvenue dans la supercalculette Credit Play !',
-     'Welcome to the super finance calculator Credit Play !'],
+   ['[Optionel] Renseignez vos entrées/sorties exceptionnelles','[Optional] Set up exceptional incomes/outcomes'],
 
-    ['Encore un simulateur de crédit classique ?','Another loan simulator ?'],
+   ['Exemple : planifiez l\'achat/vente de votre véhicule','Example : plan your next car purchase/sale'],
 
-    ['Pas exactement !','Not exactly !'],
+  ['Credit initial','Initial loan'],
+  ['Opérations (modulations, rachats)','Operations (modulations, rebuys)'],
+  ['Epargne','Savings'],
+  ['Le nombre de sauvegardes est illimité.','You can save unlimited number of simulations'],
 
-    ['Voici tout ce que vous pouvez faire avec Credit Play :',
-     'Credit Play provides :'],
+  ['Augmentation du coût total du crédit','Loan total cost will increase'],
 
-    ['Saviez vous qu\'avec un taux élevé, augmenter vos mensualités peut vous faire gagner plusieurs dizaines de milliers d\'euros en intérêts ? Saviez-vous que les diminuer peut vous en faire perdre tout autant ?',
-     'Did you know that with a high credit rate, increase your mensualities can make you save tens of thousands on your credit cost ? Did you know that you can loose the same amount when decreasing the mensuality amount ? '],
+  ['Diminution le coût total du crédit','Loan total cost will decrease'],
 
-    ['Savez-vous qu\'avec des taux élevés, racheter votre crédit avec votre épargne peut également vous faire économiser des millers d\'euros en interêts, malgré les pénalités contractuelles ?',
-     'Did you know that with a high loan rate, rebuy your loan with your savings can make you save thousands, despite contractual penalties ?'
-     ],
+  ['Que souhaitez-vous afficher ? ','Choose displayed data :'],
 
-    ['Credit Play vous permetra de simuler l\'impact de toutes ces opérations ...','Credit Play provides the ability to simulate all these operations...'],
+  ['Capital','Capital'],
 
-    ['Et plus encore ! Vous pourrez combiner un nombre illimité d\'opérations (modulations de mensualités, rachat à meilleur taux, rachat avec épargne) !',
-     'And even better ! You\'ll be able to combine an unlimited number of operations (mensuality increase/decrease, rebuy at different rate, rebuy with savings) !'],
+  ['Interêts','Interests'],
 
-    ['Pour apprendre à utiliser Credit Play, lancer le tuto ! (Vous pourrez le lancer à volonté depuis le menu d\'aide).','To learn how to get profit from Credit PLay, launch tutorial ! (you can launch it at any time in the help tab).'],
-      //10 v
-    ['Pour une utilisation optimale de Credit Play, suivez ces étapes : ','For a better use of Credit Play, perform the following steps :'],
+  ['Epargne','Savings'],
 
-    ['Simulez votre crédit','Simulate your loan'],
+  ['sur','for'],
 
-    ['Taux, campital emprunté, durée'],
+  ['années','years'],
 
-    ['Rensignez votre capacité d\'épargne [Facultatif]','Set up you saving capacity [Optionnal]'],
+  ['créé ', 'created '],
 
-    ['Créez des comptes, ajoutez des épargnes, planifiez des entrées/sorties', 'Create accounts, add periodic savings, plan incomes/outcomes'],
+  ['Tout','All'],
 
-    ['Simulez des opérations','Simulate operations'],
-
-    ['Modulations, rachat à meilleur taux, rachat avec épargne', 'Modulations, rebuy with better rate, rebuy with savings'],
-
-    ['Sauvegardez vos scénarios', 'Save your simulations'],
-
-    ['Comparez les scénarios','Compare your simulations'],
-
-    ['Trouvez le compromis mensualité/épargne qui vous correspond','Find out the mensuality/savings tradeoff that fits you best !'],
-
-    ['Simuler votre credit','Loan simulation'],
-    ['Modulation de credit (augmentation ou diminution de mensualité)','Loan modulation (mensuality increase or decrease)'],
-    ['Rachat de votre crédit (avec un taux différent ou votre épargne)','Loan rebuy (different rate or with savings)'],
-    ['Simuler votre épargne','Savings simulation'],
-    ['Faire le café','Make coffee'],
-
-    ['Dans tous les onglets de l\'application, vous pourrez obtenir de l\'aide en cliquant sur cet icône :','In all app tabs, if you need help click this icon : '],
-
-    ['Voir la vidéo','Watch video'],
-
-    ['Rachat du crédit à un nouveau taux','Loan rebuy at better rate'],
-    ['Rachat du crédit avec épargne','Loan rebuy with savings'],
-
-    ['Le capital et les intêrets de votre crédit initial toujours affichés en rouge',
-     'Capital and interests of your initial loan always displayed in red'],
-    ['Le capital et les interêts du résultat des opérations toujours affiché en gris',
-     'Capital and interests of the result of operations always displayed grey'],
-    ['Vos économies toujours affiché en vert',
-     'Your savings always displayed in green'],
-    ['Des indicateurs visuels pour repérer vos opérations',
-     'Visual indicators to spot your operations'],
-     ['Touchez l\'écran pour voir la suite','Tap screen to learn more !'],
-
-    ['Les opérations seront successivement affichées sous forme d\'animation. Une fois l\'animation terminée, vous pourrez la relancer en cliquant sur ce bouton, masqué pendant l\'animation:',
-     'Operations will be displayed as an animation. Once the animation finished, you can replay it  by clicking this button, masked during animation:'],
-    ['Essayons ensemble avec un jeu de données spécial tuto. Touchez l\'écran pour commencer','Let\'s try it together with a fake simulation. Tap screen to start'],
-
-    ['Epargne actuelle',
-     'Current banking accounts amounts'],
-
-     ['Capacités d\'épargne mensuelle/annuelle',
-      'Monthly/yearly savings capacity.'],
-
-     ['Entrées/sorties d\'argent exceptionelles.',
-      'Exceptional incomes/outcomes.'],
-
-     ['Cela permet :',
-      'It enables : '],
-
-    ['Rachat de votre crédit avec épargne',
-     'Loan rebuy with your savings'],
-
-    ['Projection épargne dans le graphe',
-     'Savings forecast in the chart tab'
-    ],
-
-    ['Voici comment procéder :',
-     'Here is the process :'],
-
-     ['Renseignez au moins un compte','Set up at least one account'],
-
-     ['Il peut être vide et avoir une rentabilité nulle','It can be empty and have no profitability'],
-
-     ['[Optionel] Saisissez vos capacités d\'épargne mensuelle et/ou annuelle',
-      '[Optional] Set up your monthly and/or yearly saving capacity'],
-
-     ['Il est possible d\'en ajouter plusieurs sur un même compte.',
-      'Many entries are possible on a given account'],
-
-     ['[Optionel] Renseignez vos entrées/sorties exceptionnelles','[Optional] Set up exceptional incomes/outcomes'],
-
-     ['Exemple : planifiez l\'achat/vente de votre véhicule','Example : plan your next car purchase/sale'],
-
-    ['Credit initial','Initial loan'],
-    ['Opérations (modulations, rachats)','Operations (modulations, rebuys)'],
-    ['Epargne','Savings'],
-    ['Le nombre de sauvegardes est illimité.','You can save unlimited number of simulations'],
-
-    ['Augmentation du coût total du crédit','Loan total cost will increase'],
-
-    ['Diminution le coût total du crédit','Loan total cost will decrease'],
-
-    ['Que souhaitez-vous afficher ? ','Choose displayed data :'],
-
-    ['Capital','Capital'],
-
-    ['Interêts','Interests'],
-
-    ['Epargne','Savings'],
-
-    ['sur','for'],
-
-    ['années','years'],
-
-    ['créé ', 'created '],
-
-    ['Tout','All'],
-
-    ['Vous pouvez choisir les données à afficher en cliquant sur cet icône :','Click this icon to choose displayed data :'],
+  ['Vous pouvez choisir les données à afficher en cliquant sur cet icône :','Click this icon to choose displayed data :'],
 ]);
 
 export const getLangId=function()

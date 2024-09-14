@@ -1,6 +1,6 @@
 
 import { bank, simu, startFormFilled } from 'src/stores/store';
-import { get_nb_mens_diff, compareDates,subOneMonth } from './date_utility';
+import { get_nb_mens_diff, compareDates } from './date_utility';
 import {getSortedAccountsFromPoorToHighRate,getSavingsEarlier,compute_savings, BANK_SIO_TYPE_OUT} from './bank_utility'
 import {transStr,stringsIDs,transevtmetaType,transSIOspecial ,transMonthName,getMonthNbr,is_sio_special_name} from '../stores/languages'
 import {getCurrencySymbol} from '../stores/currencies'
@@ -117,7 +117,7 @@ const apply_events_chain=()=>{
             nb_mens_spent=get_nb_mens_diff(simu.value.credit.y,simu.value.credit.m,simu.value.events[i].year,simu.value.events[i].month);
             nb_mens_to_pay=simu.value.credit.duration_m-nb_mens_spent+simu.value.events[i].mensDiff;
             var j=0;
-            while(j<simu.value.credit.amort.length && simu.value.credit.amort[j][0]!=(simu.value.events[i].month_str+'-'+simu.value.events[i].year_str))
+            while(j<simu.value.credit.amort.length && simu.value.credit.amort[j][0]!=(transMonthName(simu.value.events[i].month)+'-'+simu.value.events[i].year_str))
             {
               simu.value.events[i].amortEvt.push(simu.value.credit.amort[j]);
               j++;
@@ -138,7 +138,7 @@ const apply_events_chain=()=>{
             nb_mens_spent=get_nb_mens_diff(simu.value.credit.y,simu.value.credit.m,simu.value.events[i].year,simu.value.events[i].month);
             nb_mens_to_pay=simu.value.events[i-1].amortEvt.length-nb_mens_spent +simu.value.events[i].mensDiff;
             var j=0;
-            while(j<simu.value.events[i-1].amortEvt.length && simu.value.events[i-1].amortEvt[j][0]!=(simu.value.events[i].month_str+'-'+simu.value.events[i].year_str))
+            while(j<simu.value.events[i-1].amortEvt.length && simu.value.events[i-1].amortEvt[j][0]!=(transMonthName(simu.value.events[i].month)+'-'+simu.value.events[i].year_str))
             {
               simu.value.events[i].amortEvt.push(simu.value.events[i-1].amortEvt[j]);
               j++;
@@ -174,7 +174,7 @@ const apply_events_chain=()=>{
         var interestsToLog=0.0;
         if(i==0)
         {
-          while(j<simu.value.credit.amort.length && simu.value.credit.amort[j][0]!=(simu.value.events[i].month_str+'-'+simu.value.events[i].year_str))
+          while(j<simu.value.credit.amort.length && simu.value.credit.amort[j][0]!=(transMonthName(simu.value.events[i].month)+'-'+simu.value.events[i].year_str))
           {
             simu.value.events[i].amortEvt.push(simu.value.credit.amort[j]);
             j++;
@@ -191,7 +191,7 @@ const apply_events_chain=()=>{
         }
         else
         {
-          while(j<simu.value.events[i-1].amortEvt.length && simu.value.events[i-1].amortEvt[j][0]!=(simu.value.events[i].month_str+'-'+simu.value.events[i].year_str))
+          while(j<simu.value.events[i-1].amortEvt.length && simu.value.events[i-1].amortEvt[j][0]!=(transMonthName(simu.value.events[i].month)+'-'+simu.value.events[i].year_str))
           {
             simu.value.events[i].amortEvt.push(simu.value.events[i-1].amortEvt[j]);
             j++;
@@ -226,13 +226,13 @@ const apply_events_chain=()=>{
           var amountOnaccountAtDate=bank.value.accounts[from_poor_to_high_rate[indexAccount]].computedOverTime[indexAtDate].amount;
           if(amountOnaccountAtDate>toPay)
           {
-            bank.value.accounts[from_poor_to_high_rate[indexAccount]].single_in_out.push({account :from_poor_to_high_rate[indexAccount], title:transSIOspecial(),type:BANK_SIO_TYPE_OUT,amount:Math.round(100*toPay)/100,date:simu.value.events[i].year_str+'/'+simu.value.events[i].month_str,month:simu.value.events[i].month,year:simu.value.events[i].year,rate:0.0});
+            bank.value.accounts[from_poor_to_high_rate[indexAccount]].single_in_out.push({account :from_poor_to_high_rate[indexAccount], title:transSIOspecial(),type:BANK_SIO_TYPE_OUT,amount:Math.round(100*toPay)/100,date:simu.value.events[i].year_str+'/'+transMonthName(simu.value.events[i].month),month:simu.value.events[i].month,year:simu.value.events[i].year,rate:0.0});
             toPay=0;
           }
           else
           {
             //else empty it
-            bank.value.accounts[from_poor_to_high_rate[indexAccount]].single_in_out.push({account :from_poor_to_high_rate[indexAccount], title:transSIOspecial(),type:BANK_SIO_TYPE_OUT,amount:Math.round(100*amountOnaccountAtDate)/100,date:simu.value.events[i].year_str+'/'+simu.value.events[i].month_str,month:simu.value.events[i].month,year:simu.value.events[i].year,rate:0.0});
+            bank.value.accounts[from_poor_to_high_rate[indexAccount]].single_in_out.push({account :from_poor_to_high_rate[indexAccount], title:transSIOspecial(),type:BANK_SIO_TYPE_OUT,amount:Math.round(100*amountOnaccountAtDate)/100,date:simu.value.events[i].year_str+'/'+transMonthName(simu.value.events[i].month),month:simu.value.events[i].month,year:simu.value.events[i].year,rate:0.0});
             toPay-=amountOnaccountAtDate;
           }
           indexAccount++;
@@ -247,7 +247,7 @@ const apply_events_chain=()=>{
         var j=0;
         if(i==0)
         {
-          while(j<simu.value.credit.amort.length && simu.value.credit.amort[j][0]!=(simu.value.events[i].month_str+'-'+simu.value.events[i].year_str))
+          while(j<simu.value.credit.amort.length && simu.value.credit.amort[j][0]!=(transMonthName(simu.value.events[i].month)+'-'+simu.value.events[i].year_str))
           {
             simu.value.events[i].amortEvt.push(simu.value.credit.amort[j]);
             j++;
@@ -267,7 +267,7 @@ const apply_events_chain=()=>{
         }
         else
         {
-          while(j<simu.value.events[i-1].amortEvt.length && simu.value.events[i-1].amortEvt[j][0]!=(simu.value.events[i].month_str+'-'+simu.value.events[i].year_str))
+          while(j<simu.value.events[i-1].amortEvt.length && simu.value.events[i-1].amortEvt[j][0]!=(transMonthName(simu.value.events[i].month)+'-'+simu.value.events[i].year_str))
           {
             simu.value.events[i].amortEvt.push(simu.value.events[i-1].amortEvt[j]);
             j++;

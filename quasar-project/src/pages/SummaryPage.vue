@@ -19,8 +19,8 @@
     </q-timeline>
       <div class="q-ma-md" style="display: flex;flex-direction: column;align-items: center;align-content: center; justify-content: center;">
         <span v-if="show_tuto==true" style="color: white;font-size:18px;" ref="mySpan">{{ spantxt }}</span>
-        <q-btn v-if="show_tuto==true&&tutoPhase<5" class="q-ma-md" label=">>" rounded color="blue-grey-8" @click="nextTutoPhase()"></q-btn>
-        <q-btn v-if="show_tuto==true &&tutoPhase==5" class="q-ma-md" :label=transStr(stringsIDs.str_close) rounded color="blue-grey-8" @click="restoreState"></q-btn>
+        <q-btn v-if="show_tuto==true&&tutoPhase<4" class="q-ma-md" label=">>" rounded color="blue-grey-8" @click="nextTutoPhase()"></q-btn>
+        <q-btn v-if="show_tuto==true &&tutoPhase==4" class="q-ma-md" :label=transStr(stringsIDs.str_tuto_close_tuto) rounded color="blue-grey-8" @click="restoreState"></q-btn>
       </div>
   </div>
   </div>
