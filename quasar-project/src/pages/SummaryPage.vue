@@ -19,8 +19,8 @@
     </q-timeline>
       <div class="q-ma-md" style="display: flex;flex-direction: column;align-items: center;align-content: center; justify-content: center;">
         <span v-if="show_tuto==true" style="color: white;font-size:18px;" ref="mySpan">{{ spantxt }}</span>
-        <q-btn v-if="show_tuto==true&&tutoPhase<4" class="q-ma-md" label=">>" rounded color="blue-grey-8" @click="nextTutoPhase()"></q-btn>
-        <q-btn v-if="show_tuto==true &&tutoPhase==4" class="q-ma-md" :label=transStr(stringsIDs.str_tuto_close_tuto) rounded color="blue-grey-8" @click="restoreState"></q-btn>
+        <shakeBtn v-if="show_tuto==true&&tutoPhase<4" class="q-ma-md" btn-label=">>"  @click="nextTutoPhase()"></shakeBtn>
+        <shakeBtn v-if="show_tuto==true &&tutoPhase==4" class="q-ma-md" :btn-label=transStr(stringsIDs.str_tuto_close_tuto) @click="restoreState"></shakeBtn>
       </div>
   </div>
   </div>
@@ -33,8 +33,9 @@
 </template>
 
 <script setup>
+import shakeBtn from 'src/components/shakeBtn.vue';
 import {ref,onBeforeMount } from 'vue'
-import { simu,bank,simu_before_tuto,bank_before_tuto } from 'stores/store';
+import { simu,bank } from 'stores/store';
 import {formatnumber} from '../utils/string_utils'
 import { useRouter } from 'vue-router';
 import {targetPage} from '../utils/swipe_utils.js'

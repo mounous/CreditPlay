@@ -279,6 +279,10 @@ export enum stringsIDs {
   str_bank_display_creation=243,
   str_all=244,
   str_tuto_chart_settings=245,
+  str_save_possible=246,
+  str_not_again=247,
+  str_reenable_tuto=248,
+  str_save=249,
 };
 
 const translatedStrs=ref(
@@ -693,6 +697,14 @@ const translatedStrs=ref(
   ['Tout','All'],
 
   ['Vous pouvez choisir les données à afficher en cliquant sur cet icône :','Click this icon to choose displayed data :'],
+
+  ['Nouvelles données de simulation ! Sauvegarder ?','New simulation data. Save ?'],
+
+  ['Ne plus voir','Don\'t show again'],
+
+  ['Notifications réactivées si vous lancez un tuto','Notifications will be enabled if you launch a tuto'],
+
+  ['Sauver','Save'],
 ]);
 
 export const getLangId=function()

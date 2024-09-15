@@ -110,7 +110,7 @@ import currencyPicker from 'src/components/currencyPicker.vue';
 import { transStr,stringsIDs,rerenderMainlayout,FRENCH_ID,ENGLISH_ID,getLangId } from 'src/stores/languages';
 import { onBeforeMount, ref } from 'vue';
 import { show_tuto,tutoPhase } from 'src/stores/store';
-
+import { MustPopTutorialAppIntro } from '../stores/store';
 
 var reRender=ref(1);
 var mustPopLanguage=ref(false);
@@ -136,7 +136,7 @@ const launchTuto=function()
 {
   if(show_tuto.value==false)
   {
-    show_tuto.value=true;
+    MustPopTutorialAppIntro.value=true;
     tutoPhase.value=0;
     router.push('/');
   }

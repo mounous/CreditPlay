@@ -67,16 +67,18 @@
 </template>
 
 <script setup>
+import { useQuasar } from 'quasar';
 import { onMounted, ref } from 'vue'
 import { LocalStorage } from 'quasar';
 import { onBeforeMount,nextTick } from 'vue';
-import { bank, show_tuto, simu, startFormFilled, tutoPhase } from 'src/stores/store';
+import { bank, mustAlertChangeChart, show_tuto, simu, startFormFilled, tutoPhase,showNotifMem } from 'src/stores/store';
 import { useRouter } from 'vue-router';
 import { targetPage } from '../utils/swipe_utils.js'
 import { transStr, stringsIDs } from 'src/stores/languages';
-import {mustAlertChart} from '../stores/store'
+import {mustAlertChangeMem} from '../stores/store'
 import SaveContent from 'src/components/SaveContent.vue';
 import shakeBtn from 'src/components/shakeBtn.vue'
+
 var scrollAreaRef=ref();
 const DEFAULT_ID = -1;
 const DEFAULT_NAME = '';
@@ -85,6 +87,7 @@ var listSave = ref([]);
 var selected_id = ref(DEFAULT_ID);
 var currentName = ref(DEFAULT_NAME);
 const router = useRouter();
+const $q=useQuasar();
 const handleSwipeExt = function ({ evt, touch, mouse, direction, duration, distance }) {
   router.push(targetPage(direction, router.currentRoute.value.fullPath));
 }
@@ -207,6 +210,30 @@ const getStorage = function () {
       listSave.value = LocalStorage.getItem('listSave');
     }
   tutoPhase.value=-1;
+  if(mustAlertChangeMem.value==true)
+  {
+    if(showNotifMem.value==true)
+    {
+      $q.notify({ color: 'blue', textColor: 'black', icon: 'info', message: transStr(stringsIDs.str_save_possible),
+                  actions:[
+
+
+                    {
+                      label:transStr(stringsIDs.str_save),handler:()=>{
+                                                                              mustPopName.value = true
+                                                                            }
+                    },
+                    {
+                      label:transStr(stringsIDs.str_not_again),handler:()=>{
+                                                                              showNotifMem.value=false;
+                                                                              LocalStorage.set('showNotifMem',false);
+                                                                              $q.notify({ color: 'blue', textColor: 'black', icon: 'info', message: transStr(stringsIDs.str_reenable_tuto), closeBtn:transStr(stringsIDs.str_close)})
+                                                                            }
+                    },
+                  ]}) ;
+    }
+    mustAlertChangeMem.value=false;
+  }
 }
 const restoreData = function () {
   var index = getSimuIndexInStorage(selected_id.value);
@@ -217,7 +244,7 @@ const restoreData = function () {
     simu.value = (listSave.value)[index].simu;
     bank.value = (listSave.value)[index].bank;
     startFormFilled.value = (listSave.value)[index].startFormFilled;
-    mustAlertChart.value=true;
+    mustAlertChangeChart.value=true;
     if(show_tuto.value==false)
     {
       router.push('/summary');

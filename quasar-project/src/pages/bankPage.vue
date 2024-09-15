@@ -1,7 +1,7 @@
 <template>
-  <accountForm v-if="displayAccountForm==true"  @account-added="[displayAccountForm=false,mustAlertChart=true]" @account-aborted="displayAccountForm=false"></accountForm>
-  <periodicSavingsForm v-if="displayPSForm==true" @ps-added="[displayPSForm=false,mustAlertChart=true]" @ps-aborted="displayPSForm=false"></periodicSavingsForm>
-  <singleIOFrom v-if="displaySIOForm==true" @sio-added="[displaySIOForm=false,mustAlertChart=true]" @sio-aborted="displaySIOForm=false"></singleIOFrom>
+  <accountForm v-if="displayAccountForm==true"  @account-added="[displayAccountForm=false,mustAlertChangeChart=true,mustAlertChangeMem=true]" @account-aborted="displayAccountForm=false"></accountForm>
+  <periodicSavingsForm v-if="displayPSForm==true" @ps-added="[displayPSForm=false,mustAlertChangeChart=true,mustAlertChangeMem=true]" @ps-aborted="displayPSForm=false"></periodicSavingsForm>
+  <singleIOFrom v-if="displaySIOForm==true" @sio-added="[displaySIOForm=false,mustAlertChangeChart=true,mustAlertChangeMem=true]" @sio-aborted="displaySIOForm=false"></singleIOFrom>
   <q-page >
     <q-page-sticky position="top-right" :offset="[0, 0]" style="z-index:3">
       <q-icon name="help" size="x-large" color="white" class="q-mt-md q-mr-md" v-if="show_tuto==false" @click="[MustPopTutorial=true,show_tuto=true,tutoPhase=0]"></q-icon>
@@ -33,7 +33,7 @@
                 <th style="font-size: larger">{{ formatnumber(account.amount.toString())+' '+getCurrencySymbol()}}</th>
                 <th style="font-size: larger">{{ account.rate }}</th>
                 <th style="font-size: larger">{{ account.open_m+'/'+account.open_y}}</th>
-                <th ><q-btn dense size="s" icon="delete_forever" @click="[removeAccount(account),mustAlertChart=true]"></q-btn></th>
+                <th ><q-btn dense size="s" icon="delete_forever" @click="[removeAccount(account),mustAlertChangeChart=true,mustAlertChangeMem=true]"></q-btn></th>
               </tr>
             </tbody>
           </q-markup-table>
@@ -72,7 +72,7 @@
                 <th  style="font-size: larger">{{ account.title }}</th>
                 <th  style="font-size: larger">{{ transoptSaveP(saving.type) }}</th>
                 <th  style="font-size: larger">{{ saving.startMonth + '/' + saving.startYear + ' - '+(saving.endMonth != 0 && saving.endYear != 0 ? saving.endMonth + '/' + saving.endYear : '?/?')}}</th>
-                <th><q-btn dense size="s" icon="delete_forever" @click="[removeSavingP(saving,account),mustAlertChart=true]"></q-btn></th>
+                <th><q-btn dense size="s" icon="delete_forever" @click="[removeSavingP(saving,account),mustAlertChangeChart=true,mustAlertChangeMem=true]"></q-btn></th>
               </tr>
             </tbody>
           </q-markup-table>
@@ -110,7 +110,7 @@
                 <th v-if="io.type==BANK_SIO_TYPE_IN" style="font-size: larger"  class="text-green">{{'+ '+formatnumber(io.amount.toString())+' '+getCurrencySymbol() }}</th>
                 <th style="font-size: larger">{{ account.title }}</th>
                 <th style="font-size: larger">{{ io.month + '/' + io.year }}</th>
-                <th><q-btn dense size="s" icon="delete_forever" @click="[removeSingleIO(io,account),mustAlertChart=true]"></q-btn></th>
+                <th><q-btn dense size="s" icon="delete_forever" @click="[removeSingleIO(io,account),mustAlertChangeChart=true,mustAlertChangeMem=true]"></q-btn></th>
               </tr>
             </tbody>
           </q-markup-table>
@@ -191,7 +191,7 @@
 
 <script setup>
 import shakeBtn from 'src/components/shakeBtn.vue';
-import { bank, simu, tutoPhase,show_tuto } from 'stores/store';
+import { bank, simu, tutoPhase,show_tuto, mustAlertChangeMem } from 'stores/store';
 import { onMounted, ref,nextTick, onBeforeMount } from 'vue'
 import { useQuasar,scroll } from 'quasar';
 import { useRouter } from 'vue-router';
@@ -204,7 +204,7 @@ import {targetPage} from '../utils/swipe_utils.js'
 import {transStr,stringsIDs,transoptSaveP,transSt,sentancesIDs,transSIOspecial} from '../stores/languages.ts'
 import { formatnumber } from 'src/utils/string_utils';
 import { getCurrencySymbol } from 'src/stores/currencies';
-import {mustAlertChart} from '../stores/store'
+import {mustAlertChangeChart} from '../stores/store'
 import videoPlayer from '../components/videoPlayer.vue';
 import BankExplainer from 'src/components/BankExplainer.vue';
 import BankPurpose from 'src/components/BankPurpose.vue';

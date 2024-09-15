@@ -49,7 +49,7 @@ import { computeMensuality, computeCredit_init } from '../utils/credit_utility.j
 import { bank, setStartFormFilled, simu ,startFormFilled} from 'stores/store';
 import { targetPage } from '../utils/swipe_utils.js'
 import { transStr, stringsIDs, transSt, sentancesIDs, is_sio_special_name,transMonthName } from '../stores/languages.ts'
-import {mustAlertChart} from '../stores/store'
+import {mustAlertChangeChart,mustAlertChangeMem} from '../stores/store'
 import { show_tuto } from 'stores/store';
 import videoPlayer from 'src/components/videoPlayer.vue'
 import ShakeBtn from 'src/components/shakeBtn.vue';
@@ -71,7 +71,8 @@ const onSubmit=function() {
   computeMensuality();
   computeCredit_init();
   setStartFormFilled(true);
-  mustAlertChart.value=true;
+  mustAlertChangeChart.value=true;
+  mustAlertChangeMem.value=true;
   router.push('/summary');
   };
 

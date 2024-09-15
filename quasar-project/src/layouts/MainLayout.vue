@@ -9,10 +9,12 @@
         <q-route-tab name="events" :label=transStr(stringsIDs.str_tab_ops) icon="toc" to="/events" :disable="initFormDone==false || show_tuto==true"/>
         <q-route-tab name="summary" :label=transStr(stringsIDs.str_tab_sum) icon="money" to="/summary" :disable="initFormDone==false ||  show_tuto==true"/>
         <q-route-tab name="chart" :label=transStr(stringsIDs.str_tab_chart) icon="bar_chart" to="/lineChart" :disable="(initFormDone==false&&bankDone==false) || show_tuto==true">
-          <q-badge v-if="initFormDone==true && mustAlertChart==true" color="blue" floating>!</q-badge>
+          <q-badge v-if="initFormDone==true && mustAlertChangeChart==true" color="blue" floating>!</q-badge>
         </q-route-tab>
         <q-route-tab name="save" :label=transStr(stringsIDs.str_tab_savings) icon="account_balance" to="/bank" :disable="show_tuto==true"/>
-        <q-route-tab name="memory" :label=transStr(stringsIDs.str_tab_mem) icon="import_export" to="/memory" :disable="show_tuto==true"/>
+        <q-route-tab name="memory" :label=transStr(stringsIDs.str_tab_mem) icon="import_export" to="/memory" :disable="show_tuto==true">
+          <q-badge v-if="initFormDone==true && mustAlertChangeMem==true" color="blue" floating>!</q-badge>
+        </q-route-tab>
         <q-route-tab name="help" :label=transStr(stringsIDs.str_tab_help) icon="help" to="/help" :disable="show_tuto==true"/>
 
       </q-tabs>
@@ -24,7 +26,7 @@
       </q-page-container>
     </q-layout>
 
-    <div class="col" v-if="MustPopTutorial==false && show_tuto==false" :key="rerenderMainlayout">
+    <div class="col" v-if="MustPopTutorialAppIntro==false && show_tuto==false" :key="rerenderMainlayout">
       <q-dialog v-model="mustPopRestore" cover transition-show="scale" transition-hide="scale" :key="rerenderMainlayout">
         <q-card>
           <div class="col flex flex center justify-around">
@@ -43,10 +45,10 @@
 
 
 
-    <div v-if="MustPopTutorial==true">
-      <q-dialog v-model="MustPopTutorial" cover transition-show="scale" transition-hide="scale" persistent maximized full-width
+    <div v-if="MustPopTutorialAppIntro==true">
+      <q-dialog v-model="MustPopTutorialAppIntro" cover transition-show="scale" transition-hide="scale" persistent maximized full-width
                 style="background-color: black;">
-        <AppIntro v-if="MustPopTutorial==true" @tuto-intro-finished="[MustPopTutorial=false,rerenderMainlayout++,LocalStorage.set('MustPopTutorial',false)]"></AppIntro>
+        <AppIntro v-if="MustPopTutorialAppIntro==true" @tuto-intro-finished="[MustPopTutorialAppIntro=false,rerenderMainlayout++,LocalStorage.set('MustPopTutorialAppIntro',false)]"></AppIntro>
       </q-dialog>
 
     </div>
@@ -68,17 +70,16 @@
 
 import { onBeforeMount, ref, watch } from 'vue';
 import languagePicker from 'src/components/languagePicker.vue';
-import {mustAlertChart,show_tuto} from '../stores/store'
+import {mustAlertChangeChart,mustAlertChangeMem,show_tuto,showNotifMem} from '../stores/store'
 import { simu,bank,startFormFilled } from 'stores/store';
 import { LocalStorage } from 'quasar';
 import { useRouter } from 'vue-router';
 import { stringsIDs, transStr ,rerenderMainlayout} from 'src/stores/languages';
 import { reapplyLanguageToData} from 'src/utils/credit_utility';
 import CurrencyPicker from 'src/components/currencyPicker.vue';
-
-
+import { MustPopTutorialAppIntro } from '../stores/store';
 import AppIntro from 'src/components/AppIntro.vue';
-var MustPopTutorial = ref(LocalStorage.has('MustPopTutorial') ? LocalStorage.getItem('MustPopTutorial') : true);
+
 
 var mustPopRestore=ref(false);
 var mustPopCurrency=ref(LocalStorage.has('currentCurrency')?false:true);
@@ -100,6 +101,12 @@ const setbankdone=function()
     bankDone.value=false;
   }
 }
+const setNotif=function()
+{
+  showNotifMem.value=true;
+  LocalStorage.set('showNotifMem',true);
+}
+watch(show_tuto,setNotif);
 watch(startFormFilled,setInitDone);
 watch(bank.value,setbankdone);
 if (simu.value.credit.amount==0) {

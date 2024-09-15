@@ -1,7 +1,10 @@
 
 
 import {ref} from 'vue'
-export const mustAlertChart=ref(false);
+import { LocalStorage } from 'quasar';
+export const showNotifMem=ref(LocalStorage.has('showNotifMem')?LocalStorage.getItem('showNotifMem'):true);
+export const mustAlertChangeChart=ref(false);
+export const mustAlertChangeMem=ref(false);
 export const startFormFilled=ref(false);
 export const setStartFormFilled=function(bool_filled:boolean){startFormFilled.value=bool_filled};
 export const simu=ref({
@@ -26,7 +29,7 @@ export const bank=ref({
 });
 
 
-
+export const  MustPopTutorialAppIntro = ref(LocalStorage.has('MustPopTutorialAppIntro') ? LocalStorage.getItem('MustPopTutorialAppIntro') : true);
 export const show_tuto=ref(false);
 export const tutoPhase=ref(0);
 export const simu_before_tuto=ref({
