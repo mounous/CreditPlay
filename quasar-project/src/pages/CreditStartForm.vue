@@ -30,17 +30,20 @@
         </q-card>
       </div>
       <div style="display: flex;flex-direction: column;align-items: center;" class="q-mt-xs q-mr-md q-ml-md">
-        <p v-if="show_tuto" style="color:white;font-size: 20px;text-align: center;">{{transStr(stringsIDs.str_tuto_credit)}}</p>
-        <videoPlayer v-if="show_tuto"  :name="stringsIDs.str_simulate_credit"></videoPlayer>
-        <ShakeBtn v-if="show_tuto" class="q-ma-md" :label=transStr(stringsIDs.str_tuto_close_tuto) @click="show_tuto=false"></ShakeBtn>
-        <span v-if="show_tuto"  style='color: white; font-size:50px;'>&#8595;</span>
-        <q-btn :disable="show_tuto"  size=xl color="blue-grey-8" :label="startFormFilled==false ? transStr(stringsIDs.str_credit_fill) : transStr(stringsIDs.str_credit_fill_again)" @click="startFormFilled==false ?displayStartForm = true :resetMustPop=true"> </q-btn>
+        <tutoDisplayer >
+          <tutoTxt :txt=transStr(stringsIDs.str_tuto_credit) class="q-mb-md"></tutoTxt>
+          <videoPlayer v-if="show_tuto"  :name="stringsIDs.str_simulate_credit"></videoPlayer>
+          <q-btn v-if="show_tuto" class="q-ma-md" rounded color="blue-grey-8" :label=transStr(stringsIDs.str_tuto_close_tuto) @click="show_tuto=false"></q-btn>
+        </tutoDisplayer>
+        <q-btn v-if="show_tuto==false"  size=xl color="blue-grey-8" :label="startFormFilled==false ? transStr(stringsIDs.str_credit_fill) : transStr(stringsIDs.str_credit_fill_again)" @click="startFormFilled==false ?displayStartForm = true :resetMustPop=true"> </q-btn>
       </div>
     </div>
   </q-page>
 </template>
 
 <script setup>
+import tutoTxt from 'src/components/tutoTxt.vue';
+import tutoDisplayer from 'src/components/tutoDisplayer.vue';
 import startForm from 'src/components/startForm.vue';
 import {getCurrencySymbol} from '../stores/currencies'
 import { useRouter } from 'vue-router';

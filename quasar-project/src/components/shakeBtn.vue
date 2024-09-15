@@ -1,5 +1,5 @@
 <template>
-  <q-btn rounded color="blue-grey-8" :label=props.btnLabel :class="{ shake: enabled }"></q-btn>
+  <q-btn rounded  color="blue-grey-8" :label=props.btnLabel :class="{ shake: enabled }"></q-btn>
 </template>
 
 <script setup>
@@ -15,7 +15,7 @@ const shake=function()
 }
 const start=function()
 {
-  id_destroy.value=setInterval(shake,1500);
+  id_destroy.value=setInterval(shake,3500);
 }
 const stop=function()
 {

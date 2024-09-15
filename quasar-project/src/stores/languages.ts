@@ -457,8 +457,8 @@ const translatedStrs=ref(
   'Welcome to the super finance calculator Credit Play !'],
   ['Lancer le tuto','Launch toturial'],
   ['Je suis déjà un expert','No need. I am an expert'],
-  ['Vous pouvez à simuler votre crédit en cliquant sur ce bouton. Après avoir renseigné la somme empruntée, le  taux, et la durée, vous serez dirigé vers l\'onglet résumé où vous pourrez voir les données de votre crédit. Cela débloquera les onglets "opérations" et "graphique".',
-   'You can start simulating your credit by clicking this button. After having set your credit amount, duration, and rate, you will land on the summary tab, where your credit data will appear. This will also unlock the "operations" and "chart" tabs'
+  ['Pour simuler votre crédit, cliquez sur "Simuler". Après avoir renseigné la somme empruntée, le  taux, et la durée, vous serez dirigé vers l\'onglet résumé où vous pourrez voir les données de votre crédit. Cela débloquera les onglets "opérations" et "graphique".',
+   'Click on "Simulate" to simulate your loan. After having set your loan amount, duration, and rate, you will land on the summary tab, where your loan data will appear. This will also unlock the "operations" and "chart" tabs'
   ],
   ['L\'onglet "operations" est le coeur de l\'application ! Vous pouvez simuler successivement :',
    'Operations tab  is the core of the app ! You can simulate a sequence of: '
