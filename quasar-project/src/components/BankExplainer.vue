@@ -6,11 +6,13 @@
         <q-step :name="2"  :title=transStr(stringsIDs.str_tuto_save_proc_3) :caption=transStr(stringsIDs.str_tuto_save_proc_4)       active-icon="feed" icon="feed" :done="step > 2" > </q-step>
         <q-step :name="3"  :title=transStr(stringsIDs.str_tuto_save_proc_5) :caption=transStr(stringsIDs.str_tuto_save_proc_6)       active-icon="feed" icon="feed" :done="step>3" > </q-step>
       </q-stepper>
-      <q-btn  class="q-ma-md" label=">>" rounded color="blue-grey-8"></q-btn>
+      <shakeBtn  class="q-ma-md" btn-label=">>"></shakeBtn>
       </div>
 </template>
 
 <script setup>
+
+import shakeBtn from 'src/components/shakeBtn.vue';
 import { ref, onBeforeMount, onBeforeUnmount } from 'vue'
 import { stringsIDs,transStr } from 'src/stores/languages';
 

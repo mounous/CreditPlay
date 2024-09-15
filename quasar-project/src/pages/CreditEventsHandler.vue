@@ -1,7 +1,10 @@
 <template>
   <q-page v-touch-swipe.mouse.left.right="handleSwipeExt" style="display:flex;" :key="refresh">
+    <q-page-sticky position="top-right" :offset="[0, 0]" style="z-index:3">
+      <q-icon name="help" size="x-large" color="white" class="q-mt-md q-mr-md"  v-if="show_tuto==false" @click="saveState()"></q-icon>
+   </q-page-sticky>
     <div class="column justify-arround content-center" style=" flex-direction: column;width:100%">
-      <q-icon name="help" size="large" color="white" class="q-ma-md" v-if="show_tuto==false" @click="saveState()"></q-icon>
+      <div class="column" style="min-height: 5%;width: 100%;"></div>
       <div class="column" style="max-height:80%; min-height: 70%;width: 100%;" :key="refresh">
         <q-scroll-area style="height:100%;">
         <q-list v-if="simu.events.length>0" class=" q-ma-md bg-primary" separator bordered :key="simu.events.length">
@@ -33,8 +36,8 @@
           <p v-if="show_tuto==true" style="color:white;font-size:20px;text-align: center;" >{{feedTextTutoOps(tutoPhase)}}</p>
 
           <OpsCapabilities v-if="show_tuto==true&&tutoPhase==0" ></OpsCapabilities>
-          <q-btn v-if="show_tuto==true &&tutoPhase<3" class="q-ma-md" label=">>" rounded color="blue-grey-8" @click="handleCLick()"></q-btn>
-          <q-btn v-if="show_tuto==true &&tutoPhase>=3" class="q-ma-md" :label=transStr(stringsIDs.str_close) rounded color="blue-grey-8" @click="restoreState"></q-btn>
+          <shakeBtn v-if="show_tuto==true &&tutoPhase<3" class="q-ma-md" btn-label=">>"  @click="handleCLick()"></shakeBtn>
+          <shakeBtn v-if="show_tuto==true &&tutoPhase>=3" class="q-ma-md" :btn-label=transStr(stringsIDs.str_tuto_close_tuto)  @click="restoreState"></shakeBtn>
           <div ref="phamtomDivToScrollTo"></div>
         </div>
       </q-scroll-area>
@@ -59,7 +62,7 @@
 
 <script setup>
 import OpsCapabilities from 'src/components/OpsCapabilities.vue';
-
+import shakeBtn from 'src/components/shakeBtn.vue'
 import {   useQuasar } from 'quasar';
 import {  onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';

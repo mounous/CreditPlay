@@ -2,7 +2,7 @@
   <accountForm v-if="displayAccountForm==true"  @account-added="[displayAccountForm=false,mustAlertChart=true]" @account-aborted="displayAccountForm=false"></accountForm>
   <periodicSavingsForm v-if="displayPSForm==true" @ps-added="[displayPSForm=false,mustAlertChart=true]" @ps-aborted="displayPSForm=false"></periodicSavingsForm>
   <singleIOFrom v-if="displaySIOForm==true" @sio-added="[displaySIOForm=false,mustAlertChart=true]" @sio-aborted="displaySIOForm=false"></singleIOFrom>
-  <q-page  @click="[tutoPhase==0 ?tutoPhase=0:tutoPhase<5 ?tutoPhase++: tutoPhase=5,ScrollDown()]">
+  <q-page >
     <q-page-sticky position="top-right" :offset="[0, 0]" style="z-index:3">
       <q-icon name="help" size="x-large" color="white" class="q-mt-md q-mr-md" v-if="show_tuto==false" @click="[MustPopTutorial=true,show_tuto=true,tutoPhase=0]"></q-icon>
    </q-page-sticky>
@@ -13,7 +13,7 @@
           <p class="myTitle">{{transStr(stringsIDs.str_title_accounts)}}</p>
         </div>
         <div style="display: flex;flex-direction: row;align-items: center;justify-content: center;align-content: center;width: 100%;">
-          <q-btn :label=transStr(stringsIDs.str_btn_add) class="q-mb-xs" color="blue-grey-8" style="height:40px" @click="displayAccountForm=true"></q-btn>
+          <q-btn :label=transStr(stringsIDs.str_btn_add) class="q-mb-xs" color="blue-grey-8" style="height:40px" @click="displayAccountForm=true" :disable="show_tuto==true"></q-btn>
         </div>
         <div style="display: flex;flex-direction: row;align-items: center;justify-content: center;align-content: center;width: 100%;">
           <q-scroll-area ref="scrollAreaAccRef" style="display:flex;width: 100%;height: 200px;">
@@ -49,7 +49,7 @@
           <p class="myTitle">{{transStr(stringsIDs.str_save_capability)}}</p>
         </div>
         <div style="display: flex;flex-direction: row;align-items: center;justify-content: center;align-content: center;width: 100%;">
-          <q-btn :disable="bank.accounts.length==0" class="q-mb-xs" color="blue-grey-8" style="height:40px" :label=transStr(stringsIDs.str_btn_add)
+          <q-btn :disable="bank.accounts.length==0 || show_tuto==true" class="q-mb-xs" color="blue-grey-8" style="height:40px" :label=transStr(stringsIDs.str_btn_add)
             @click="displayPSForm=true"></q-btn>
         </div>
         <div style="display: flex;flex-direction: row;align-items: center;justify-content: center;align-content: center;width: 100%;">
@@ -88,7 +88,7 @@
           <p class="myTitle">{{ transStr(stringsIDs.str_title_sio) }}</p>
         </div>
         <div style="display: flex;flex-direction: row;align-items: center;justify-content: center;align-content: center;width: 100%;">
-          <q-btn :disable="bank.accounts.length==0" class="q-mb-xs" color="blue-grey-8" style="height:40px" :label=transStr(stringsIDs.str_btn_add)
+          <q-btn :disable="bank.accounts.length==0 || show_tuto==true" class="q-mb-xs" color="blue-grey-8" style="height:40px" :label=transStr(stringsIDs.str_btn_add)
             @click="displaySIOForm=true"></q-btn>
         </div>
         <div style="display: flex;flex-direction: row;align-items: center;justify-content: center;align-content: center;width: 100%;">
@@ -122,6 +122,7 @@
       <th  v-if="show_tuto==true && tutoPhase==5" class="q-ma-md" style="color: white;font-size:20px;">{{transStr(stringsIDs.str_tuto_bank_6)}}</th>
       <th  v-if="show_tuto==true && tutoPhase==4" class="q-ma-md" style="color: white;font-size:20px;">{{transStr(stringsIDs.str_tuto_bank_5)}}</th>
       <th  v-if="show_tuto==true && tutoPhase==3" class="q-ma-md" style="color: white;font-size:20px;">{{transStr(stringsIDs.str_tuto_bank_4)}}</th>
+      <shakeBtn v-if="show_tuto==true && tutoPhase>=2 && tutoPhase<=4" @click="[tutoPhase==0 ?tutoPhase=0:tutoPhase<5 ?tutoPhase++: tutoPhase=5,ScrollDown()]" btn-label=">>" ></shakeBtn>
       <videoPlayer v-if="show_tuto==true &&(tutoPhase==5)" class="q-ma-md" color="blue-grey-8" :name="stringsIDs.str_savings_help"></videoPlayer>
       <q-btn v-if="show_tuto==true &&(tutoPhase==5)" class="q-ma-md" color="blue-grey-8" :label=transStr(stringsIDs.str_tuto_close_tuto) @click="[show_tuto=false,tutoPhase=0]"></q-btn>
     </div>
@@ -189,6 +190,7 @@
 </template>
 
 <script setup>
+import shakeBtn from 'src/components/shakeBtn.vue';
 import { bank, simu, tutoPhase,show_tuto } from 'stores/store';
 import { onMounted, ref,nextTick, onBeforeMount } from 'vue'
 import { useQuasar,scroll } from 'quasar';

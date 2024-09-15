@@ -9,7 +9,7 @@
         <q-btn icon="play_arrow"  size="large" color="black" class="q-mr-md"  v-if="(simu.events.length>0 || ((display_capital==true||display_interests==true) && display_savings==true))&&is_playing==false"  @click="relaunchAnimation"></q-btn>
         <q-btn icon="settings" fab size="large" color="black"  v-if="is_playing==false"  @click="mustPop=true"></q-btn>
 
-        <q-btn v-if="show_tuto==true &&(tutoPhase==2)" color="blue-grey-8" :label=transStr(stringsIDs.str_tuto_close_tuto) @click="[show_tuto=false,tutoPhase=0,restoreState()]"></q-btn>
+        <shakeBtn v-if="show_tuto==true &&(tutoPhase==2)"  :btn-label=transStr(stringsIDs.str_tuto_close_tuto) @click="[show_tuto=false,tutoPhase=0,restoreState()]"></shakeBtn>
         <q-icon name="help" size="x-large" color="white" class="q-mt-md q-mb-md q-ml-md q-mr-xl" v-if="show_tuto==false" @click="[MustPopTutorial=true,show_tuto=true,tutoPhase=0,destroy_periodic()]"></q-icon>
     </div>
     </q-page-sticky>
@@ -118,7 +118,7 @@
 </template>
 
 <script setup>
-
+import shakeBtn from './shakeBtn.vue';
 import VueApexCharts from 'vue3-apexcharts'
 import { ref, nextTick, onBeforeUnmount, onMounted} from 'vue';
 import {apply_events_chain, computeMensuality, getChartXAxis,getLatestMensuality,computeCredit_init} from '../utils/credit_utility'

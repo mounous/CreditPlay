@@ -36,14 +36,15 @@
          </q-list>
         </div>
         <div style="display: flex;flex: 1;">
-          <q-btn  class="q-ma-md" label=">>" rounded color="blue-grey-8"></q-btn>
+          <shakeBtn  class="q-ma-md" btn-label=">>" ></shakeBtn>
         </div>
         <div style="display: flex;flex: 1;"></div>
     </div>
 </template>
 
 <script setup>
+import shakeBtn from './shakeBtn.vue';
 import { stringsIDs,transStr } from 'src/stores/languages';
-
+shakeBtn
 
 </script>

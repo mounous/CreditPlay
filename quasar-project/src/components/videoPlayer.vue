@@ -1,13 +1,13 @@
 <template>
 
-  <q-btn v-if="play==false" :label=transStr(stringsIDs.str_tuto_video) rounded color="blue-grey-8" @click="play=true"></q-btn>
+  <shakeBtn v-if="play==false" :btn-label=transStr(stringsIDs.str_tuto_video)  @click="play=true"></shakeBtn>
   <q-card style="background-color: black;width: 100%;">
       <q-video v-if="play==true" :src=videosrc  />
   </q-card>
 </template>
 
 <script setup>
-
+import shakeBtn from 'src/components/shakeBtn.vue';
 import { onBeforeMount,ref,defineProps } from 'vue';
 import {getLangId,transStr,stringsIDs,FRENCH_ID} from '../stores/languages'
 var play=ref(false);

@@ -1,7 +1,7 @@
 <template>
   <q-page v-touch-swipe.mouse.left.right="handleSwipeExt" style="display: flex; " :key="tutoPhase">
     <q-page-sticky position="top-right" :offset="[0, 0]" style="z-index:3">
-      <q-icon name="help" size="x-large" color="white" class="q-mt-md q-mr-md" v-if="show_tuto==false" @click="[show_tuto=true,tutoPhase=0]"></q-icon>
+      <q-icon name="help" size="x-large" color="white" class="q-mt-md q-mr-md" v-if="show_tuto==false" @click="[show_tuto=true,tutoPhase=0,nextTick(scrollDownTuto)]"></q-icon>
    </q-page-sticky>
     <div
       style="flex-direction: column;width: 100%;">
@@ -29,7 +29,7 @@
             <th  v-if="show_tuto==true && tutoPhase==4" class="q-ma-md" style="color: white;font-size:17px;">{{transStr(stringsIDs.str_tuto_mem_5)}}</th>
             <th  v-if="show_tuto==true && tutoPhase==5" class="q-ma-md" style="color: white;font-size:17px;">{{transStr(stringsIDs.str_tuto_mem_6)}}</th>
             <th  v-if="show_tuto==true && tutoPhase==6" class="q-ma-md" style="color: white;font-size:17px;">{{transStr(stringsIDs.str_tuto_mem_7)}}</th>
-            <q-btn v-if="show_tuto==true && tutoPhase!=2 && tutoPhase!=4  && tutoPhase!=5" class="q-ma-md" label=">>" rounded color="blue-grey-8" @click="HandleClick()"></q-btn>
+            <shakeBtn v-if="show_tuto==true && tutoPhase!=2 && tutoPhase!=4  && tutoPhase!=5" class="q-ma-md" btn-label=">>" @click="HandleClick()"></shakeBtn>
           </div>
 
         </q-scroll-area>
@@ -76,7 +76,7 @@ import { targetPage } from '../utils/swipe_utils.js'
 import { transStr, stringsIDs } from 'src/stores/languages';
 import {mustAlertChart} from '../stores/store'
 import SaveContent from 'src/components/SaveContent.vue';
-
+import shakeBtn from 'src/components/shakeBtn.vue'
 var scrollAreaRef=ref();
 const DEFAULT_ID = -1;
 const DEFAULT_NAME = '';
@@ -203,17 +203,10 @@ const getSimuIndexInStorage = function (id_in) {
   return index;
 }
 const getStorage = function () {
-  if(show_tuto.value==true)
-  {
-    tutoPhase.value=0;
-    listSave.value==[];
-  }
-  else
-  {
-    if (LocalStorage.has('listSave')) {
+  if (LocalStorage.has('listSave')) {
       listSave.value = LocalStorage.getItem('listSave');
     }
-  }
+  tutoPhase.value=-1;
 }
 const restoreData = function () {
   var index = getSimuIndexInStorage(selected_id.value);
