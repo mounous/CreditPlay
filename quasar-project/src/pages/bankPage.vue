@@ -118,13 +118,15 @@
         </div>
       </div >
     </q-card>
-    <div  v-if="show_tuto==true" style="display: flex;flex-direction: column;align-items: center;align-content: center;justify-content: center;justify-items: center;">
-      <th  v-if="show_tuto==true && tutoPhase==5" class="q-ma-md" style="color: white;font-size:20px;">{{transStr(stringsIDs.str_tuto_bank_6)}}</th>
-      <th  v-if="show_tuto==true && tutoPhase==4" class="q-ma-md" style="color: white;font-size:20px;">{{transStr(stringsIDs.str_tuto_bank_5)}}</th>
-      <th  v-if="show_tuto==true && tutoPhase==3" class="q-ma-md" style="color: white;font-size:20px;">{{transStr(stringsIDs.str_tuto_bank_4)}}</th>
-      <shakeBtn v-if="show_tuto==true && tutoPhase>=2 && tutoPhase<=4" @click="[tutoPhase==0 ?tutoPhase=0:tutoPhase<5 ?tutoPhase++: tutoPhase=5,ScrollDown()]" btn-label=">>" ></shakeBtn>
-      <videoPlayer v-if="show_tuto==true &&(tutoPhase==5)" class="q-ma-md" color="blue-grey-8" :name="stringsIDs.str_savings_help"></videoPlayer>
-      <q-btn v-if="show_tuto==true &&(tutoPhase==5)" class="q-ma-md" color="blue-grey-8" :label=transStr(stringsIDs.str_tuto_close_tuto) @click="[show_tuto=false,tutoPhase=0]"></q-btn>
+    <div class="q-ma-md" style="display: flex;flex-direction: column;justify-content:center;align-content: center;">
+      <tutoDisplayer>
+        <th  v-if="show_tuto==true && tutoPhase==5" class="q-ma-md" style="color: white;font-size:20px;">{{transStr(stringsIDs.str_tuto_bank_6)}}</th>
+        <th  v-if="show_tuto==true && tutoPhase==4" class="q-ma-md" style="color: white;font-size:20px;">{{transStr(stringsIDs.str_tuto_bank_5)}}</th>
+        <th  v-if="show_tuto==true && tutoPhase==3" class="q-ma-md" style="color: white;font-size:20px;">{{transStr(stringsIDs.str_tuto_bank_4)}}</th>
+        <shakeBtn v-if="show_tuto==true && tutoPhase>=2 && tutoPhase<=4" @click="[tutoPhase==0 ?tutoPhase=0:tutoPhase<5 ?tutoPhase++: tutoPhase=5,ScrollDown()]" btn-label=">>" ></shakeBtn>
+        <videoPlayer v-if="show_tuto==true &&(tutoPhase==5)" class="q-ma-md" color="blue-grey-8" :name="stringsIDs.str_savings_help"></videoPlayer>
+        <q-btn v-if="show_tuto==true &&(tutoPhase==5)" class="q-ma-md" color="blue-grey-8" :label=transStr(stringsIDs.str_tuto_close_tuto) @click="[show_tuto=false,tutoPhase=0]"></q-btn>
+      </tutoDisplayer>
     </div>
     <div  v-if="show_tuto==true" ref="MyTutoSentance" ></div>
   </div>
@@ -180,16 +182,26 @@
   </q-page>
   <q-dialog v-if="show_tuto==true && tutoPhase==0" v-model="MustPopTutorial"   cover transition-show="scale" transition-hide="scale" maximized full-width  auto-close  v-on:before-hide="[tutoPhase=1,MustPopTutorial=true]"
     style="background-color: black;"   >
-    <BankPurpose></BankPurpose>
+    <div class="q-ma-md" style="display: flex;flex-direction: column;justify-content:center;align-content: center;">
+      <tutoDisplayer>
+        <BankPurpose></BankPurpose>
+      </tutoDisplayer>
+    </div>
   </q-dialog>
 
   <q-dialog v-if="show_tuto==true && tutoPhase==1" v-model="MustPopTutorial"   cover transition-show="scale" transition-hide="scale" maximized full-width  auto-close  v-on:before-hide="[tutoPhase=3,MustPopTutorial=true]"
     style="background-color: black;"   >
-    <BankExplainer></BankExplainer>
+    <div class="q-ma-md" style="display: flex;flex-direction: column;justify-content:center;align-content: center;">
+      <tutoDisplayer>
+        <BankExplainer></BankExplainer>
+      </tutoDisplayer>
+    </div>
   </q-dialog>
 </template>
 
 <script setup>
+import tutoDisplayer from 'src/components/tutoDisplayer.vue';
+import tutoTxt from 'src/components/tutoTxt.vue';
 import shakeBtn from 'src/components/shakeBtn.vue';
 import { bank, simu, tutoPhase,show_tuto, mustAlertChangeMem } from 'stores/store';
 import { onMounted, ref,nextTick, onBeforeMount } from 'vue'

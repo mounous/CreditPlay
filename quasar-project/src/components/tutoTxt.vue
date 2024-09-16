@@ -1,10 +1,16 @@
 <template>
   <!--span v-if="show_tuto==true" style="color:white;text-align: center;font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;font-size: 20px;">{{ props.txt }}</span!-->
   <!--span v-if="show_tuto==true" style="color:white;text-align: center;font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;font-size: 20px;">{{ props.txt }}</span!-->
-  <transition name="bounce">
-    <span v-if="show_tuto==true && show==true" style="color:white;text-align: center;font-family:Arial, Helvetica, sans-serif;font-size: 20px;">{{ props.txt }}</span>
-  </transition>
-
+  <div v-if="props.xl==false">
+    <transition name="bounce">
+      <span v-if="show_tuto==true && show==true" style="color:white;text-align: center;font-family:Arial, Helvetica, sans-serif;font-size: 20px;">{{ props.txt }}</span>
+    </transition>
+  </div>
+  <div v-if="props.xl==true">
+    <transition name="bounce">
+      <span v-if="show_tuto==true && show==true" style="color:white;text-align: center;font-family:Arial, Helvetica, sans-serif;font-size: 25px;">{{ props.txt }}</span>
+    </transition>
+  </div>
 </template>
 
 <script setup>
@@ -19,7 +25,8 @@ const setShow=function()
 onMounted(setShow)
 var props=defineProps
 (
-  {txt:String
+  { txt:String,
+    xl:{type :Boolean,default:false}
   }
 );
 </script>

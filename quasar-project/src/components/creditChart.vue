@@ -70,54 +70,60 @@
 
   <q-dialog v-if="show_tuto==true && tutoPhase==0" v-model="MustPopTutorial"   cover transition-show="scale" transition-hide="scale" maximized full-width  auto-close  v-on:before-hide="[tutoPhase=1,forceRender(),MustPopTutorial=true]"
     style="background-color: black;"   >
-    <div style="display: flex;flex-direction: column;align-items: center;justify-items: center;justify-content: center;">
-      <div style="display: flex;flex: 1;">
-        <th class="q-ma-md" style="color: white;font-size:17px;">{{transStr(stringsIDs.str_tuto_chart_1)}}</th>
-      </div>
-      <div style="display: flex;flex: 4;">
-        <q-list>
-          <q-item v-for="elmnt in listDisplayTuto" :key="elmnt.id">
-            <q-item-section avatar>
-              <q-icon v-if="elmnt.id!=stringsIDs.str_tuto_chart_cpmlnt_4" :color=elmnt.color name="radio_button_checked" />
-              <q-icon v-if="elmnt.id==stringsIDs.str_tuto_chart_cpmlnt_4" :color=elmnt.color name="horizontal_rule" />
-            </q-item-section>
-            <q-item-section>
-              <th  class="q-ma-xs" style="text-align:left; color: white;font-size:15px;">{{transStr(elmnt.id)}}</th>
-            </q-item-section>
-          </q-item>
-        </q-list>
-      </div>
-      <div style="display: flex;flex: 1;">
-        <th class="q-ma-md" style="color: white;font-size:17px;">{{transStr(stringsIDs.str_tuto_chart_cpmlnt_5)}}</th>
-      </div>
+    <div class="q-mt-md q-mb-md q-mr-md q-ml-md" style="display: flex;flex-direction: column;justify-content:center;align-content: center;">
+      <tutoDisplayer>
+        <div style="display: flex;flex: 1;">
+          <tutoTxt :xl="true" :txt=transStr(stringsIDs.str_tuto_chart_1)></tutoTxt>
+        </div>
+        <div style="display: flex;flex: 4;">
+          <q-list>
+            <q-item v-for="elmnt in listDisplayTuto" :key="elmnt.id">
+              <q-item-section avatar>
+                <q-icon v-if="elmnt.id!=stringsIDs.str_tuto_chart_cpmlnt_4" :color=elmnt.color name="radio_button_checked" />
+                <q-icon v-if="elmnt.id==stringsIDs.str_tuto_chart_cpmlnt_4" :color=elmnt.color name="horizontal_rule" />
+              </q-item-section>
+              <q-item-section>
+                <tutoTxt :txt=transStr(elmnt.id)></tutoTxt>
+              </q-item-section>
+            </q-item>
+          </q-list>
+        </div>
+        <div style="display: flex;flex: 1;">
+          <tutoTxt :txt=transStr(stringsIDs.str_tuto_chart_cpmlnt_5) :xl="true"></tutoTxt>
+        </div>
+      </tutoDisplayer>
     </div>
   </q-dialog>
   <q-dialog v-if="show_tuto==true && tutoPhase==1" v-model="MustPopTutorial"   cover transition-show="scale" transition-hide="scale" maximized full-width  auto-close v-on:before-hide="[tutoPhase=2,initTutoData()]"
     style="background-color: black;"   >
-    <div style="display: flex;flex-direction: column;">
-      <div style="display: flex;flex: 1;"></div>
-      <div style="display: flex;flex: 1;">
-        <th class="q-ma-xs" style="color: white;font-size:15px;">{{transStr(stringsIDs.str_tuto_chart_cpmlnt_6)}}</th>
-      </div>
-      <div style="display: flex;flex: 1;align-items: center;justify-content: center;">
-        <q-btn icon="play_arrow" size="large" color="black" style="background-color:grey;" class="q-ma-xs"></q-btn>
-      </div>
-      <div style="display: flex;flex: 1;">
-        <th class="q-ma-xs" style="color: white;font-size:15px;">{{transStr(stringsIDs.str_tuto_chart_settings)}}</th>
-      </div>
-      <div style="display: flex;flex: 1;align-items: center;justify-content: center;">
-        <q-btn icon="settings" size="large" color="black" style="background-color:grey;" class="q-ma-xs"></q-btn>
-      </div>
-      <div style="display: flex;flex: 1;">
-      <th class="q-ma-xs" style="color: white;font-size:15px;">{{transStr(stringsIDs.str_tuto_chart_cpmlnt_7)}}</th>
-      </div>
-      <div style="display: flex;flex: 1;"></div>
+    <div class="q-mt-md q-md-xl q-mr-md q-ml-md" style="display: flex;flex-direction: column;justify-content:center;align-content: center;">
+      <tutoDisplayer>
+        <div style="display: flex;flex: 1;"></div>
+        <div style="display: flex;flex: 1;">
+          <tutoTxt :txt=transStr(stringsIDs.str_tuto_chart_cpmlnt_6)></tutoTxt>
+        </div>
+        <div style="display: flex;flex: 1;align-items: center;justify-content: center;">
+          <q-btn icon="play_arrow" size="large" color="black" style="background-color:grey;" class="q-ma-xs"></q-btn>
+        </div>
+        <div style="display: flex;flex: 1;">
+          <tutoTxt :txt=transStr(stringsIDs.str_tuto_chart_settings)></tutoTxt>
+        </div>
+        <div style="display: flex;flex: 1;align-items: center;justify-content: center;">
+          <q-btn icon="settings" size="large" color="black" style="background-color:grey;" class="q-ma-xs"></q-btn>
+        </div>
+        <div style="display: flex;flex: 1;">
+          <tutoTxt :txt=transStr(stringsIDs.str_tuto_chart_cpmlnt_7)></tutoTxt>
+        </div>
+        <div style="display: flex;flex: 1;"></div>
+      </tutoDisplayer>
     </div>
   </q-dialog>
 
 </template>
 
 <script setup>
+import tutoDisplayer from './tutoDisplayer.vue';
+import tutoTxt from './tutoTxt.vue';
 import shakeBtn from './shakeBtn.vue';
 import VueApexCharts from 'vue3-apexcharts'
 import { ref, nextTick, onBeforeUnmount, onMounted} from 'vue';

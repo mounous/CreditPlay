@@ -33,11 +33,12 @@
           </q-item>
         </q-list>
         <div class="col q-ma-md">
-          <p v-if="show_tuto==true" style="color:white;font-size:20px;text-align: center;" >{{feedTextTutoOps(tutoPhase)}}</p>
-
-          <OpsCapabilities v-if="show_tuto==true&&tutoPhase==0" ></OpsCapabilities>
-          <shakeBtn v-if="show_tuto==true &&tutoPhase<3" class="q-ma-md" btn-label=">>"  @click="handleCLick()"></shakeBtn>
-          <shakeBtn v-if="show_tuto==true &&tutoPhase>=3" class="q-ma-md" :btn-label=transStr(stringsIDs.str_tuto_close_tuto)  @click="restoreState"></shakeBtn>
+          <tutoDisplayer :key="tutoPhase">
+            <tutoTxt :txt=feedTextTutoOps(tutoPhase)></tutoTxt>
+            <OpsCapabilities v-if="show_tuto==true&&tutoPhase==0" ></OpsCapabilities>
+            <shakeBtn v-if="show_tuto==true &&tutoPhase<3" class="q-ma-md" btn-label=">>"  @click="handleCLick()"></shakeBtn>
+            <shakeBtn v-if="show_tuto==true &&tutoPhase>=3" class="q-ma-md" :btn-label=transStr(stringsIDs.str_tuto_close_tuto)  @click="restoreState"></shakeBtn>
+          </tutoDisplayer>
           <div ref="phamtomDivToScrollTo"></div>
         </div>
       </q-scroll-area>
@@ -61,6 +62,8 @@
 </template>
 
 <script setup>
+import tutoDisplayer from 'src/components/tutoDisplayer.vue';
+import tutoTxt from 'src/components/tutoTxt.vue';
 import OpsCapabilities from 'src/components/OpsCapabilities.vue';
 import shakeBtn from 'src/components/shakeBtn.vue'
 import {   useQuasar } from 'quasar';

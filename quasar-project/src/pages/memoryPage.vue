@@ -7,13 +7,13 @@
       style="flex-direction: column;width: 100%;">
       <div class="col q-mt-md" style="height: 60%;">
 
-        <q-scroll-area style="height:100%;"  ref="scrollAreaRef" :key="tutoPhase">
-          <q-list v-if="listSave.length!=0" class="bg-primary q-ma-md" separator bordered @click.stop>
+        <q-scroll-area style="height:100%; max-width: 99%;"  ref="scrollAreaRef" :key="tutoPhase">
+          <q-list v-if="listSave.length!=0 && (show_tuto==false || tutoPhase>=1)" class="bg-primary q-ma-md" separator bordered @click.stop >
             <q-item v-for="item in listSave" :key="item.id" clickable
               @click="selected_id == item.id ? selected_id = DEFAULT_ID : selected_id = item.id" v-ripple
               :active="selected_id == item.id" active-class="bg-blue-grey-8 text-black">
               <q-item-section>
-                <q-item-label no-wrap="false" style="font-weight: bold;"> {{ item.name}} </q-item-label >
+                <q-item-label no-wrap="false" style="font-weight: bold;"> {{ truncate(item.name)}} </q-item-label >
                 <q-item-label no-wrap="false"> {{ item.date}} </q-item-label >
               </q-item-section>
               <q-item-section avatar>
@@ -21,17 +21,18 @@
               </q-item-section>
             </q-item>
           </q-list>
-          <div  v-if="show_tuto==true" class="q-ma-md" style="display: flex;flex-direction: column;align-items: center;align-content: center;">
-            <th  v-if="show_tuto==true && tutoPhase==0" class="q-ma-md" style="color: white;font-size:17px;">{{transStr(stringsIDs.str_tuto_mem_1)}}</th>
-            <SaveContent v-if="show_tuto==true && tutoPhase==1"></SaveContent>
-            <th  v-if="show_tuto==true && tutoPhase==2" class="q-ma-md" style="color: white;font-size:17px;">{{transStr(stringsIDs.str_tuto_mem_3)}}</th>
-            <th  v-if="show_tuto==true && tutoPhase==3" class="q-ma-md" style="color: white;font-size:17px;">{{transStr(stringsIDs.str_tuto_mem_4)}}</th>
-            <th  v-if="show_tuto==true && tutoPhase==4" class="q-ma-md" style="color: white;font-size:17px;">{{transStr(stringsIDs.str_tuto_mem_5)}}</th>
-            <th  v-if="show_tuto==true && tutoPhase==5" class="q-ma-md" style="color: white;font-size:17px;">{{transStr(stringsIDs.str_tuto_mem_6)}}</th>
-            <th  v-if="show_tuto==true && tutoPhase==6" class="q-ma-md" style="color: white;font-size:17px;">{{transStr(stringsIDs.str_tuto_mem_7)}}</th>
-            <shakeBtn v-if="show_tuto==true && tutoPhase!=2 && tutoPhase!=4  && tutoPhase!=5" class="q-ma-md" btn-label=">>" @click="HandleClick()"></shakeBtn>
+          <div  v-if="show_tuto==true" class="q-mt-md" style="display: flex;flex-direction: column;align-items: center;align-content: center;">
+            <tutoDisplayer>
+              <tutoTxt  v-if="show_tuto==true && tutoPhase==0" :txt=transStr(stringsIDs.str_tuto_mem_1)></tutoTxt>
+              <SaveContent v-if="show_tuto==true && tutoPhase==1"></SaveContent>
+              <tutoTxt  v-if="show_tuto==true && tutoPhase==2" :txt=transStr(stringsIDs.str_tuto_mem_3)></tutoTxt>
+              <tutoTxt  v-if="show_tuto==true && tutoPhase==3" :txt=transStr(stringsIDs.str_tuto_mem_4)></tutoTxt>
+              <tutoTxt  v-if="show_tuto==true && tutoPhase==4" :txt=transStr(stringsIDs.str_tuto_mem_5)></tutoTxt>
+              <tutoTxt  v-if="show_tuto==true && tutoPhase==5" :txt=transStr(stringsIDs.str_tuto_mem_6)></tutoTxt>
+              <tutoTxt  v-if="show_tuto==true && tutoPhase==6" :txt=transStr(stringsIDs.str_tuto_mem_7)></tutoTxt>
+              <shakeBtn v-if="show_tuto==true && tutoPhase!=2 && tutoPhase!=4  && tutoPhase!=5" class="q-ma-md" btn-label=">>" @click="HandleClick()"></shakeBtn>
+            </tutoDisplayer>
           </div>
-
         </q-scroll-area>
       </div>
 
@@ -67,6 +68,8 @@
 </template>
 
 <script setup>
+import tutoDisplayer from 'src/components/tutoDisplayer.vue';
+import tutoTxt from 'src/components/tutoTxt.vue';
 import { useQuasar } from 'quasar';
 import { onMounted, ref } from 'vue'
 import { LocalStorage } from 'quasar';
@@ -88,17 +91,17 @@ var selected_id = ref(DEFAULT_ID);
 var currentName = ref(DEFAULT_NAME);
 const router = useRouter();
 const $q=useQuasar();
+const truncate=function(str){
+  return (str.length > 25) ? str.slice(0, 24) + '...' : str;
+};
+
 const handleSwipeExt = function ({ evt, touch, mouse, direction, duration, distance }) {
   router.push(targetPage(direction, router.currentRoute.value.fullPath));
 }
 
 const scrollDownTuto=function()
 {
-  var tst=scrollAreaRef.value.getScrollPercentage();
-  if(tst!=1.0)
-  {
-    scrollAreaRef.value.setScrollPercentage('vertical',1.0,1500);
-  }
+  scrollAreaRef.value.setScrollPercentage('vertical',1.0,800);
 }
 const HandleClick=function()
 {
@@ -128,7 +131,7 @@ const HandleClick=function()
       listSave.value=[];
     }
   }
-  nextTick(scrollDownTuto);
+  setTimeout(scrollDownTuto,100);
 
 }
 const saveCurrentData = function () {
@@ -288,7 +291,7 @@ const deleteAllData = function () {
 onBeforeMount(getStorage);
 const scrollInit=function ()
 {
-  scrollAreaRef.value.setScrollPercentage('vertical',1.0,1500);
+  setTimeout(scrollDownTuto());
 }
 onMounted(scrollInit);
 </script>

@@ -17,22 +17,29 @@
         <div v-if="item.text7!=''">{{ item.text7 }}</div>
       </q-timeline-entry>
     </q-timeline>
-      <div class="q-ma-md" style="display: flex;flex-direction: column;align-items: center;align-content: center; justify-content: center;">
-        <span v-if="show_tuto==true" style="color: white;font-size:18px;" ref="mySpan">{{ spantxt }}</span>
-        <shakeBtn v-if="show_tuto==true&&tutoPhase<4" class="q-ma-md" btn-label=">>"  @click="nextTutoPhase()"></shakeBtn>
-        <shakeBtn v-if="show_tuto==true &&tutoPhase==4" class="q-ma-md" :btn-label=transStr(stringsIDs.str_tuto_close_tuto) @click="restoreState"></shakeBtn>
-      </div>
+    <tutoDisplayer>
+      <tutoTxt :txt=spantxt ></tutoTxt>
+      <shakeBtn v-if="show_tuto==true&&tutoPhase<4" class="q-ma-md" btn-label=">>"  @click="nextTutoPhase()"></shakeBtn>
+      <shakeBtn v-if="show_tuto==true &&tutoPhase==4" class="q-ma-md" :btn-label=transStr(stringsIDs.str_tuto_close_tuto) @click="restoreState"></shakeBtn>
+    </tutoDisplayer>
+    <div ref="phamTomdivToScrollTo"></div>
   </div>
   </div>
 
   <q-dialog v-model="MustPopTutorial"   cover transition-show="scale" transition-hide="scale" maximized full-width auto-close v-on:before-hide="[tutoPhase=1,nextTutoPhase(),MustPopTutorial=false]"
   style="background-color: black;"   >
-      <th class="q-ma-md" style="color: white;font-size:25px;">{{transStr(stringsIDs.str_tuto_Sum)}}</th>
+  <div class="q-ma-md" style="display: flex;flex-direction: column;justify-content:center;align-content: center;">
+    <tutoDisplayer class="q-mt-xl q-mb-xl q-mr-xs q-ml-xs">
+      <tutoTxt :txt=transStr(stringsIDs.str_tuto_Sum) :xl="true"></tutoTxt>
+    </tutoDisplayer>
+  </div>
   </q-dialog>
   </q-page>
 </template>
 
 <script setup>
+import tutoDisplayer from 'src/components/tutoDisplayer.vue';
+import tutoTxt from 'src/components/tutoTxt.vue';
 import shakeBtn from 'src/components/shakeBtn.vue';
 import {ref,onBeforeMount } from 'vue'
 import { simu,bank } from 'stores/store';
@@ -50,7 +57,7 @@ import { computeDisplaySavings } from 'src/utils/bank_utility';
 import {populateBankTuto, populateEventsTuto,saveTutoData,restoreTutoData,injectCreditInTuto} from '../utils/tutorail_utils'
 const { getScrollTarget, setVerticalScrollPosition } = scroll
 var MustPopTutorial=ref(false);
-var mySpan=ref();
+var phamTomdivToScrollTo=ref();
 var spantxt=ref('');
 const router = useRouter();
 var summaries=ref([]);
@@ -67,8 +74,8 @@ const nextTutoPhase=function()
   spantxt.value=feedSpanSummary();
   setDisplay();
   tutoPhase.value++;
-  const target = getScrollTarget(mySpan.value);
-  const offset = mySpan.value.offsetTop
+  const target = getScrollTarget(phamTomdivToScrollTo.value);
+  const offset = phamTomdivToScrollTo.value.offsetTop
   const duration = 1000
   setVerticalScrollPosition(target, offset, duration)
   //myscroll.value.setScrollPercentage('vertical',1.0,200) ;
