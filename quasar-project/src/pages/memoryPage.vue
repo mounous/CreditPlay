@@ -131,7 +131,7 @@ const HandleClick=function()
       listSave.value=[];
     }
   }
-  setTimeout(scrollDownTuto,100);
+  setTimeout(scrollDownTuto,150);
 
 }
 const saveCurrentData = function () {
@@ -161,7 +161,7 @@ const saveCurrentData = function () {
     if(tutoPhase.value==2)
     {
       tutoPhase.value++;
-      nextTick(scrollDownTuto);
+      setTimeout(scrollDownTuto,150);
     }
   }
   currentName.value = DEFAULT_NAME;
@@ -269,7 +269,7 @@ const deleteData = function (selected_id) {
       else
       {
         tutoPhase.value++;
-        nextTick(scrollDownTuto);
+        setTimeout(scrollDownTuto,150);
       }
     }
     else {
