@@ -1,24 +1,29 @@
 <template>
-  <q-card>
+  <q-card style="background-color: black;">
     <div class="column items-center q-ma-md">
       <div class="col myIndication q-ma-md">
-        Select language :
+        <th color="white" style="font-size: larger;">Select language :</th>
       </div>
-      <div class="col q-ma-md">
-        <q-select v-model="myLang" :options="supportedLanguages" @update:model-value="saveLanguage" style="min-width:100px" ></q-select>
+      <div class="col q-ma-md" style="background-color: black;color: white;">
+        <q-select ref="mySelect" v-model="myLang" :options="supportedLanguages" @update:model-value="saveLanguage" @popup-hide="saveLanguage" style="min-width:100px;"   bg-color="black" popup-content-style="background-color:black;" popup-content-class="mySelect"></q-select>
       </div>
     </div>
   </q-card>
 </template>
 
 <script setup>
-import {supportedLanguages} from '../stores/languages'
+import {supportedLanguages,getLangId} from '../stores/languages'
 import { LocalStorage } from 'quasar';
 
 import { reapplyLanguageToData} from 'src/utils/credit_utility';
-import { ref ,defineEmits} from 'vue';
-
-var myLang=ref('');
+import { ref ,defineEmits,onMounted} from 'vue';
+var mySelect=ref();
+const setFocus=function()
+{
+  mySelect.value.showPopup();
+}
+onMounted(setFocus);
+var myLang=ref(supportedLanguages[getLangId()]);
 const emit=defineEmits(['language-picked']);
 const saveLanguage=function()
 {
@@ -31,22 +36,11 @@ const saveLanguage=function()
 
 
 <style lang="scss">
-.myIndication {
-  font-size: 20px;
-}
 
-.oneInThreeRowH {
-  width: 100%;
-  height: 20%;
-}
 
-.oneInThreeRow {
-  width: 100%;
-  height: 50%;
-}
+.mySelect {
 
-.oneInThreeRowB {
-  width: 100%;
-  height: 30%;
+  color: white;
+
 }
 </style>
