@@ -189,7 +189,7 @@
     </div>
   </q-dialog>
 
-  <q-dialog v-if="show_tuto==true && tutoPhase==1" v-model="MustPopTutorial"   cover transition-show="scale" transition-hide="scale" maximized full-width  auto-close  v-on:before-hide="[tutoPhase=3,MustPopTutorial=true]"
+  <q-dialog v-if="show_tuto==true && tutoPhase==1" v-model="MustPopTutorial"   cover transition-show="scale" transition-hide="scale" maximized full-width  auto-close  v-on:before-hide="[tutoPhase=3,MustPopTutorial=true,ScrollDown()]"
     style="background-color: black;"   >
     <div class="q-ma-md" style="display: flex;flex-direction: column;justify-content:center;align-content: center;">
       <tutoDisplayer>
@@ -234,7 +234,7 @@ const ScrollDown=function(){
   const target =getScrollTarget(MyTutoSentance.value);
   const offset=MyTutoSentance.value.offsetTop;
   const duration = 1000;
-  setVerticalScrollPosition(target, offset, duration)
+  setTimeout(setVerticalScrollPosition(target, offset, duration),150);
 }
 const $q = useQuasar();
 var MustPopTutorial=ref(false);
