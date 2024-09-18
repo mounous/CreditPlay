@@ -7,8 +7,8 @@
             {{ transStr(stringsIDs.str_settings) }}
           </div>
           <div style="display: flex;justify-items:center;justify-content:center;align-items: center;align-content: center;">
-            <q-btn class="q-ma-md" :label=transStr(stringsIDs.str_choose_lang) @click="mustPopLanguage=true" color='blue-grey-8'></q-btn>
-            <q-btn class="q-ma-md" :label=transStr(stringsIDs.str_choose_currency) @click="mustPopCurrency=true" color='blue-grey-8'></q-btn>
+            <q-btn class="q-ma-md" :label=transStr(stringsIDs.str_choose_lang) @click="mustPopLanguage=true" color='blue-grey-8' icon="translate"></q-btn>
+            <q-btn class="q-ma-md" :label=transStr(stringsIDs.str_choose_currency) @click="mustPopCurrency=true" color='blue-grey-8' icon="payments"></q-btn>
           </div>
         </div>
       </q-card>
@@ -96,7 +96,7 @@
         <languagePicker @language-picked="[mustPopLanguage=false,reRender++,rerenderMainlayout++]"></languagePicker>
       </q-dialog>
       <q-dialog v-model="mustPopCurrency" cover transition-show="scale" transition-hide="scale">
-        <currencyPicker @language-picked="[mustPopCurrency=false]"></currencyPicker>
+        <currencyPicker @currency-picked="[mustPopCurrency=false,reRender++,rerenderMainlayout++]"></currencyPicker>
       </q-dialog>
     </div>
   </q-page>

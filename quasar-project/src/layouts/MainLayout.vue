@@ -60,7 +60,7 @@
     </div>
     <div class="col">
       <q-dialog v-model="mustPopCurrency" cover transition-show="scale" transition-hide="scale">
-        <CurrencyPicker @currency-picked="[mustPopCurrency=false]"></CurrencyPicker>
+        <CurrencyPicker @currency-picked="[mustPopCurrency=false,rerenderMainlayout++]"></CurrencyPicker>
       </q-dialog>
     </div>
 </template>

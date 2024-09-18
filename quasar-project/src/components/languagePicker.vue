@@ -1,13 +1,8 @@
 <template>
   <q-card style="background-color: black;">
-    <div class="column items-center q-ma-md">
-      <div class="col myIndication q-ma-md">
-        <th color="white" style="font-size: larger;">Select language :</th>
-      </div>
       <div class="col q-ma-md" style="background-color: black;color: white;">
-        <q-select ref="mySelect" v-model="myLang" :options="supportedLanguages" @update:model-value="saveLanguage" @popup-hide="saveLanguage" style="min-width:100px;"   bg-color="black" popup-content-style="background-color:black;" popup-content-class="mySelect"></q-select>
+        <q-select ref="mySelect" v-model="myLang" :options="supportedLanguages" @update:model-value="saveLanguage" @popup-hide="saveLanguage" style="min-width:200px;"   bg-color="black" popup-content-style="background-color:black;" popup-content-class="mySelect"></q-select>
       </div>
-    </div>
   </q-card>
 </template>
 
@@ -41,6 +36,7 @@ const saveLanguage=function()
 .mySelect {
 
   color: white;
+  font-size: larger;
 
 }
 </style>
