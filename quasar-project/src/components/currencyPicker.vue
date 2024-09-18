@@ -19,6 +19,16 @@ import {supportedCurrencies,currencyNames} from '../stores/currencies'
 import {transStr,stringsIDs} from '../stores/languages'
 var labelCur=ref(LocalStorage.has('currentCurrency')?LocalStorage.getItem('currentCurrency'):transStr(stringsIDs.str_choose_curr) );
 var completeCurrencies=ref([]);
+
+const setFocus_delayed=function()
+{
+  setTimeout(setFocus,1000);
+}
+const setFocus=function()
+{
+  mySelect.value.showPopup();
+}
+
 const formatOptions=function()
 {
   for(var i=0;i<supportedCurrencies.length;i++)
@@ -30,7 +40,7 @@ var mySelect=ref();
 const init=function()
 {
   formatOptions();
-  mySelect.value.showPopup();
+  setFocus();
 }
 
 onMounted(init);
@@ -43,6 +53,10 @@ const saveCurrency=function()
   {
     LocalStorage.set('currentCurrency',myCurrency.value);
     emit('currency-picked');
+  }
+  else
+  {
+    setFocus_delayed();
   }
 }
 

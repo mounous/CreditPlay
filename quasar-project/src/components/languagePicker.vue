@@ -20,6 +20,10 @@ import { ref ,defineEmits,onMounted} from 'vue';
 
 var labelLang=ref(LocalStorage.has('currentLanguage')?LocalStorage.getItem('currentLang'):transStr(stringsIDs.str_choose_lang2) );
 var mySelect=ref();
+const setFocus_delayed=function()
+{
+  setTimeout(setFocus,1000);
+}
 const setFocus=function()
 {
   mySelect.value.showPopup();
@@ -37,7 +41,7 @@ const saveLanguage=function()
   }
   else
   {
-    setFocus();
+    setFocus_delayed();
   }
 }
 </script>
