@@ -92,10 +92,10 @@
       </div>
 
     <div class="col">
-      <q-dialog v-model="mustPopLanguage" cover transition-show="scale" transition-hide="scale">
+      <q-dialog v-model="mustPopLanguage" cover transition-show="scale" transition-hide="scale"  maximized full-width>
         <languagePicker @language-picked="[mustPopLanguage=false,reRender++,rerenderMainlayout++]"></languagePicker>
       </q-dialog>
-      <q-dialog v-model="mustPopCurrency" cover transition-show="scale" transition-hide="scale">
+      <q-dialog v-model="mustPopCurrency" cover transition-show="scale" transition-hide="scale"  maximized full-width>
         <currencyPicker @currency-picked="[mustPopCurrency=false,reRender++,rerenderMainlayout++]"></currencyPicker>
       </q-dialog>
     </div>

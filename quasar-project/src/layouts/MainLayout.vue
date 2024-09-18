@@ -23,10 +23,7 @@
         <KeepAlive>
           <router-view />
         </KeepAlive>
-      </q-page-container>
-    </q-layout>
-
-    <div class="col" v-if="MustPopTutorialAppIntro==false && show_tuto==false" :key="rerenderMainlayout">
+        <div class="col" v-if="MustPopTutorialAppIntro==false && show_tuto==false" :key="rerenderMainlayout">
       <q-dialog v-model="mustPopRestore" cover transition-show="scale" transition-hide="scale" :key="rerenderMainlayout">
         <q-card>
           <div class="col flex flex center justify-around">
@@ -41,11 +38,7 @@
         </q-card>
       </q-dialog>
     </div>
-
-
-
-
-    <div v-if="MustPopTutorialAppIntro==true">
+    <div v-if="MustPopTutorialAppIntro==true && !mustPopCurrency && !mustPopLanguage">
       <q-dialog v-model="MustPopTutorialAppIntro" cover transition-show="scale" transition-hide="scale" persistent maximized full-width
                 style="background-color: black;">
         <AppIntro v-if="MustPopTutorialAppIntro==true" @tuto-intro-finished="[MustPopTutorialAppIntro=false,rerenderMainlayout++,LocalStorage.set('MustPopTutorialAppIntro',false)]"></AppIntro>
@@ -54,15 +47,19 @@
     </div>
 
     <div class="col" :key="rerenderMainlayout">
-      <q-dialog v-model="mustPopLanguage" cover transition-show="scale" transition-hide="scale">
+      <q-dialog v-model="mustPopLanguage" cover transition-show="scale" transition-hide="scale" persistent  maximized full-width >
         <languagePicker @language-picked="[mustPopLanguage=false,rerenderMainlayout++]"></languagePicker>
       </q-dialog>
     </div>
     <div class="col">
-      <q-dialog v-model="mustPopCurrency" cover transition-show="scale" transition-hide="scale">
+      <q-dialog v-if="!mustPopLanguage" v-model="mustPopCurrency" cover transition-show="scale" transition-hide="scale" persistent maximized full-width>
         <CurrencyPicker @currency-picked="[mustPopCurrency=false,rerenderMainlayout++]"></CurrencyPicker>
       </q-dialog>
     </div>
+      </q-page-container>
+    </q-layout>
+
+
 </template>
 
 <script setup lang="ts">

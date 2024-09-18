@@ -283,6 +283,8 @@ export enum stringsIDs {
   str_not_again=247,
   str_reenable_tuto=248,
   str_save=249,
+  str_choose_lang2=250,
+  str_choose_curr=251,
 };
 
 const translatedStrs=ref(
@@ -705,6 +707,10 @@ const translatedStrs=ref(
   ['Notifications réactivées si vous lancez un tuto','Notifications will be enabled if you launch a tuto'],
 
   ['Sauver','Save'],
+
+  ['Choisir la langue','Choose language'],
+
+  ['Choisir la monnaie','Choose currency'],
 ]);
 
 export const getLangId=function()
