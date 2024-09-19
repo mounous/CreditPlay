@@ -47,12 +47,12 @@
     </div>
 
     <div class="col" :key="rerenderMainlayout">
-      <q-dialog v-model="mustPopLanguage" cover transition-show="scale" transition-hide="scale" persistent  maximized full-width >
+      <q-dialog v-model="mustPopLanguage" cover transition-show="scale" transition-hide="scale" persistent  maximized  full-width full-height>
         <languagePicker @language-picked="[mustPopLanguage=false,rerenderMainlayout++]"></languagePicker>
       </q-dialog>
     </div>
     <div class="col">
-      <q-dialog v-if="!mustPopLanguage" v-model="mustPopCurrency" cover transition-show="scale" transition-hide="scale" persistent maximized full-width>
+      <q-dialog v-if="!mustPopLanguage" v-model="mustPopCurrency" cover transition-show="scale" transition-hide="scale" persistent maximized full-width full-height>
         <CurrencyPicker @currency-picked="[mustPopCurrency=false,rerenderMainlayout++]"></CurrencyPicker>
       </q-dialog>
     </div>
