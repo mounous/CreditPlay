@@ -285,6 +285,8 @@ export enum stringsIDs {
   str_save=249,
   str_choose_lang2=250,
   str_choose_curr=251,
+  str_did_u_know_1=252,
+  str_did_u_know_2=253,
 };
 
 const translatedStrs=ref(
@@ -576,11 +578,11 @@ const translatedStrs=ref(
   ['Voici tout ce que vous pouvez faire avec Credit Play :',
    'Credit Play provides :'],
 
-  ['Saviez vous qu\'avec un taux élevé, augmenter vos mensualités peut vous faire gagner plusieurs dizaines de milliers d\'euros en intérêts ? Saviez-vous que les diminuer peut vous en faire perdre tout autant ?',
-   'Did you know that with a high credit rate, increase your mensualities can make you save tens of thousands on your credit cost ? Did you know that you can loose the same amount when decreasing the mensuality amount ? '],
+  ['Saviez-vous qu\'avec un taux élevé ... ',
+   'Did you know that with a high loan rate...'],
 
-  ['Savez-vous qu\'avec des taux élevés, racheter votre crédit avec votre épargne peut également vous faire économiser des millers d\'euros en interêts, malgré les pénalités contractuelles ?',
-   'Did you know that with a high loan rate, rebuy your loan with your savings can make you save thousands, despite contractual penalties ?'
+  ['Savez-vous qu\'avec des taux élevés, ',
+   'Did you know that with a high loan rate, '
    ],
 
   ['Credit Play vous permetra de simuler l\'impact de toutes ces opérations ...','Credit Play provides the ability to simulate all these operations...'],
@@ -711,6 +713,11 @@ const translatedStrs=ref(
   ['Choisir la langue','Choose language'],
 
   ['Choisir la monnaie','Choose currency'],
+
+  ['Augmenter vos mensualités peut vous faire gagner plusieurs dizaines de milliers d\'euros en intérêts ? Que les diminuer peut vous en faire perdre autant ?',
+   'Increase your mensualities can make you save tens of thousands on your loan cost ? And that you can loose the same amount when decreasing the mensuality amount ?'],
+  ['Racheter votre crédit avec votre épargne peut vous faire économiser des millers d\'euros en interêts, malgré les pénalités contractuelles ?',
+   'Rebuy your loan with your savings can make you save thousands, despite contractual penalties ?']
 ]);
 
 export const getLangId=function()

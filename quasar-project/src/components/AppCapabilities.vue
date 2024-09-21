@@ -10,7 +10,7 @@
         </q-item-section>
 
         <q-item-section>
-          <div  style=" text-align: left; font-size: large;color: white;">{{transStr(i.id)}}</div>
+          <div  style=" text-align: left; font-size: 22px;color: white;">{{transStr(i.id)}}</div>
           </q-item-section>
 
       </q-item>
