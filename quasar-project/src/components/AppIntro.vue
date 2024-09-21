@@ -5,9 +5,6 @@
         <q-carousel-slide v-for="i in slides" :key=Number(i) :name=i class="column no-wrap flex-center">
           <div style="display: flex;flex-direction: column;align-items: center;align-content: center;justify-content: space-around;justify-items: center;width: 100%;height:100%">
             <AppTeasing v-if="i==1" @tuto-teasing-finished="slide='4'"></AppTeasing>
-            <div class="q-mt-md"  style="display: flex;flex-direction: column;align-items: center;align-content: center;justify-content:center;justify-items:center">
-              <th class="q-ma-md text-center" style="color: white;font-size:25px;"  v-if="i>1 &&i<stringsIDs.str_tuto_process_9-stringsIDs.str_tuto && i!=5 &&i!=6">{{transStr(stringsIDs.str_tuto+Number(i))}}</th>
-            </div>
             <div class="q-ma-md text-center" style="display: flex;flex-direction: column;align-items: center;" v-if="i==10">
               <th class="q-mt-md q-ml-md q-mr-md q-mb-xs" style="color: white;font-size:25px;">{{transStr(stringsIDs.str_tuto_icon)}}</th>
               <q-icon name="help" size="xl" class="q-ma-xl"></q-icon>
