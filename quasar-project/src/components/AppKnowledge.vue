@@ -1,13 +1,13 @@
 <template>
     <div style="display:flex;flex-direction: column;align-items: center;align-content: center;justify-content: center;justify-items: center;width: 100%;height: 100%;" >
         <transition name="bounce">
-          <th class="q-ma-md text-center" style="color: white;font-size:25px;" v-if="initPhase>=0 && initPhase<3">{{transStr(stringsIDs.str_tuto+5)}}</th>
+          <th class="q-ma-md text-center" style="color: white;font-size:25px;" v-if="initPhase>=0">{{transStr(stringsIDs.str_tuto+5)}}</th>
         </transition>
         <transition name="enter">
-          <th class="q-ma-md text-center" style="color: white;font-size:20px;" v-if="initPhase>=1 && initPhase<3">{{transStr(stringsIDs.str_did_u_know_1)}}</th>
+          <th class="q-ma-md text-center" style="color: white;font-size:20px;" v-if="initPhase>=1">{{transStr(stringsIDs.str_did_u_know_1)}}</th>
         </transition>
         <transition name="enter">
-          <th class="q-ma-md text-center" style="color: white;font-size:20px;" v-if="initPhase>=2 && initPhase<3">{{transStr(stringsIDs.str_did_u_know_2)}}</th>
+          <th class="q-ma-md text-center" style="color: white;font-size:20px;" v-if="initPhase>=2">{{transStr(stringsIDs.str_did_u_know_2)}}</th>
         </transition>
     </div>
 </template>
