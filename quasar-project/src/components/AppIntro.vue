@@ -1,7 +1,7 @@
 <template>
     <div style="display: flex;flex-direction: column;" >
       <div style="display: flex;flex-direction: column;align-items: center;align-content: center;justify-content: space-around;justify-items: center;height: 7%;">
-          <q-btn v-if="slide!='1'" icon="keyboard_arrow_up" size="20px" style="background-color:black;color: white;"  ref="myIconUp" @click="myCarousel.previous()"></q-btn>
+          <q-btn v-if="slide!='1'" icon="keyboard_arrow_up" size="20px" style="background-color:black;color: white;"  ref="myIconUp" @click="[myCarousel.previous(),stopShake()]"></q-btn>
       </div>
       <q-carousel ref="myCarousel" style="display: flex;height: 86%" v-model="slide"  vertical  transition-prev="slide-down"  transition-next="slide-up"  swipeable  animated
         class="bg-black text-white rounded-borders" >

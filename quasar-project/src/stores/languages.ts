@@ -575,8 +575,8 @@ const translatedStrs=ref(
 
   ['Pas exactement !','Not exactly !'],
 
-  ['Voici tout ce que vous pouvez faire avec Credit Play :',
-   'Credit Play provides :'],
+  ['Voici tout ce que vous pouvez simuler avec Credit Play :',
+   'Credit Play provides simulation of :'],
 
   ['Saviez-vous qu\'avec un taux élevé ... ',
    'Did you know that with a high loan rate...'],
@@ -587,8 +587,8 @@ const translatedStrs=ref(
 
   ['Credit Play vous permetra de simuler l\'impact de toutes ces opérations ...','Credit Play provides the ability to simulate all these operations...'],
 
-  ['Et plus encore ! Vous pourrez combiner un nombre illimité d\'opérations (modulations de mensualités, rachat à meilleur taux, rachat avec épargne) !',
-   'And even better ! You\'ll be able to combine an unlimited number of operations (mensuality increase/decrease, rebuy at different rate, rebuy with savings) !'],
+  ['...Et plus encore ! Vous pourrez combiner un nombre illimité d\'opérations (modulations de mensualités, rachat à meilleur taux, rachat avec épargne) !',
+   '...And even more ! You\'ll be able to combine an unlimited number of operations (mensuality increase/decrease, rebuy at different rate, rebuy with savings) !'],
 
   ['Pour apprendre à utiliser Credit Play, lancer le tuto ! (Vous pourrez le lancer à volonté depuis le menu d\'aide).','To learn how to get profit from Credit PLay, launch tutorial ! (you can launch it at any time in the help tab).'],
     //10 v
@@ -612,11 +612,11 @@ const translatedStrs=ref(
 
   ['Trouvez le compromis mensualité/épargne qui vous correspond','Find out the mensuality/savings tradeoff that fits you best !'],
 
-  ['Simuler votre credit','Loan simulation'],
+  ['Votre credit','Your loan'],
   ['Modulation de credit (augmentation ou diminution de mensualité)','Loan modulation (mensuality increase or decrease)'],
   ['Rachat de votre crédit (avec un taux différent ou votre épargne)','Loan rebuy (different rate or with savings)'],
-  ['Simuler votre épargne','Savings simulation'],
-  ['Faire le café','Make coffee'],
+  ['Votre épargne','Your savings'],
+  ['L\'implosion d\'un trou noir','Implosion of a black hole'],
 
   ['Dans tous les onglets de l\'application, vous pourrez obtenir de l\'aide en cliquant sur cet icône :','In all app tabs, if you need help click this icon : '],
 
@@ -714,10 +714,10 @@ const translatedStrs=ref(
 
   ['Choisir la monnaie','Choose currency'],
 
-  ['Augmenter vos mensualités peut vous faire gagner plusieurs dizaines de milliers d\'euros en intérêts ? Que les diminuer peut vous en faire perdre autant ?',
-   'Increase your mensualities can make you save tens of thousands on your loan cost ? And that you can loose the same amount when decreasing the mensuality amount ?'],
-  ['Racheter votre crédit avec votre épargne peut vous faire économiser des millers d\'euros en interêts, malgré les pénalités contractuelles ?',
-   'Rebuy your loan with your savings can make you save thousands, despite contractual penalties ?']
+  ['- Augmenter vos mensualités peut vous faire gagner plusieurs dizaines de milliers d\'euros en intérêts ? Que les diminuer peut vous en faire perdre autant ?',
+   '- Increase your mensualities can make you save tens of thousands on your loan cost ? And that you can loose the same amount when decreasing the mensuality amount ?'],
+  ['- Racheter votre crédit avec votre épargne peut vous faire économiser des millers d\'euros en interêts, malgré les pénalités contractuelles ?',
+   '- Rebuy your loan with your savings can make you save thousands, despite contractual penalties ?']
 ]);
 
 export const getLangId=function()
