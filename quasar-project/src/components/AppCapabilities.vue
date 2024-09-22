@@ -23,7 +23,9 @@
 
 <script setup>
 import { stringsIDs, transStr } from 'src/stores/languages';
-import { ref,onMounted } from 'vue';
+import { ref,onMounted,defineEmits } from 'vue';
+const emit=defineEmits(['cap-finished']);
+var id_destoy=ref();
 const capabilities=ref([]);
 const capabilities_ref=ref([{ok:true,id:stringsIDs.str_cap_simulate_credit},
                         {ok:true,id:stringsIDs.str_cap_modulate_credit},
@@ -38,11 +40,16 @@ const addOneElement=function()
     capabilities.value.push(capabilities_ref.value[capabilities.value.length]);
 
   }
+  else
+  {
+    clearInterval(id_destoy.value);
+    emit('cap-finished');
+  }
 }
 
 const launchAnimation=function()
 {
-  setInterval(addOneElement,900);
+  id_destoy.value=setInterval(addOneElement,900);
 }
 onMounted(launchAnimation);
 
