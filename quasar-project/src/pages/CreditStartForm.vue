@@ -6,14 +6,14 @@
       <q-icon name="help" size="x-large" color="white" class="q-mt-md q-mr-md" v-if="show_tuto==false" @click="show_tuto=true"></q-icon>
    </q-page-sticky>
     <q-dialog v-model="resetMustPop" cover transition-show="scale" transition-hide="scale" persistent>
-      <q-card>
+      <q-card bordered style="background-color: black;border-color: white;">
         <div class="col flex flex center justify-around">
           <div class="q-ma-md">
-            {{ transSt(sentancesIDs.s_warning_overwriteSimu) }}
+            <th style="color: white;font-size: 18px;font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif ;">{{ transSt(sentancesIDs.s_warning_overwriteSimu) }}</th>
           </div>
           <div class="row nowrap">
-            <q-btn :label=transStr(stringsIDs.str_cancel) @click="resetMustPop = false"></q-btn>
-            <q-btn :label=transStr(stringsIDs.str_simulation) @click="[eraseCredit(),displayStartForm=true]"></q-btn>
+            <q-btn class="q-ma-md" outline style="color: white;background-color:black;" :label=transStr(stringsIDs.str_cancel) @click="resetMustPop = false"></q-btn>
+            <q-btn class="q-ma-md" outline style="color: white;background-color:black;" :label=transStr(stringsIDs.str_simulation) @click="[eraseCredit(),displayStartForm=true]"></q-btn>
           </div>
         </div>
       </q-card>
@@ -42,6 +42,7 @@
 </template>
 
 <script setup>
+import warningDisplayer from 'src/components/warningDisplayer.vue';
 import tutoTxt from 'src/components/tutoTxt.vue';
 import tutoDisplayer from 'src/components/tutoDisplayer.vue';
 import startForm from 'src/components/startForm.vue';
