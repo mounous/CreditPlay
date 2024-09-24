@@ -174,7 +174,7 @@ const deleteEvents=function(){
       mustAlertChangeMem.value=true;
     }
   }
-  if(show_tuto)
+  if(show_tuto.value)
   {
     if(simu.value.events.length==0)
     {

@@ -134,49 +134,55 @@
 
     <div class="col">
       <q-dialog v-model="mustPopDeleteAcc" cover transition-show="scale" transition-hide="scale">
-        <q-card>
-          <div class="col flex flex center justify-around">
-            <div class="q-ma-md">
-              {{transSt(sentancesIDs.s_warning_acc_delete_rebuy_op)}}
+        <div class="q-mt-md" >
+          <warningDisplayer class="q-mt-md">
+            <div class="col flex flex center justify-around">
+              <div class="q-ma-md">
+                <th style="color: white;font-size: 18px;font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif ;">{{transSt(sentancesIDs.s_warning_acc_delete_rebuy_op)}}</th>
+              </div>
+              <div class="row nowrap">
+                <q-btn class="q-ma-md" style="background-color: black;color: white;" outilne  :label=transStr(stringsIDs.str_cancel) @click="mustPopDeleteAcc = false"></q-btn>
+                <q-btn class="q-ma-md" style="background-color: black;color: white;" outilne  :label=transStr(stringsIDs.str_btn_valid) @click="[mustPopDeleteAcc=false,removeAccount(accountToBeDeleted,true)]"></q-btn>
+              </div>
             </div>
-            <div class="row nowrap">
-              <q-btn :label=transStr(stringsIDs.str_cancel) @click="mustPopDeleteAcc = false"></q-btn>
-              <q-btn :label=transStr(stringsIDs.str_btn_valid) @click="[mustPopDeleteAcc=false,removeAccount(accountToBeDeleted,true)]"></q-btn>
-            </div>
-          </div>
-        </q-card>
+          </warningDisplayer>
+        </div>
       </q-dialog>
     </div>
 
     <div class="col">
       <q-dialog v-model="mustPopDeleteP" cover transition-show="scale" transition-hide="scale">
-        <q-card>
-          <div class="col flex flex center justify-around">
-            <div class="q-ma-md">
-              {{ transSt(sentancesIDs.s_warning_acc_rebuy_op) }}
+        <div class="q-mt-md" >
+          <warningDisplayer class="q-mt-md">
+            <div class="col flex flex center justify-around">
+              <div class="q-ma-md">
+                <th style="color: white;font-size: 18px;font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif ;">{{ transSt(sentancesIDs.s_warning_acc_rebuy_op) }}</th>
+              </div>
+              <div class="row nowrap">
+                <q-btn class="q-ma-md" style="background-color: black;color: white;"  outilne :label=transStr(stringsIDs.str_cancel) @click="mustPopDeleteP = false"></q-btn>
+                <q-btn class="q-ma-md" style="background-color: black;color: white;"  outilne :label=transStr(stringsIDs.str_btn_valid) @click="[mustPopDeleteP=false,removeSavingP(savingPtoDelete,accountOfSavingPToDelete,true)]"></q-btn>
+              </div>
             </div>
-            <div class="row nowrap">
-              <q-btn :label=transStr(stringsIDs.str_cancel) @click="mustPopDeleteP = false"></q-btn>
-              <q-btn :label=transStr(stringsIDs.str_btn_valid) @click="[mustPopDeleteP=false,removeSavingP(savingPtoDelete,accountOfSavingPToDelete,true)]"></q-btn>
-            </div>
-          </div>
-        </q-card>
+          </warningDisplayer>
+        </div>
       </q-dialog>
     </div>
 
     <div class="col">
       <q-dialog v-model="mustPopDeleteSIO" cover transition-show="scale" transition-hide="scale">
-        <q-card>
-          <div class="col flex flex center justify-around">
-            <div class="q-ma-md">
-              {{ transSt(sentancesIDs.s_warning_op_rebuy_delete) }}
+        <div class="q-mt-md" >
+          <warningDisplayer class="q-mt-md">
+            <div class="col flex flex center justify-around">
+              <div class="q-ma-md">
+                <th style="color: white;font-size: 18px;font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif ;">{{ transSt(sentancesIDs.s_warning_op_rebuy_delete) }}</th>
+              </div>
+              <div class="row nowrap">
+                <q-btn class="q-ma-md" style="background-color: black;color: white;" outilne :label=transStr(stringsIDs.str_cancel) @click="mustPopDeleteSIO = false"></q-btn>
+                <q-btn class="q-ma-md" style="background-color: black;color: white;" outilne :label=transStr(stringsIDs.str_btn_valid) @click="[mustPopDeleteSIO=false,removeSingleIO(SIOtoDelete,accountOfSIOToDelete,true)]"></q-btn>
+              </div>
             </div>
-            <div class="row nowrap">
-              <q-btn :label=transStr(stringsIDs.str_cancel) @click="mustPopDeleteSIO = false"></q-btn>
-              <q-btn :label=transStr(stringsIDs.str_btn_valid) @click="[mustPopDeleteSIO=false,removeSingleIO(SIOtoDelete,accountOfSIOToDelete,true)]"></q-btn>
-            </div>
-          </div>
-        </q-card>
+          </warningDisplayer>
+        </div>
       </q-dialog>
     </div>
   </q-page>
@@ -201,7 +207,7 @@
 
 <script setup>
 import tutoDisplayer from 'src/components/tutoDisplayer.vue';
-import tutoTxt from 'src/components/tutoTxt.vue';
+import warningDisplayer from 'src/components/warningDisplayer.vue';
 import shakeBtn from 'src/components/shakeBtn.vue';
 import { bank, simu, tutoPhase,show_tuto, mustAlertChangeMem } from 'stores/store';
 import { onMounted, ref,nextTick, onBeforeMount } from 'vue'

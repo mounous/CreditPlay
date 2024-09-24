@@ -59,8 +59,8 @@
           </div>
         <div class="row q-mb-md" style="display: flex;">
           <div style="flex:1"></div>
-          <div style="display:flex; flex:2;flex-direction: column;align-items: center;">
-          <q-input ref="myAmount" class="q-mb-md" clearable style="font-size: x-large;"  size="10" maxlength="10"
+          <div style="display:flex; flex:4;flex-direction: column;align-items: center;">
+          <q-input ref="myAmount" class="q-mb-md" clearable style="font-size: x-large;"  size="15" maxlength="15"
             v-model="_single_io.amount" type="number" lazy-rules bg-color="blue-grey-8" outlined @keyup.enter="amount_nxt.click()" :suffix="getCurrencySymbol()"></q-input>
             <q-slider class="q-ma-md" v-model="_single_io.amount" :min="0.0" :max="50000" :step="100" @change="myAmount.focus()"/>
             </div>

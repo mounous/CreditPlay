@@ -6,17 +6,19 @@
       <q-icon name="help" size="x-large" color="white" class="q-mt-md q-mr-md" v-if="show_tuto==false" @click="show_tuto=true"></q-icon>
    </q-page-sticky>
     <q-dialog v-model="resetMustPop" cover transition-show="scale" transition-hide="scale" persistent>
-      <q-card bordered style="background-color: black;border-color: white;">
-        <div class="col flex flex center justify-around">
-          <div class="q-ma-md">
-            <th style="color: white;font-size: 18px;font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif ;">{{ transSt(sentancesIDs.s_warning_overwriteSimu) }}</th>
+      <div class="q-mt-md" style="background-color: black;">
+        <warningDisplayer class="q-mt-md">
+          <div class="col flex flex center justify-around">
+            <div class="q-ma-md">
+              <th style="color: white;font-size: 18px;font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif ;">{{ transSt(sentancesIDs.s_warning_overwriteSimu) }}</th>
+            </div>
+            <div class="row nowrap">
+              <q-btn class="q-ma-md" outline style="color: white;background-color:black;" :label=transStr(stringsIDs.str_cancel) @click="resetMustPop = false"></q-btn>
+              <q-btn class="q-ma-md" outline style="color: white;background-color:black;" :label=transStr(stringsIDs.str_simulation) @click="[eraseCredit(),displayStartForm=true]"></q-btn>
+            </div>
           </div>
-          <div class="row nowrap">
-            <q-btn class="q-ma-md" outline style="color: white;background-color:black;" :label=transStr(stringsIDs.str_cancel) @click="resetMustPop = false"></q-btn>
-            <q-btn class="q-ma-md" outline style="color: white;background-color:black;" :label=transStr(stringsIDs.str_simulation) @click="[eraseCredit(),displayStartForm=true]"></q-btn>
-          </div>
-        </div>
-      </q-card>
+        </warningDisplayer>
+    </div>
     </q-dialog>
     <div style="display: flex;flex-direction: column;align-items: center;align-content: center;justify-content: center;justify-items: center;">
       <div v-if="startFormFilled==true && show_tuto==false">

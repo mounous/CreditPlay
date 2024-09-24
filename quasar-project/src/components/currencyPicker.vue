@@ -51,7 +51,7 @@ const saveCurrency=function()
 {
   if(myCurrency.value!='')
   {
-    LocalStorage.set('currentCurrency',myCurrency.value);
+    LocalStorage.set('currentCurrency',myCurrency.value.split(' - ')[0]);
     emit('currency-picked');
   }
   else
