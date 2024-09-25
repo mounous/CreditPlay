@@ -256,6 +256,7 @@ const display_init_credit=function()
     series.push( {name: transStr(stringsIDs.str_interests_paid), data: getIntests(), });
     chartOptions.colors.push('#e2001a');
   }
+  chartOptions.xaxis.categories=getTime();
   carrouselPhase.value=1;
 }
 
@@ -407,6 +408,7 @@ const setupChart=function()
   chartOptions.annotations.points=[];
   chartOptions.annotations.xaxis=[];
   chartOptions.annotations.yaxis=[];
+  chartOptions.colors=[];
   if(display_savings.value==true && display_capital.value==false && display_interests.value==false)
   {
     displaySavingsOnly();
