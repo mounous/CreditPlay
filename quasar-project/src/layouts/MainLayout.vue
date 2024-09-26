@@ -25,14 +25,14 @@
         </KeepAlive>
         <div class="col" v-if="MustPopTutorialAppIntro==false && show_tuto==false" :key="rerenderMainlayout">
       <q-dialog v-model="mustPopRestore" cover transition-show="scale" transition-hide="scale" :key="rerenderMainlayout">
-        <q-card>
-          <div class="col flex flex center justify-around">
-            <div class="q-ma-md">
+        <q-card bordered class="bg-black" style="border-color: white;">
+          <div style="display: flex;flex-direction: column;align-items: center;align-content: center;justify-items: center;justify-content: center;">
+            <div class="q-ma-md" style="color: white;text-align: center;">
               {{ transStr(stringsIDs.str_restore_last) }}
             </div>
-            <div class="row nowrap">
-              <q-btn :label=transStr(stringsIDs.str_no) @click="mustPopRestore = false"></q-btn>
-              <q-btn :label=transStr(stringsIDs.str_yes) @click="[mustPopRestore=false,restoreLastSaving()]"></q-btn>
+            <div class="row nowrap" style="justify-content: space-around;">
+              <q-btn color="blue-grey-8" class="q-ma-md" :label=transStr(stringsIDs.str_no) @click="mustPopRestore = false"></q-btn>
+              <q-btn color="blue-grey-8" class="q-ma-md" :label=transStr(stringsIDs.str_yes) @click="[mustPopRestore=false,restoreLastSaving()]"></q-btn>
             </div>
           </div>
         </q-card>
