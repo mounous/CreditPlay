@@ -1,27 +1,27 @@
 <template>
   <q-page  v-touch-swipe.mouse.left.right="handleSwipeExt" >
-    <q-page-sticky position="top-right" :offset="[18, 18]" style="z-index:3">
+    <q-page-sticky position="top-right" :offset="[10, 10]" style="z-index:3">
       <q-icon name="help" size="x-large" color="white" class="q-ma-md" v-if="show_tuto==false" @click="initTuto()"></q-icon>
     </q-page-sticky>
     <div class="full-height column justify-arround content-center" style="display:flex; width: 100%; height: 100%;">
       <div class="col q-ma-xs">
-        <q-timeline  class="q-ma-xs text-white">
-      <q-timeline-entry heading>{{transStr(stringsIDs.str_simu_summary)}}</q-timeline-entry>
-      <q-timeline-entry  v-for="item in summaries.values()" :key="item.id" :title="item.title" :subtitle="item.subtitle" id="item.id">
-        <div v-if="!(item.type==EVT_TYPE_REBUY_SAVINGS && item.metaType==EVT_META_TYPE_REBUY)" >{{ item.text1 }}</div>
-        <div>{{ item.text2 }}</div>
-        <div>{{ item.text3 }}</div>
-        <div v-if="item._text4!=''" :class="item.text4_color">{{ item.text4 }}</div>
-        <div :class="item.text5_color">{{ item.text5 }}</div>
-        <div v-if="item.text6!=''">{{ item.text6 }}</div>
-        <div v-if="item.text7!=''">{{ item.text7 }}</div>
-      </q-timeline-entry>
-    </q-timeline>
-    <tutoDisplayer>
-      <tutoTxt :txt=spantxt ></tutoTxt>
-      <shakeBtn v-if="show_tuto==true&&tutoPhase<4" class="q-ma-md" btn-label=">>"  @click="nextTutoPhase()"></shakeBtn>
-      <shakeBtn v-if="show_tuto==true &&tutoPhase==4" class="q-ma-md" :btn-label=transStr(stringsIDs.str_tuto_close_tuto) @click="restoreState"></shakeBtn>
-    </tutoDisplayer>
+        <q-timeline  class="q-mb-xs q-mt-xl q-ml-xs q-mr-xs text-white">
+          <q-timeline-entry heading style="text-align: center;">{{transStr(stringsIDs.str_simu_summary)}}</q-timeline-entry>
+          <q-timeline-entry  v-for="item in summaries.values()" :key="item.id" :title="item.title" :subtitle="item.subtitle" id="item.id">
+            <div v-if="!(item.type==EVT_TYPE_REBUY_SAVINGS && item.metaType==EVT_META_TYPE_REBUY)" >{{ item.text1 }}</div>
+            <div>{{ item.text2 }}</div>
+            <div>{{ item.text3 }}</div>
+            <div v-if="item._text4!=''" :class="item.text4_color">{{ item.text4 }}</div>
+            <div :class="item.text5_color">{{ item.text5 }}</div>
+            <div v-if="item.text6!=''">{{ item.text6 }}</div>
+            <div v-if="item.text7!=''">{{ item.text7 }}</div>
+        </q-timeline-entry>
+      </q-timeline>
+      <tutoDisplayer>
+        <tutoTxt :txt=spantxt ></tutoTxt>
+        <shakeBtn v-if="show_tuto==true&&tutoPhase<4" class="q-ma-md" btn-label=">>"  @click="nextTutoPhase()"></shakeBtn>
+        <shakeBtn v-if="show_tuto==true &&tutoPhase==4" class="q-ma-md" :btn-label=transStr(stringsIDs.str_tuto_close_tuto) @click="restoreState"></shakeBtn>
+      </tutoDisplayer>
     <div ref="phamTomdivToScrollTo"></div>
   </div>
   </div>
@@ -41,7 +41,7 @@
 import tutoDisplayer from 'src/components/tutoDisplayer.vue';
 import tutoTxt from 'src/components/tutoTxt.vue';
 import shakeBtn from 'src/components/shakeBtn.vue';
-import {ref,onBeforeMount } from 'vue'
+import {ref,onBeforeMount, onMounted } from 'vue'
 import { simu,bank } from 'stores/store';
 import {formatnumber} from '../utils/string_utils'
 import { useRouter } from 'vue-router';
@@ -61,6 +61,22 @@ var phamTomdivToScrollTo=ref();
 var spantxt=ref('');
 const router = useRouter();
 var summaries=ref([]);
+
+
+const scrollDown=function(duration=1000)
+{
+  const target = getScrollTarget(phamTomdivToScrollTo.value);
+  const offset = phamTomdivToScrollTo.value.offsetTop;
+  setVerticalScrollPosition(target, offset, duration);
+}
+
+const scrollDownDelayed=function()
+{
+  setTimeout(scrollDown(3000),200);
+}
+
+onMounted(scrollDownDelayed);
+
 const nextTutoPhase=function()
 {
   if(show_tuto.value==false)
@@ -74,11 +90,7 @@ const nextTutoPhase=function()
   spantxt.value=feedSpanSummary();
   setDisplay();
   tutoPhase.value++;
-  const target = getScrollTarget(phamTomdivToScrollTo.value);
-  const offset = phamTomdivToScrollTo.value.offsetTop
-  const duration = 1000
-  setVerticalScrollPosition(target, offset, duration)
-  //myscroll.value.setScrollPercentage('vertical',1.0,200) ;
+  scrollDown();
 }
 const handleSwipeExt=function ({ evt, touch, mouse, direction, duration, distance })
 {

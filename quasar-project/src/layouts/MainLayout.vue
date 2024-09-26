@@ -1,6 +1,6 @@
 <template>
     <q-layout view="hhh lpr fFf" class="bg-image" :key="rerenderMainlayout">
-      <q-footer class="gutter">
+      <q-footer bordered reveal class="gutter">
         <q-tabs
         v-model="tab"
         class="footer-bg text-white shadow-2 gutter"
@@ -164,6 +164,6 @@ const restoreLastSaving=function()
   //background: #6b6445 ;
 }
 .footer-bg{
-  background: secondary;
+  background: rgb(15, 15, 15);
 }
 </style>

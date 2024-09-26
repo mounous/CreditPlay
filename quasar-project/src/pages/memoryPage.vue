@@ -1,14 +1,14 @@
 <template>
   <q-page v-touch-swipe.mouse.left.right="handleSwipeExt" style="display: flex; " :key="tutoPhase">
     <q-page-sticky position="top-right" :offset="[0, 0]" style="z-index:3">
-      <q-icon name="help" size="x-large" color="white" class="q-mt-md q-mr-md" v-if="show_tuto==false" @click="[show_tuto=true,tutoPhase=0,nextTick(scrollDownTuto)]"></q-icon>
+      <q-icon name="help" size="x-large" color="white" class="q-mt-md q-mr-md" v-if="show_tuto==false" @click="[show_tuto=true,tutoPhase=0,nextTick(scrollDown)]"></q-icon>
    </q-page-sticky>
     <div
       style="flex-direction: column;width: 100%;">
       <div class="col q-mt-md" style="height: 60%;">
 
         <q-scroll-area style="height:100%; max-width: 99%;"  ref="scrollAreaRef" :key="tutoPhase">
-          <q-list v-if="listSave.length!=0 && (show_tuto==false || tutoPhase>=1)" class="bg-primary q-ma-md" separator bordered @click.stop >
+          <q-list dark v-if="listSave.length!=0 && (show_tuto==false || tutoPhase>=1)" class="q-ma-md" separator bordered @click.stop style="background-color: darkslategrey;" >
             <q-item v-for="item in listSave" :key="item.id" clickable
               @click="selected_id == item.id ? selected_id = DEFAULT_ID : selected_id = item.id" v-ripple
               :active="selected_id == item.id" active-class="bg-blue-grey-8 text-black">
@@ -17,7 +17,7 @@
                 <q-item-label no-wrap="false"> {{ item.date}} </q-item-label >
               </q-item-section>
               <q-item-section avatar>
-                <q-btn style="width:20px" icon="delete_forever" @click="deleteData(item.id)"></q-btn>
+                <q-btn  color="black"  style="width:20px;background-color: cadetblue;" icon="delete_forever" @click="deleteData(item.id)"></q-btn>
               </q-item-section>
             </q-item>
           </q-list>
@@ -99,7 +99,7 @@ const handleSwipeExt = function ({ evt, touch, mouse, direction, duration, dista
   router.push(targetPage(direction, router.currentRoute.value.fullPath));
 }
 
-const scrollDownTuto=function()
+const scrollDown=function()
 {
   scrollAreaRef.value.setScrollPercentage('vertical',1.0,800);
 }
@@ -131,7 +131,7 @@ const HandleClick=function()
       listSave.value=[];
     }
   }
-  setTimeout(scrollDownTuto,150);
+  setTimeout(scrollDown,150);
 
 }
 const saveCurrentData = function () {
@@ -161,7 +161,7 @@ const saveCurrentData = function () {
     if(tutoPhase.value==2)
     {
       tutoPhase.value++;
-      setTimeout(scrollDownTuto,150);
+      setTimeout(scrollDown,150);
     }
   }
   currentName.value = DEFAULT_NAME;
@@ -269,7 +269,7 @@ const deleteData = function (selected_id) {
       else
       {
         tutoPhase.value++;
-        setTimeout(scrollDownTuto,150);
+        setTimeout(scrollDown,150);
       }
     }
     else {
@@ -291,7 +291,7 @@ const deleteAllData = function () {
 onBeforeMount(getStorage);
 const scrollInit=function ()
 {
-  setTimeout(scrollDownTuto());
+  setTimeout(scrollDown(),200);
 }
 onMounted(scrollInit);
 </script>

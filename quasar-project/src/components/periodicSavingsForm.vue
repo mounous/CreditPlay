@@ -1,17 +1,17 @@
 <template>
 
   <q-carousel ref="myPSForm" fullscreen animated :arrows="false" :navigation="false" v-model="currentSlide">
-    <q-carousel-slide name="psType" class="bg-grey-9">
+    <q-carousel-slide name="psType" class="bg-black">
       <div class="oneInThreeRowH"></div>
       <div class="oneInThreeRow">
         <div class="column items-center">
           <div class="col myIndication q-ma-md">
-            <p>{{transStr(stringsIDs.str_choose_op_type)}}</p>
+            <p style="color: white">{{transStr(stringsIDs.str_choose_op_type)}}</p>
           </div>
           <div class="row q-mb-md" style="display: flex;">
           <div style="flex:1"></div>
-          <div style="flex:4">
-          <q-select bg-color="blue-grey-8" style="font-size: x-large;" v-model="typeSavings"
+          <div style="flex:4;background-color: black;color: white;">
+          <q-select dark label-color="white" bg-color="blue-grey-10" style="font-size: x-large;" v-model="typeSavings"
             :options="[transoptSaveP(BANK_SAVE_TYPE_MONTHLY), transoptSaveP(BANK_SAVE_TYPE_YEARLY)]"></q-select>
           </div>
             <div style="flex:1"></div>
@@ -24,22 +24,23 @@
       </div>
       <div class="oneInThreeRowB"></div>
     </q-carousel-slide>
-    <q-carousel-slide name="psAmount" class="bg-grey-9">
+    <q-carousel-slide name="psAmount" class="bg-black">
       <div class="oneInThreeRowH"></div>
       <div class="oneInThreeRow">
         <div class="column items-center">
           <div class="col myIndication q-ma-md">
-            <p>{{transStr(stringsIDs.str_choose_op_amount)}}</p>
+            <p style="color: white">{{transStr(stringsIDs.str_choose_op_amount)}}</p>
           </div>
           <div class="row" style="display: flex;">
             <div style="flex:1"></div>
             <div style="display : flex ; flex:4;flex-direction: column;align-items: center;">
-            <q-input ref="myAmount" class="q-mx-xs" style="font-size: x-large;" v-model="_savingP.amount"
+            <q-input dark ref="myAmount" class="q-mx-xs" style="font-size: x-large;" v-model="_savingP.amount"
               type="number" lazy-rules :rules="[(val) => (val >= 0.0) || 'Les retraits ne sont pas gérées']"
-              bg-color="blue-grey-8" outlined clearable @keyup.enter="amount_nxt.click()"></q-input>
+              bg-color="blue-grey-10" outlined clearable @keyup.enter="amount_nxt.click()"></q-input>
               <q-slider class="q-ma-md" v-model="_savingP.amount" :min="0.0"
                 :max="typeSavings==transoptSaveP(BANK_SAVE_TYPE_MONTHLY) ? 1000:10000"
-                :step="typeSavings==transoptSaveP(BANK_SAVE_TYPE_MONTHLY) ? 10:100" @change="myAmount.focus()"/>
+                :step="typeSavings==transoptSaveP(BANK_SAVE_TYPE_MONTHLY) ? 10:100" @change="myAmount.focus()"
+                inner-track-color="blue-grey-10"/>
             </div>
 
             <div style="flex:1"></div>
@@ -53,18 +54,18 @@
       <div class="oneInThreeRowB"></div>
     </q-carousel-slide>
 
-    <q-carousel-slide name="psAccount" class="bg-grey-9">
+    <q-carousel-slide name="psAccount" class="bg-black">
       <div class="oneInThreeRowH"></div>
       <div class="oneInThreeRow">
         <div class="column items-center">
           <div class="col myIndication q-ma-md">
-            <p>{{transStr(stringsIDs.str_choose_op_account)}}</p>
+            <p style="color: white">{{transStr(stringsIDs.str_choose_op_account)}}</p>
           </div>
           <div class="row" style="display: flex;">
           <div style="flex:1"></div>
-          <div style="flex:4">
-          <q-select class="q-mb-md" v-model="_savingP.account" style="font-size: x-large;"
-            :options="getAccOpt()" type="number" bg-color="blue-grey-8" outlined ></q-select>
+          <div style="flex:4;background-color: black;color: white;">
+          <q-select dark label-color="white" class="q-mb-md" v-model="_savingP.account" style="font-size: x-large;"
+            :options="getAccOpt()" type="number" bg-color="blue-grey-10" outlined ></q-select>
           </div>
             <div style="flex:1"></div>
         </div>
@@ -77,22 +78,22 @@
       <div class="oneInThreeRowB"></div>
     </q-carousel-slide>
 
-    <q-carousel-slide name="psfromTo" class="bg-grey-9">
+    <q-carousel-slide name="psfromTo" class="bg-black">
       <div class="oneInThreeRowH"></div>
       <div class="oneInThreeRow">
         <div class="column items-center">
           <div class="col myIndication q-ma-md">
-            <p>{{transStr(stringsIDs.str_choose_op_strat_date)}}</p>
+            <p style="color: white;text-align: center">{{transStr(stringsIDs.str_choose_op_strat_date)}}</p>
           </div>
           <div class="row" style="display: flex;">
           <div style="flex:1"></div>
           <div style="flex:4">
-          <q-input class="q-mx-xs"  style="font-size: x-large;"  bg-color="blue-grey-8" filled
+          <q-input dark class="q-mx-xs"  style="font-size: x-large;"  bg-color="blue-grey-10" filled
             v-model="_savingP.startingDate" @click="mustpopPsStart = true" readonly>
             <template v-slot:append>
               <q-icon name="event" class="cursor-pointer">
                 <q-popup-proxy cover transition-show="scale" transition-hide="scale" v-model="mustpopPsStart" persistent>
-                  <q-date dark v-model="savingPstartingDateUnformated" :locale=getTranslatedFormatedCalendar()
+                  <q-date dark color=black v-model="savingPstartingDateUnformated" :locale=getTranslatedFormatedCalendar()
                     :navigation-min-year-month="periodicSaveMin" width="200px"
                     :navigation-max-year-month="periodicSaveMax"
                     @update:model-value="[_savingP.startingDate = formatDate(savingPstartingDateUnformated), mustpopPsStart = false,
@@ -113,17 +114,17 @@
             </div>
           </div>
           <div class="col myIndication q-ma-md">
-            <p>{{transStr(stringsIDs.str_choose_op_end_date)}}</p>
+            <p style="color: white;text-align: center;">{{transStr(stringsIDs.str_choose_op_end_date)}}</p>
           </div>
           <div class="row" style="display: flex">
           <div style="flex:1"></div>
           <div style="flex:4;align-items: center;">
-          <q-input class="q-mb-md"  style="font-size: x-large;"  bg-color="blue-grey-8" filled
+          <q-input dark class="q-mb-md"  style="font-size: x-large;"  bg-color="blue-grey-10" filled
             v-model="_savingP.endDate" @click="mustpopPsEnd = true" readonly>
             <template v-slot:append>
               <q-icon name="event" class="cursor-pointer">
                 <q-popup-proxy cover transition-show="scale" transition-hide="scale" v-model="mustpopPsEnd" persistent>
-                  <q-date dark v-model="savingPendDateUnformated" :locale=getTranslatedFormatedCalendar()
+                  <q-date dark color="black" v-model="savingPendDateUnformated" :locale=getTranslatedFormatedCalendar()
                     :navigation-min-year-month="periodicSaveMinEnd" width="200px"
                     :default-year-month="periodicSaveMinEnd"
                     :navigation-max-year-month="periodicSaveMax"

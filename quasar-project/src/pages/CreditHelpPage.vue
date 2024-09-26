@@ -1,9 +1,9 @@
 <template>
   <q-page class="q-pa-lg"  v-touch-swipe.mouse.left.right="handleSwipeExt" :key="reRender">
     <div style="display: flex;flex-direction:column; justify-items:center;justify-content:center;align-items: center;align-content: center;">
-      <q-card class="bg-primary q-mb-md" style="width: 100%;">
+      <q-card bordered class="q-mb-md" style="border-color: white;width: 100%;background-color:black;" >
         <div style="display: flex;flex-direction:column; justify-items:center;justify-content:center;align-items: center;align-content: center;">
-          <div style="display: flex;justify-items:center;justify-content:center;align-items: center;align-content: center;font-size: x-large;">
+          <div style="display: flex;justify-items:center;justify-content:center;align-items: center;align-content: center;font-size: x-large;color: white;">
             {{ transStr(stringsIDs.str_settings) }}
           </div>
           <div style="display: flex;justify-items:center;justify-content:center;align-items: center;align-content: center;">
@@ -12,9 +12,9 @@
           </div>
         </div>
       </q-card>
-      <q-card class="bg-primary q-mb-md" style="width: 100%;">
+      <q-card bordered class="q-mb-md" style="width: 100%;background-color:black;border-color: white;">
         <div style="display: flex;flex-direction:column; justify-items:center;justify-content:center;align-items: center;align-content: center;">
-          <div style="display: flex;justify-items:center;justify-content:center;align-items: center;align-content: center;font-size: x-large;">
+          <div style="display: flex;justify-items:center;justify-content:center;align-items: center;align-content: center;font-size: x-large;color: white;">
             {{ transStr(stringsIDs.str_tuto) }}
           </div>
           <div style="display: flex;justify-items:center;justify-content:center;align-items: center;align-content: center;">
@@ -29,9 +29,9 @@
         <div ref="phamtomDivToScrollTo"></div>
       </div>
 
-      <q-card class="bg-primary q-mb-md" style="width: 100%;">
+      <q-card bordered class="q-mb-md" style="width: 100%;background-color:black;border-color: white;">
         <div style="display: flex;flex-direction:column; justify-items:center;justify-content:center;align-items: center;align-content: center;">
-          <div style="display: flex;justify-items:center;justify-content:center;align-items: center;align-content: center;font-size: x-large;">
+          <div style="display: flex;justify-items:center;justify-content:center;align-items: center;align-content: center;font-size: x-large;color: white;">
             {{ transStr(stringsIDs.str_simulate_credit) }}
           </div>
           <div style="display: flex;justify-items:center;justify-content:center;align-items: center;align-content: center;">
@@ -40,9 +40,9 @@
           </div>
         </div>
       </q-card>
-      <q-card class="bg-primary q-mb-md" style="width: 100%;">
+      <q-card bordered class="q-mb-md" style="width: 100%;background-color:black;border-color: white;">
         <div style="display: flex;flex-direction:column; justify-items:center;justify-content:center;align-items: center;align-content: center;">
-          <div style="display: flex;justify-items:center;justify-content:center;align-items: center;align-content: center;font-size: x-large;">
+          <div style="display: flex;justify-items:center;justify-content:center;align-items: center;align-content: center;font-size: x-large;color: white;">
             {{ transStr(stringsIDs.str_modulate_credit) }}
           </div>
           <div style="display: flex;justify-items:center;justify-content:center;align-items: center;align-content: center;">
@@ -51,9 +51,9 @@
           </div>
         </div>
       </q-card>
-      <q-card class="bg-primary q-mb-md" style="width: 100%;">
+      <q-card bordered class="q-mb-md" style="width: 100%;background-color:black;border-color: white;">
         <div style="display: flex;flex-direction:column; justify-items:center;justify-content:center;align-items: center;align-content: center;">
-          <div style="display: flex;justify-items:center;justify-content:center;align-items: center;align-content: center;font-size: x-large;">
+          <div style="display: flex;justify-items:center;justify-content:center;align-items: center;align-content: center;font-size: x-large;color: white;">
             {{ transStr(stringsIDs.str_reloan_credit) }}
           </div>
           <div style="display: flex;justify-items:center;justify-content:center;align-items: center;align-content: center;">
@@ -62,9 +62,9 @@
           </div>
         </div>
       </q-card>
-      <q-card class="bg-primary q-mb-md" style="width: 100%;">
+      <q-card bordered class="q-mb-md" style="width: 100%;background-color:black;border-color: white;">
         <div style="display: flex;flex-direction:column; justify-items:center;justify-content:center;align-items: center;align-content: center;">
-          <div style="display: flex;justify-items:center;justify-content:center;align-items: center;align-content: center;font-size: x-large;">
+          <div style="display: flex;justify-items:center;justify-content:center;align-items: center;align-content: center;font-size: x-large;color: white;">
             {{ transStr(stringsIDs.str_savings_help) }}
           </div>
           <div style="display: flex;justify-items:center;justify-content:center;align-items: center;align-content: center;">
@@ -73,9 +73,9 @@
           </div>
         </div>
       </q-card>
-      <q-card class="bg-primary q-mb-md" style="width: 100%;">
+      <q-card bordered class="q-mb-md" style="width: 100%;background-color:black;border-color: white;">
         <div style="display: flex;flex-direction:column; justify-items:center;justify-content:center;align-items: center;align-content: center;">
-          <div style="display: flex;justify-items:center;justify-content:center;align-items: center;align-content: center;font-size: x-large;">
+          <div style="display: flex;justify-items:center;justify-content:center;align-items: center;align-content: center;font-size: x-large;color: white;">
             {{ transStr(stringsIDs.str_rebuy_savings_help) }}
           </div>
           <div style="display: flex;justify-items:center;justify-content:center;align-items: center;align-content: center;">

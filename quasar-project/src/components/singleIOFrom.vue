@@ -1,17 +1,17 @@
 <template>
 
   <q-carousel ref="mySioForm" fullscreen animated :arrows="false" :navigation="false" v-model="currentSlide">
-    <q-carousel-slide name="sioType" class="bg-grey-9">
+    <q-carousel-slide name="sioType" class="bg-black">
       <div class="oneInThreeRowH"></div>
       <div class="oneInThreeRow">
         <div class="column items-center">
           <div class="col myIndication q-ma-md">
-            <p>{{ transStr(stringsIDs.str_sio_type) }}</p>
+            <p style="color: white;text-align: center;">{{ transStr(stringsIDs.str_sio_type) }}</p>
           </div>
           <div class="row q-mb-md" style="display: flex;">
           <div style="flex:1"></div>
-          <div style="flex:2">
-            <q-select bg-color="blue-grey-8" style="font-size: x-large;"   v-model="single_io_type"
+          <div style="flex:2;background-color: black;color: white;">
+            <q-select dark bg-color="blue-grey-10" label-color="white" style="font-size: x-large;"   v-model="single_io_type"
             :options="[transoptSIO(BANK_SIO_TYPE_IN), transoptSIO(BANK_SIO_TYPE_OUT)]"
             @update:model-value="single_io_type==transoptSIO(BANK_SIO_TYPE_IN) ? _single_io.type=BANK_SIO_TYPE_IN : _single_io.type=BANK_SIO_TYPE_OUT  "></q-select>
           </div>
@@ -25,18 +25,18 @@
       </div>
       <div class="oneInThreeRowB"></div>
     </q-carousel-slide>
-    <q-carousel-slide name="sioName" class="bg-grey-9">
+    <q-carousel-slide name="sioName" class="bg-black">
       <div class="oneInThreeRowH"></div>
       <div class="oneInThreeRow">
         <div class="column items-center">
           <div class="col myIndication q-ma-md">
-            <p>{{ transStr(stringsIDs.str_sio_name) }}</p>
+            <p style="color: white;text-align: center;">{{ transStr(stringsIDs.str_sio_name) }}</p>
           </div>
           <div class="row" style="display: flex;">
           <div style="flex:1"></div>
           <div style="flex:2">
-          <q-input class="q-mb-md" clearable  style="font-size: x-large;"   v-model="_single_io.title"
-            type="text" bg-color="blue-grey-8" outlined  @keyup.enter="sio_name_nxt.click()"></q-input>
+          <q-input dark class="q-mb-md" clearable  style="font-size: x-large;"   v-model="_single_io.title"
+            type="text" bg-color="blue-grey-10" outlined  @keyup.enter="sio_name_nxt.click()"></q-input>
           </div>
             <div style="flex:1"></div>
       </div>
@@ -50,19 +50,19 @@
     </q-carousel-slide>
 
 
-    <q-carousel-slide name="sioAmount" class="bg-grey-9">
+    <q-carousel-slide name="sioAmount" class="bg-black">
       <div class="oneInThreeRowH"></div>
       <div class="oneInThreeRow">
         <div class="column items-center">
           <div class="col myIndication q-ma-md">
-            <p>{{ transStr(stringsIDs.str_sio_amount) }}</p>
+            <p style="color: white;text-align: center;">{{ transStr(stringsIDs.str_sio_amount) }}</p>
           </div>
         <div class="row q-mb-md" style="display: flex;">
           <div style="flex:1"></div>
           <div style="display:flex; flex:4;flex-direction: column;align-items: center;">
           <q-input ref="myAmount" class="q-mb-md" clearable style="font-size: x-large;"  size="15" maxlength="15"
             v-model="_single_io.amount" type="number" lazy-rules bg-color="blue-grey-8" outlined @keyup.enter="amount_nxt.click()" :suffix="getCurrencySymbol()"></q-input>
-            <q-slider class="q-ma-md" v-model="_single_io.amount" :min="0.0" :max="50000" :step="100" @change="myAmount.focus()"/>
+            <q-slider dark inner-track-color="blue-grey-10" class="q-ma-md" v-model="_single_io.amount" :min="0.0" :max="50000" :step="100" @change="myAmount.focus()"/>
             </div>
             <div style="flex:1"></div>
       </div>
@@ -74,18 +74,18 @@
       </div>
       <div class="oneInThreeRowB"></div>
     </q-carousel-slide>
-    <q-carousel-slide name="sioAccount" class="bg-grey-9">
+    <q-carousel-slide name="sioAccount" class="bg-black">
       <div class="oneInThreeRowH"></div>
       <div class="oneInThreeRow">
         <div class="column items-center">
           <div class="col myIndication q-ma-md">
-            <p>{{ transStr(stringsIDs.str_sio_account) }}</p>
+            <p style="color: white;text-align: center;">{{ transStr(stringsIDs.str_sio_account) }}</p>
           </div>
           <div class="row" style="display: flex;">
           <div style="flex:1"></div>
-          <div style="flex:2">
-          <q-select class="q-mb-md" style="font-size: x-large;" v-model="_single_io.account"
-            :options="getAccOpt()" bg-color="blue-grey-8" outlined ></q-select>
+          <div style="flex:2;background-color: black;color: white;">
+          <q-select dark label-color="white" class="q-mb-md" style="font-size: x-large;" v-model="_single_io.account"
+            :options="getAccOpt()" bg-color="blue-grey-10" outlined ></q-select>
           </div>
             <div style="flex:1"></div>
       </div>
@@ -97,22 +97,22 @@
       </div>
       <div class="oneInThreeRowB"></div>
     </q-carousel-slide>
-    <q-carousel-slide name="sioDate" class="bg-grey-9">
+    <q-carousel-slide name="sioDate" class="bg-black">
       <div class="oneInThreeRowH"></div>
       <div class="oneInThreeRow">
         <div class="column items-center">
           <div class="col myIndication q-ma-md">
-            <p>{{ transStr(stringsIDs.str_sio_date) }}</p>
+            <p style="color: white;text-align: center;">{{ transStr(stringsIDs.str_sio_date) }}</p>
           </div>
           <div class="row" style="display: flex;">
           <div style="flex:1"></div>
           <div style="flex:4">
-          <q-input class="q-ma-md"  style="font-size: x-large;"  bg-color="blue-grey-8" filled
+          <q-input dark class="q-ma-md"  style="font-size: x-large;"  bg-color="blue-grey-10" filled
             v-model="_single_io.date"  @click="mustpopSingleIO=true" readonly>
             <template v-slot:append>
               <q-icon name="event" class="cursor-pointer">
                 <q-popup-proxy cover transition-show="scale" transition-hide="scale" v-model="mustpopSingleIO" persistent>
-                  <q-date dark v-model="singleIODateUnformated" :locale=getTranslatedFormatedCalendar()
+                  <q-date color="black" dark v-model="singleIODateUnformated" :locale=getTranslatedFormatedCalendar()
                     :navigation-min-year-month="periodicSaveMin" width="200px"
                     @update:model-value="[_single_io.date=formatDate(singleIODateUnformated), mustpopSingleIO=false]">
                     <div class="row items-center justify-end">

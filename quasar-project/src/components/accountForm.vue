@@ -1,19 +1,19 @@
 <template>
 
   <q-carousel ref="myAccountForm" fullscreen animated :arrows="false" :navigation="false" v-model="currentSlide">
-    <q-carousel-slide name="acountName" class="bg-grey-9">
+    <q-carousel-slide name="acountName" class="bg-black">
       <div class="oneInThreeRowH"></div>
       <div class="oneInThreeRow">
         <div class="column items-center">
           <div class="col myIndication q-ma-md">
-            <p>{{ transStr(stringsIDs.str_acc_name_opt) }}</p>
+            <p style="color: white;">{{ transStr(stringsIDs.str_acc_name_opt) }}</p>
           </div>
           <div class="row" style="display: flex;">
           <div style="flex:1"></div>
           <div style="flex:4">
-            <q-input class="q-ma-md" clearable style="font-size: x-large;" maxlength="20"
+            <q-input dark class="q-ma-md" clearable style="font-size: x-large;" maxlength="20"
               v-model="_account.title" type="text" lazy-rules
-              :rules="[(val) => (val.length < 20) || transStr(stringsIDs.str_shorter_acc_name)]" bg-color="blue-grey-8"
+              :rules="[(val) => (val.length < 20) || transStr(stringsIDs.str_shorter_acc_name)]" bg-color="blue-grey-10"
               outlined @keyup.enter="title_nxt.click()"></q-input>
             </div>
             <div style="flex:1"></div>
@@ -28,21 +28,21 @@
       </div>
       <div class="oneInThreeRowB"></div>
     </q-carousel-slide>
-    <q-carousel-slide name="AmountAccount" class="bg-grey-9">
+    <q-carousel-slide name="AmountAccount" class="bg-black">
       <div class="oneInThreeRowH"></div>
       <div class="oneInThreeRow">
       <div class="column items-center">
         <div class="col myIndication q-ma-md">
-            <p>{{ transStr(stringsIDs.str_current_amount_acc) }}</p>
+            <p style="color: white;">{{ transStr(stringsIDs.str_current_amount_acc) }}</p>
           </div>
           <div class="row" style="display: flex;">
             <div style="flex:1"></div>
             <div style="display: flex; flex-direction: column; flex:4;align-items: center;">
-            <q-input ref="myAmount" class="q-ma-md" style="font-size: x-large;" v-model="_account.amount"
+            <q-input dark ref="myAmount" class="q-ma-md" style="font-size: x-large;" v-model="_account.amount"
               type="number" lazy-rules :rules="[(val) => (val >= 0.0) || transStr(stringsIDs.str_debts_not_handled)]"
               bg-color="blue-grey-8" outlined
               @keyup.enter="amount_nxt.click()" :suffix="getCurrencySymbol()"></q-input>
-              <q-slider class="q-ma-md" v-model="_account.amount" :min="0" :max="30000" :step="1000" @change="myAmount.focus()"/>
+              <q-slider inner-track-color="blue-grey-10" class="q-ma-md" v-model="_account.amount" :min="0" :max="30000" :step="1000" @change="myAmount.focus()"/>
             </div>
             <div style="flex:1"></div>
         </div>
@@ -54,19 +54,19 @@
     </div>
     <div class="oneInThreeRowB"></div>
     </q-carousel-slide>
-    <q-carousel-slide name="Profitability" class="bg-grey-9">
+    <q-carousel-slide name="Profitability" class="bg-black">
       <div class="oneInThreeRowH"></div>
       <div class="oneInThreeRow">
       <div class="column items-center">
         <div class="col myIndication q-ma-md">
-            <p>{{ transStr(stringsIDs.str_profitability_st) }}</p>
+            <p style="color: white;">{{ transStr(stringsIDs.str_profitability_st) }}</p>
           </div>
           <div class="row" style="display: flex;">
             <div style="flex:1"></div>
             <div style="display: flex; flex-direction: column; flex:4;align-items: center;">
-            <q-input ref="myProfit" class="q-ma-md"   style="font-size: x-large;" clearable v-model="_account.rate"
-              type="number" bg-color="blue-grey-8" outlined @keyup.enter="profit_nxt.click()" suffix="%"></q-input>
-              <q-slider class="q-ma-md" v-model="_account.rate" :min="0.0" :max="4.0" :step="0.1" @change="myProfit.focus()"/>
+            <q-input dark ref="myProfit" class="q-ma-md"   style="font-size: x-large;" clearable v-model="_account.rate"
+              type="number" bg-color="blue-grey-10" outlined @keyup.enter="profit_nxt.click()" suffix="%"></q-input>
+              <q-slider class="q-ma-md" inner-track-color="blue-grey-10" v-model="_account.rate" :min="0.0" :max="4.0" :step="0.1" @change="myProfit.focus()"/>
             </div>
             <div style="flex:1"></div>
         </div>

@@ -455,7 +455,7 @@ const translatedStrs=ref(
   ['Comment moduler un crédit','How to modulate credit'],
   ['Comment racheter avec un crédit','How to reloan'],
   ['Comment renseigner l\'épargne','How to set your savings'],
-  ['Comment racheter votre crédit avec votre éoargne','How to rebuy your credit with savings'],
+  ['Comment racheter votre crédit avec votre épargne','How to rebuy your credit with savings'],
   //TUTORIAL
   ['Bienvenue dans la supercalculette Credit Play !',
   'Welcome to the super finance calculator Credit Play !'],

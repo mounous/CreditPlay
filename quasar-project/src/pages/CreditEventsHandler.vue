@@ -7,7 +7,7 @@
       <div class="column" style="min-height: 5%;width: 100%;"></div>
       <div class="column" style="max-height:80%; min-height: 70%;width: 100%;" :key="refresh">
         <q-scroll-area style="height:100%;">
-        <q-list v-if="simu.events.length>0" class=" q-ma-md bg-primary" separator bordered :key="simu.events.length">
+        <q-list dark v-if="simu.events.length>0" class="q-ma-md"  style="background-color:darkslategrey;" separator bordered :key="simu.events.length">
           <q-item v-for="event in simu.events" :key="event.title" clickable
             @click="[event.selected = !event.selected, refresh++, propagateSelection(event)]" v-ripple>
             <q-item-section avatar>
