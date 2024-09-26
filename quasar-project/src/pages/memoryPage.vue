@@ -54,14 +54,18 @@
       </div>
     </div>
     <q-dialog v-model="mustPopName">
-      <q-card>
-        <div class="q-ma-xl">
-          {{ transStr(stringsIDs.str_pop_simu_save_name) }}
+      <q-card bordered class="bg-black" style="border-color: white;">
+        <div style="display: flex;flex-direction: column;align-items: center;align-content: center;justify-content: center;justify-items: center;">
+          <div class="q-ma-md" style="text-align: center;color: white;font-size: 17px">
+            {{ transStr(stringsIDs.str_pop_simu_save_name) }}
+          </div>
+          <q-input dark bg-color="blue-grey-10" class="q-ma-md" style="font-size: x-large;" clearable v-model="currentName" @keyup.enter="saveCurrentData"></q-input>
+          <div style="display: flex;flex-direction: row; align-items: center;align-content: center;justify-content: center;justify-items: center;">
+            <q-btn color="blue-grey-8" class="q-ma-md" :label=transStr(stringsIDs.str_pop_simu_default_name) @click="saveCurrentData" :disable="show_tuto==true"></q-btn>
+            <q-btn color="blue-grey-8" class="q-ma-md" :label=transStr(stringsIDs.str_pop_simu_custom_name) @click="saveCurrentData"
+              :disable="isNameAlreadyInUse(currentName) || (show_tuto==true && currentName=='')"></q-btn>
+          </div>
         </div>
-        <q-input class="q-ma-md" v-model="currentName" @keyup.enter="saveCurrentData"></q-input>
-        <q-btn class="q-ma-md" :label=transStr(stringsIDs.str_pop_simu_default_name) @click="saveCurrentData" :disable="show_tuto==true"></q-btn>
-        <q-btn class="q-ma-md" :label=transStr(stringsIDs.str_pop_simu_custom_name) @click="saveCurrentData"
-          :disable="isNameAlreadyInUse(currentName) || (show_tuto==true && currentName=='')"></q-btn>
       </q-card>
     </q-dialog>
   </q-page>
@@ -92,6 +96,10 @@ var currentName = ref(DEFAULT_NAME);
 const router = useRouter();
 const $q=useQuasar();
 const truncate=function(str){
+  if(str==null)
+{
+  return '';
+}
   return (str.length > 25) ? str.slice(0, 24) + '...' : str;
 };
 

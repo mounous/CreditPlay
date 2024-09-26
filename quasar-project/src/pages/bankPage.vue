@@ -133,7 +133,7 @@
 
 
     <div class="col">
-      <q-dialog v-model="mustPopDeleteAcc" cover transition-show="scale" transition-hide="scale">
+      <q-dialog v-model="mustPopDeleteAcc" cover persistent transition-show="scale" transition-hide="scale">
         <div class="q-mt-md" >
           <warningDisplayer class="q-mt-md">
             <div class="col flex flex center justify-around">
