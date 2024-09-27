@@ -59,11 +59,11 @@
           <div class="q-ma-md" style="text-align: center;color: white;font-size: 17px">
             {{ transStr(stringsIDs.str_pop_simu_save_name) }}
           </div>
-          <q-input dark bg-color="blue-grey-10" class="q-ma-md" style="font-size: x-large;" clearable v-model="currentName" @keyup.enter="saveCurrentData"></q-input>
+          <q-input dark bg-color="blue-grey-10" class="q-ma-md" style="font-size: x-large;"  v-model="currentName" @keyup.enter="saveCurrentData"></q-input>
           <div style="display: flex;flex-direction: row; align-items: center;align-content: center;justify-content: center;justify-items: center;">
-            <q-btn color="blue-grey-8" class="q-ma-md" :label=transStr(stringsIDs.str_pop_simu_default_name) @click="saveCurrentData" :disable="show_tuto==true"></q-btn>
+            <q-btn color="blue-grey-8" class="q-ma-md" :label=transStr(stringsIDs.str_pop_simu_default_name) @click="saveCurrentData" :disable="show_tuto==true || currentName.length!=0"></q-btn>
             <q-btn color="blue-grey-8" class="q-ma-md" :label=transStr(stringsIDs.str_pop_simu_custom_name) @click="saveCurrentData"
-              :disable="isNameAlreadyInUse(currentName) || (show_tuto==true && currentName=='')"></q-btn>
+              :disable="isNameAlreadyInUse(currentName) || currentName.length==0"></q-btn>
           </div>
         </div>
       </q-card>

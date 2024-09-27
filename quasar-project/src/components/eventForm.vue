@@ -35,7 +35,7 @@
           <div class="row" style="display: flex;">
             <div style="flex:1"></div>
             <div style="flex:4" >
-              <q-input outlined class="q-ma-md" style="font-size: x-large;border-radius: 2px;border-color: white;" bg-color="blue-grey-10" filled
+              <q-input dark outlined class="q-ma-md" style="font-size: x-large;border-radius: 2px;border-color: white;" bg-color="blue-grey-10" filled
                 @click="mustpopDateMod = true" readonly v-model="date_mod">
                 <template v-slot:append>
                   <q-icon name="event" class="cursor-pointer">
@@ -135,7 +135,7 @@
             </div>
             <div style="flex: 2;align-items: center;align-content: center;;">
               <q-btn-toggle style="font-size: xx-large;" class="q-ma-md" name="durationUnits"
-                v-model="event_.rebuyPenaltiesType" unelevated size="20px" glossy color="blue-grey-20" toggle-color="blue-grey-4" :options="[
+                v-model="event_.rebuyPenaltiesType" unelevated size="20px" glossy color="blue-grey-20" toggle-color="blue" :options="[
                   { label: getCurrencySymbol(), value: getCurrencySymbol() },
                   { label: '%', value: '%' }
                 ]" @update:model-value="[penalties_no_unit = 0, event_.rebuyPenalties = 0, event_.rebuyPenalties_abs = 0]" />
@@ -237,7 +237,7 @@
                 <template v-slot:append>
                   <q-icon name="event" class="cursor-pointer">
                     <q-popup-proxy v-model="mustpop" cover transition-show="scale" transition-hide="scale" persistent>
-                      <q-date dark v-model="unformatedrebuydate" :locale=getTranslatedFormatedCalendar()
+                      <q-date color="black" dark v-model="unformatedrebuydate" :locale=getTranslatedFormatedCalendar()
                         :navigation-min-year-month="reloanMin" width="200px" :navigation-max-year-month="reloanMax"
                         :default-year-month="reloanMin"
                         @update:model-value="[mustpop = false, formatAndExtracteventdateFrom()]">
@@ -322,17 +322,17 @@
                 v-model="duration_no_unit" type="number" lazy-rules
                 :rules="[(val) => (val > 0) || transStr(stringsIDs.str_durationPos)]" bg-color="blue-grey-8" outlined
                 @update:model-value="duration_units == transStr(stringsIDs.str_unit_y) ? event_.reloanDuration_m = Number(duration_no_unit) * 12 : event_.reloanDuration_m = Number(duration_no_unit)"
-                @keyup.enter="rebuyReloanDur_nxt.click()"></q-input>
+                @keyup.enter="rebuyReloanDur_nxt.click()" :suffix="duration_units"></q-input>
             </div>
             <div style="flex: 1;align-items: center;justify-items: center;">
               <q-btn-toggle v-if="event_.type == EVT_TYPE_REBUY_CREDIT" class="q-ma-md" name="durationUnits"
-                v-model="duration_units" unelevated size="14px" glossy color=black :options="[
+                v-model="duration_units" unelevated size="14px" glossy color=black toggle-color="blue" :options="[
                   { label: transStr(stringsIDs.str_unit_y), value: transStr(stringsIDs.str_unit_y) },
                   { label: transStr(stringsIDs.str_unit_m), value: transStr(stringsIDs.str_unit_m) }
                 ]" @update:model-value="duration_units == transStr(stringsIDs.str_unit_y) ? duration_no_unit = Math.round(duration_no_unit / 12) : duration_no_unit = duration_no_unit * 12" />
             </div>
             <div class="q-ma-md" style="display:flex; width: 95%;">
-              <q-slider class="q-ma-md" v-model="duration_no_unit" :min="0"
+              <q-slider dark inner-track-color="blue-grey-10" class="q-ma-md" v-model="duration_no_unit" :min="0"
                 :max="duration_units == transStr(stringsIDs.str_unit_y) ? 30 : 30 * 12" :step="1"
                 @change="myreloandur.focus()"
                 @update:model-value="duration_units == transStr(stringsIDs.str_unit_y) ? event_.reloanDuration_m = Number(duration_no_unit) * 12 : event_.reloanDuration_m = Number(duration_no_unit)" />
