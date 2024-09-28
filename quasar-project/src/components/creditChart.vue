@@ -6,6 +6,7 @@
           <th v-if="is_playing==true" style="color: white;font-size:15px;text-align: center;">{{transStr(stringsIDs.str_tuto_chart_3)}}</th>
           <th v-if="is_playing==false" style="color: white;font-size:15px;text-align: center;">{{transStr(stringsIDs.str_tuto_chart_4)}}</th>
         </q-card>
+        <q-spinner-tail  class="bg-black" color="primary" size="2em"  v-if="(simu.events.length>0 || ((display_capital==true||display_interests==true) && display_savings==true))&&is_playing==true"/>
         <q-btn icon="play_arrow"  size="large" color="black" class="q-mr-md"  v-if="(simu.events.length>0 || ((display_capital==true||display_interests==true) && display_savings==true))&&is_playing==false"  @click="relaunchAnimation"></q-btn>
         <q-btn icon="settings" fab size="large" color="black"  v-if="is_playing==false"  @click="mustPop=true"></q-btn>
 
@@ -25,7 +26,7 @@
       width=100%
       :options="chartOptions"
       :series="series"
-      :key="mustPop"
+      :key="refresh"
     ></VueApexCharts>
 
 
@@ -42,9 +43,9 @@
       <div style="display: flex;flex-direction: column;align-items: center;align-content: center;justify-content: center;justify-items: center;">
         <th  style=" color: white;font-size: 17px;text-align: center;">{{ transStr(stringsIDs.str_chart_choice) }}</th>
         <q-list bordered>
-          <q-item v-if="hasSavings() && startFormFilled==true">
+          <q-item v-if="hasSavings() || startFormFilled==true">
             <q-item-section avatar> <q-checkbox v-model="display_all" color="green" keep-color @update:model-value="display_all==true ? [display_capital=true,display_interests=true,display_savings=true]: [display_capital=false,display_interests=false,display_savings=false]"> </q-checkbox> </q-item-section>
-            <q-item-section @click="[display_all=!display_all,display_all==true ? [display_capital=true,display_interests=true,display_savings=true]: [display_capital=false,display_interests=false,display_savings=false]]">  <th   style=" color: white;font-size: 15px;text-align: left;">{{  transStr(stringsIDs.str_all) }}</th></q-item-section>
+            <q-item-section @click="[display_all=!display_all,display_all==true ? [display_capital=true,display_interests=true,hasSavings()? display_savings=true:null]: [display_capital=false,display_interests=false,display_savings=false]]">  <th   style=" color: white;font-size: 15px;text-align: left;">{{  transStr(stringsIDs.str_all) }}</th></q-item-section>
           </q-item>
           <q-item  v-if="startFormFilled == true" >
             <q-item-section avatar> <q-checkbox v-model="display_capital" color="green" keep-color @update:model-value="display_capital==false?display_all=false:null"> </q-checkbox> </q-item-section>
@@ -66,9 +67,11 @@
       </div>
     </div>
   </div>
-    </q-dialog>
+  </q-dialog>
 
-  <q-dialog v-if="show_tuto==true && tutoPhase==0" v-model="MustPopTutorial"   cover transition-show="scale" transition-hide="scale" maximized full-width  auto-close  v-on:before-hide="[tutoPhase=1,forceRender(),MustPopTutorial=true]"
+
+
+  <q-dialog v-if="show_tuto==true && tutoPhase==0" v-model="MustPopTutorial"   cover transition-show="scale" transition-hide="scale" maximized full-width  auto-close  v-on:before-hide="[tutoPhase=1,refresh++,MustPopTutorial=true]"
     style="background-color: black;"   >
     <div class="q-mt-md q-mb-md q-mr-md q-ml-md" style="display: flex;flex-direction: column;justify-content:center;align-content: center;">
       <tutoDisplayer>
@@ -145,6 +148,7 @@ var is_playing=ref(false);
 const router=useRouter();
 var MustPopTutorial=ref(false);
 var mustPop = ref(false);
+var refresh=ref(0);
 var carrouselPhase=ref(0);
 var display_capital=ref(false);
 var display_interests=ref(false);
@@ -160,12 +164,7 @@ const popselector=function()
   mustPop.value=true;
 }
 onMounted(popselector);
-const forceRender=async()=>{
-  mustPop.value=true;
-  await nextTick();
-  mustPop.value=false;
-  await nextTick();
-}
+
 const clearChart=function()
 {
   destroy_periodic();
@@ -183,7 +182,7 @@ const initChart=function(recompute_events=true)
   }
   chartOptions.xaxis.categories= getTime();
   display_init_credit();
-  forceRender();
+  refresh.value++;
   relaunchAnimation();
 }
 const restoreState=function()
@@ -294,7 +293,7 @@ const switchDataDisplay=function()
     }
     destroy_periodic();
   }
-  forceRender();
+  refresh.value++;
   carrouselPhase.value+=1;
 }
 

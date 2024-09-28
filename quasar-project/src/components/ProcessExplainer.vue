@@ -26,7 +26,7 @@ var steps=ref([
   {id:2,  title :transStr(stringsIDs.str_tuto_process_13),   caption:''},
   {id:3,  title :transStr(stringsIDs.str_tuto_process_15),   caption:transStr(stringsIDs.str_tuto_process_16)},
   {id:4,  title :transStr(stringsIDs.str_tuto_process_17),   caption:''},
-  {id:6,  title :transStr(stringsIDs.str_tuto_process_18),   caption:transStr(stringsIDs.str_tuto_process_19)},
+  {id:5,  title :transStr(stringsIDs.str_tuto_process_18),   caption:transStr(stringsIDs.str_tuto_process_19)},
 ])
 
 var stepN= ref(0);
