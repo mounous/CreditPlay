@@ -5,7 +5,7 @@
    </q-page-sticky>
     <div
       style="flex-direction: column;width: 100%;">
-      <div class="col q-mt-md" style="height: 60%;">
+      <div class="col q-mt-xl" style="height: 60%;">
 
         <q-scroll-area style="height:100%; max-width: 99%;"  ref="scrollAreaRef" :key="tutoPhase">
           <q-list dark v-if="listSave.length!=0 && (show_tuto==false || tutoPhase>=1)" class="q-ma-md" separator bordered @click.stop style="background-color: darkslategrey;" >
@@ -17,7 +17,7 @@
                 <q-item-label no-wrap="false"> {{ item.date}} </q-item-label >
               </q-item-section>
               <q-item-section avatar>
-                <q-btn  color="black"  style="width:20px;background-color: cadetblue;" icon="delete_forever" @click="deleteData(item.id)"></q-btn>
+                <q-btn  v-if="show_tuto==false || (show_tuto==true&&tutoPhase==4 &&item.id==listSave[listSave.length-1].id)" color="black"  style="width:20px;background-color: cadetblue;" icon="delete_forever" @click="deleteData(item.id)"></q-btn>
               </q-item-section>
             </q-item>
           </q-list>

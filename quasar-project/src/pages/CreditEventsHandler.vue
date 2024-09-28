@@ -3,7 +3,7 @@
     <q-page-sticky position="top-right" :offset="[0, 0]" style="z-index:3">
       <q-icon name="help" size="x-large" color="white" class="q-mt-md q-mr-md"  v-if="show_tuto==false" @click="saveState()"></q-icon>
    </q-page-sticky>
-    <div class="column justify-arround content-center" style=" flex-direction: column;width:100%">
+    <div class="column justify-arround content-center q-mt-xl" style=" flex-direction: column;width:100%">
       <div class="column" style="min-height: 5%;width: 100%;"></div>
       <div class="column" style="max-height:80%; min-height: 70%;width: 100%;" :key="refresh">
         <q-scroll-area style="height:100%;">
