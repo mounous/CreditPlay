@@ -113,7 +113,7 @@
               <q-icon name="event" class="cursor-pointer">
                 <q-popup-proxy cover transition-show="scale" transition-hide="scale" v-model="mustpopSingleIO" persistent>
                   <q-date color="black" dark v-model="singleIODateUnformated" :locale=getTranslatedFormatedCalendar()
-                    :navigation-min-year-month="periodicSaveMin" width="200px"
+                    width="200px"
                     @update:model-value="[_single_io.date=formatDate(singleIODateUnformated), mustpopSingleIO=false]">
                     <div class="row items-center justify-end">
                       <q-btn v-close-popup :label=transStr(stringsIDs.str_close) color="primary" flat />
