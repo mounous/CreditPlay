@@ -115,8 +115,8 @@
               simu.credit.duration_m = Number(Math.round(duration_no_unit) * 12) :
               simu.credit.duration_m = Number(Math.round(duration_no_unit))]"
               @keyup.enter="credit_dur_next.click()"
-              @focus="[myDur.focus(),disableRateSlider=true]"
-              @blur="disableRateSlider=false"
+              @focus="[myDur.focus()]"
+
               />
             <q-btn-toggle class="q-ma-md" name="durationUnits" v-model="duration_units" unelevated size="20px" glossy toggle-color="indigo-10"
               color=black :options="[
@@ -127,7 +127,7 @@
               duration_no_unit = Math.round(duration_no_unit / 12) :
               duration_no_unit = duration_no_unit * 12" />
           </div>
-          <div v-if="disableRateSlider==false" style="display:flex;width: 95%;">
+          <div style="display:flex;width: 95%;">
           <q-slider dark inner-track-color="blue-grey-8" class="q-ma-md" v-model="duration_no_unit" :min="0" :max="duration_units == transStr(stringsIDs.str_unit_y)?30:360" :step="1" @change="myDur.focus()"/>
           </div>
         </div>
@@ -172,7 +172,6 @@ var myRate=ref();
 var credit_rate_nxt=ref();
 var myDur=ref();
 var credit_dur_next=ref();
-var disableRateSlider=ref(false);
 var duration_units = ref(transStr(stringsIDs.str_unit_y));
 var duration_no_unit = ref('0');
 
