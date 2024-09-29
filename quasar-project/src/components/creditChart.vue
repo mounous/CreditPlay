@@ -320,15 +320,15 @@ const getSingleEvent=function(index)
         evt_y=extractData_capital[extractData_capital.length-1];//store the capital to set a point on graph
         if(evt_y==0)//case of a rebuy,
         {
-          evt_y=extractData_capital[extractData_capital.length-2];
+          evt_y=extractData_capital[extractData_capital.length-1];
         }
       }
-      if(display_capital.value==false &&display_interests.value==true && compareDates(simu.value.events[index].amortEvt[TIME][j].y,simu.value.events[index].amortEvt[TIME][j].m,simu.value.events[index].month,simu.value.events[index].year)==0)
+      if(display_capital.value==false &&display_interests.value==true && compareDates(simu.value.events[index].amortEvt[TIME][j].y,simu.value.events[index].amortEvt[TIME][j].m,simu.value.events[index].year,simu.value.events[index].month)==0)
       {
         evt_y=extractData_interests[extractData_interests.length-1];//store the interests to set a point on graph
         if(evt_y==0)//case of a rebuy,
         {
-          evt_y=extractData_interests[extractData_interests.length-2];
+          evt_y=extractData_interests[extractData_interests.length-1];
         }
       }
     }
