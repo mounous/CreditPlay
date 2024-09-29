@@ -108,7 +108,7 @@ const apply_events_chain=()=>{
     simu.value.events=sortEvents(simu.value.events);
     for(var i = 0; i< simu.value.events.length;i++)
     {
-      simu.value.events[i].amortEvt=[[],[],[]];
+      simu.value.events[i].amortEvt=[[],[],[],[],[]];
       if(simu.value.events[i].metaType==EVT_META_TYPE_MOD)
       {
         if(i==0)//first event : capital left to pay based on simu
@@ -123,6 +123,7 @@ const apply_events_chain=()=>{
             simu.value.events[i].amortEvt[INTERESTS].push(simu.value.credit.amort[INTERESTS][j]);
             j++;
           }
+          simu.value.events[i].indexItself=j;
           //extract total interests paid just before the modulation
           const interests_paid_before_mod=simu.value.credit.amort[INTERESTS][j-1];
           var specific_amort=computeAmort(simu.value.events[i].year,simu.value.events[i].month,simu.value.credit.amort[CAPITAL][nb_mens_spent-1],nb_mens_to_pay,simu.value.events[i].new_mens);
@@ -147,6 +148,7 @@ const apply_events_chain=()=>{
             simu.value.events[i].amortEvt[INTERESTS].push(simu.value.events[i-1].amortEvt[INTERESTS][j]);
             j++;
           }
+          simu.value.events[i].indexItself=j;
           //here we modulate after a potential rebuy at different rate : we must get the uptodate rate
           var up2date_rate=simu.value.credit.rate;
           for(var ind=i-1;ind>=0;ind--)
@@ -186,6 +188,7 @@ const apply_events_chain=()=>{
             simu.value.events[i].amortEvt[INTERESTS].push(simu.value.credit.amort[INTERESTS][j]);
             j++;
           }
+          simu.value.events[i].indexItself=j;
           if(simu.value.events[i].rebuyPenaltiesType=='%')
           {
             toPay=simu.value.credit.amort[CAPITAL][j]*(1+simu.value.events[i].rebuyPenalties/100);
@@ -205,6 +208,7 @@ const apply_events_chain=()=>{
             simu.value.events[i].amortEvt[INTERESTS].push(simu.value.events[i-1].amortEvt[INTERESTS][j]);
             j++;
           }
+          simu.value.events[i].indexItself=j;
           if(simu.value.events[i].rebuyPenaltiesType=='%')
           {
             toPay=simu.value.events[i-1].amortEvt[CAPITAL][j]*(1+simu.value.events[i].rebuyPenalties/100);
@@ -263,6 +267,7 @@ const apply_events_chain=()=>{
             simu.value.events[i].amortEvt[INTERESTS].push(simu.value.credit.amort[INTERESTS][j]);
             j++;
           }
+          simu.value.events[i].indexItself=j;
           interests_paid_before_mod=simu.value.credit.amort[INTERESTS][j-1];
           if(simu.value.events[i].rebuyPenaltiesType=='%')
           {
@@ -285,6 +290,7 @@ const apply_events_chain=()=>{
             simu.value.events[i].amortEvt[INTERESTS].push(simu.value.events[i-1].amortEvt[INTERESTS][j]);
             j++;
           }
+          simu.value.events[i].indexItself=j;
           interests_paid_before_mod=simu.value.events[i-1].amortEvt[INTERESTS][j-1];
           if(simu.value.events[i].rebuyPenaltiesType=='%')
           {
@@ -307,10 +313,10 @@ const apply_events_chain=()=>{
         }
       }
       //for display purpose (faster chart if computed here)
-      for(var index=0;index<simu.value.events[i].amortEvt[TIME];index++)
+      for(var index=0;index<simu.value.events[i].amortEvt[TIME].length;index++)
       {
-        simu.value.events[i].amortEvt[CAPITAL_ROUNDED].push(Math.round(simu.value.events[i].amortEvt[CAPITAL]*100)/100);
-        simu.value.events[i].amortEvt[INTERESTS_ROUNDED].push(Math.round(simu.value.events[i].amortEvt[INTERESTS]*100)/100);
+        simu.value.events[i].amortEvt[CAPITAL_ROUNDED].push(Math.round(simu.value.events[i].amortEvt[CAPITAL][index]*100)/100);
+        simu.value.events[i].amortEvt[INTERESTS_ROUNDED].push(Math.round(simu.value.events[i].amortEvt[INTERESTS][index]*100)/100);
       }
     }
   }
@@ -609,4 +615,4 @@ const reapplyLanguageToData=function()
 export { computeMensuality, computeCredit_init, getEarliestNewEventDate, sortEvents,provideModOptions,apply_events_chain,getChartXAxis,
   returnBaseData,getLastMensuality,hasBeenRebougthSavings,build_event_name,reapplyLanguageToData,getLatestMensuality,
   EVT_META_TYPE_MOD, EVT_META_TYPE_REBUY, EVT_TYPE_MOD_MENS_UP, EVT_TYPE_MOD_MENS_DOWN, EVT_TYPE_REBUY_CREDIT, EVT_TYPE_REBUY_SAVINGS,
-  TIME,CAPITAL,INTERESTS};
+  TIME,CAPITAL,INTERESTS,CAPITAL_ROUNDED,INTERESTS_ROUNDED};

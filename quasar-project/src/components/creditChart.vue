@@ -129,8 +129,8 @@ import tutoDisplayer from './tutoDisplayer.vue';
 import tutoTxt from './tutoTxt.vue';
 import shakeBtn from './shakeBtn.vue';
 import VueApexCharts from 'vue3-apexcharts'
-import { ref, nextTick, onBeforeUnmount, onMounted} from 'vue';
-import {apply_events_chain, computeMensuality, getChartXAxis,getLatestMensuality,computeCredit_init, CAPITAL, TIME,INTERESTS} from '../utils/credit_utility'
+import { ref, onBeforeUnmount, onMounted} from 'vue';
+import {apply_events_chain, computeMensuality, getChartXAxis,getLatestMensuality,computeCredit_init, CAPITAL, TIME,INTERESTS,CAPITAL_ROUNDED,INTERESTS_ROUNDED} from '../utils/credit_utility'
 import { GetColor,TYPE_CAPITAL,TYPE_INTERESTS,TYPE_SAVINGS } from 'src/utils/chart_utility';
 import { simu,bank, startFormFilled } from 'stores/store';
 import {getSavingsEarlier,computeDisplaySavings,hasSavings,BANK_ROUNDED} from '../utils/bank_utility'
@@ -303,55 +303,24 @@ const getSingleEvent=function(index)
   var evt_y=-1;
   if(index <simu.value.events.length )
   {
-    var extractData_capital=[];
-    var extractData_interests=[];
-    for(var j=0;j<simu.value.events[index].amortEvt[TIME].length;j++)
+    //get series
+    if(display_interests.value==true)
     {
-      if(display_capital.value==true)
-      {
-        extractData_capital.push(Math.round(simu.value.events[index].amortEvt[CAPITAL][j]*100)/100);
-      }
-      if(display_interests.value==true)
-      {
-        extractData_interests.push(Math.round(simu.value.events[index].amortEvt[INTERESTS][j]*100)/100);
-      }
-      if(display_capital.value==true && compareDates(simu.value.events[index].amortEvt[TIME][j].y,simu.value.events[index].amortEvt[TIME][j].m,simu.value.events[index].year,simu.value.events[index].month)==0 )
-      {
-        evt_y=extractData_capital[extractData_capital.length-1];//store the capital to set a point on graph
-        if(evt_y==0)//case of a rebuy,
-        {
-          evt_y=extractData_capital[extractData_capital.length-1];
-        }
-      }
-      if(display_capital.value==false &&display_interests.value==true && compareDates(simu.value.events[index].amortEvt[TIME][j].y,simu.value.events[index].amortEvt[TIME][j].m,simu.value.events[index].year,simu.value.events[index].month)==0)
-      {
-        evt_y=extractData_interests[extractData_interests.length-1];//store the interests to set a point on graph
-        if(evt_y==0)//case of a rebuy,
-        {
-          evt_y=extractData_interests[extractData_interests.length-1];
-        }
-      }
+      series.push({name:transStr(stringsIDs.str_interests_parenth)+simu.value.events[index].title+')',data:simu.value.events[index].amortEvt[INTERESTS_ROUNDED]});
+      chartOptions.colors.push('#085a67');
+      evt_y=simu.value.events[index].amortEvt[INTERESTS_ROUNDED][simu.value.events[index].indexItself]
     }
     if(display_capital.value==true)
     {
-      series.push({name:simu.value.events[index].title,data:extractData_capital});
+      series.push({name:simu.value.events[index].title,data:simu.value.events[index].amortEvt[CAPITAL_ROUNDED]});
       chartOptions.colors.push('#147280');
+      evt_y=simu.value.events[index].amortEvt[CAPITAL_ROUNDED][simu.value.events[index].indexItself]
     }
-    if(display_interests.value==true)
-    {
-      series.push({name:transStr(stringsIDs.str_interests_parenth)+simu.value.events[index].title+')',data:extractData_interests});
-      chartOptions.colors.push('#085a67');
-    }
+
+    //Set annotations
     chartOptions.annotations.xaxis.push({x:transMonthName(simu.value.events[index].month).slice(0,3)+' '+simu.value.events[index].year.toString(),
-                                         strokeDashArray: 0,
-                                         borderColor: '#775DD0',
-                                         label: {
-                                           borderColor: '#775DD0',
-                                           style: {
-                                             color: '#fff',
-                                             background: '#775DD0',
-                                           },
-                                           text: '',}});
+                                         strokeDashArray: 0, borderColor: '#775DD0', label: { borderColor: '#775DD0', style: { color: '#fff',
+                                         background: '#775DD0', },  text: '',}});
     chartOptions.annotations.points.push({x: transMonthName(simu.value.events[index].month).slice(0,3)+' '+simu.value.events[index].year.toString(),
                                           y: evt_y,  marker: {size: 6,  fillColor: '#fff',strokeColor: 'purple',radius: 1, cssClass: 'apexcharts-custom-class'},
                                           label: { borderColor: 'black', offsetY: 16, offsetX:leftAnno.value==false ? 45:-45, style: {color: '#fff',background: 'black', },text: simu.value.events[index].title,} } );
