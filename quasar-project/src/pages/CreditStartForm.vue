@@ -84,7 +84,7 @@ const onSubmit=function() {
 
 const eraseCredit=function() {
   resetMustPop.value = false;
-  simu.value.credit.amort=[];
+  simu.value.credit.amort=[[],[],[]];
   simu.value.credit.amount=0;
   simu.value.credit.duration_m=0;
   simu.value.credit.m=0;

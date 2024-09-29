@@ -15,7 +15,7 @@ export const simu=ref({
     duration_m:0,
     rate:3.0,
     startingDate:'',
-    amort:[],
+    amort:[[],[],[]],
     total_cost:0,
     y:0,
     m:0,
@@ -25,7 +25,7 @@ export const simu=ref({
 
 export const bank=ref({
   accounts:[],
-  monthly_sum:[],
+  monthly_sum:[[],[],[]],
 });
 
 
@@ -40,7 +40,7 @@ export const simu_before_tuto=ref({
     duration_m:0,
     rate:0,
     startingDate:'',
-    amort:[],
+    amort:[[],[],[]],
     total_cost:0,
     y:0,
     m:0,
@@ -49,6 +49,6 @@ export const simu_before_tuto=ref({
 });
 export const bank_before_tuto=ref({
   accounts:[],
-  monthly_sum:[],
+  monthly_sum:[[],[],[]],
 });
 export const startformfilled_before_tuto=ref();

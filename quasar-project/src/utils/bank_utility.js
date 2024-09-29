@@ -1,11 +1,11 @@
-
-import { bank, simu, startFormFilled } from 'src/stores/store';
+import { TIME,CAPITAL } from './credit_utility';
+import { bank, simu } from 'src/stores/store';
 import { returnBaseData,EVT_TYPE_REBUY_SAVINGS, getLatestMensuality  } from './credit_utility';
 import { formatnumber } from './string_utils';
 import { compareDates, get_nb_mens_diff } from 'src/utils/date_utility';
 import{transSIOspecial,stringsIDs,transStr,transMonthName,getMonthNbr} from '../stores/languages'
 import {getCurrencySymbol} from '../stores/currencies'
-
+const BANK_ROUNDED=2;
 const BANK_SEARCH_ERROR=-1;
 const BANK_SAVE_TYPE_MONTHLY=0;
 const BANK_SAVE_TYPE_YEARLY=1;
@@ -180,16 +180,11 @@ const hasSavings=function(){
 }
 const computeDisplaySavings=function(startY,startM,durationY)
 {
-  bank.value.monthly_sum=[];
-  var computed=compute_savings(startY,startM,durationY*12);
-  for(var i=0;i<computed.length;i++)
-  {
-    bank.value.monthly_sum.push(computed[i]);
-  }
+  bank.value.monthly_sum=compute_savings(startY,startM,durationY*12);
 }
 const compute_savings=function(startY,startM,durationM,save=false)
 {
-  var result=[];
+  var result=[[],[],[]];
   var currentM=Number(startM);
   var currentY=Number(startY);
   var total_savings=0.0;
@@ -279,12 +274,15 @@ const compute_savings=function(startY,startM,durationM,save=false)
     //save if and only if we are in the requested time window
     if(compareDates(currentY,currentM,startY,startM)>=0)
     {
-      result.push([(transMonthName(currentM)+'-'+currentY.toString()),total_savings]);
+      result[TIME].push({y:currentY,m:currentM})
+      result[CAPITAL].push(total_savings);
+      result[BANK_ROUNDED].push(Math.round(100*total_savings)/100);
       if(save)
       {
         for(var accID=0;accID<bank.value.accounts.length;accID++)
         {
-          bank.value.accounts[accID].computedOverTime.push({date:transMonthName(currentM)+'-'+currentY.toString(),amount:fictive_accounts[accID]})
+          bank.value.accounts[accID].computedOverTime[TIME].push({y:currentY,m:currentM});
+          bank.value.accounts[accID].computedOverTime[CAPITAL].push(fictive_accounts[accID])
         }
       }
     }
@@ -314,11 +312,11 @@ const provideRebuyOptions=function(evt_type,penalties,penalties_abs,penalties_ty
     var computed=compute_savings(Number(simu.value.credit.startingDate.split('/')[2]),Number(simu.value.credit.startingDate.split('/')[1]),nb_mens_compute);
     //in case a periodic saving or single io was set before credit start, we have to start comparing savings and credit when dates match
     // to do so, we have to scroll to an offset in computed that is aligned on first credit mensuality date
-    while(j<computed.length &&  computed[j][0]!=simu.value.credit.amort[0][0] )
+    while(j<computed.length &&  compareDates(computed[TIME][j].y,computed[TIME][j].m ,simu.value.credit.amort[TIME][0].y,simu.value.credit.amort[TIME][0].m )!=0)
     {
       j++;
     }
-    if(j==computed.length)
+    if(j==computed[TIME].length)
     {
       options_rebuy_savings.push('impossible');
       forDisplay_post_select_opt.push({eco_left:'0 ',value_paid:'0'});
@@ -327,45 +325,45 @@ const provideRebuyOptions=function(evt_type,penalties,penalties_abs,penalties_ty
     i++;//initialize the var to 1 in order to avoid simulating the rebuy before first mensuality paid
     if(penalties_type=='%')
     {
-      while(computed[j+i-1][1]<returnBaseData(Number(computed[j+i][0].split('-')[1]),getMonthNbr(computed[j+i][0].split('-')[0])).capital_left*(1+penalties/100) && i+j-1!=computed.length)
+      while(computed[CAPITAL][j+i-1] < returnBaseData(computed[TIME][j+i].y,computed[TIME][j+i].m).capital_left * (1+penalties/100) && i+j-1!=computed[TIME].length)
       {
         i++;
       }
     }
     else
     {
-      while(computed[j+i-1][1]<returnBaseData(Number(computed[j+i][0].split('-')[1]),getMonthNbr(computed[j+i][0].split('-')[0])).capital_left+penalties_abs && i+j-1!=computed.length)
+      while(computed[CAPITAL][j+i-1] < returnBaseData(computed[TIME][j+i].y,computed[TIME][j+i].m).capital_left + penalties_abs && i+j-1!=computed[TIME].length)
       {
         i++;
       }
     }
     //handle error
-    if(i+j-1==computed.length)
+    if(i+j-1==computed[TIME].length)
     {
       options_rebuy_savings.push('impossible');
       forDisplay_post_select_opt.push({eco_left:'0 ',value_paid:'0'});
       return [options_rebuy_savings,forDisplay_post_select_opt];
     }
     //at this point, credit[i+j] and savings[i] are aligned
-    i++;//ad one year to have a margin
-    if(i+j-1>=computed.length)
+    i++;//add one year to have a margin
+    if(i+j-1>=computed[TIME].length)
     {
       return [transStr(stringsIDs.str_unsufficient_savings)];
     }
-    while(i+j<computed.length &&
-      returnBaseData(Number(computed[i+j][0].split('-')[1]),getMonthNbr(computed[i+j][0].split('-')[0])).capital_left!=0)
+    while(i+j<computed[TIME].length &&
+      returnBaseData(computed[TIME][i+j].y,computed[TIME][i+j].m).capital_left!=0)
     {
       var to_pay=0;
       if(penalties_type=='%')
       {
-        to_pay=returnBaseData(Number(computed[i+j][0].split('-')[1]),getMonthNbr(computed[i+j][0].split('-')[0])).capital_left*(1+penalties/100);
+        to_pay=returnBaseData(computed[TIME][i+j].y,computed[TIME][i+j].m).capital_left*(1+penalties/100);
       }
       else
       {
-        to_pay=returnBaseData(Number(computed[i+j][0].split('-')[1]),getMonthNbr(computed[i+j][0].split('-')[0])).capital_left+penalties_abs;
+        to_pay=returnBaseData(computed[TIME][i+j].y,computed[TIME][i+j].m).capital_left+penalties_abs;
       }
-      options_rebuy_savings.push(computed[i+j-1][0].split('-').join(' '));
-      forDisplay_post_select_opt.push({eco_left:formatnumber(String(Math.round(100*(computed[i+j-1][1]-to_pay))/100))+' ',value_paid:formatnumber(String(Math.round(100*to_pay)/100)+' '+getCurrencySymbol())});
+      options_rebuy_savings.push(transMonthName(computed[TIME][i+j-1].m) +' '+ computed[TIME][i+j-1].y.toString());
+      forDisplay_post_select_opt.push({eco_left:formatnumber(String(Math.round(100*(computed[CAPITAL][i+j-1]-to_pay))/100))+' ',value_paid:formatnumber(String(Math.round(100*to_pay)/100)+' '+getCurrencySymbol())});
       i++;
     }
     return [options_rebuy_savings,forDisplay_post_select_opt];
@@ -494,4 +492,4 @@ const getAccOpt=function()
 export { getSavingsEarlier,computeDisplaySavings,hasSavings, provideRebuyOptions,
   BANK_SEARCH_ERROR,getAccId,getSavinPID,getSIOID,getSortedAccountsFromPoorToHighRate,compute_savings,makeAccountNameUnique,
   isAccountInvolvedInRebuyWithSavings, deleteRebuySavingsEventAndAssociatedInOut,getAccOpt,
-  BANK_SAVE_TYPE_MONTHLY,BANK_SAVE_TYPE_YEARLY,BANK_SIO_TYPE_IN,BANK_SIO_TYPE_OUT};
+  BANK_SAVE_TYPE_MONTHLY,BANK_SAVE_TYPE_YEARLY,BANK_SIO_TYPE_IN,BANK_SIO_TYPE_OUT,BANK_ROUNDED};

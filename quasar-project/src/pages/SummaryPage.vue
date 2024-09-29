@@ -46,8 +46,8 @@ import { simu,bank } from 'stores/store';
 import {formatnumber} from '../utils/string_utils'
 import { useRouter } from 'vue-router';
 import {targetPage} from '../utils/swipe_utils.js'
-import { returnBaseData,EVT_TYPE_REBUY_SAVINGS,  EVT_META_TYPE_REBUY, computeCredit_init,apply_events_chain,computeMensuality } from 'src/utils/credit_utility';
-import { transStr,stringsIDs } from 'src/stores/languages';
+import { returnBaseData,EVT_TYPE_REBUY_SAVINGS,  EVT_META_TYPE_REBUY, computeCredit_init,apply_events_chain,computeMensuality, TIME,INTERESTS } from 'src/utils/credit_utility';
+import { transStr,stringsIDs,transMonthName } from 'src/stores/languages';
 import {getCurrencySymbol} from '../stores/currencies'
 import { subOneMonth } from 'src/utils/date_utility';
 import { show_tuto,tutoPhase } from 'stores/store';
@@ -117,8 +117,8 @@ const setDisplay=function() {
   var capital_rebuy_s_end_month=ref(0);
   var capital_rebuy_s_end_year=ref(0);
   var amort_init=simu.value.credit.amort;
-  var interests_paid =amort_init[amort_init.length-1][2];
-  var EndDate = amort_init[amort_init.length-1][0];
+  var interests_paid =amort_init[INTERESTS][amort_init[INTERESTS].length-1];
+  var EndDate =transMonthName(amort_init[TIME][amort_init[TIME].length-1].m)+' '+ amort_init[TIME][amort_init[TIME].length-1].y.toString();
   var _date_to_display = simu.value.credit.startingDate
   var _id=0
   var _text1 = transStr(stringsIDs.str_mens)+formatnumber(simu.value.credit.mensuality.toString())+' '+getCurrencySymbol();
@@ -147,12 +147,13 @@ const setDisplay=function() {
       {
         _text1=formatnumber(transStr(stringsIDs.str_mens)+simu.value.events[i].new_mens.toString());
       }
-      _text2=transStr(stringsIDs.str_loan_end)+simu.value.events[i].amortEvt[simu.value.events[i].amortEvt.length-1][0].split('-').join(' ');
-      _text3=transStr(stringsIDs.str_total_cost)+formatnumber((Math.round(100*simu.value.events[i].amortEvt[simu.value.events[i].amortEvt.length-1][2])/100).toString());
-      delta_abs=Math.round((simu.value.events[i].amortEvt[simu.value.events[i].amortEvt.length-1][2]-interests_paid)*100)/100;
+      var end_date=simu.value.events[i].amortEvt[TIME][simu.value.events[i].amortEvt[TIME].length-1];
+      _text2=transStr(stringsIDs.str_loan_end)+transMonthName(end_date.m)+' '+end_date.y.toString();
+      _text3=transStr(stringsIDs.str_total_cost)+formatnumber((Math.round(100*simu.value.events[i].amortEvt[INTERESTS][simu.value.events[i].amortEvt[INTERESTS].length-1])/100).toString());
+      delta_abs=Math.round((simu.value.events[i].amortEvt[INTERESTS][simu.value.events[i].amortEvt[INTERESTS].length-1]-interests_paid)*100)/100;
       if(i!=0)
       {
-        delta_rel=Math.round((simu.value.events[i].amortEvt[simu.value.events[i].amortEvt.length-1][2]-simu.value.events[i-1].amortEvt[simu.value.events[i-1].amortEvt.length-1][2])*100)/100;
+        delta_rel=Math.round((simu.value.events[i].amortEvt[INTERESTS][simu.value.events[i].amortEvt[INTERESTS].length-1]-simu.value.events[i-1].amortEvt[INTERESTS][simu.value.events[i-1].amortEvt[INTERESTS].length-1])*100)/100;
         _text4=transStr(stringsIDs.str_cost_diff_rel)+simu.value.events[i-1].title+') : '+formatnumber(String(delta_rel))+' '+getCurrencySymbol();
       }
       if(delta_rel>0)

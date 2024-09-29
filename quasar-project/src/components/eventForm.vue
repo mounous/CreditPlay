@@ -144,7 +144,7 @@
           </div>
         </div>
         <div class="q-ma-md" style="display:flex; width: 95%;">
-          <q-slider class="q-ma-md" v-model="penalties_no_unit" :min="0"
+          <q-slider dark inner-track-color="blue-grey-8" class="q-ma-md" v-model="penalties_no_unit" :min="0"
             :max="event_.rebuyPenaltiesType == '%' ? 5 : simu.credit.amount / 30"
             :step="event_.rebuyPenaltiesType == '%' ? 0.01 : 10" @change="myPenalties.focus()"
             @update:model-value="event_.rebuyPenaltiesType == getCurrencySymbol() ? event_.rebuyPenalties_abs = Number(penalties_no_unit) : event_.rebuyPenalties = Number(penalties_no_unit)" />
@@ -423,7 +423,7 @@ var event_ = ref({
   new_mens: -1.0,
   mensDiff: 0,
   modVal: '',
-  amortEvt: [],
+  amortEvt: [[],[],[]],
   rebuyVal: '',
   reLoanDate: '',
   reloanRate: 0,

@@ -10,7 +10,7 @@ const saveTutoData=function()
 {
   startformfilled_before_tuto.value=startFormFilled.value==true?true:false;
   startFormFilled.value=true;
-  bank_before_tuto.value={ accounts:[], monthly_sum:[] };
+  bank_before_tuto.value={ accounts:[], monthly_sum:[[],[],[]] };
   for(var i=0;i<bank.value.accounts.length;i++)
   {
     bank_before_tuto.value.accounts.push({title:bank.value.accounts[i].title,rate:bank.value.accounts[i].rate,amount:bank.value.accounts[i].amount,open_y:bank.value.accounts[i].open_y,open_m:bank.value.accounts[i].open_m,computedOverTime:bank.value.accounts[i].computedOverTime,single_in_out:[],periodic_savings:[]});
@@ -30,7 +30,7 @@ const saveTutoData=function()
 const restoreTutoData=function()
 {
   startFormFilled.value=startformfilled_before_tuto.value==true?true:false;
-  bank.value={ accounts:[], monthly_sum:[] };
+  bank.value={ accounts:[], monthly_sum:[[],[],[]] };
   for(var i=0;i<bank_before_tuto.value.accounts.length;i++)
   {
     bank.value.accounts.push({title:bank_before_tuto.value.accounts[i].title,rate:bank_before_tuto.value.accounts[i].rate,amount:bank_before_tuto.value.accounts[i].amount,open_y:bank_before_tuto.value.accounts[i].open_y,open_m:bank_before_tuto.value.accounts[i].open_m,computedOverTime:bank_before_tuto.value.accounts[i].computedOverTime,single_in_out:[],periodic_savings:[],open_m:bank_before_tuto.value.open_m,open_y:bank_before_tuto.value.open_y});
@@ -56,7 +56,7 @@ const injectCreditInTuto=function()
     duration_m: 240,
     rate: 3.25,
     startingDate: '16/08/2023',
-    amort: [],
+    amort: [[],[],[]],
     total_cost: 63582.4,
     y: 2023,
     m: 8,
@@ -93,7 +93,7 @@ const populateBankTuto=function(){
     accounts: [
       {
         title: 'Livret A',amount: 100, rate: 3, single_in_out: [ ], periodic_savings: [{ amount: 190,
-        account: 'Livret A', type: 0, startMonth: 9, startYear: 2024, endMonth: 0, endYear: 0, } ], computedOverTime: [  ],
+        account: 'Livret A', type: 0, startMonth: 9, startYear: 2024, endMonth: 0, endYear: 0, } ], computedOverTime: [ [],[],[] ],
         open_m: 8, open_y: 2024
       }
     ]
@@ -104,17 +104,17 @@ const populateEventsTuto=function()
  simu.value.events=[
     {
       title: 'modulation 1', metaType: 0,  type: 1, year_str: '2024',  month_str: transMonthName(10), year: 2024, month: 10, id: 1, selected: false,
-      new_mens: 1262.14, mensDiff: -60,  modVal: '', amortEvt: [], rebuyVal: '', reLoanDate: '', reloanRate: 0, rebuyPenaltiesType: '%',
+      new_mens: 1262.14, mensDiff: -60,  modVal: '', amortEvt: [[],[],[]], rebuyVal: '', reLoanDate: '', reloanRate: 0, rebuyPenaltiesType: '%',
       rebuyPenalties: 0, rebuyPenalties_abs: 0, reloanDuration_m: 0, savingsLeft: 0
     },
     {
       title: 'Rachat 1', metaType: 1, type: 1, year_str: '2028', month_str: transMonthName(11), year: 2028, month: 11, id: 1, selected: false,
-      new_mens: 1344.65, mensDiff: 0, modVal: '', amortEvt: [], rebuyVal: '', reLoanDate: '16/11/2028', reloanRate: 2.45, rebuyPenaltiesType: '%',
+      new_mens: 1344.65, mensDiff: 0, modVal: '', amortEvt: [[],[],[]], rebuyVal: '', reLoanDate: '16/11/2028', reloanRate: 2.45, rebuyPenaltiesType: '%',
       rebuyPenalties: 3, rebuyPenalties_abs: 0, reloanDuration_m: 108, savingsLeft: 0,
     },
     {
       title: 'Rachat 2', metaType: 1, type: 0, year_str: '2036', month_str: transMonthName(1), year: 2036, month: 1, id: 1, selected: false,
-      new_mens: -1, mensDiff: 0, modVal: '', amortEvt: [], rebuyVal: '', reLoanDate: '', reloanRate: 0, rebuyPenaltiesType: '%',
+      new_mens: -1, mensDiff: 0, modVal: '', amortEvt: [[],[],[]], rebuyVal: '', reLoanDate: '', reloanRate: 0, rebuyPenaltiesType: '%',
       rebuyPenalties: 2.86, rebuyPenalties_abs: 0, reloanDuration_m: 0, savingsLeft: '2 660.79',
     },
   ];

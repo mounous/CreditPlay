@@ -130,15 +130,16 @@ import tutoTxt from './tutoTxt.vue';
 import shakeBtn from './shakeBtn.vue';
 import VueApexCharts from 'vue3-apexcharts'
 import { ref, nextTick, onBeforeUnmount, onMounted} from 'vue';
-import {apply_events_chain, computeMensuality, getChartXAxis,getLatestMensuality,computeCredit_init} from '../utils/credit_utility'
+import {apply_events_chain, computeMensuality, getChartXAxis,getLatestMensuality,computeCredit_init, CAPITAL, TIME,INTERESTS} from '../utils/credit_utility'
 import { GetColor,TYPE_CAPITAL,TYPE_INTERESTS,TYPE_SAVINGS } from 'src/utils/chart_utility';
 import { simu,bank, startFormFilled } from 'stores/store';
-import {getSavingsEarlier,computeDisplaySavings,hasSavings} from '../utils/bank_utility'
+import {getSavingsEarlier,computeDisplaySavings,hasSavings,BANK_ROUNDED} from '../utils/bank_utility'
 import { stringsIDs,transStr, transMonthName } from 'src/stores/languages';
 import { show_tuto,tutoPhase } from 'stores/store';
 import { useRouter } from 'vue-router';
 import {targetPage} from '../utils/swipe_utils.js'
 import {saveTutoData,populateBankTuto ,restoreTutoData,populateEventsTuto,injectCreditInTuto} from '../utils/tutorail_utils'
+import {compareDates} from '../utils/date_utility'
 var listDisplayTuto=ref([ {color:'red',id:stringsIDs.str_tuto_chart_cpmlnt_1},
                           {color:'grey',id:stringsIDs.str_tuto_chart_cpmlnt_2},
                           {color:'green',id:stringsIDs.str_tuto_chart_cpmlnt_3},
@@ -304,17 +305,17 @@ const getSingleEvent=function(index)
   {
     var extractData_capital=[];
     var extractData_interests=[];
-    for(var j=0;j<simu.value.events[index].amortEvt.length;j++)
+    for(var j=0;j<simu.value.events[index].amortEvt[TIME].length;j++)
     {
       if(display_capital.value==true)
       {
-        extractData_capital.push(Math.round(simu.value.events[index].amortEvt[j][1]*100)/100);
+        extractData_capital.push(Math.round(simu.value.events[index].amortEvt[CAPITAL][j]*100)/100);
       }
       if(display_interests.value==true)
       {
-        extractData_interests.push(Math.round(simu.value.events[index].amortEvt[j][2]*100)/100);
+        extractData_interests.push(Math.round(simu.value.events[index].amortEvt[INTERESTS][j]*100)/100);
       }
-      if(display_capital.value==true &&simu.value.events[index].amortEvt[j][0]==transMonthName(simu.value.events[index].month)+'-'+simu.value.events[index].year.toString())
+      if(display_capital.value==true && compareDates(simu.value.events[index].amortEvt[TIME][j].y,simu.value.events[index].amortEvt[TIME][j].m,simu.value.events[index].year,simu.value.events[index].month)==0 )
       {
         evt_y=extractData_capital[extractData_capital.length-1];//store the capital to set a point on graph
         if(evt_y==0)//case of a rebuy,
@@ -322,7 +323,7 @@ const getSingleEvent=function(index)
           evt_y=extractData_capital[extractData_capital.length-2];
         }
       }
-      if(display_capital.value==false &&display_interests.value==true &&simu.value.events[index].amortEvt[j][0]==transMonthName(simu.value.events[index].month)+'-'+simu.value.events[index].year.toString())
+      if(display_capital.value==false &&display_interests.value==true && compareDates(simu.value.events[index].amortEvt[TIME][j].y,simu.value.events[index].amortEvt[TIME][j].m,simu.value.events[index].month,simu.value.events[index].year)==0)
       {
         evt_y=extractData_interests[extractData_interests.length-1];//store the interests to set a point on graph
         if(evt_y==0)//case of a rebuy,
@@ -341,7 +342,7 @@ const getSingleEvent=function(index)
       series.push({name:transStr(stringsIDs.str_interests_parenth)+simu.value.events[index].title+')',data:extractData_interests});
       chartOptions.colors.push('#085a67');
     }
-    chartOptions.annotations.xaxis.push({x:transMonthName(simu.value.events[index].month)+'-'+simu.value.events[index].year.toString(),
+    chartOptions.annotations.xaxis.push({x:transMonthName(simu.value.events[index].month).slice(0,3)+' '+simu.value.events[index].year.toString(),
                                          strokeDashArray: 0,
                                          borderColor: '#775DD0',
                                          label: {
@@ -351,7 +352,7 @@ const getSingleEvent=function(index)
                                              background: '#775DD0',
                                            },
                                            text: '',}});
-    chartOptions.annotations.points.push({x: transMonthName(simu.value.events[index].month)+'-'+simu.value.events[index].year.toString(),
+    chartOptions.annotations.points.push({x: transMonthName(simu.value.events[index].month).slice(0,3)+' '+simu.value.events[index].year.toString(),
                                           y: evt_y,  marker: {size: 6,  fillColor: '#fff',strokeColor: 'purple',radius: 1, cssClass: 'apexcharts-custom-class'},
                                           label: { borderColor: 'black', offsetY: 16, offsetX:leftAnno.value==false ? 45:-45, style: {color: '#fff',background: 'black', },text: simu.value.events[index].title,} } );
     leftAnno.value=!leftAnno.value;
@@ -384,19 +385,16 @@ const getBanking=function(){
   //assume : the banking is already computed
   if(display_capital.value==true || display_interests.value==true)
   {
-    while(bank.value.monthly_sum[0][0]!=simu.value.credit.amort[0][0] && 0!=bank.value.monthly_sum.length)
+    while(compareDates(bank.value.monthly_sum[TIME][0].y,bank.value.monthly_sum[TIME][0].m,simu.value.credit.amort[TIME][0].y,simu.value.credit.amort[TIME][0].m)!=0 && 0!=bank.value.monthly_sum[TIME].length)
     {
-      bank.value.monthly_sum.shift();
+      bank.value.monthly_sum[TIME].shift();
+      bank.value.monthly_sum[CAPITAL].shift();
+      bank.value.monthly_sum[BANK_ROUNDED].shift();
     }
   }
-  if(bank.value.monthly_sum.length!=0)
+  if(bank.value.monthly_sum[TIME].length!=0)
   {
-    var exctractedSavings=[];
-    for(var i=0;i<bank.value.monthly_sum.length;i++)
-    {
-      exctractedSavings.push(Math.round(bank.value.monthly_sum[i][1]*100)/100);
-    }
-    series.push({name:transStr(stringsIDs.str_savings),data:exctractedSavings});
+    series.push({name:transStr(stringsIDs.str_savings),data:bank.value.monthly_sum[BANK_ROUNDED]});
     chartOptions.colors.push(GetColor(TYPE_SAVINGS,0,false));
   }
 }
@@ -431,15 +429,11 @@ const setupChart=function()
 
 
 const getTime = function () {
-  var xAxisUp2Date = [];
-  if(simu.value.credit.amort.length!=0)//credit scale even if savings entries starting after credit ends
+  var time= getChartXAxis();
+  var xAxisUp2Date=[];
+  for(var i=0;i<time.length;i++)
   {
-    const amort_arr = getChartXAxis();
-
-    for (var i = 0; i < amort_arr.length; i++) {
-      xAxisUp2Date.push(amort_arr[i][0]);
-    }
-    return xAxisUp2Date;
+    xAxisUp2Date.push(transMonthName(time[i].m).slice(0,3) +' '+ time[i].y.toString());
   }
   return xAxisUp2Date;
 }
@@ -447,14 +441,13 @@ const getTime = function () {
 
 const getBankTime=function(){
   var xAxisUp2Date=[];
-  if(bank.value.monthly_sum.length!=0)
+  if(bank.value.monthly_sum[TIME].length!=0)
   {
-    for(var i=0;i<bank.value.monthly_sum.length;i++)
+    for(var i=0;i<bank.value.monthly_sum[TIME].length;i++)
     {
-      xAxisUp2Date.push(bank.value.monthly_sum[i][0]);
+      xAxisUp2Date.push(transMonthName(bank.value.monthly_sum[TIME][i].m).slice(0,3) +' '+ bank.value.monthly_sum[TIME][i].y.toString());
     }
   }
-  //chartOptions.xaxis.categories=xAxisUp2Date;
   return xAxisUp2Date;
 }
 
@@ -462,18 +455,11 @@ const getBankTime=function(){
 //onUpdated(getBankTime);
 
 const getAmount = function () {
-  var seriesUp2Date = [];
-  for (var i = 0; i < simu.value.credit.amort.length; i++) {
-    seriesUp2Date.push(simu.value.credit.amort[i][1]);
-  }
-  return seriesUp2Date;
+ return simu.value.credit.amort[CAPITAL];
 };
+
 const getIntests = function () {
-  var seriesInterests = [];
-  for (var i = 0; i < simu.value.credit.amort.length; i++) {
-    seriesInterests.push(simu.value.credit.amort[i][2]);
-  }
-  return seriesInterests;
+  return simu.value.credit.amort[INTERESTS];
 };
 
 var series = [

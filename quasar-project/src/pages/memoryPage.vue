@@ -148,7 +148,7 @@ const saveCurrentData = function () {
   //clean heavy data that can be recomputed easily
   if (bank.value.accounts.length != 0) {
     for (var i = 0; i < bank.value.accounts.length; i++) {
-      bank.value.accounts[i].computedOverTime = [];
+      bank.value.accounts[i].computedOverTime = [[],[],[]];
     }
   }
   //generate unique name
