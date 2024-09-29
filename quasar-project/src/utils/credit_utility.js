@@ -14,6 +14,8 @@ const EVT_TYPE_REBUY_CREDIT=1;
 const TIME =0;
 const CAPITAL =1;
 const INTERESTS = 2;
+const CAPITAL_ROUNDED = 3;
+const INTERESTS_ROUNDED = 4;
 const computeMensuality = () => {
   simu.value.credit.mensuality=computeMensuality_noSave_Months(simu.value.credit.duration_m,simu.value.credit.rate,simu.value.credit.amount);
 };
@@ -304,8 +306,15 @@ const apply_events_chain=()=>{
           k++;
         }
       }
+      //for display purpose (faster chart if computed here)
+      for(var index=0;index<simu.value.events[i].amortEvt[TIME];index++)
+      {
+        simu.value.events[i].amortEvt[CAPITAL_ROUNDED].push(Math.round(simu.value.events[i].amortEvt[CAPITAL]*100)/100);
+        simu.value.events[i].amortEvt[INTERESTS_ROUNDED].push(Math.round(simu.value.events[i].amortEvt[INTERESTS]*100)/100);
+      }
     }
   }
+
 }
 
 //returns the last event end date and amort at input date if events were saved
