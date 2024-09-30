@@ -106,7 +106,7 @@ const addElementToAccounts = function () {
   }
   else {
     var date=new Date();
-    var open_m=date.getUTCMonth();
+    var open_m=date.getMonth()+1;
     var open_y=date.getFullYear();
     bank.value.accounts.push({ title: makeAccountNameUnique(_account.value.title), amount: Number(_account.value.amount), rate: _account.value.rate, single_in_out: [], periodic_savings: [], computedOverTime: [[],[],[]],open_m:Number(open_m),open_y:Number(open_y) });
     _account.value.title = '';
