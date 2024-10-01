@@ -63,7 +63,7 @@
             <q-item-section v-if="display_capital==false && display_interests==false && display_savings==true"> <th  class="q-mr-md q-ml-md" style=" color: white;font-size: 15px;text-align: left;">{{ transStr(stringsIDs.str_chart_display_year) }}</th></q-item-section>
           </q-item>
         </q-list>
-        <q-btn label="OK" @click="[mustPop=false,setupChart()]" :disable="display_capital==false && display_interests==false && display_savings==false || (display_savings==true && nbYearDisplaySavings==0 && (display_capital==false && display_interests==false)) || (display_savings==false && nbYearDisplaySavings!=0 && (display_capital==false && display_interests==false)) " color="blue-grey-8"></q-btn>
+        <q-btn label="OK" size="xl" @click="[mustPop=false,setupChart()]" :disable="display_capital==false && display_interests==false && display_savings==false || (display_savings==true && nbYearDisplaySavings==0 && (display_capital==false && display_interests==false)) || (display_savings==false && nbYearDisplaySavings!=0 && (display_capital==false && display_interests==false)) " color="blue-grey-8"></q-btn>
       </div>
     </div>
   </div>
@@ -160,11 +160,20 @@ var display_interests_save=ref(false);
 var display_savings_save=ref(false);
 var tickCount=ref(0);
 var leftAnno=ref(false);
-const popselector=function()
+const diplay_all_data=function()
 {
-  mustPop.value=true;
+  if(startFormFilled.value==true)
+  {
+    display_capital.value=true;
+    display_interests.value=true;
+  }
+  if(hasSavings())
+  {
+    display_savings.value=true;
+  }
+  setupChart();
 }
-onMounted(popselector);
+onMounted(diplay_all_data);
 
 const clearChart=function()
 {
